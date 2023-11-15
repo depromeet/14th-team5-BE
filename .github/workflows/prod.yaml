@@ -1,0 +1,21 @@
+name: 프로덕션 워크플로우
+on:
+  push:
+    branches: [ 'main' ]
+    paths:
+      - 'src/**' # 어드민 API 코드가 변경된 경우
+      - '.github/workflows/**' # 워크플로우와 관련된 파일이 변경된 경우
+      - 'build.gradle' # Parent Gradle 모듈 설정이 변경된 경우
+      - 'settings.gradle' # Parent Gradle 설정이 변경된 경우
+
+concurrency:
+  group: production
+
+jobs:
+  call-build-workflow:
+    if: github.event_name == 'push'
+    name: 이미지 빌드
+    uses: ./.github/workflows/build.yaml
+    permissions:
+      id-token: write
+      contents: read
