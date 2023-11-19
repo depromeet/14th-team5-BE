@@ -11,8 +11,4 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/test")
-    public String test() {
-        return memberService.test();
-    }
 }
