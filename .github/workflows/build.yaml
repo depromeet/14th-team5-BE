@@ -43,5 +43,6 @@ jobs:
       - name: 이미지 빌드하고 푸쉬하기
         id: build-image
         run: |
+          echo "IMAGE_TAG=$IMAGE_TAG, ACTIVE_PROFILE=$ACTIVE_PROFILE" &&
           chmod +x ./gradlew &&
           ./gradlew jib
