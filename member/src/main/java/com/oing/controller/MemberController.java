@@ -11,4 +11,9 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @GetMapping("/member")
+    public String test() {
+        return "members";
+    }
+
 }
