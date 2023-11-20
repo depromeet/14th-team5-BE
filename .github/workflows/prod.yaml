@@ -4,13 +4,14 @@ on:
     branches: [ 'main', 'feature/OING-16' ]
     paths:
       - 'config/**' # Config 모듈 변경
-      - 'member/**' # Member 모듈 변경
+      - 'member/**' # Member 모듈 변뚶
       - '.github/workflows/**' # 워크플로우와 관련된 파일이 변경된 경우
       - 'build.gradle' # Parent Gradle 모듈 설정이 변경된 경우
       - 'settings.gradle' # Parent Gradle 설정이 변경된 경우
 
 env:
   SPRING_PROFILE: prod
+  ENVIRONMENT: production
 
 concurrency:
   group: production
@@ -31,6 +32,7 @@ jobs:
         run: |
           echo "image-tag=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "spring-profile=$SPRING_PROFILE" >> $GITHUB_OUTPUT
+          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
 
   call-build-workflow:
     if: github.event_name == 'push'
@@ -46,3 +48,22 @@ jobs:
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+  call-deploy-workflow:
+    if: github.event_name == 'push'
+    needs: [ prepare-variables, call-build-workflow ]
+    name: 서비스 배포
+    uses: ./.github/workflows/deploy.yaml
+    permissions:
+      id-token: write
+      contents: read
+    secrets:
+      REMOTE_SSH_HOST: ${{ secrets.REMOTE_SSH_HOST }}
+      REMOTE_SSH_USERNAME: ${{ secrets.REMOTE_SSH_USERNAME }}
+      REMOTE_SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
+      REMOTE_SSH_PASSPHRASE: ${{ secrets.REMOTE_SSH_PASSPHRASE }}
+      REMOTE_SSH_PORT: ${{ secrets.REMOTE_SSH_PORT }}
+    with:
+      image-tag: ${{ needs.prepare-variables.outputs.image-tag }}
+      spring-profile: ${{ needs.prepare-variables.outputs.spring-profile }}
+      environment: ${{ needs.prepare-variables.outputs.environment }}
