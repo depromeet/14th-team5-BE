@@ -1,7 +1,7 @@
 name: 프로덕션 워크플로우
 on:
   push:
-    branches: [ 'main', 'feature/OING-7' ]
+    branches: [ 'main', 'feature/OING-16' ]
     paths:
       - 'config/**' # Config 모듈 변경
       - 'member/**' # Member 모듈 변경
