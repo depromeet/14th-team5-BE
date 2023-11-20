@@ -22,6 +22,9 @@ on:
       spring-profile:
         required: true
         type: string
+      image-name:
+        required: true
+        type: string
 
 env:
   IMAGE_TAG: ${{ inputs.image-tag || 'latest' }}
@@ -50,4 +53,4 @@ jobs:
           passphrase: ${{ secrets.REMOTE_SSH_PASSPHRASE }}
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
-            docker service update --image no5ing/spring-was:${{ inputs.image-tag }} be-prod-was
+            docker service update --image no5ing/${{ inputs.image-name }}:${{ inputs.image-tag }} be-prod-was

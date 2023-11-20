@@ -12,6 +12,7 @@ on:
 env:
   SPRING_PROFILE: prod
   ENVIRONMENT: production
+  IMAGE_NAME: no5ing/spring-was
 
 concurrency:
   group: production
@@ -23,6 +24,8 @@ jobs:
     outputs:
       image-tag: ${{ steps.setup-env.outputs.image-tag }}
       spring-profile: ${{ steps.setup-env.outputs.spring-profile }}
+      environment: ${{ steps.setup-env.outputs.environment }}
+      image-name: ${{ steps.setup-env.outputs.image-name }}
     steps:
       - name: GitHub 에서 레포 받아오기
         uses: actions/checkout@v3
@@ -33,6 +36,7 @@ jobs:
           echo "image-tag=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "spring-profile=$SPRING_PROFILE" >> $GITHUB_OUTPUT
           echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
+          echo "image-name=$IMAGE_NAME" >> $GITHUB_OUTPUT
 
   call-build-workflow:
     if: github.event_name == 'push'
@@ -45,6 +49,7 @@ jobs:
     with:
       image-tag: ${{ needs.prepare-variables.outputs.image-tag }}
       spring-profile: ${{ needs.prepare-variables.outputs.spring-profile }}
+      image-name: ${{ needs.prepare-variables.outputs.image-name }}
     secrets:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -67,3 +72,4 @@ jobs:
       image-tag: ${{ needs.prepare-variables.outputs.image-tag }}
       spring-profile: ${{ needs.prepare-variables.outputs.spring-profile }}
       environment: ${{ needs.prepare-variables.outputs.environment }}
+      image-name: ${{ needs.prepare-variables.outputs.image-name }}
