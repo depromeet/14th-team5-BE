@@ -1,6 +1,22 @@
 name: 이미지 빌드 & 푸쉬
 on:
   workflow_call:
+    inputs:
+      image-tag:
+          required: true
+          type: string
+      spring-profile:
+          required: true
+          type: string
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+
+env:
+  IMAGE_TAG: ${{ github.event.inputs.image-tag || 'latest' }}
+  ACTIVE_PROFILE: ${{ github.event.inputs.spring-profile || 'local' }}
 
 jobs:
   build:
@@ -28,4 +44,4 @@ jobs:
         id: build-image
         run: |
           chmod +x ./gradlew &&
-          ./gradlew bootJar
+          ./gradlew jib

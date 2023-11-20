@@ -30,7 +30,7 @@ tasks.named('test') {
 
 jib {
     def imageTag = System.getenv("IMAGE_TAG")
-    def serverPort = System.getenv("SERVER_PORT")
+    def serverPort = "8080"
     def activeProfile = System.getenv("ACTIVE_PROFILE")
     def dockerUsername = System.getenv("DOCKER_USERNAME")
     def dockerPassword = System.getenv("DOCKER_PASSWORD")
