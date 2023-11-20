@@ -15,8 +15,8 @@ on:
         required: true
 
 env:
-  IMAGE_TAG: ${{ github.event.inputs.image-tag || 'latest' }}
-  ACTIVE_PROFILE: ${{ github.event.inputs.spring-profile || 'local' }}
+  IMAGE_TAG: ${{ inputs.image-tag || 'latest' }}
+  ACTIVE_PROFILE: ${{ inputs.spring-profile || 'local' }}
 
 jobs:
   build:
