@@ -1,7 +1,7 @@
 name: 데브 워크플로우
 on:
   push:
-    branches: [ 'dev', 'feature/OING-16' ]
+    branches: [ 'dev' ]
     paths:
       - 'config/**' # Config 모듈 변경
       - 'member/**' # Member 모듈 변뚶
