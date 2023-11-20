@@ -42,6 +42,9 @@ jobs:
 
       - name: 이미지 빌드하고 푸쉬하기
         id: build-image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           echo "IMAGE_TAG=$IMAGE_TAG, ACTIVE_PROFILE=$ACTIVE_PROFILE" &&
           chmod +x ./gradlew &&
