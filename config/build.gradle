@@ -36,7 +36,7 @@ jib {
     def dockerPassword = System.getenv("DOCKER_PASSWORD")
     from {
         image = 'amazoncorretto:17-alpine3.17-jdk'
-        tags = ['latest', imageTag]
+        tags = ['latest', imageTag ? imageTag : 'latest']
     }
     to {
         image = 'no5ing/spring-was:latest'
