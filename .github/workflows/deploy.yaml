@@ -31,9 +31,9 @@ env:
   ACTIVE_PROFILE: ${{ inputs.spring-profile || 'local' }}
 
 jobs:
-  build:
+  deploy:
     runs-on: [ ubuntu-latest ]
-    name: 이미지 빌드하기
+    name: 서비스 배포하기
     environment: ${{ inputs.environment }}
 
     permissions:
