@@ -53,4 +53,4 @@ jobs:
           password: ${{ secrets.REMOTE_SSH_PASSPHRASE }}
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
-            docker service update --image no5ing/${{ inputs.image-name }}:${{ inputs.image-tag }} be-prod-was
+            docker service update --image ${{ inputs.image-name }}:${{ inputs.image-tag }} be-prod-was
