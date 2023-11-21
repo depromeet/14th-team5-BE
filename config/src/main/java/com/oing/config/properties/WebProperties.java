@@ -3,7 +3,10 @@ package com.oing.config.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.AntPathMatcher;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
@@ -16,15 +19,29 @@ import java.util.regex.Pattern;
 @ConfigurationPropertiesBinding
 public record WebProperties(
         String[] urlWhitelists,
+        String[] urlNoLogging,
         @NestedConfigurationProperty WebHeaderNameProperties headerNames
 ) {
     public boolean isWhitelisted(String path) {
         for (String pattern : urlWhitelists) {
-            String regex = pattern.replace("*", ".*");
-            if (Pattern.matches(regex, path)) {
+            if (isMatchPattern(pattern, path)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean isNoLoggable(String path) {
+        for (String pattern : urlNoLogging) {
+            if (isMatchPattern(pattern, path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isMatchPattern(String pattern, String input) {
+        String regex = pattern.replace("*", ".*");
+        return Pattern.matches(regex, input);
     }
 }

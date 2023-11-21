@@ -12,6 +12,11 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import java.util.Arrays;
 
 /**
  * no5ing-server
@@ -43,10 +48,13 @@ public class SpringSecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(requestsManagement ->{
-                        for(String whitelistUrlPath : webProperties.urlWhitelists()) {
-                            requestsManagement.requestMatchers(whitelistUrlPath).permitAll();
-                        }
-                        requestsManagement.anyRequest().authenticated();
+                    RequestMatcher[] whitelistedMatchers = Arrays.stream(webProperties.urlWhitelists())
+                            .map(AntPathRequestMatcher::new)
+                            .toArray(AntPathRequestMatcher[]::new);
+
+                    requestsManagement
+                            .requestMatchers(whitelistedMatchers).permitAll()
+                            .anyRequest().authenticated();
                 })
                 .addFilterBefore(authenticationHandler, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandlerManagement ->
