@@ -5,6 +5,7 @@ on:
     paths:
       - 'config/**' # Config 모듈 변경
       - 'member/**' # Member 모듈 변뚶
+      - 'common/**' # Common 모듈 변경
       - '.github/workflows/**' # 워크플로우와 관련된 파일이 변경된 경우
       - 'build.gradle' # Parent Gradle 모듈 설정이 변경된 경우
       - 'settings.gradle' # Parent Gradle 설정이 변경된 경우
