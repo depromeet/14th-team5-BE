@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public abstract class DomainException extends RuntimeException {
+public class DomainException extends RuntimeException {
     private final ErrorCode errorCode;
 }
