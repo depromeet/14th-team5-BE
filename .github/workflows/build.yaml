@@ -2,12 +2,15 @@ name: 이미지 빌드 & 푸쉬
 on:
   workflow_call:
     inputs:
+      image-name:
+        required: true
+        type: string
       image-tag:
-          required: true
-          type: string
+        required: true
+        type: string
       spring-profile:
-          required: true
-          type: string
+        required: true
+        type: string
     secrets:
       DOCKER_USERNAME:
         required: true
@@ -17,6 +20,7 @@ on:
 env:
   IMAGE_TAG: ${{ inputs.image-tag || 'latest' }}
   ACTIVE_PROFILE: ${{ inputs.spring-profile || 'local' }}
+  IMAGE_NAME: ${{ inputs.image-name }}
 
 jobs:
   build:
@@ -46,6 +50,6 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          echo "IMAGE_TAG=$IMAGE_TAG, ACTIVE_PROFILE=$ACTIVE_PROFILE" &&
+          echo "IMAGE_TAG=$IMAGE_TAG, ACTIVE_PROFILE=$ACTIVE_PROFILE, IMAGE_NAME=$IMAGE_NAME" &&
           chmod +x ./gradlew &&
           ./gradlew jib

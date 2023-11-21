@@ -1,7 +1,7 @@
-name: 프로덕션 워크플로우
+name: 데브 워크플로우
 on:
   push:
-    branches: [ 'main' ]
+    branches: [ 'dev' ]
     paths:
       - 'config/**' # Config 모듈 변경
       - 'member/**' # Member 모듈 변뚶
@@ -10,13 +10,13 @@ on:
       - 'settings.gradle' # Parent Gradle 설정이 변경된 경우
 
 env:
-  SPRING_PROFILE: prod
-  ENVIRONMENT: production
-  IMAGE_NAME: no5ing/spring-was
-  SERVICE_NAME: be-prod-was
+  SPRING_PROFILE: dev
+  ENVIRONMENT: development
+  IMAGE_NAME: no5ing/spring-was-dev
+  SERVICE_NAME: be-dev-was
 
 concurrency:
-  group: production
+  group: development
 
 jobs:
   prepare-variables:
