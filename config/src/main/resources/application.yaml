@@ -17,3 +17,10 @@ spring:
       enabled: true
       settings:
         web-allow-others: true
+app:
+  web:
+    url-whitelists:
+      - /actuator/**
+      - /swagger-ui.html
+    header-names:
+      access-token: X-AUTH-TOKEN
