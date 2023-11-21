@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.google.cloud.tools.jib' version '3.4.0'
 }
 
 repositories {
@@ -25,4 +26,35 @@ tasks.named('jar') {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+jib {
+    def imageTag = System.getenv("IMAGE_TAG")
+    def serverPort = "8080"
+    def activeProfile = System.getenv("ACTIVE_PROFILE")
+    def dockerUsername = System.getenv("DOCKER_USERNAME")
+    def dockerPassword = System.getenv("DOCKER_PASSWORD")
+    from {
+        image = 'amazoncorretto:17-alpine3.17-jdk'
+    }
+    to {
+        image = 'no5ing/spring-was:latest'
+        tags = ['latest', imageTag]
+        auth {
+            username = dockerUsername ? dockerUsername : ""
+            password = dockerPassword ? dockerPassword : ""
+        }
+    }
+    container {
+        jvmFlags = [
+                '-Dspring.profiles.active=' + activeProfile,
+                '-Dserver.port=' + serverPort,
+                '-Xms2G', '-Xmx2G',
+                '-XX:+UseG1GC',
+                '-XX:+UseContainerSupport',
+                '-XX:+DisableExplicitGC',
+                '-server'
+        ]
+        ports = [serverPort]
+    }
 }

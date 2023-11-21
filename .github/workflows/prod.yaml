@@ -1,21 +1,48 @@
 name: 프로덕션 워크플로우
 on:
   push:
-    branches: [ 'main' ]
+    branches: [ 'main', 'feature/OING-7' ]
     paths:
-      - 'src/**' # 어드민 API 코드가 변경된 경우
+      - 'config/**' # Config 모듈 변경
+      - 'member/**' # Member 모듈 변경
       - '.github/workflows/**' # 워크플로우와 관련된 파일이 변경된 경우
       - 'build.gradle' # Parent Gradle 모듈 설정이 변경된 경우
       - 'settings.gradle' # Parent Gradle 설정이 변경된 경우
+
+env:
+  SPRING_PROFILE: prod
 
 concurrency:
   group: production
 
 jobs:
+  prepare-variables:
+    name: 환경변수 준비하기
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.setup-env.outputs.image-tag }}
+      spring-profile: ${{ steps.setup-env.outputs.spring-profile }}
+    steps:
+      - name: GitHub 에서 레포 받아오기
+        uses: actions/checkout@v3
+
+      - name: 환경변수 출력하기
+        id: setup-env
+        run: |
+          echo "image-tag=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "spring-profile=$SPRING_PROFILE" >> $GITHUB_OUTPUT
+
   call-build-workflow:
     if: github.event_name == 'push'
+    needs: [ prepare-variables ]
     name: 이미지 빌드
     uses: ./.github/workflows/build.yaml
     permissions:
       id-token: write
       contents: read
+    with:
+      image-tag: ${{ needs.prepare-variables.outputs.image-tag }}
+      spring-profile: ${{ needs.prepare-variables.outputs.spring-profile }}
+    secrets:
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
