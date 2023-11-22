@@ -3,7 +3,7 @@ repositories {
 }
 
 dependencies {
-    implementation project(':common')
+
 }
 
 tasks.named('bootJar') {

@@ -2,3 +2,5 @@ rootProject.name = 'server'
 
 include 'config'
 include 'member'
+include 'common'
+
