@@ -1,6 +1,8 @@
 package com.oing.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oing.domain.exception.ErrorCode;
+import com.oing.dto.response.ErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,6 +34,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write(objectMapper.writeValueAsString(accessDeniedException.getMessage()));
+        response.getWriter().write(objectMapper.writeValueAsString(ErrorResponse.of(ErrorCode.AUTHORIZATION_FAILED)));
     }
 }

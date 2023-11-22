@@ -1,6 +1,8 @@
 package com.oing.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oing.domain.exception.ErrorCode;
+import com.oing.dto.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(objectMapper.writeValueAsString(authException.getMessage()));
+        response.getWriter().write(objectMapper.writeValueAsString(ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED)));
     }
 }
