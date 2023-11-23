@@ -16,10 +16,61 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'jacoco'
 
 	configurations {
 		compileOnly {
 			extendsFrom annotationProcessor
+		}
+	}
+
+	tasks.named('test') {
+		useJUnitPlatform()
+		finalizedBy 'jacocoTestReport'
+	}
+
+	jacoco {
+		toolVersion = '0.8.8'
+	}
+
+	jacocoTestReport {
+		reports{
+			html.destination file("$buildDir/reports/jacoco/html")
+			xml.destination file("$buildDir/reports/jacoco/xml")
+			csv.destination file("$buildDir/reports/jacoco/csv")
+		}
+
+		finalizedBy 'jacocoTestCoverageVerification'
+	}
+
+	jacocoTestCoverageVerification {
+		def Qdomains = []
+		for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+			Qdomains.add(qPattern + '*')
+		}
+
+		violationRules {
+			rule {
+				enabled = true
+				element = 'CLASS'
+
+				// 라인 커버리지 설정
+				limit {
+					counter = 'LINE'
+					value = 'COVEREDRATIO'
+					minimum = 0.30
+				}
+
+				// 브랜치 커버리지 설정
+				limit {
+					counter = 'BRANCH'
+					value = 'COVEREDRATIO'
+					minimum = 0.70
+				}
+
+				// 커버리지 체크를 제외할 클래스들
+				excludes = [] + Qdomains
+			}
 		}
 	}
 
@@ -46,8 +97,4 @@ tasks.named('bootJar') {
 
 tasks.named('jar') {
 	enabled = true
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
 }
