@@ -49,6 +49,19 @@ subprojects {
 			Qdomains.add(qPattern + '*')
 		}
 
+		afterEvaluate {
+			classDirectories.setFrom(
+					files(classDirectories.files.collect {
+						fileTree(dir: it, excludes: [
+								// 측정 안하고 싶은 패턴
+								"**/*Application*",
+								"**/*Config*"
+								// Querydsl 관련 제거
+						] + Qdomains)
+					})
+			)
+		}
+
 		violationRules {
 			rule {
 				enabled = true
@@ -58,7 +71,7 @@ subprojects {
 				limit {
 					counter = 'LINE'
 					value = 'COVEREDRATIO'
-					minimum = 0.30
+					minimum = 0.70
 				}
 
 				// 브랜치 커버리지 설정
@@ -67,9 +80,6 @@ subprojects {
 					value = 'COVEREDRATIO'
 					minimum = 0.70
 				}
-
-				// 커버리지 체크를 제외할 클래스들
-				excludes = [] + Qdomains
 			}
 		}
 	}
