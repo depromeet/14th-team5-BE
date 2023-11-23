@@ -23,14 +23,16 @@ public class WebRequestInterceptor implements HandlerInterceptor {
     private final WebProperties webProperties;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(
+            HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         long startTime = System.currentTimeMillis();
         request.setAttribute(START_TIME_ATTR_NAME, startTime);
         return true;
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(
+            HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         if (webProperties.isNoLoggable(request.getServletPath())) return;
 
         long startTime = (long) request.getAttribute(START_TIME_ATTR_NAME);
