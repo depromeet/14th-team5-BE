@@ -26,11 +26,14 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    public void handle(
+            HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException
+    ) throws IOException, ServletException {
         writeErrorResponse(response, accessDeniedException);
     }
 
-    private void writeErrorResponse(HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+    private void writeErrorResponse(
+            HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);

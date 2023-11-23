@@ -25,11 +25,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+    public void commence(
+            HttpServletRequest request, HttpServletResponse response, AuthenticationException authException
+    ) throws IOException {
         writeErrorResponse(response, authException);
     }
 
-    private void writeErrorResponse(HttpServletResponse response, AuthenticationException authException) throws IOException {
+    private void writeErrorResponse(
+            HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
