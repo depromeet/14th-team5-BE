@@ -38,15 +38,11 @@ subprojects {
 			html.required.set(true)
 			xml.required.set(true)
 			csv.required.set(true)
-			html.destination file("$buildDir/reports/jacoco/html")
-			xml.destination file("$buildDir/reports/jacoco/xml")
-			csv.destination file("$buildDir/reports/jacoco/csv")
+			html.destination file("$buildDir/reports/jacoco/index.html")
+			xml.destination file("$buildDir/reports/jacoco/index.xml")
+			csv.destination file("$buildDir/reports/jacoco/index.csv")
 		}
 
-		finalizedBy 'jacocoTestCoverageVerification'
-	}
-
-	jacocoTestCoverageVerification {
 		def Qdomains = []
 		for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
 			Qdomains.add(qPattern + '*')
@@ -63,6 +59,14 @@ subprojects {
 						] + Qdomains)
 					})
 			)
+		}
+		finalizedBy 'jacocoTestCoverageVerification'
+	}
+
+	jacocoTestCoverageVerification {
+		def Qdomains = []
+		for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+			Qdomains.add(qPattern + '*')
 		}
 
 		violationRules {
@@ -83,6 +87,11 @@ subprojects {
 					value = 'COVEREDRATIO'
 					minimum = 0.70
 				}
+
+				excludes = [
+						"**.*Application*",
+						"**.*Config*"
+				] + Qdomains
 			}
 		}
 	}
