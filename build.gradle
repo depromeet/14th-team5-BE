@@ -35,6 +35,9 @@ subprojects {
 
 	jacocoTestReport {
 		reports{
+			html.required.set(true)
+			xml.required.set(true)
+			csv.required.set(true)
 			html.destination file("$buildDir/reports/jacoco/html")
 			xml.destination file("$buildDir/reports/jacoco/xml")
 			csv.destination file("$buildDir/reports/jacoco/csv")
