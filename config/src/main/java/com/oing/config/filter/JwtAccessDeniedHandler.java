@@ -33,7 +33,8 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     }
 
     private void writeErrorResponse(
-            HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
+            HttpServletResponse response, AccessDeniedException accessDeniedException
+    ) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);

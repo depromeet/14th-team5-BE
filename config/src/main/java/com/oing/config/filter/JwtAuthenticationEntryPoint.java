@@ -32,7 +32,8 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     }
 
     private void writeErrorResponse(
-            HttpServletResponse response, AuthenticationException authException) throws IOException {
+            HttpServletResponse response, AuthenticationException authException
+    ) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
