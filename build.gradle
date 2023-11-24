@@ -16,10 +16,83 @@ subprojects {
 	apply plugin: 'java'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
+	apply plugin: 'jacoco'
 
 	configurations {
 		compileOnly {
 			extendsFrom annotationProcessor
+		}
+	}
+
+	tasks.named('test') {
+		useJUnitPlatform()
+		finalizedBy 'jacocoTestReport'
+	}
+
+	jacoco {
+		toolVersion = '0.8.8'
+	}
+
+	jacocoTestReport {
+		reports{
+			html.required.set(true)
+			xml.required.set(true)
+			csv.required.set(true)
+			html.destination file("$buildDir/reports/jacoco/index.html")
+			xml.destination file("$buildDir/reports/jacoco/index.xml")
+			csv.destination file("$buildDir/reports/jacoco/index.csv")
+		}
+
+		def Qdomains = []
+		for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+			Qdomains.add(qPattern + '*')
+		}
+
+		afterEvaluate {
+			classDirectories.setFrom(
+					files(classDirectories.files.collect {
+						fileTree(dir: it, excludes: [
+								// 측정 안하고 싶은 패턴
+								"**/*Application*",
+								"**/*Config*"
+								// Querydsl 관련 제거
+						] + Qdomains)
+					})
+			)
+		}
+		finalizedBy 'jacocoTestCoverageVerification'
+	}
+
+	jacocoTestCoverageVerification {
+		def Qdomains = []
+		for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+			Qdomains.add(qPattern + '*')
+		}
+
+		violationRules {
+			rule {
+				enabled = true
+				element = 'CLASS'
+
+				// 라인 커버리지 설정
+				limit {
+					counter = 'LINE'
+					value = 'COVEREDRATIO'
+					minimum = 0.70
+				}
+
+				// 브랜치 커버리지 설정
+				limit {
+					counter = 'BRANCH'
+					value = 'COVEREDRATIO'
+					minimum = 0.70
+				}
+
+				excludes = [
+						"**.*Application*",
+						"**.*Config*"
+				] + Qdomains
+			}
 		}
 	}
 
@@ -46,8 +119,4 @@ tasks.named('bootJar') {
 
 tasks.named('jar') {
 	enabled = true
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
 }
