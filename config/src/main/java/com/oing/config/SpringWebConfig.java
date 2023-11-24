@@ -19,6 +19,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(webRequestInterceptor);
+        registry.addInterceptor(webRequestInterceptor)
+                .excludePathPatterns("/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs", "/error");
     }
 }
