@@ -54,7 +54,8 @@ subprojects {
 						fileTree(dir: it, excludes: [
 								// 측정 안하고 싶은 패턴
 								"**/*Application*",
-								"**/*Config*"
+								"**/*Config*",
+								"**/config/*"
 								// Querydsl 관련 제거
 						] + Qdomains)
 					})
@@ -90,7 +91,8 @@ subprojects {
 
 				excludes = [
 						"**.*Application*",
-						"**.*Config*"
+						"**.*Config*",
+						"**.config.*"
 				] + Qdomains
 			}
 		}
