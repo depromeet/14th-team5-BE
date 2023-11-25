@@ -1,11 +1,16 @@
 package com.oing.config.filter;
 
+import com.oing.config.authentication.APIKeyAuthentication;
 import com.oing.config.properties.WebProperties;
+import com.oing.domain.exception.TokenNotValidException;
+import com.oing.service.TokenGenerator;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,6 +26,7 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationHandler extends OncePerRequestFilter {
     private final WebProperties webProperties;
+    private final TokenGenerator tokenGenerator;
 
     @Override
     protected void doFilterInternal(
@@ -31,6 +37,15 @@ public class JwtAuthenticationHandler extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
+        try {
+            String userId = tokenGenerator.getUserIdFromAccessToken(accessToken);
+            Authentication authentication = new APIKeyAuthentication(accessToken, userId);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch(TokenNotValidException ignored) {
+
+        }
+        filterChain.doFilter(request, response);
     }
 
     @Override
