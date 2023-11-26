@@ -18,6 +18,11 @@ spring:
       settings:
         web-allow-others: true
 app:
+  token:
+    secret-key: secret-key
+    expiration:
+      access-token: 86400000
+      refresh-token: 384000000
   web:
     url-whitelists:
       - /actuator/**
