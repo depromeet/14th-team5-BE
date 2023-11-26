@@ -18,12 +18,12 @@ public class ObjectStorageConfig {
 
     @Bean
     public AmazonS3Client amazonS3Client() {
-        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(properties.getAccessKey(),
-                properties.getSecretKey());
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(properties.accessKey(),
+                properties.secretKey());
         return (AmazonS3Client) AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(properties.getEndPoint(),
-                        properties.getRegion()))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(properties.endPoint(),
+                        properties.region()))
                 .build();
     }
 }

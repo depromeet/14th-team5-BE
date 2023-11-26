@@ -13,8 +13,7 @@ cloud:
   ncp:
     region: test
     end-point: test
-    credentials:
-      access-key: access-key
-      secret-key: secret-key
+    access-key: access-key
+    secret-key: secret-key
     storage:
       bucket: bucket

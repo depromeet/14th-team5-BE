@@ -32,9 +32,8 @@ cloud:
   ncp:
     region: ${OBJECT_STORAGE_REGION}
     end-point: ${OBJECT_STORAGE_END_POINT}
-    credentials:
-      access-key: ${OBJECT_STORAGE_ACCESS_KEY}
-      secret-key: ${OBJECT_STORAGE_SECRET_KEY}
+    access-key: ${OBJECT_STORAGE_ACCESS_KEY}
+    secret-key: ${OBJECT_STORAGE_SECRET_KEY}
     storage:
       bucket: ${OBJECT_STORAGE_BUCKET_NAME}
 
