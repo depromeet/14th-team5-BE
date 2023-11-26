@@ -35,7 +35,7 @@ public class S3PreSignedUrlProvider {
 
     private String generatePreSignedUrl(GeneratePresignedUrlRequest generatePresignedUrlRequest) {
 
-        String preSignedUrl = null;
+        String preSignedUrl;
         try {
             preSignedUrl = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
         } catch (AmazonServiceException e) {
