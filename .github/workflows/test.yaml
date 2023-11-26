@@ -25,19 +25,22 @@ jobs:
       - name: 커버리지 측정하기
         run: |
           chmod +x gradlew
-          ./gradlew --info test
+          ./gradlew --info testCodeCoverageReport
 
       - name: 테스트 결과 업로드
-        uses: EnricoMi/publish-unit-test-result-action@v1
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: ${{ always() }}
         with:
-          files: build/test-results/**/*.xml
+          files: |
+            common/build/test-results/**/*.xml
+            config/build/test-results/**/*.xml
+            member/build/test-results/**/*.xml
 
       - name: 커버리지 결과 PR에 업로드
         id: jacoco
         uses: madrapps/jacoco-report@v1.3
         with:
-          paths: ${{ github.workspace }}/build/reportsJaCoCo/test/jacocoTestReport.xml
+          paths: ${{ github.workspace }}/config/build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: ${{ env.COVERAGE_PERCENT }}
           debug-mode: false
