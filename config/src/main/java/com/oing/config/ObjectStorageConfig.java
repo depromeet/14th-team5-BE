@@ -4,6 +4,7 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.oing.config.properties.ObjectStorageProperties;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,12 @@ public class ObjectStorageConfig {
     private final ObjectStorageProperties properties;
 
     @Bean
-    public AmazonS3 amazonS3() {
-        return AmazonS3ClientBuilder.standard()
+    public AmazonS3Client amazonS3Client() {
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(properties.getAccessKey(), properties.getSecretKey());
+        return (AmazonS3Client) AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(properties.getEndPoint(),
                         properties.getRegion()))
-                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(properties.getAccessKey(),
-                        properties.getSecretKey())))
                 .build();
     }
 }
