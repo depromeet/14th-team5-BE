@@ -22,8 +22,6 @@ public class S3PreSignedUrlProvider {
     @Value("${cloud.ncp.storage.bucket}")
     private String bucket;
 
-    private final String prefixImagePath = "images";
-
     private final AmazonS3Client amazonS3Client;
 
     public PreSignedUrlResponse getPreSignedUrl(String imageName, Long memberId) {
@@ -34,7 +32,6 @@ public class S3PreSignedUrlProvider {
     }
 
     private String generatePreSignedUrl(GeneratePresignedUrlRequest generatePresignedUrlRequest) {
-
         String preSignedUrl;
         try {
             preSignedUrl = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
@@ -47,11 +44,8 @@ public class S3PreSignedUrlProvider {
 
     private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String imageName, Long memberId) {
         String savedImageName = uniqueImageName(imageName, memberId);
+        String savedImagePath = "images" + "/" + savedImageName;
 
-        String savedImagePath = savedImageName;
-        if (!prefixImagePath.isBlank()) {
-            savedImagePath = prefixImagePath + "/" + savedImageName;
-        }
         return getPreSignedUrlRequest(bucket, savedImagePath);
     }
 
@@ -59,19 +53,12 @@ public class S3PreSignedUrlProvider {
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
                 new GeneratePresignedUrlRequest(bucket, imageName)
                         .withMethod(HttpMethod.PUT)
-                        .withExpiration(getPreSignedUrlExpiration());
+                        .withExpiration(new Date(System.currentTimeMillis() + 180000));
+
         generatePresignedUrlRequest.addRequestParameter(
                 Headers.S3_CANNED_ACL,
                 CannedAccessControlList.PublicRead.toString());
         return generatePresignedUrlRequest;
-    }
-
-    private Date getPreSignedUrlExpiration() {
-        Date expiration = new Date();
-        long expTimeMillis = expiration.getTime();
-        expTimeMillis += 1000 * 60 * 2;
-        expiration.setTime(expTimeMillis);
-        return expiration;
     }
 
     /**
