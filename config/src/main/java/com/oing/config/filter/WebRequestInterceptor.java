@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -26,6 +27,9 @@ public class WebRequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler
     ) throws Exception {
+        if (isPreflight(request) || isSwaggerRequest(request)) {
+            return true;
+        }
         long startTime = System.currentTimeMillis();
         request.setAttribute(START_TIME_ATTR_NAME, startTime);
         return true;
@@ -44,5 +48,14 @@ public class WebRequestInterceptor implements HandlerInterceptor {
         String forwardedIp = request.getHeader(webProperties.headerNames().proxyForwardHeader());
         String originIp = forwardedIp != null ? forwardedIp : request.getRemoteAddr();
         log.info("{} {} {} {}ms", request.getMethod(), request.getRequestURI(), originIp, executionTime);
+    }
+
+    private boolean isSwaggerRequest(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        return uri.contains("swagger") || uri.contains("api-docs") || uri.contains("webjars");
+    }
+
+    private boolean isPreflight(HttpServletRequest request) {
+        return request.getMethod().equals(HttpMethod.OPTIONS.toString());
     }
 }
