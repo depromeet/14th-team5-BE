@@ -14,7 +14,7 @@ cloud:
     region: test
     end-point: test
     credentials:
-      access-key: test
-      secret-key: test
+      access-key: access-key
+      secret-key: secret-key
     storage:
-      bucket: test
+      bucket: bucket
