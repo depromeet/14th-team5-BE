@@ -10,7 +10,7 @@ env:
   COVERAGE_PERCENT: 30
 
 jobs:
-  build:
+  measure:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: GitHub 에서 레포 받아오기
