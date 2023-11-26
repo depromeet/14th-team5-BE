@@ -72,6 +72,7 @@ jobs:
       REMOTE_SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
       REMOTE_SSH_PASSPHRASE: ${{ secrets.REMOTE_SSH_PASSPHRASE }}
       REMOTE_SSH_PORT: ${{ secrets.REMOTE_SSH_PORT }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     with:
       image-tag: ${{ needs.prepare-variables.outputs.image-tag }}
       spring-profile: ${{ needs.prepare-variables.outputs.spring-profile }}
