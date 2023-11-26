@@ -28,6 +28,16 @@ app:
       access-token: X-AUTH-TOKEN
       proxy-forward-header: X-FORWARDED-FOR
 
+cloud:
+  ncp:
+    region: ${OBJECT_STORAGE_REGION}
+    end-point: ${OBJECT_STORAGE_END_POINT}
+    credentials:
+      access-key: ${OBJECT_STORAGE_ACCESS_KEY}
+      secret-key: ${OBJECT_STORAGE_SECRET_KEY}
+    storage:
+      bucket: ${OBJECT_STORAGE_BUCKET_NAME}
+
 springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
