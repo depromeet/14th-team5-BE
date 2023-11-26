@@ -22,6 +22,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Gradle 애드온 준비하기
+        uses: gradle/gradle-build-action@v2
+
       - name: 커버리지 측정하기
         run: |
           chmod +x gradlew
@@ -47,9 +50,9 @@ jobs:
           title: Code Coverage
           update-comment: true
 
-      - name: ${{ env.COVERAGE_PERCENT }}% 이하 커버리지 블로킹
+      - name: 테스트 ${{ env.COVERAGE_PERCENT }}% 이하 커버리지 블로킹
         if: ${{ steps.jacoco.outputs.coverage-overall < env.COVERAGE_PERCENT }}
         uses: actions/github-script@v6
         with:
           script: |
-            core.setFailed('Overall coverage is less than ${{ env.COVERAGE_PERCENT }}%!')
+            core.setFailed('전체 커버리지가 ${{ env.COVERAGE_PERCENT }}% 미만입니다!')
