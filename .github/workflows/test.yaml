@@ -1,0 +1,52 @@
+name: 테스트 커버리지 워크플로우
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+      - 'release/**'
+
+env:
+  COVERAGE_PERCENT: 30
+
+jobs:
+  build:
+    runs-on: [ ubuntu-latest ]
+    steps:
+      - name: GitHub 에서 레포 받아오기
+        uses: actions/checkout@v3
+
+      - name: JDK17 준비하기
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 커버리지 측정하기
+        run: |
+          chmod +x gradlew
+          ./gradlew --info test
+
+      - name: 테스트 결과 업로드
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: ${{ always() }}
+        with:
+          files: build/test-results/**/*.xml
+
+      - name: 커버리지 결과 PR에 업로드
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.3
+        with:
+          paths: ${{ github.workspace }}/build/reportsJaCoCo/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: ${{ env.COVERAGE_PERCENT }}
+          debug-mode: false
+          title: Code Coverage
+          update-comment: true
+
+      - name: ${{ env.COVERAGE_PERCENT }}% 이하 커버리지 블로킹
+        if: ${{ steps.jacoco.outputs.coverage-overall < env.COVERAGE_PERCENT }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            core.setFailed('Overall coverage is less than ${{ env.COVERAGE_PERCENT }}%!')
