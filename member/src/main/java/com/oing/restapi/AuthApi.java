@@ -4,10 +4,7 @@ import com.oing.dto.request.NativeSocialLoginRequest;
 import com.oing.dto.response.AuthResultResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * no5ing-server
@@ -19,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/auth")
 public interface AuthApi {
-    @PostMapping(value = "/social", params = "type=APPLE")
-    AuthResultResponse socialLoginWithNativeApple(@RequestBody @Valid NativeSocialLoginRequest request);
+    @PostMapping(value = "/social")
+    AuthResultResponse socialLogin(
+            @RequestParam("provider") String provider,
+            @RequestBody @Valid NativeSocialLoginRequest request
+    );
 }
