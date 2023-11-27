@@ -7,6 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -22,8 +23,8 @@ public class ApplicationListener {
     private final Environment environment;
 
     private boolean isProductionInstance() {
-        List<String> activeProfiles = List.of(environment.getActiveProfiles());
-        return activeProfiles.contains("prod") || activeProfiles.contains("dev");
+        String[] activeProfiles = environment.getActiveProfiles();
+        return activeProfiles != null && (Arrays.asList(activeProfiles).contains("prod") || Arrays.asList(activeProfiles).contains("dev"));
     }
 
     @Async
