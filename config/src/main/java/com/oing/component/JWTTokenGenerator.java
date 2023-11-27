@@ -1,4 +1,4 @@
-package com.oing.config;
+package com.oing.component;
 
 import com.oing.config.properties.TokenProperties;
 import com.oing.domain.TokenPair;

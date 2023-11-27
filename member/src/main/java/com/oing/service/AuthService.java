@@ -83,7 +83,7 @@ public class AuthService {
             String identifier = parsedClaims.getBody().get("sub", String.class);
             return new SocialLoginResult(identifier);
         } catch(Exception ex) {
-            throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
+            throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.oing.config;
+package com.oing.component;
 
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.oing.util.IdentityGenerator;
