@@ -21,4 +21,11 @@ public record AppleKeyListResponse(
     public int hashCode() {
         return Arrays.hashCode(keys);
     }
+
+    @Override
+    public String toString() {
+        return "AppleKeyListResponse{" +
+                "keys=" + Arrays.toString(keys) +
+                '}';
+    }
 }
