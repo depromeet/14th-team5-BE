@@ -3,6 +3,7 @@ package com.oing.component;
 import com.oing.domain.ErrorReportDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +19,18 @@ import java.util.List;
 @Component
 public class ApplicationListener {
     private final SlackGateway slackGateway;
+    private final Environment environment;
+
+    private boolean isProductionInstance() {
+        List<String> activeProfiles = List.of(environment.getActiveProfiles());
+        return activeProfiles.contains("prod") || activeProfiles.contains("dev");
+    }
 
     @Async
     @EventListener
     public void onErrorReport(ErrorReportDTO errorReportDTO) {
+        if (!isProductionInstance()) return;
+
         String errorMessage = errorReportDTO.errorMessage() == null ? "알 수 없는 에러" : errorReportDTO.errorMessage();
         SlackGateway.SlackBotDto dto = SlackGateway.SlackBotDto.builder()
                 .attachments(List.of(
