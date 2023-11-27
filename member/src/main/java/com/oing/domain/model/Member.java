@@ -15,7 +15,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @Getter
-@Setter
 @Builder
 @Entity(name = "member")
 public class Member extends BaseAuditEntity {

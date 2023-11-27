@@ -15,7 +15,6 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @Getter
-@Setter
 @Table(indexes = @Index(name = "social_member_idx1", columnList = "member_id"))
 @IdClass(SocialMemberKey.class)
 @Entity(name = "social_member")
