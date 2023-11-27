@@ -27,6 +27,7 @@ app:
     url-whitelists:
       - /actuator/**
       - /swagger-ui.html
+      - /v1/auth/**
     url-no-logging:
       - /swagger-ui.html
     header-names:
