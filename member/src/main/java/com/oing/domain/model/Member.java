@@ -3,10 +3,7 @@ package com.oing.domain.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * no5ing-server
@@ -17,6 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
+@Getter
+@Setter
+@Builder
 @Entity(name = "member")
 public class Member extends BaseAuditEntity {
     @Id
