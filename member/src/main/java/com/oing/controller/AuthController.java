@@ -11,6 +11,7 @@ import com.oing.restapi.AuthApi;
 import com.oing.service.AuthService;
 import com.oing.service.MemberService;
 import com.oing.service.TokenGenerator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
@@ -29,6 +30,7 @@ public class AuthController implements AuthApi {
     private final MemberService memberService;
     private final TokenGenerator tokenGenerator;
 
+    @Transactional
     @Override
     public AuthResultResponse socialLogin(String provider, NativeSocialLoginRequest request) {
         // oAuth 로그인 검증 (Apple 등)
