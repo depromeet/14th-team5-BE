@@ -18,6 +18,8 @@ spring:
       settings:
         web-allow-others: true
 app:
+  external-urls:
+    slack-webhook: {SLACK_WEBHOOK_URL}
   token:
     secret-key: secret-key
     expiration:
