@@ -1,7 +1,9 @@
 package com.oing.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWK;
 import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.SocialLoginResult;
@@ -22,6 +24,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.security.Key;
 import java.security.interfaces.RSAKey;
+import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Objects;
@@ -45,6 +49,27 @@ public class AuthService {
     }
 
     private SocialLoginResult authenticateFromApple(String accessToken) {
+        AppleKeyResponse[] keys = retrieveAppleKeys();
+        try {
+            String[] tokenParts = accessToken.split("\\.");
+            String headerPart = new String(Base64.getDecoder().decode(tokenParts[0]));
+            JsonNode headerNode = objectMapper.readTree(headerPart);
+            String kid = headerNode.get("kid").asText();
+
+            AppleKeyResponse matchedKey = Arrays.stream(keys)
+                    .filter(key -> key.kid().equals(kid))
+                    .findFirst()
+                    // 일치하는 키가 없음 => 만료된 토큰 or 이상한 토큰 => throw
+                    .orElseThrow(() -> new DomainException(ErrorCode.INVALID_INPUT_VALUE));
+
+            String identifier = parseIdentifierFromAppleToken(matchedKey, accessToken);
+            return new SocialLoginResult(identifier);
+        } catch(Exception ex) {
+            throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
+        }
+    }
+
+    private AppleKeyResponse[] retrieveAppleKeys() {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.put("Content-type", Collections.singletonList("application/x-www-form-urlencoded;charset=utf-8"));
@@ -54,36 +79,21 @@ public class AuthService {
                 .headers(headers)
                 .build(), AppleKeyListResponse.class);
 
+        // 키 반환 실패시 throw
         if(!keyListResponse.getStatusCode().is2xxSuccessful())
             throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
 
-        AppleKeyResponse[] keys = Objects.requireNonNull(keyListResponse.getBody()).keys();
+        return Objects.requireNonNull(keyListResponse.getBody()).keys();
+    }
 
-        try {
-            String[] tokenParts = accessToken.split("\\.");
-            String header = new String(Base64.getDecoder().decode(tokenParts[0]));
-            JsonNode node = objectMapper.readTree(header);
-            String kid = node.get("kid").asText();
+    private String parseIdentifierFromAppleToken(AppleKeyResponse matchedKey, String accessToken)
+            throws JsonProcessingException, ParseException, JOSEException {
+        Key keyData = JWK.parse(objectMapper.writeValueAsString(matchedKey)).toRSAKey().toRSAPublicKey();
+        Jws<Claims> parsedClaims = Jwts.parserBuilder()
+                .setSigningKey(keyData)
+                .build()
+                .parseClaimsJws(accessToken);
 
-            AppleKeyResponse matchedKey = null;
-            for (AppleKeyResponse key : keys){
-                if(key.kid().equals(kid)) {
-                    matchedKey = key;
-                }
-            }
-
-            if(matchedKey == null) throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
-
-            Key keyData = JWK.parse(objectMapper.writeValueAsString(matchedKey)).toRSAKey().toRSAPublicKey();
-            Jws<Claims> parsedClaims = Jwts.parserBuilder()
-                    .setSigningKey(keyData)
-                    .build()
-                    .parseClaimsJws(accessToken);
-
-            String identifier = parsedClaims.getBody().get("sub", String.class);
-            return new SocialLoginResult(identifier);
-        } catch(Exception ex) {
-            throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
-        }
+        return parsedClaims.getBody().get("sub", String.class);
     }
 }

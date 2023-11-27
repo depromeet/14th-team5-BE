@@ -41,16 +41,18 @@ public class AuthController implements AuthApi {
         // 위 결과에서 나온 identifier로 이미 있는 사용자인지 확인
         Member member = memberService
                 .findMemberBySocialMemberKey(socialLoginProvider, socialLoginResult.identifier())
-                .orElseGet(() -> {
+                .orElseGet(() ->
                     //없으면 사용자 회원가입 (생성)
-                    CreateNewUserDTO createNewUserDTO = new CreateNewUserDTO(
-                            socialLoginProvider,
-                            socialLoginResult.identifier());
-                    return memberService.createNewMember(createNewUserDTO);
-                });
+                    createNewUser(socialLoginProvider, socialLoginResult.identifier())
+                );
 
         //사용자로 토큰 생성
         TokenPair tokenPair = tokenGenerator.generateTokenPair(member.getId());
         return AuthResultResponse.of(tokenPair);
+    }
+
+    private Member createNewUser(SocialLoginProvider socialLoginProvider, String identifier) {
+        CreateNewUserDTO createNewUserDTO = new CreateNewUserDTO(socialLoginProvider, identifier);
+        return memberService.createNewMember(createNewUserDTO);
     }
 }
