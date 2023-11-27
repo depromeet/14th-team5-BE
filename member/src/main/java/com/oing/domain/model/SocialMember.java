@@ -16,7 +16,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@Table(indexes = @Index(name = "social_member_idx1", columnList = "memberId"))
+@Table(indexes = @Index(name = "social_member_idx1", columnList = "member_id"))
 @IdClass(SocialMemberKey.class)
 @Entity(name = "social_member")
 public class SocialMember extends BaseAuditEntity {
