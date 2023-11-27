@@ -7,5 +7,6 @@ package com.oing.domain;
  * Time: 11:22 AM
  */
 public enum SocialLoginProvider {
-    APPLE
+    APPLE, //애플 로그인
+    INTERNAL //내부 로그인
 }

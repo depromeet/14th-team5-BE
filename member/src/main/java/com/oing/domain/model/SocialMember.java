@@ -3,10 +3,7 @@ package com.oing.domain.model;
 import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.model.key.SocialMemberKey;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * no5ing-server
@@ -17,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
+@Getter
+@Setter
 @Table(indexes = @Index(name = "social_member_idx1", columnList = "memberId"))
 @IdClass(SocialMemberKey.class)
 @Entity(name = "social_member")
