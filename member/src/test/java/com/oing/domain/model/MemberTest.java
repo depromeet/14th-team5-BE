@@ -26,20 +26,6 @@ public class MemberTest {
         assertEquals(memberId, member.getId());
     }
 
-    @DisplayName("Member setter 테스트")
-    @Test
-    void testMemberSetter() {
-        // Given
-        String memberId = "sampleId";
-        Member member = new Member();
-
-        // When
-        member.setId(memberId);
-
-        // Then
-        assertEquals(memberId, member.getId());
-    }
-
     @DisplayName("Member equals, hashCode 테스트")
     @Test
     void testMemberEqualsAndHashCode() {

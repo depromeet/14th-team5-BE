@@ -31,26 +31,6 @@ public class SocialMemberTest {
         assertEquals(member, socialMember.getMember());
     }
 
-    @DisplayName("SocialMember setter 테스트")
-    @Test
-    void testSocialMemberSetter() {
-        // Given
-        SocialLoginProvider provider = SocialLoginProvider.APPLE;
-        String identifier = "user123";
-        Member member = new Member("sampleId");
-        SocialMember socialMember = new SocialMember();
-
-        // When
-        socialMember.setProvider(provider);
-        socialMember.setIdentifier(identifier);
-        socialMember.setMember(member);
-
-        // Then
-        assertEquals(provider, socialMember.getProvider());
-        assertEquals(identifier, socialMember.getIdentifier());
-        assertEquals(member, socialMember.getMember());
-    }
-
     @DisplayName("SocialMember equals, hashCode 테스트")
     @Test
     void testSocialMemberEqualsAndHashCode() {
