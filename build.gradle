@@ -108,6 +108,7 @@ subprojects {
 		implementation 'org.springframework.boot:spring-boot-starter-actuator'
 		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'org.springframework.boot:spring-boot-starter-security'
+		implementation 'com.github.f4b6a3:ulid-creator:5.2.2'
 		compileOnly 'org.projectlombok:lombok'
 		annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
 		annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
