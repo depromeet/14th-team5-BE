@@ -27,9 +27,6 @@ public class WebRequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler
     ) throws Exception {
-        if (isPreflight(request) || isSwaggerRequest(request)) {
-            return true;
-        }
         long startTime = System.currentTimeMillis();
         request.setAttribute(START_TIME_ATTR_NAME, startTime);
         return true;
@@ -40,6 +37,8 @@ public class WebRequestInterceptor implements HandlerInterceptor {
             HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex
     ) throws Exception {
         if (webProperties.isNoLoggable(request.getServletPath())) return;
+        if (isPreflight(request)) return;
+
 
         long startTime = (long) request.getAttribute(START_TIME_ATTR_NAME);
         long endTime = System.currentTimeMillis();
@@ -48,11 +47,6 @@ public class WebRequestInterceptor implements HandlerInterceptor {
         String forwardedIp = request.getHeader(webProperties.headerNames().proxyForwardHeader());
         String originIp = forwardedIp != null ? forwardedIp : request.getRemoteAddr();
         log.info("{} {} {} {}ms", request.getMethod(), request.getRequestURI(), originIp, executionTime);
-    }
-
-    private boolean isSwaggerRequest(HttpServletRequest request) {
-        String uri = request.getRequestURI();
-        return uri.contains("swagger") || uri.contains("api-docs") || uri.contains("webjars");
     }
 
     private boolean isPreflight(HttpServletRequest request) {
