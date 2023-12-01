@@ -30,8 +30,12 @@ app:
       - /actuator/**
       - /swagger-ui.html
       - /v1/auth/**
+      - /swagger-ui/**
+      - /v3/api-docs/**
     url-no-logging:
       - /swagger-ui.html
+      - /swagger-ui/**
+      - /v3/api-docs/**
     header-names:
       access-token: X-AUTH-TOKEN
       proxy-forward-header: X-FORWARDED-FOR
