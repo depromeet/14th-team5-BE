@@ -3,10 +3,7 @@ package com.oing.config.properties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.util.AntPathMatcher;
 
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**

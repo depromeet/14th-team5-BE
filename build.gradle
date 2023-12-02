@@ -57,7 +57,8 @@ subprojects {
 								// 측정 안하고 싶은 패턴
 								"**/*Application*",
 								"**/*Config*",
-								"**/config/*"
+								"**/config/*",
+								"**/dto/*"
 								// Querydsl 관련 제거
 						] + Qdomains)
 					})
@@ -95,7 +96,8 @@ subprojects {
 				excludes = [
 						"**.*Application*",
 						"**.*Config*",
-						"**.config.*"
+						"**.config.*",
+						"**.dto.*"
 				] + Qdomains
 			}
 		}
