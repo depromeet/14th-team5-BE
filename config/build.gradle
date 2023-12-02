@@ -16,6 +16,7 @@ dependencies {
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
