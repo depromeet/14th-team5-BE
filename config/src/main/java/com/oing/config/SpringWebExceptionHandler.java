@@ -1,11 +1,15 @@
 package com.oing.config;
 
+import com.oing.domain.ErrorReportDTO;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.dto.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -19,11 +23,26 @@ import java.util.Enumeration;
  * Date: 2023/11/22
  * Time: 4:32 PM
  */
+@RequiredArgsConstructor
 @Slf4j
 @RestControllerAdvice
 public class SpringWebExceptionHandler {
+    private final ApplicationEventPublisher eventPublisher;
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    ResponseEntity<ErrorResponse> handleValidateException(HttpMessageNotReadableException exception) {
+        return ResponseEntity
+                .badRequest()
+                .body(ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE));
+    }
+
+
     @ExceptionHandler(DomainException.class)
-    ResponseEntity<ErrorResponse> handleDomainException(DomainException exception) {
+    ResponseEntity<ErrorResponse> handleDomainException(HttpServletRequest request, DomainException exception) {
+        if(exception.getErrorCode() == ErrorCode.UNKNOWN_SERVER_ERROR) {
+            return handleUnhandledException(request, exception);
+        }
+
         return ResponseEntity
                 .badRequest()
                 .body(ErrorResponse.of(exception.getErrorCode()));
@@ -33,6 +52,7 @@ public class SpringWebExceptionHandler {
     ResponseEntity<ErrorResponse> handleUnhandledException(HttpServletRequest request, Throwable exception) {
         StringBuilder dump = dumpRequest(request).append("\n ").append(getStackTraceAsString(exception));
         log.error(dump.toString());
+        eventPublisher.publishEvent(new ErrorReportDTO(exception.getMessage(), dump.toString()));
         return ResponseEntity
                 .badRequest()
                 .body(ErrorResponse.of(ErrorCode.UNKNOWN_SERVER_ERROR));

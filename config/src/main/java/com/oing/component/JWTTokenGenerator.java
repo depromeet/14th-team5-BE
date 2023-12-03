@@ -1,4 +1,4 @@
-package com.oing.config;
+package com.oing.component;
 
 import com.oing.config.properties.TokenProperties;
 import com.oing.domain.TokenPair;
@@ -62,11 +62,11 @@ public class JWTTokenGenerator implements TokenGenerator {
     }
 
     private Date generateAccessTokenExpiration() {
-        return new Date(System.currentTimeMillis() + tokenProperties.expiration().accessToken());
+        return new Date(System.currentTimeMillis() + Long.parseLong(tokenProperties.expiration().accessToken()));
     }
 
     private Date generateRefreshTokenExpiration() {
-        return new Date(System.currentTimeMillis() + tokenProperties.expiration().accessToken());
+        return new Date(System.currentTimeMillis() + Long.parseLong(tokenProperties.expiration().refreshToken()));
     }
 
     private String generateAccessToken(String userId) {
