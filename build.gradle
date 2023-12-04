@@ -58,7 +58,8 @@ subprojects {
 								"**/*Application*",
 								"**/*Config*",
 								"**/config/*",
-								"**/dto/*"
+								"**/dto/*",
+								"**/*Dto*"
 								// Querydsl 관련 제거
 						] + Qdomains)
 					})
@@ -97,7 +98,8 @@ subprojects {
 						"**.*Application*",
 						"**.*Config*",
 						"**.config.*",
-						"**.dto.*"
+						"**.dto.*",
+						"**.*Dto*"
 				] + Qdomains
 			}
 		}
