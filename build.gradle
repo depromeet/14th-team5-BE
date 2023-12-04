@@ -46,8 +46,8 @@ subprojects {
 		}
 
 		def Qdomains = []
-		for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
-			Qdomains.add(qPattern + '*')
+		for (qPattern in "**/QA" .. "**/QZ") {
+			Qdomains.add(qPattern + "*")
 		}
 
 		afterEvaluate {
