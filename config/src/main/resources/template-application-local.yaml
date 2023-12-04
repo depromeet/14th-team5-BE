@@ -16,3 +16,12 @@ app:
     slack-webhook: ${SLACK_WEBHOOK_URL} # Must Be Replaced
   token:
     secret-key: ${TOKEN_SECRET_KEY} # Must Be Replaced
+
+cloud:
+  ncp:
+    region: ${OBJECT_STORAGE_REGION}
+    end-point: ${OBJECT_STORAGE_END_POINT}
+    access-key: ${OBJECT_STORAGE_ACCESS_KEY}
+    secret-key: ${OBJECT_STORAGE_SECRET_KEY}
+    storage:
+      bucket: ${OBJECT_STORAGE_BUCKET_NAME}
