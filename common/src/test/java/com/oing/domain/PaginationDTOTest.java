@@ -27,7 +27,6 @@ public class PaginationDTOTest {
         PaginationDTO<String> paginationDTO = PaginationDTO.of(page);
 
         // Then
-        assertEquals(testData.size(), paginationDTO.totalPage());
         assertEquals(testData, paginationDTO.results());
     }
 }

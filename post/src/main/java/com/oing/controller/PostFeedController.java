@@ -26,7 +26,7 @@ public class PostFeedController implements PostFeedApi {
         if (page > 5) return new PaginationResponse<>(page, 5, size, List.of());
 
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String authorIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
+        String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
 
         List<PostFeedResponse> mockResponses = new ArrayList<>();
         Random random = new Random();
@@ -36,7 +36,7 @@ public class PostFeedController implements PostFeedApi {
             mockResponses.add(
                     new PostFeedResponse(
                             postIdBase + suffix,
-                            authorIdBase + suffix,
+                            writerIdBase + suffix,
                             random.nextInt(5),
                             random.nextInt(5),
                             "https://picsum.photos/200/300?random=" + currentIndex,
