@@ -1,6 +1,6 @@
 rootProject.name = 'no5ing-server'
 
-include 'config'
+include 'gateway'
 include 'member'
 include 'common'
 include 'family'
