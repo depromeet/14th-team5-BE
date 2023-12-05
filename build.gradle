@@ -36,6 +36,7 @@ subprojects {
 	}
 
 	jacocoTestReport {
+		dependsOn test
 		reports{
 			html.required.set(true)
 			xml.required.set(true)
@@ -46,8 +47,8 @@ subprojects {
 		}
 
 		def Qdomains = []
-		for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
-			Qdomains.add(qPattern + '*')
+		for (qPattern in "**/QA" .. "**/QZ") {
+			Qdomains.add(qPattern + "*")
 		}
 
 		afterEvaluate {
@@ -58,7 +59,8 @@ subprojects {
 								"**/*Application*",
 								"**/*Config*",
 								"**/config/*",
-								"**/dto/*"
+								"**/dto/*",
+								"**/*Dto*"
 								// Querydsl 관련 제거
 						] + Qdomains)
 					})
@@ -97,7 +99,8 @@ subprojects {
 						"**.*Application*",
 						"**.*Config*",
 						"**.config.*",
-						"**.dto.*"
+						"**.dto.*",
+						"**.*Dto*"
 				] + Qdomains
 			}
 		}
