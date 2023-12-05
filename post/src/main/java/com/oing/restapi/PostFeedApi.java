@@ -1,11 +1,11 @@
-package org.oing.restapi;
+package com.oing.restapi;
 
 import com.oing.dto.response.PaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import org.oing.dto.response.PostFeedResponse;
+import com.oing.dto.response.PostFeedResponse;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
