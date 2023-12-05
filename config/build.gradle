@@ -10,9 +10,13 @@ repositories {
 dependencies {
     implementation project(':common')
     implementation project(':member')
+    implementation project(':family')
+    implementation project(':post')
 
     jacocoAggregation project(':common')
     jacocoAggregation project(':member')
+    jacocoAggregation project(':family')
+    jacocoAggregation project(':post')
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
