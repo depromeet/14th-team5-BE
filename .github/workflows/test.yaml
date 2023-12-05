@@ -36,14 +36,14 @@ jobs:
         with:
           files: |
             common/build/test-results/**/*.xml
-            config/build/test-results/**/*.xml
+            gateway/build/test-results/**/*.xml
             member/build/test-results/**/*.xml
 
       - name: 커버리지 결과 PR에 업로드
         id: jacoco
         uses: madrapps/jacoco-report@v1.3
         with:
-          paths: ${{ github.workspace }}/config/build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml
+          paths: ${{ github.workspace }}/gateway/build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: ${{ env.COVERAGE_PERCENT }}
           debug-mode: false

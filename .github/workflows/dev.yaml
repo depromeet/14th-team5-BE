@@ -3,7 +3,7 @@ on:
   push:
     branches: [ 'dev' ]
     paths:
-      - 'config/**' # Config 모듈 변경
+      - 'gateway/**' # Gateway 모듈 변경
       - 'member/**' # Member 모듈 변경
       - 'common/**' # Common 모듈 변경
       - 'family/**' # Family 모듈 변경
