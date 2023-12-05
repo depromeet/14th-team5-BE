@@ -22,6 +22,9 @@ import java.util.Map;
 @Component
 public class JWTTokenGenerator implements TokenGenerator {
     private static final String USER_ID_KEY_NAME = "userId";
+    private static final String TOKEN_TYPE_KEY_NAME = "type";
+    private static final String REFRESH_TOKEN_TYPE = "refresh";
+    private static final String ACCESS_TOKEN_TYPE = "access";
     private final TokenProperties tokenProperties;
     private final Key signKey;
 
@@ -53,9 +56,9 @@ public class JWTTokenGenerator implements TokenGenerator {
     @Override
     public boolean isRefreshTokenValid(String refreshToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(this.signKey).build()
-                    .parseClaimsJws(refreshToken);
-            return true;
+            String tokenType = (String) Jwts.parserBuilder().setSigningKey(this.signKey).build()
+                    .parseClaimsJws(refreshToken).getHeader().get(TOKEN_TYPE_KEY_NAME);
+            return tokenType.equals(REFRESH_TOKEN_TYPE);
         } catch(Exception e){
             return false;
         }
@@ -71,7 +74,7 @@ public class JWTTokenGenerator implements TokenGenerator {
 
     private String generateAccessToken(String userId) {
         return Jwts.builder()
-                    .setHeader(createTokenHeader())
+                    .setHeader(createTokenHeader(false))
                     .setClaims(Map.of(USER_ID_KEY_NAME, userId))
                     .setExpiration(generateAccessTokenExpiration())
                     .signWith(signKey, SignatureAlgorithm.HS256)
@@ -80,17 +83,19 @@ public class JWTTokenGenerator implements TokenGenerator {
 
     private String generateRefreshToken() {
         return Jwts.builder()
-                .setHeader(createTokenHeader())
+                .setHeader(createTokenHeader(true))
                 .setClaims(Map.of())
                 .setExpiration(generateRefreshTokenExpiration())
                 .signWith(signKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    private Map<String, Object> createTokenHeader() {
+    private Map<String, Object> createTokenHeader(boolean isRefreshToken) {
         return Map.of(
                 "typ", "JWT",
                 "alg", "HS256",
-                "regDate", System.currentTimeMillis());
+                "regDate", System.currentTimeMillis(),
+                TOKEN_TYPE_KEY_NAME, isRefreshToken ? REFRESH_TOKEN_TYPE : ACCESS_TOKEN_TYPE
+        );
     }
 }
