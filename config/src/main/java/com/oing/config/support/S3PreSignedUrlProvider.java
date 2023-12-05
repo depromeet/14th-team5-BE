@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,13 +18,14 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class S3PreSignedUrlProvider {
+public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
     @Value("${cloud.ncp.storage.bucket}")
     private String bucket;
 
     private final AmazonS3Client amazonS3Client;
 
+    @Override
     public PreSignedUrlResponse getPreSignedUrl(String imageName, Long memberId) {
 
         GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(imageName, memberId);

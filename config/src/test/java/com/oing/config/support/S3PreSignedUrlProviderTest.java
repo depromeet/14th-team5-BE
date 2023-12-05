@@ -45,7 +45,7 @@ public class S3PreSignedUrlProviderTest extends InfraTest {
         // then
         Assertions.assertAll(
                 () -> assertNotNull(response),
-                () -> assertEquals(mockPresignedUrl.toString(), response.getUrl())
+                () -> assertEquals(mockPresignedUrl.toString(), response.url())
         );
     }
 }
