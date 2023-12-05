@@ -23,6 +23,8 @@ import java.util.Random;
 public class PostFeedController implements PostFeedApi {
     @Override
     public PaginationResponse<PostFeedResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date) {
+        if (page > 5) return new PaginationResponse<>(page, 5, size, List.of());
+
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
         String authorIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
 
