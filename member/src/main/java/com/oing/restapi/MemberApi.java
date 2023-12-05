@@ -1,6 +1,7 @@
 package com.oing.restapi;
 
 import com.oing.dto.response.FamilyMemberProfileResponse;
+import com.oing.dto.response.PaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
