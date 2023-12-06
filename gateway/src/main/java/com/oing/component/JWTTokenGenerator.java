@@ -1,7 +1,9 @@
 package com.oing.component;
 
 import com.oing.config.properties.TokenProperties;
+import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.TokenPair;
+import com.oing.domain.TokenType;
 import com.oing.domain.exception.TokenNotValidException;
 import com.oing.service.TokenGenerator;
 import io.jsonwebtoken.Jwts;
@@ -22,9 +24,8 @@ import java.util.Map;
 @Component
 public class JWTTokenGenerator implements TokenGenerator {
     private static final String USER_ID_KEY_NAME = "userId";
+    private static final String PROVIDER_KEY_NAME = "provider";
     private static final String TOKEN_TYPE_KEY_NAME = "type";
-    private static final String REFRESH_TOKEN_TYPE = "refresh";
-    private static final String ACCESS_TOKEN_TYPE = "access";
     private final TokenProperties tokenProperties;
     private final Key signKey;
 
@@ -43,6 +44,11 @@ public class JWTTokenGenerator implements TokenGenerator {
     }
 
     @Override
+    public TokenPair generateTemporaryTokenPair(SocialLoginProvider provider, String identifier) {
+        return new TokenPair(generateTemporaryToken(provider, identifier), null);
+    }
+
+    @Override
     public String getUserIdFromAccessToken(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(this.signKey).build()
@@ -58,7 +64,7 @@ public class JWTTokenGenerator implements TokenGenerator {
         try {
             String tokenType = (String) Jwts.parserBuilder().setSigningKey(this.signKey).build()
                     .parseClaimsJws(refreshToken).getHeader().get(TOKEN_TYPE_KEY_NAME);
-            return tokenType.equals(REFRESH_TOKEN_TYPE);
+            return tokenType.equals(TokenType.REFRESH.getTypeKey());
         } catch(Exception e){
             return false;
         }
@@ -72,9 +78,18 @@ public class JWTTokenGenerator implements TokenGenerator {
         return new Date(System.currentTimeMillis() + Long.parseLong(tokenProperties.expiration().refreshToken()));
     }
 
+    private String generateTemporaryToken(SocialLoginProvider provider, String identifier) {
+        return Jwts.builder()
+                .setHeader(createTokenHeader(TokenType.TEMPORARY))
+                .setClaims(Map.of(USER_ID_KEY_NAME, identifier, PROVIDER_KEY_NAME, provider.name()))
+                .setExpiration(generateAccessTokenExpiration())
+                .signWith(signKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     private String generateAccessToken(String userId) {
         return Jwts.builder()
-                    .setHeader(createTokenHeader(false))
+                    .setHeader(createTokenHeader(TokenType.ACCESS))
                     .setClaims(Map.of(USER_ID_KEY_NAME, userId))
                     .setExpiration(generateAccessTokenExpiration())
                     .signWith(signKey, SignatureAlgorithm.HS256)
@@ -83,19 +98,19 @@ public class JWTTokenGenerator implements TokenGenerator {
 
     private String generateRefreshToken() {
         return Jwts.builder()
-                .setHeader(createTokenHeader(true))
+                .setHeader(createTokenHeader(TokenType.REFRESH))
                 .setClaims(Map.of())
                 .setExpiration(generateRefreshTokenExpiration())
                 .signWith(signKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    private Map<String, Object> createTokenHeader(boolean isRefreshToken) {
+    private Map<String, Object> createTokenHeader(TokenType tokenType) {
         return Map.of(
                 "typ", "JWT",
                 "alg", "HS256",
                 "regDate", System.currentTimeMillis(),
-                TOKEN_TYPE_KEY_NAME, isRefreshToken ? REFRESH_TOKEN_TYPE : ACCESS_TOKEN_TYPE
+                TOKEN_TYPE_KEY_NAME, tokenType.getTypeKey()
         );
     }
 }

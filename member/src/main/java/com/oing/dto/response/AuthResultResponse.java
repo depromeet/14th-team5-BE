@@ -12,10 +12,13 @@ public record AuthResultResponse(
 
         @Schema(description = "리프레시 토큰", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." +
                 "eyJ1c2VyIdI6MjEwMCwiaWF0IjoxNjM4NjM2NDI3fQ.5zBBo9LMi9Y_L6gyN0WYq41Qn2GJGSySMs7XJ6c_aFk")
-        String refreshToken
+        String refreshToken,
+
+        @Schema(description = "임시 토큰 여부", example = "false")
+        boolean isTemporaryToken
 ) {
 
-    public static AuthResultResponse of(TokenPair tokenPair) {
-        return new AuthResultResponse(tokenPair.accessToken(), tokenPair.refreshToken());
+    public static AuthResultResponse of(TokenPair tokenPair, boolean isTemporaryToken) {
+        return new AuthResultResponse(tokenPair.accessToken(), tokenPair.refreshToken(), isTemporaryToken);
     }
 }

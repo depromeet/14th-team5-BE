@@ -40,7 +40,7 @@ public class JwtAuthenticationHandler extends OncePerRequestFilter {
 
         try {
             String userId = tokenGenerator.getUserIdFromAccessToken(accessToken);
-            Authentication authentication = new APIKeyAuthentication(accessToken, userId);
+            Authentication authentication = new APIKeyAuthentication(accessToken, userId, false);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch(TokenNotValidException ignored) {
 

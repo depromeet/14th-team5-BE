@@ -42,16 +42,18 @@ public class AuthController implements AuthApi {
                 .authenticateFromProvider(socialLoginProvider, request.accessToken());
 
         // 위 결과에서 나온 identifier로 이미 있는 사용자인지 확인
-        Member member = memberService
-                .findMemberBySocialMemberKey(socialLoginProvider, socialLoginResult.identifier())
-                .orElseGet(() ->
-                    //없으면 사용자 회원가입 (생성)
-                    createNewUser(socialLoginProvider, socialLoginResult.identifier())
-                );
+        Optional<Member> member = memberService
+                .findMemberBySocialMemberKey(socialLoginProvider, socialLoginResult.identifier());
+        if(member.isEmpty()) {
+            //회원가입이 안된 경우 임시 토큰 발행
+            TokenPair temporaryTokenPair = tokenGenerator
+                    .generateTemporaryTokenPair(socialLoginProvider, socialLoginResult.identifier());
+            return AuthResultResponse.of(temporaryTokenPair, true);
+        }
 
         //사용자로 토큰 생성
-        TokenPair tokenPair = tokenGenerator.generateTokenPair(member.getId());
-        return AuthResultResponse.of(tokenPair);
+        TokenPair tokenPair = tokenGenerator.generateTokenPair(member.get().getId());
+        return AuthResultResponse.of(tokenPair, false);
     }
 
     @Override
@@ -63,7 +65,7 @@ public class AuthController implements AuthApi {
         //새 토큰 생성
         String userId = tokenGenerator.getUserIdFromAccessToken(request.refreshToken());
         TokenPair tokenPair = tokenGenerator.generateTokenPair(userId);
-        return AuthResultResponse.of(tokenPair);
+        return AuthResultResponse.of(tokenPair, false);
     }
 
     private Member createNewUser(SocialLoginProvider socialLoginProvider, String identifier) {

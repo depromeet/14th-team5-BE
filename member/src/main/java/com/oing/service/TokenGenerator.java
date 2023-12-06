@@ -1,5 +1,6 @@
 package com.oing.service;
 
+import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.TokenPair;
 
 /**
@@ -15,6 +16,14 @@ public interface TokenGenerator {
      * @return 토큰 페어 (엑세스 토큰, 리프레시 토큰)
      */
     TokenPair generateTokenPair(String userId);
+
+    /**
+     * 임시 토큰 페어 (엑세스토큰, 리프레시 토큰)을 생성합니다.
+     * @param provider 소셜 로그인 제공자
+     * @param identifier 소셜 로그인 식별자
+     * @return 임시 토큰 페어 (엑세스 토큰, 리프레시 토큰)
+     */
+    TokenPair generateTemporaryTokenPair(SocialLoginProvider provider, String identifier);
 
     /**
      * 엑세스 토큰에서 유저ID를 추출합니다.
