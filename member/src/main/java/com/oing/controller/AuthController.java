@@ -4,6 +4,7 @@ import com.oing.domain.*;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Member;
+import com.oing.dto.request.CreateNewMemberRequest;
 import com.oing.dto.request.NativeSocialLoginRequest;
 import com.oing.dto.request.RefreshAccessTokenRequest;
 import com.oing.dto.response.AuthResultResponse;
@@ -13,6 +14,7 @@ import com.oing.service.MemberService;
 import com.oing.service.TokenGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 import java.util.Optional;
@@ -65,8 +67,24 @@ public class AuthController implements AuthApi {
         return AuthResultResponse.of(tokenPair, false);
     }
 
-    private Member createNewUser(SocialLoginProvider socialLoginProvider, String identifier) {
-        CreateNewUserDTO createNewUserDTO = new CreateNewUserDTO(socialLoginProvider, identifier);
-        return memberService.createNewMember(createNewUserDTO);
+    @Override
+    public AuthResultResponse register(Authentication authentication, CreateNewMemberRequest request) {
+        //사용자 회원가입
+        if(authentication.getCredentials() instanceof Token token) {
+            CreateNewUserDTO createNewUserDTO = new CreateNewUserDTO(
+                    SocialLoginProvider.valueOf(token.provider()),
+                    token.userId(),
+                    request.memberName(),
+                    request.dayOfBirth(),
+                    request.profileImgUrl()
+            );
+            Member member = memberService.createNewMember(createNewUserDTO);
+
+            //새 토큰 생성
+            TokenPair tokenPair = tokenGenerator.generateTokenPair(member.getId());
+            return AuthResultResponse.of(tokenPair, false);
+        }
+        //일어날 수 없는 일
+        throw new DomainException(ErrorCode.AUTHORIZATION_FAILED);
     }
 }

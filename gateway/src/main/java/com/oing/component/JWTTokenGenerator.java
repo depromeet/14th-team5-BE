@@ -62,7 +62,8 @@ public class JWTTokenGenerator implements TokenGenerator {
             String tokenTypeStr = (String) tokenClaim.getHeader().get(TOKEN_TYPE_KEY_NAME);
             TokenType tokenType = TokenType.valueOf(tokenTypeStr);
             String userId = tokenClaim.getBody().get(USER_ID_KEY_NAME, String.class);
-            return new Token(userId, tokenType);
+            String provider = tokenClaim.getBody().get(PROVIDER_KEY_NAME, String.class);
+            return new Token(userId, tokenType, provider);
         } catch(Exception e){
             throw new DomainException(ErrorCode.AUTHENTICATION_FAILED);
         }
@@ -76,11 +77,15 @@ public class JWTTokenGenerator implements TokenGenerator {
         return new Date(System.currentTimeMillis() + Long.parseLong(tokenProperties.expiration().refreshToken()));
     }
 
+    private Date generateTemporaryTokenExpiration() {
+        return new Date(Long.MAX_VALUE);
+    }
+
     private String generateTemporaryToken(SocialLoginProvider provider, String identifier) {
         return Jwts.builder()
                 .setHeader(createTokenHeader(TokenType.TEMPORARY))
                 .setClaims(Map.of(USER_ID_KEY_NAME, identifier, PROVIDER_KEY_NAME, provider.name()))
-                .setExpiration(generateAccessTokenExpiration())
+                .setExpiration(generateTemporaryTokenExpiration())
                 .signWith(signKey, SignatureAlgorithm.HS256)
                 .compact();
     }

@@ -1,5 +1,6 @@
 package com.oing.restapi;
 
+import com.oing.dto.request.CreateNewMemberRequest;
 import com.oing.dto.request.NativeSocialLoginRequest;
 import com.oing.dto.request.RefreshAccessTokenRequest;
 import com.oing.dto.response.AuthResultResponse;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -41,5 +44,13 @@ public interface AuthApi {
     @PostMapping(value = "/refresh")
     AuthResultResponse refreshAccessToken(
             @RequestBody @Valid RefreshAccessTokenRequest request
+    );
+
+    @PreAuthorize("hasRole('TEMPORARY_MEMBER')")
+    @Operation(summary = "회원가입", description = "회원가입을 진행합니다.")
+    @PostMapping
+    AuthResultResponse register(
+            @Parameter(hidden = true) Authentication authentication,
+            @RequestBody @Valid CreateNewMemberRequest request
     );
 }

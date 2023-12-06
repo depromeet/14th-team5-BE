@@ -1,5 +1,6 @@
 package com.oing.config.authentication;
 
+import com.oing.domain.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 public class APIKeyAuthentication implements Authentication {
-    private final String token;
+    private final Token token;
     private final String userId;
     private final boolean temporary;
 
