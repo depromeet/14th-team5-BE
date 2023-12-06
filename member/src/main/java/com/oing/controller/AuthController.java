@@ -1,9 +1,6 @@
 package com.oing.controller;
 
-import com.oing.domain.CreateNewUserDTO;
-import com.oing.domain.SocialLoginProvider;
-import com.oing.domain.SocialLoginResult;
-import com.oing.domain.TokenPair;
+import com.oing.domain.*;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Member;
@@ -59,12 +56,12 @@ public class AuthController implements AuthApi {
     @Override
     public AuthResultResponse refreshAccessToken(RefreshAccessTokenRequest request) {
         //기존 리프레시 토큰 유효성 검증
-        if (!tokenGenerator.isRefreshTokenValid(request.refreshToken()))
+        Token token = tokenGenerator.extractTokenData(request.refreshToken());
+        if (token.tokenType() != TokenType.REFRESH)
             throw new DomainException(ErrorCode.REFRESH_TOKEN_INVALID);
 
         //새 토큰 생성
-        String userId = tokenGenerator.getUserIdFromAccessToken(request.refreshToken());
-        TokenPair tokenPair = tokenGenerator.generateTokenPair(userId);
+        TokenPair tokenPair = tokenGenerator.generateTokenPair(token.userId());
         return AuthResultResponse.of(tokenPair, false);
     }
 

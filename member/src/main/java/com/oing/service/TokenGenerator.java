@@ -1,7 +1,9 @@
 package com.oing.service;
 
 import com.oing.domain.SocialLoginProvider;
+import com.oing.domain.Token;
 import com.oing.domain.TokenPair;
+import com.oing.domain.TokenType;
 
 /**
  * no5ing-server
@@ -26,19 +28,11 @@ public interface TokenGenerator {
     TokenPair generateTemporaryTokenPair(SocialLoginProvider provider, String identifier);
 
     /**
-     * 엑세스 토큰에서 유저ID를 추출합니다.
+     * 토큰의 데이터를 추출합니다.
      * 유효하지 않은 경우, TokenNotValidException 이 발생합니다.
      * @throws com.oing.domain.exception.TokenNotValidException 토큰이 유효하지 않은 경우
-     * @param accessToken 엑세스 토큰
-     * @return 유저 아이디
+     * @param token JWT 토큰
+     * @return 토큰 데이터 DTO
      */
-    String getUserIdFromAccessToken(String accessToken);
-
-    /**
-     * 리프레시 토큰 유효성을 검증합니다.
-     * 유효하다면 true, 유효하지 않다면 false 를 반환합니다.
-     * @param refreshToken 리프레시 토큰
-     * @return 리프레시 토큰 유효성
-     */
-    boolean isRefreshTokenValid(String refreshToken);
+    Token extractTokenData(String token);
 }

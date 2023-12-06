@@ -1,7 +1,6 @@
 package com.oing.dto.response;
 
 import com.oing.domain.TokenPair;
-import com.oing.domain.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "로그인 후 토큰 응답")

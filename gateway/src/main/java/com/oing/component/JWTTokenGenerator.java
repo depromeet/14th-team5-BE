@@ -2,10 +2,15 @@ package com.oing.component;
 
 import com.oing.config.properties.TokenProperties;
 import com.oing.domain.SocialLoginProvider;
+import com.oing.domain.Token;
 import com.oing.domain.TokenPair;
 import com.oing.domain.TokenType;
+import com.oing.domain.exception.DomainException;
+import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.exception.TokenNotValidException;
 import com.oing.service.TokenGenerator;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
@@ -49,24 +54,17 @@ public class JWTTokenGenerator implements TokenGenerator {
     }
 
     @Override
-    public String getUserIdFromAccessToken(String accessToken) {
+    public Token extractTokenData(String token) {
         try {
-            return Jwts.parserBuilder().setSigningKey(this.signKey).build()
-                    .parseClaimsJws(accessToken)
-                    .getBody().get(USER_ID_KEY_NAME, String.class);
-        } catch(Exception e){
-            throw new TokenNotValidException();
-        }
-    }
+            Jws<Claims> tokenClaim = Jwts.parserBuilder().setSigningKey(this.signKey).build()
+                    .parseClaimsJws(token);
 
-    @Override
-    public boolean isRefreshTokenValid(String refreshToken) {
-        try {
-            String tokenType = (String) Jwts.parserBuilder().setSigningKey(this.signKey).build()
-                    .parseClaimsJws(refreshToken).getHeader().get(TOKEN_TYPE_KEY_NAME);
-            return tokenType.equals(TokenType.REFRESH.getTypeKey());
+            String tokenTypeStr = (String) tokenClaim.getHeader().get(TOKEN_TYPE_KEY_NAME);
+            TokenType tokenType = TokenType.valueOf(tokenTypeStr);
+            String userId = tokenClaim.getBody().get(USER_ID_KEY_NAME, String.class);
+            return new Token(userId, tokenType);
         } catch(Exception e){
-            return false;
+            throw new DomainException(ErrorCode.AUTHENTICATION_FAILED);
         }
     }
 
