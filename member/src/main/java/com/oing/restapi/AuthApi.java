@@ -48,7 +48,7 @@ public interface AuthApi {
 
     @PreAuthorize("hasRole('TEMPORARY_MEMBER')")
     @Operation(summary = "회원가입", description = "회원가입을 진행합니다.")
-    @PostMapping
+    @PostMapping(value = "/register")
     AuthResultResponse register(
             @Parameter(hidden = true) Authentication authentication,
             @RequestBody @Valid CreateNewMemberRequest request
