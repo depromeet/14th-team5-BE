@@ -36,7 +36,7 @@ public class AuthController implements AuthApi {
     @Override
     public AuthResultResponse socialLogin(String provider, NativeSocialLoginRequest request) {
         // oAuth 로그인 검증 (Apple 등)
-        SocialLoginProvider socialLoginProvider = SocialLoginProvider.valueOf(provider.toUpperCase());
+        SocialLoginProvider socialLoginProvider = SocialLoginProvider.fromString(provider.toUpperCase());
         SocialLoginResult socialLoginResult = authService
                 .authenticateFromProvider(socialLoginProvider, request.accessToken());
 
@@ -72,7 +72,7 @@ public class AuthController implements AuthApi {
         //사용자 회원가입
         if(authentication.getCredentials() instanceof Token token) {
             CreateNewUserDTO createNewUserDTO = new CreateNewUserDTO(
-                    SocialLoginProvider.valueOf(token.provider()),
+                    SocialLoginProvider.fromString(token.provider()),
                     token.userId(),
                     request.memberName(),
                     request.dayOfBirth(),

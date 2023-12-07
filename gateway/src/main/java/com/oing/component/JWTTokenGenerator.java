@@ -60,7 +60,7 @@ public class JWTTokenGenerator implements TokenGenerator {
                     .parseClaimsJws(token);
 
             String tokenTypeStr = (String) tokenClaim.getHeader().get(TOKEN_TYPE_KEY_NAME);
-            TokenType tokenType = TokenType.valueOf(tokenTypeStr);
+            TokenType tokenType = TokenType.fromString(tokenTypeStr);
             String userId = tokenClaim.getBody().get(USER_ID_KEY_NAME, String.class);
             String provider = tokenClaim.getBody().get(PROVIDER_KEY_NAME, String.class);
             return new Token(userId, tokenType, provider);
