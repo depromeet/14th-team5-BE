@@ -18,9 +18,8 @@ public class MemberPostReaction extends BaseEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private MemberPost post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
+    private String memberId;
 
     @Column(name = "ascii", length = 16, nullable = false)
     private String ascii;

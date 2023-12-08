@@ -17,9 +17,8 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "post_id", length = 26, columnDefinition = "CHAR(26)")
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
+    private String memberId;
 
     @Column(name = "post_date", nullable = false)
     private LocalDate postDate;
