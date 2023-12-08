@@ -11,13 +11,14 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @Entity(name = "member_post")
-public class MemberPost extends BaseEntity {
+public class MemberPost extends BaseAuditEntity {
     @Id
     @Column(name = "post_id", length = 26, columnDefinition = "CHAR(26)")
     private String id;
 
-    @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
-    private String memberId;
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(name = "post_date", nullable = false)
     private LocalDate postDate;

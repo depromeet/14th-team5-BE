@@ -18,8 +18,9 @@ public class MemberPostComment extends BaseAuditEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private MemberPost post;
 
-    @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
-    private String memberId;
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(name = "comment", nullable = false)
     private String comment;

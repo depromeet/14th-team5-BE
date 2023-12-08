@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Builder
 @Entity(name = "member_post_reaction")
-public class MemberPostReaction {
+public class MemberPostReaction extends BaseEntity {
     @Id
     @Column(name = "reaction_id", length = 26, columnDefinition = "CHAR(26)")
     private String id;
@@ -18,8 +18,9 @@ public class MemberPostReaction {
     @JoinColumn(name = "post_id", nullable = false)
     private MemberPost post;
 
-    @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
-    private String memberId;
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     @Column(name = "ascii", length = 16, nullable = false)
     private String ascii;

@@ -4,6 +4,7 @@ repositories {
 
 dependencies {
     implementation project(':common')
+    implementation project(':member')
 }
 
 tasks.named('bootJar') {
