@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @Entity(name = "member_post")
-public class MemberPost extends BaseAuditEntity {
+public class MemberPost extends BaseEntity {
     @Id
     @Column(name = "post_id", length = 26, columnDefinition = "CHAR(26)")
     private String id;

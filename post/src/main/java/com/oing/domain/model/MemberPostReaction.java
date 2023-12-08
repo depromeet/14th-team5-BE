@@ -1,0 +1,26 @@
+package com.oing.domain.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(callSuper = false)
+@AllArgsConstructor
+@Getter
+@Builder
+@Entity(name = "member_post_reaction")
+public class MemberPostReaction {
+    @Id
+    @Column(name = "reaction_id", length = 26, columnDefinition = "CHAR(26)")
+    private String id;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private MemberPost post;
+
+    @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
+    private String memberId;
+
+    @Column(name = "ascii", length = 16, nullable = false)
+    private String ascii;
+}
