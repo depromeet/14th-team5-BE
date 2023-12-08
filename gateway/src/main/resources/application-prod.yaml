@@ -9,6 +9,9 @@ spring:
           enabled: true
         show_sql: false
         format_sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
   h2:
     console:
       enabled: false
