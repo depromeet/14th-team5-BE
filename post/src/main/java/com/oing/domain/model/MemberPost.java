@@ -35,9 +35,9 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "reaction_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int reactionCnt;
 
-    @OneToMany(mappedBy = "member_post")
+    @OneToMany(mappedBy = "post")
     private List<MemberPostComment> comments;
 
-    @OneToMany(mappedBy = "member_post")
+    @OneToMany(mappedBy = "post")
     private List<MemberPostReaction> reactions;
 }
