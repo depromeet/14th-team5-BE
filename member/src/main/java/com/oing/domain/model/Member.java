@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.time.LocalDate;
+
 /**
  * no5ing-server
  * User: CChuYong
@@ -19,6 +21,18 @@ import lombok.*;
 @Entity(name = "member")
 public class Member extends BaseAuditEntity {
     @Id
-    @Column(name = "member_id", length = 26)
+    @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
     private String id;
+
+    @Column(name = "family_id", length = 26, columnDefinition = "CHAR(26)")
+    private String familyId;
+
+    @Column(name = "day_of_birth", nullable = false)
+    private LocalDate dayOfBirth;
+
+    @Column(name = "name", nullable = false, length = 36)
+    private String name;
+
+    @Column(name = "profile_img_url")
+    private String profileImgUrl;
 }
