@@ -61,7 +61,7 @@ CREATE TABLE `member_post`
     `post_date`   DATE      NOT NULL,
     `image_url`   TEXT,
     `comment_cnt` INTEGER   NOT NULL DEFAULT 0,
-    `emoji_cnt`   INTEGER   NOT NULL DEFAULT 0,
+    `reaction_cnt`   INTEGER   NOT NULL DEFAULT 0,
     `created_at`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at`  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX         `member_post_idx1` (`member_id`),
@@ -69,17 +69,17 @@ CREATE TABLE `member_post`
 ) DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci comment '게시물테이블';
 
-CREATE TABLE `member_post_emoji`
+CREATE TABLE `member_post_reaction`
 (
-    `emoji_id`   CHAR(26)    NOT NULL COMMENT 'ULID',
+    `reaction_id`   CHAR(26)    NOT NULL COMMENT 'ULID',
     `post_id`    CHAR(26)    NOT NULL,
     `member_id`  CHAR(26)    NOT NULL,
-    `emoji`      VARCHAR(16) NOT NULL,
+    `ascii`      VARCHAR(16) NOT NULL,
     `created_at` TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY `member_post_emoji_pk1` (post_id) REFERENCES `member_post`(`post_id`),
-    INDEX        `member_post_emoji_idx1` (`post_id`),
-    INDEX        `member_post_emoji_idx2` (`member_id`),
-    PRIMARY KEY (`emoji_id`)
+    FOREIGN KEY `member_post_reaction_pk1` (post_id) REFERENCES `member_post`(`post_id`),
+    INDEX        `member_post_reaction_idx1` (`post_id`),
+    INDEX        `member_post_reaction_idx2` (`member_id`),
+    PRIMARY KEY (`reaction_id`)
 ) DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci comment '게시물이모지';
 
