@@ -11,6 +11,9 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
+@Table(indexes = {
+        @Index(name = "member_post_idx1", columnList = "member_id")
+})
 @Entity(name = "member_post")
 public class MemberPost extends BaseAuditEntity {
     @Id
@@ -32,9 +35,9 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "reaction_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int reactionCnt;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "member_post")
     private List<MemberPostComment> comments;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "member_post")
     private List<MemberPostReaction> reactions;
 }
