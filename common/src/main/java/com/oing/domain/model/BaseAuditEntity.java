@@ -23,5 +23,4 @@ public class BaseAuditEntity extends BaseEntity {
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-    @Column(name = "created_at", updatable = false, nullable = false)
 }
