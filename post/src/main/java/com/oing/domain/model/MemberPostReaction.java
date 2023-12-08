@@ -14,11 +14,11 @@ public class MemberPostReaction extends BaseEntity {
     @Column(name = "reaction_id", length = 26, columnDefinition = "CHAR(26)")
     private String id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private MemberPost post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 

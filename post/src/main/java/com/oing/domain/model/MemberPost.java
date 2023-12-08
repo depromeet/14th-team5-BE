@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = false)
@@ -16,7 +17,7 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "post_id", length = 26, columnDefinition = "CHAR(26)")
     private String id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
@@ -26,9 +27,15 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "comment_cnt", nullable = false)
+    @Column(name = "comment_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int commentCnt;
 
-    @Column(name = "reaction_cnt", nullable = false)
+    @Column(name = "reaction_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int reactionCnt;
+
+    @OneToMany(mappedBy = "post")
+    private List<MemberPostComment> comments;
+
+    @OneToMany(mappedBy = "post")
+    private List<MemberPostReaction> reactions;
 }
