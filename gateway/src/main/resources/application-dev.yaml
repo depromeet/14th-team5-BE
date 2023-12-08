@@ -29,7 +29,3 @@ spring:
   h2:
     console:
       enabled: false
-
-springdoc:
-  api-docs:
-    enabled: false
