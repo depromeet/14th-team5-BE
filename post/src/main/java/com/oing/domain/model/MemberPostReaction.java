@@ -15,16 +15,16 @@ import lombok.*;
 @Entity(name = "member_post_reaction")
 public class MemberPostReaction extends BaseEntity {
     @Id
-    @Column(name = "reaction_id", length = 26, columnDefinition = "CHAR(26)")
+    @Column(name = "reaction_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private MemberPost post;
 
-    @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
+    @Column(name = "member_id", columnDefinition = "CHAR(26)", nullable = false)
     private String memberId;
 
-    @Column(name = "ascii", length = 16, nullable = false)
+    @Column(name = "ascii", nullable = false)
     private String ascii;
 }

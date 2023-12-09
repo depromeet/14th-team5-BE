@@ -15,14 +15,14 @@ import lombok.*;
 @Entity(name = "member_post_comment")
 public class MemberPostComment extends BaseAuditEntity {
     @Id
-    @Column(name = "comment_id", length = 26, columnDefinition = "CHAR(26)")
+    @Column(name = "comment_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private MemberPost post;
 
-    @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
+    @Column(name = "member_id", columnDefinition = "CHAR(26)", nullable = false)
     private String memberId;
 
     @Column(name = "comment", nullable = false)

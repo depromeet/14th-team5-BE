@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -17,10 +18,10 @@ import java.util.List;
 @Entity(name = "member_post")
 public class MemberPost extends BaseAuditEntity {
     @Id
-    @Column(name = "post_id", length = 26, columnDefinition = "CHAR(26)")
+    @Column(name = "post_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
 
-    @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
+    @Column(name = "member_id", columnDefinition = "CHAR(26)", nullable = false)
     private String memberId;
 
     @Column(name = "post_date", nullable = false)
@@ -36,8 +37,8 @@ public class MemberPost extends BaseAuditEntity {
     private int reactionCnt;
 
     @OneToMany(mappedBy = "post")
-    private List<MemberPostComment> comments;
+    private List<MemberPostComment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
-    private List<MemberPostReaction> reactions;
+    private List<MemberPostReaction> reactions = new ArrayList<>();
 }
