@@ -2,6 +2,8 @@ package com.oing.config.filter;
 
 import com.oing.config.authentication.APIKeyAuthentication;
 import com.oing.config.properties.WebProperties;
+import com.oing.domain.Token;
+import com.oing.domain.TokenType;
 import com.oing.domain.exception.TokenNotValidException;
 import com.oing.service.TokenGenerator;
 import jakarta.servlet.FilterChain;
@@ -39,8 +41,9 @@ public class JwtAuthenticationHandler extends OncePerRequestFilter {
         }
 
         try {
-            String userId = tokenGenerator.getUserIdFromAccessToken(accessToken);
-            Authentication authentication = new APIKeyAuthentication(accessToken, userId);
+            Token token = tokenGenerator.extractTokenData(accessToken);
+            Authentication authentication = new APIKeyAuthentication(token, token.userId(),
+                    token.tokenType() == TokenType.TEMPORARY);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch(TokenNotValidException ignored) {
 
