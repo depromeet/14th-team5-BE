@@ -3,13 +3,12 @@ package com.oing.controller;
 
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostFeedResponse;
-import com.oing.restapi.PostFeedApi;
+import com.oing.restapi.PostApi;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +19,7 @@ import java.util.Random;
  * Time: 12:24 PM
  */
 @Controller
-public class PostFeedController implements PostFeedApi {
+public class PostController implements PostApi {
     @Override
     public PaginationResponse<PostFeedResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date) {
         if (page > 5) return new PaginationResponse<>(page, 5, size, List.of());

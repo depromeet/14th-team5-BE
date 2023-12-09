@@ -21,13 +21,13 @@ import java.time.LocalDate;
  * Date: 2023/12/05
  * Time: 12:23 PM
  */
-@Tag(name = "피드 API", description = "게시물 피드 관련 API")
+@Tag(name = "게시물 API", description = "게시물 관련 API")
 @RestController
 @Valid
-@RequestMapping("/v1/feeds")
-public interface PostFeedApi {
+@RequestMapping("/v1/posts")
+public interface PostApi {
     @Operation(summary = "데일리 피드 조회", description = "데일리 피드를 조회합니다.")
-    @GetMapping(params = {"type=DAILY"})
+    @GetMapping(params = {"type=DAILY", "scope=FAMILY"})
     PaginationResponse<PostFeedResponse> fetchDailyFeeds(
             @RequestParam(required = false, defaultValue = "1")
             @Parameter(description = "가져올 현재 페이지", example = "1")
