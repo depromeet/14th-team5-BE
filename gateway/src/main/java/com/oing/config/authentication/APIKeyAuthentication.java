@@ -1,10 +1,13 @@
 package com.oing.config.authentication;
 
+import com.oing.domain.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * no5ing-server
@@ -14,12 +17,15 @@ import java.util.Collection;
  */
 @RequiredArgsConstructor
 public class APIKeyAuthentication implements Authentication {
-    private final String token;
+    private final Token token;
     private final String userId;
+    private final boolean temporary;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if (temporary)
+            return List.of(new SimpleGrantedAuthority("TEMPORARY_MEMBER"));
+        return List.of(new SimpleGrantedAuthority("MEMBER"));
     }
 
     @Override

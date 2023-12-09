@@ -23,7 +23,7 @@ class AuthResultResponseTest {
         String refreshToken = "sampleRefreshToken";
 
         // When
-        AuthResultResponse authResultResponse = new AuthResultResponse(accessToken, refreshToken);
+        AuthResultResponse authResultResponse = new AuthResultResponse(accessToken, refreshToken, false);
 
         // Then
         assertNotNull(authResultResponse);
@@ -38,7 +38,7 @@ class AuthResultResponseTest {
         TokenPair tokenPair = new TokenPair("sampleAccessToken", "sampleRefreshToken");
 
         // When
-        AuthResultResponse authResultResponse = AuthResultResponse.of(tokenPair);
+        AuthResultResponse authResultResponse = AuthResultResponse.of(tokenPair, false);
 
         // Then
         assertNotNull(authResultResponse);

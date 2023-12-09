@@ -1,5 +1,7 @@
 package com.oing.domain;
 
+import java.time.LocalDate;
+
 /**
  * no5ing-server
  * User: CChuYong
@@ -8,6 +10,9 @@ package com.oing.domain;
  */
 public record CreateNewUserDTO(
         SocialLoginProvider provider,
-        String identifier
+        String identifier,
+        String memberName,
+        LocalDate dayOfBirth,
+        String profileImgUrl
 ) {
 }
