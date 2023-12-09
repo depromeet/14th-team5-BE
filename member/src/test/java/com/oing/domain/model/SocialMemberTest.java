@@ -3,6 +3,9 @@ package com.oing.domain.model;
 import com.oing.domain.SocialLoginProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -19,7 +22,10 @@ public class SocialMemberTest {
         // Given
         SocialLoginProvider provider = SocialLoginProvider.APPLE;
         String identifier = "user123";
-        Member member = new Member("sampleId");
+
+        // When
+        Member member = new Member("sampleId", "sampleFamilyId",
+                LocalDate.of(2023, 7, 8), "sampleName", null);
 
         // When
         SocialMember socialMember = new SocialMember(provider, identifier, member);
@@ -37,8 +43,10 @@ public class SocialMemberTest {
         // Given
         SocialLoginProvider provider = SocialLoginProvider.APPLE;
         String identifier = "user123";
-        Member member = new Member("sampleId");
+        Member member = new Member("sampleId", "sampleFamilyId",
+                LocalDate.of(2023, 7, 8), "sampleName", null);
 
+        // When
         SocialMember socialMember1 = new SocialMember(provider, identifier, member);
         SocialMember socialMember2 = new SocialMember(provider, identifier, member);
 
