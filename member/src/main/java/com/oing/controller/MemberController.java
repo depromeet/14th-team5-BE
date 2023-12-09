@@ -1,7 +1,6 @@
 package com.oing.controller;
 
 import com.oing.dto.response.FamilyMemberProfileResponse;
-import com.oing.dto.response.PaginationResponse;
 import com.oing.restapi.MemberApi;
 import org.springframework.stereotype.Controller;
 
