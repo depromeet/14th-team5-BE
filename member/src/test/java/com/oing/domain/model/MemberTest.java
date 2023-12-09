@@ -2,6 +2,9 @@ package com.oing.domain.model;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -17,9 +20,12 @@ public class MemberTest {
     void testMemberConstructorAndGetters() {
         // Given
         String memberId = "sampleId";
+        String familyId = "sampleFamilyId";
+        LocalDate dayofBirth = LocalDate.of(2023, 7, 8);
+        String name = "sampleName";
 
         // When
-        Member member = new Member(memberId);
+        Member member = new Member(memberId, familyId, dayofBirth, name, null);
 
         // Then
         assertNotNull(member);
@@ -31,8 +37,13 @@ public class MemberTest {
     void testMemberEqualsAndHashCode() {
         // Given
         String memberId = "sampleId";
-        Member member1 = new Member(memberId);
-        Member member2 = new Member(memberId);
+        String familyId = "sampleFamilyId";
+        LocalDate dayofBirth = LocalDate.of(2023, 7, 8);
+        String name = "sampleName";
+
+        // When
+        Member member1 = new Member(memberId, familyId, dayofBirth, name, null);
+        Member member2 = new Member(memberId, familyId, dayofBirth, name, null);
 
         // Then
         assertEquals(member1, member2);
