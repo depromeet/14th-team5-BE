@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.*;
+import com.oing.dto.response.MemberResponse;
 
 @Tag(name = "회원 API", description = "회원 관련 API")
 @RestController
@@ -27,4 +28,7 @@ public interface MemberApi {
             @Min(value = 1)
             Integer size
     );
+
+    @GetMapping("/{memberId}")
+    MemberResponse getMember(@PathVariable String memberId);
 }
