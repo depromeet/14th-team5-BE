@@ -22,7 +22,7 @@ import java.util.Random;
 public class PostController implements PostApi {
     @Override
     public PaginationResponse<PostFeedResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date) {
-        if (page > 5) return new PaginationResponse<>(page, 5, size, List.of());
+        if (page > 5) return new PaginationResponse<>(page, 5, size, false, List.of());
 
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
         String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
@@ -44,6 +44,6 @@ public class PostController implements PostApi {
             );
         }
 
-        return new PaginationResponse<>(page, 5, size, mockResponses);
+        return new PaginationResponse<>(page, 5, size, 5 > page, mockResponses);
     }
 }
