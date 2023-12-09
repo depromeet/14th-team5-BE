@@ -26,7 +26,7 @@ import java.time.LocalDate;
 @Valid
 @RequestMapping("/v1/posts")
 public interface PostApi {
-    @Operation(summary = "데일리 피드 조회", description = "데일리 피드를 조회합니다.")
+    @Operation(summary = "데일리 게시물 조회", description = "날짜별 가족 게시물 목록을 조회합니다.")
     @GetMapping(params = {"type=DAILY", "scope=FAMILY"})
     PaginationResponse<PostFeedResponse> fetchDailyFeeds(
             @RequestParam(required = false, defaultValue = "1")
