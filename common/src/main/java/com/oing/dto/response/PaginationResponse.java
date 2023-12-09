@@ -23,15 +23,18 @@ public record PaginationResponse<T>(
         @Schema(description = "페이지당 데이터 수", example = "10")
         int itemPerPage,
 
+        @Schema(description = "더 데이터가 있는지", example = "true")
+        boolean hasNext,
+
         @Schema(description = "실제 데이터 컬렉션", example = "[\"data\"]")
         Collection<T> results
 ) {
         public static <T> PaginationResponse<T> of(PaginationDTO<T> dto, int currentPage, int itemPerPage) {
-                return new PaginationResponse<>(currentPage, dto.totalPage(), itemPerPage, dto.results());
+                return new PaginationResponse<>(currentPage, dto.totalPage(), itemPerPage, dto.totalPage() > currentPage, dto.results());
         }
 
         public <R> PaginationResponse<R> map(Function<T, R> mappingFunction) {
                 Collection<R> mappedResults = results.stream().map(mappingFunction).toList();
-                return new PaginationResponse<>(currentPage, totalPage, itemPerPage, mappedResults);
+                return new PaginationResponse<>(currentPage, totalPage, itemPerPage, hasNext, mappedResults);
         }
 }
