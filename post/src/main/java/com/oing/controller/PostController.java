@@ -4,6 +4,7 @@ package com.oing.controller;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostFeedResponse;
 import com.oing.restapi.PostApi;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
@@ -45,5 +46,21 @@ public class PostController implements PostApi {
         }
 
         return new PaginationResponse<>(page, 5, size, 5 > page, mockResponses);
+    }
+
+    @Override
+    public ResponseEntity<PostFeedResponse> fetchDailyFeeds() {
+        String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
+        String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
+        PostFeedResponse mockResponse = new PostFeedResponse(
+                postIdBase,
+                writerIdBase,
+                0,
+                0,
+                "https://picsum.photos/200/300?random=00",
+                ZonedDateTime.now()
+        );
+
+        return ResponseEntity.ok(mockResponse);
     }
 }
