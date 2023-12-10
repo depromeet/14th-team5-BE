@@ -1,6 +1,7 @@
 package com.oing.controller;
 
 
+import com.oing.domain.model.MemberPost;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostFeedResponse;
 import com.oing.restapi.PostApi;
@@ -9,9 +10,7 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * no5ing-server
@@ -50,6 +49,17 @@ public class PostController implements PostApi {
 
     @Override
     public ResponseEntity<PostFeedResponse> fetchDailyFeeds() {
+        Optional<MemberPost> myPost;
+        if (new Random().nextBoolean()) {
+            myPost = Optional.of(new MemberPost("01HGW2N7EHJVJ4CJ999RRS2E", "01HGW2N7EHJVJ4CJ888RRS2E", LocalDate.now(), "https://picsum.photos/200/300?random=00", 0, 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST));
+        } else {
+            myPost = Optional.empty();
+        }
+
+        if (myPost.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
         String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
         PostFeedResponse mockResponse = new PostFeedResponse(
