@@ -8,6 +8,7 @@ jobs:
       - uses: tzkhan/pr-update-action@v2 # https://github.com/tzkhan/pr-update-action
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          base-branch-regex: '[a-z\d-_.\\/]+'
           head-branch-regex: 'OING-\d+' # Branch에서 Ticket Regex
           title-template: '[%headbranch%] ' # PR Title Prefix 템플릿 (티켓 번호) (ex: [OING-1234] ~ )
           body-template: | # PR Body suffix 템플릿 (지라 링크)
