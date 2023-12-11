@@ -11,10 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -30,7 +27,7 @@ import java.time.LocalDate;
 @RequestMapping("/v1/posts")
 public interface PostApi {
     @Operation(summary = "S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
-    @GetMapping("/presigned-url")
+    @PostMapping("/presigned-url")
     PreSignedUrlResponse requestPresignedUrl(
             @Parameter(description = "회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E")
             Long memberId,
