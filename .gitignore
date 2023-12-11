@@ -37,3 +37,7 @@ out/
 .vscode/
 
 application-local.yaml
+.env
+
+### QueryDSL ###
+generated/

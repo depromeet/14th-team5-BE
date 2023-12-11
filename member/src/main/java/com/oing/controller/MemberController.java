@@ -1,8 +1,10 @@
 package com.oing.controller;
 
 import com.oing.dto.response.FamilyMemberProfileResponse;
+import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.restapi.MemberApi;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
@@ -29,6 +31,18 @@ public class MemberController implements MemberApi {
             );
         }
 
-        return new PaginationResponse<>(page, 3, size, mockResponses);
+        return new PaginationResponse<>(page, 3, size, false, mockResponses);
+    }
+
+    @Override
+    public MemberResponse getMember(String memberId) {
+        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
+        String memberNameBase = "디프만";
+
+        return new MemberResponse(
+                memberIdBase,
+                memberNameBase,
+                "https://picsum.photos/200/300?random=1"
+        );
     }
 }

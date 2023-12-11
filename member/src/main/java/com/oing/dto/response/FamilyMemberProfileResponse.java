@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "가족 구성원 프로필 응답")
 public record FamilyMemberProfileResponse(
-        @Schema(description = "구성원 ID", example = "1")
+        @Schema(description = "구성원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E")
         String memberId,
 
         @Schema(description = "구성원 이름", example = "디프만")
