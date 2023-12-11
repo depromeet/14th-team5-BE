@@ -4,7 +4,7 @@ import com.oing.config.authentication.APIKeyAuthentication;
 import com.oing.config.properties.WebProperties;
 import com.oing.domain.Token;
 import com.oing.domain.TokenType;
-import com.oing.domain.exception.TokenNotValidException;
+import com.oing.exception.TokenNotValidException;
 import com.oing.service.TokenGenerator;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
