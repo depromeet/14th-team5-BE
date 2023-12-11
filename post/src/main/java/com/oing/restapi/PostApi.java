@@ -1,20 +1,17 @@
 package com.oing.restapi;
 
+import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import com.oing.dto.response.PostFeedResponse;
+import com.oing.dto.response.PostResponse;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
@@ -31,7 +28,7 @@ import java.time.LocalDate;
 public interface PostApi {
     @Operation(summary = "데일리 게시물 조회", description = "오늘 가족들이 올린 게시물 목록을 조회합니다. (자신 제외)")
     @GetMapping(params = {"type=DAILY", "scope=FAMILY"})
-    PaginationResponse<PostFeedResponse> fetchDailyFeeds(
+    PaginationResponse<PostResponse> fetchDailyFeeds(
             @RequestParam(required = false, defaultValue = "1")
             @Parameter(description = "가져올 현재 페이지", example = "1")
             @Min(value = 1)
@@ -52,5 +49,12 @@ public interface PostApi {
     @ApiResponse(responseCode = "200", description = "오늘 자신이 올린 게시글이 있는 경우")
     @ApiResponse(responseCode = "204", description = "오늘 자신이 올린 게시글이 없는 경우")
     @GetMapping(params = {"type=DAILY", "scope=ME"})
-    ResponseEntity<PostFeedResponse> fetchDailyFeeds();
+    ResponseEntity<PostResponse> fetchDailyFeeds();
+
+    @Operation(summary = "게시물 생성", description = "게시물을 생성합니다.")
+    @PostMapping
+    PostResponse createPost(
+            @RequestBody
+            CreatePostRequest request
+    );
 }
