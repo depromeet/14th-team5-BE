@@ -7,7 +7,7 @@ import com.oing.dto.response.PostFeedResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.PostApi;
 import com.oing.util.PreSignedUrlGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
@@ -21,15 +21,11 @@ import java.util.*;
  * Date: 2023/12/05
  * Time: 12:24 PM
  */
+@RequiredArgsConstructor
 @Controller
 public class PostController implements PostApi {
 
     private final PreSignedUrlGenerator preSignedUrlGenerator;
-
-    @Autowired  // Or use constructor injection
-    public PostController(PreSignedUrlGenerator preSignedUrlGenerator) {
-        this.preSignedUrlGenerator = preSignedUrlGenerator;
-    }
 
     @Override
     public PreSignedUrlResponse requestPresignedUrl(Long memberId, String imageName) {
