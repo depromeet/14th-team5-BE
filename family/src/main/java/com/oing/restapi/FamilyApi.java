@@ -30,6 +30,7 @@ public interface FamilyApi {
     @PostMapping
     FamilyResponse createFamily();
 
+    @Operation(summary = "가족 초대 링크 조회", description = "가족 초대 링크를 조회합니다.")
     @GetMapping("/{familyId}/invitation-link")
     FamilyInvitationLinkResponse getInvitationLink(
             @Parameter(description = "가족 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
