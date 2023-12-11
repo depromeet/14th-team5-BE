@@ -88,4 +88,10 @@ public class AuthController implements AuthApi {
         //일어날 수 없는 일
         throw new DomainException(ErrorCode.AUTHORIZATION_FAILED);
     }
+
+    @Override
+    public AuthResultResponse forceToken(String memberId) {
+        TokenPair tokenPair = tokenGenerator.generateTokenPair(memberId);
+        return AuthResultResponse.of(tokenPair, false);
+    }
 }
