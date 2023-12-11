@@ -3,11 +3,14 @@ package com.oing.restapi;
 import com.oing.dto.response.PaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import com.oing.dto.response.PostFeedResponse;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +29,7 @@ import java.time.LocalDate;
 @Valid
 @RequestMapping("/v1/posts")
 public interface PostApi {
-    @Operation(summary = "데일리 게시물 조회", description = "날짜별 가족 게시물 목록을 조회합니다.")
+    @Operation(summary = "데일리 게시물 조회", description = "오늘 가족들이 올린 게시물 목록을 조회합니다. (자신 제외)")
     @GetMapping(params = {"type=DAILY", "scope=FAMILY"})
     PaginationResponse<PostFeedResponse> fetchDailyFeeds(
             @RequestParam(required = false, defaultValue = "1")
@@ -44,4 +47,10 @@ public interface PostApi {
             @Parameter(description = "오늘의 날짜", example = "2023-12-05")
             LocalDate date
     );
+
+    @Operation(summary = "데일리 게시물 조회", description = "오늘 자신이 올린 게시글을 조회합니다.\n 아직 업로드하지 않았으면 204를 반환합니다.")
+    @ApiResponse(responseCode = "200", description = "오늘 자신이 올린 게시글이 있는 경우")
+    @ApiResponse(responseCode = "204", description = "오늘 자신이 올린 게시글이 없는 경우")
+    @GetMapping(params = {"type=DAILY", "scope=ME"})
+    ResponseEntity<PostFeedResponse> fetchDailyFeeds();
 }

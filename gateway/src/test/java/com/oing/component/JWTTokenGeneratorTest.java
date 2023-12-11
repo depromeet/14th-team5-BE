@@ -3,7 +3,7 @@ package com.oing.component;
 import com.oing.config.properties.TokenExpirationProperties;
 import com.oing.config.properties.TokenProperties;
 import com.oing.domain.TokenPair;
-import com.oing.domain.exception.TokenNotValidException;
+import com.oing.exception.TokenNotValidException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -7,7 +7,6 @@ import com.oing.domain.TokenPair;
 import com.oing.domain.TokenType;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
-import com.oing.domain.exception.TokenNotValidException;
 import com.oing.service.TokenGenerator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
