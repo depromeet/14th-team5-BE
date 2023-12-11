@@ -1,5 +1,6 @@
 package com.oing.controller;
 
+import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
@@ -44,5 +45,10 @@ public class MemberController implements MemberApi {
                 memberNameBase,
                 "https://picsum.photos/200/300?random=1"
         );
+    }
+
+    @Override
+    public MemberResponse updateMember(String memberId, UpdateMemberRequest request) {
+        return null;
     }
 }
