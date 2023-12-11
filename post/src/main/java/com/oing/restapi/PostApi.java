@@ -1,15 +1,14 @@
 package com.oing.restapi;
 
 import com.oing.dto.response.PaginationResponse;
+import com.oing.dto.response.PostFeedResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import com.oing.dto.response.PostFeedResponse;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,11 +32,9 @@ public interface PostApi {
     @Operation(summary = "S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
     @GetMapping("/presigned-url")
     PreSignedUrlResponse requestPresignedUrl(
-            @RequestParam(required = false)
-            @Parameter(description = "회원 Id", example = "1")
+            @Parameter(description = "회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E")
             Long memberId,
 
-            @RequestParam(required = false, defaultValue = "10")
             @Parameter(description = "이미지 이름", example = "image")
             String imageName
     );
