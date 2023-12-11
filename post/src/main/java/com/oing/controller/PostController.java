@@ -80,4 +80,14 @@ public class PostController implements PostApi {
     public PostResponse createPost(CreatePostRequest request) {
         return null;
     }
+
+    @Override
+    public PostResponse getPost(String postId) {
+        return null;
+    }
+
+    @Override
+    public PaginationResponse<PostResponse> getPostsByMember(String memberId) {
+        return null;
+    }
 }

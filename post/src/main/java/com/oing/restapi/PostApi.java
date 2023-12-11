@@ -57,4 +57,20 @@ public interface PostApi {
             @RequestBody
             CreatePostRequest request
     );
+
+    @Operation(summary = "게시물 조회", description = "게시물을 조회합니다.")
+    @GetMapping("/{postId}")
+    PostResponse getPost(
+            @PathVariable
+            @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            String postId
+    );
+
+    @Operation(summary = "사용자 게시물 목록 조회", description = "사용자별 게시물 목록을 조회합니다.")
+    @GetMapping(params = {"memberId"})
+    PaginationResponse<PostResponse> getPostsByMember(
+            @RequestParam
+            @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            String memberId
+    );
 }
