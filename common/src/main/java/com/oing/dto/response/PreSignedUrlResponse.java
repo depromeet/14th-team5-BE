@@ -7,4 +7,7 @@ public record PreSignedUrlResponse(
         @Schema(description = "PreSingedUrl", example = "")
         String url
 ){
+        public static PreSignedUrlResponse of(String url) {
+                return new PreSignedUrlResponse(url);
+        }
 }

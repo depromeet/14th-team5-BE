@@ -3,7 +3,10 @@ package com.oing.controller;
 
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostFeedResponse;
+import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.PostApi;
+import com.oing.util.PreSignedUrlGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
@@ -20,6 +23,19 @@ import java.util.Random;
  */
 @Controller
 public class PostController implements PostApi {
+
+    private final PreSignedUrlGenerator preSignedUrlGenerator;
+
+    @Autowired  // Or use constructor injection
+    public PostController(PreSignedUrlGenerator preSignedUrlGenerator) {
+        this.preSignedUrlGenerator = preSignedUrlGenerator;
+    }
+
+    @Override
+    public PreSignedUrlResponse requestPresignedUrl(Long memberId, String imageName) {
+        return preSignedUrlGenerator.getPreSignedUrl(imageName, memberId);
+    }
+
     @Override
     public PaginationResponse<PostFeedResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date) {
         if (page > 5) return new PaginationResponse<>(page, 5, size, false, List.of());
