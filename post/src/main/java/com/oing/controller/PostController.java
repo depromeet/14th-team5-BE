@@ -5,7 +5,11 @@ import com.oing.domain.model.MemberPost;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
+import com.oing.dto.response.PostFeedResponse;
+import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.PostApi;
+import com.oing.util.PreSignedUrlGenerator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
@@ -19,8 +23,17 @@ import java.util.*;
  * Date: 2023/12/05
  * Time: 12:24 PM
  */
+@RequiredArgsConstructor
 @Controller
 public class PostController implements PostApi {
+
+    private final PreSignedUrlGenerator preSignedUrlGenerator;
+
+    @Override
+    public PreSignedUrlResponse requestPresignedUrl(Long memberId, String imageName) {
+        return preSignedUrlGenerator.getPreSignedUrl(imageName, memberId);
+    }
+
     @Override
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date) {
         if (page > 5) return new PaginationResponse<>(page, 5, size, false, List.of());

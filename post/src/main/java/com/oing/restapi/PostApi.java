@@ -2,6 +2,8 @@ package com.oing.restapi;
 
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
+import com.oing.dto.response.PostFeedResponse;
+import com.oing.dto.response.PreSignedUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,6 +28,16 @@ import java.time.LocalDate;
 @Valid
 @RequestMapping("/v1/posts")
 public interface PostApi {
+    @Operation(summary = "S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
+    @PostMapping("/image-upload-request")
+    PreSignedUrlResponse requestPresignedUrl(
+            @Parameter(description = "회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E")
+            Long memberId,
+
+            @Parameter(description = "이미지 이름", example = "image")
+            String imageName
+    );
+
     @Operation(summary = "데일리 게시물 조회", description = "오늘 가족들이 올린 게시물 목록을 조회합니다. (자신 제외)")
     @GetMapping(params = {"type=DAILY", "scope=FAMILY"})
     PaginationResponse<PostResponse> fetchDailyFeeds(
