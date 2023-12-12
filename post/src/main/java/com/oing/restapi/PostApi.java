@@ -2,7 +2,6 @@ package com.oing.restapi;
 
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
-import com.oing.dto.response.PostFeedResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

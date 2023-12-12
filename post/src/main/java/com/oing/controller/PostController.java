@@ -5,7 +5,6 @@ import com.oing.domain.model.MemberPost;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
-import com.oing.dto.response.PostFeedResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.PostApi;
 import com.oing.util.PreSignedUrlGenerator;

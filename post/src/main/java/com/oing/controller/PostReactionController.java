@@ -13,6 +13,6 @@ public class PostReactionController implements PostReactionApi {
 
     @Override
     public void deletePostReaction(String postId, CreatePostReactionRequest request) {
-        
+
     }
 }
