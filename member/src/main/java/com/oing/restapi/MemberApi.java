@@ -1,5 +1,6 @@
 package com.oing.restapi;
 
+import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.PaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,8 +16,10 @@ import com.oing.dto.response.MemberResponse;
 @Valid
 @RequestMapping("/v1/members")
 public interface MemberApi {
-    @Operation(summary = "가족 구성원 프로필 조회", description = "가족 구성원 프로필을 조회합니다.")
-    @GetMapping(value = "/profile", params = {"type=FAMILY"})
+    @Operation(summary = "가족 구성원 프로필 조회", description = "가족 구성원 프로필을 조회합니다.", parameters = {
+            @Parameter(name = "type", description = "가족 구성원 타입", example = "FAMILY", required = true)
+    })
+    @GetMapping(params = {"type=FAMILY"})
     PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfile(
             @RequestParam(required = false, defaultValue = "1")
             @Parameter(description = "가져올 현재 페이지", example = "1")
@@ -29,6 +32,22 @@ public interface MemberApi {
             Integer size
     );
 
+    @Operation(summary = "회원 조회", description = "회원을 조회합니다.")
     @GetMapping("/{memberId}")
-    MemberResponse getMember(@PathVariable String memberId);
+    MemberResponse getMember(
+            @Parameter(description = "조회할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String memberId
+    );
+
+    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다.")
+    @PutMapping("/{memberId}")
+    MemberResponse updateMember(
+            @Parameter(description = "수정할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String memberId,
+
+            @RequestBody
+            UpdateMemberRequest request
+    );
 }

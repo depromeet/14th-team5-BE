@@ -53,4 +53,11 @@ public interface AuthApi {
             @Parameter(hidden = true) Authentication authentication,
             @RequestBody @Valid CreateNewMemberRequest request
     );
+
+    //TODO: MUST DELETED IN PRODUCTION
+    @Operation(summary = "토큰 강제 발행", description = "토큰을 강제로 발행합니다.")
+    @PostMapping("/force-token")
+    AuthResultResponse forceToken(
+            @RequestParam("memberId") String memberId
+    );
 }

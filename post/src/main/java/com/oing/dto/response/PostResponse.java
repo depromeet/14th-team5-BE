@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
  * Time: 12:30 PM
  */
 @Schema(description = "피드 게시물 응답")
-public record PostFeedResponse(
+public record PostResponse(
         @Schema(description = "피드 게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
         String postId,
 
