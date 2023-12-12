@@ -10,4 +10,9 @@ public class PostReactionController implements PostReactionApi {
     public void reactToPost(String postId, CreatePostReactionRequest request) {
 
     }
+
+    @Override
+    public void deletePostReaction(String postId, CreatePostReactionRequest request) {
+        
+    }
 }

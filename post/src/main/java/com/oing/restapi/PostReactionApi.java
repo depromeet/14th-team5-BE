@@ -22,4 +22,15 @@ public interface PostReactionApi {
             @RequestBody
             CreatePostReactionRequest request
     );
+
+    @Operation(summary = "게시물 반응 삭제", description = "게시물에 반응을 삭제합니다.")
+    @DeleteMapping
+    void deletePostReaction(
+            @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String postId,
+
+            @RequestBody
+            CreatePostReactionRequest request
+    );
 }
