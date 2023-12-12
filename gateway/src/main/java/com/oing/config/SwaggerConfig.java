@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
 @OpenAPIDefinition(
-        servers = @Server(url = "https://api.no5ing.kr/", description = "Default Server URL"),
+        servers = @Server(url = "https://dev.api.no5ing.kr/", description = "Default Server URL"),
         info = @Info(
                 title = "no5ing 백엔드 API 명세",
                 description = "springdoc을 이용한 Swagger API 문서입니다.",

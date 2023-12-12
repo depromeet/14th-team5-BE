@@ -2,7 +2,9 @@ package com.oing.controller;
 
 
 import com.oing.domain.model.MemberPost;
+import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
+import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PostFeedResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.PostApi;
@@ -33,19 +35,19 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PaginationResponse<PostFeedResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date) {
+    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date) {
         if (page > 5) return new PaginationResponse<>(page, 5, size, false, List.of());
 
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
         String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
 
-        List<PostFeedResponse> mockResponses = new ArrayList<>();
+        List<PostResponse> mockResponses = new ArrayList<>();
         Random random = new Random();
         for(int i = 0; i < size; i++) {
             int currentIndex = i + ((page - 1) * size);
             String suffix = String.format("%02d", currentIndex);
             mockResponses.add(
-                    new PostFeedResponse(
+                    new PostResponse(
                             postIdBase + suffix,
                             writerIdBase + suffix,
                             random.nextInt(5),
@@ -60,7 +62,7 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<PostFeedResponse> fetchDailyFeeds() {
+    public ResponseEntity<PostResponse> fetchDailyFeeds() {
 //        Optional<MemberPost> myPost = memberPostService.findPostByMemberId(tokenAuthenticationHolder.getUserId());
         Optional<MemberPost> myPost;
         if (new Random().nextBoolean()) {
@@ -75,7 +77,7 @@ public class PostController implements PostApi {
 
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
         String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
-        PostFeedResponse mockResponse = new PostFeedResponse(
+        PostResponse mockResponse = new PostResponse(
                 postIdBase,
                 writerIdBase,
                 0,
@@ -85,5 +87,20 @@ public class PostController implements PostApi {
         );
 
         return ResponseEntity.ok(mockResponse);
+    }
+
+    @Override
+    public PostResponse createPost(CreatePostRequest request) {
+        return null;
+    }
+
+    @Override
+    public PostResponse getPost(String postId) {
+        return null;
+    }
+
+    @Override
+    public PaginationResponse<PostResponse> getPostsByMember(String memberId) {
+        return null;
     }
 }
