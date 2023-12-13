@@ -65,7 +65,9 @@ public class PostController implements PostApi {
 //        Optional<MemberPost> myPost = memberPostService.findPostByMemberId(tokenAuthenticationHolder.getUserId());
         Optional<MemberPost> myPost;
         if (new Random().nextBoolean()) {
-            myPost = Optional.of(new MemberPost("01HGW2N7EHJVJ4CJ999RRS2E", "01HGW2N7EHJVJ4CJ888RRS2E", LocalDate.now(), "https://picsum.photos/200/300?random=00", 0, 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST));
+            myPost = Optional.of(new MemberPost("01HGW2N7EHJVJ4CJ999RRS2E", "01HGW2N7EHJVJ4CJ888RRS2E",
+                    LocalDate.now(), "https://picsum.photos/200/300?random=00", 0, 0,
+                    Collections.EMPTY_LIST, Collections.EMPTY_LIST));
         } else {
             myPost = Optional.empty();
         }
