@@ -27,8 +27,11 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "post_date", nullable = false)
     private LocalDate postDate;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
+
+    @Column(name = "content")
+    private String content;
 
     @Column(name = "comment_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int commentCnt;
