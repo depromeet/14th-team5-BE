@@ -26,9 +26,10 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     private final AmazonS3Client amazonS3Client;
 
     @Override
-    public PreSignedUrlResponse getPreSignedUrl(String imageName, Long memberId) {
+    public PreSignedUrlResponse getFeedPreSignedUrl(String imageName, Long memberId) {
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(imageName, memberId);
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest("feed",
+                imageName, memberId);
 
         return new PreSignedUrlResponse(generatePreSignedUrl(generatePresignedUrlRequest));
     }
@@ -44,9 +45,9 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
         return preSignedUrl;
     }
 
-    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String imageName, Long memberId) {
+    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String directory, String imageName, Long memberId) {
         String savedImageName = uniqueImageName(imageName, memberId);
-        String savedImagePath = "images" + "/" + savedImageName;
+        String savedImagePath = "images" + "/" + directory + "/" + savedImageName;
 
         return getPreSignedUrlRequest(bucket, savedImagePath);
     }
