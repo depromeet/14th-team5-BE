@@ -64,7 +64,7 @@ public interface PostApi {
 
     @Operation(summary = "게시물 생성", description = "게시물을 생성합니다.")
     @PostMapping
-    PostResponse createPost(
+    ResponseEntity<PostResponse> createPost(
             @RequestBody
             CreatePostRequest request
     );

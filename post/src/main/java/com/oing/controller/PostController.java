@@ -52,6 +52,7 @@ public class PostController implements PostApi {
                             random.nextInt(5),
                             random.nextInt(5),
                             "https://picsum.photos/200/300?random=" + currentIndex,
+                            "hi",
                             ZonedDateTime.now().minusSeconds(currentIndex * 30L)
                     )
             );
@@ -84,6 +85,7 @@ public class PostController implements PostApi {
                 0,
                 0,
                 "https://picsum.photos/200/300?random=00",
+                "hi",
                 ZonedDateTime.now()
         );
 
@@ -91,8 +93,25 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PostResponse createPost(CreatePostRequest request) {
-        return null;
+    public ResponseEntity<PostResponse> createPost(CreatePostRequest request) {
+        CreatePostRequest createPostRequest = new CreatePostRequest(
+                request.imageUrl(),
+                request.content()
+        );
+
+        String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
+        String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
+        PostResponse mockResponse = new PostResponse(
+                postIdBase,
+                writerIdBase,
+                0,
+                0,
+                createPostRequest.imageUrl(),
+                createPostRequest.content(),
+                ZonedDateTime.now()
+        );
+
+        return ResponseEntity.ok(mockResponse);
     }
 
     @Override

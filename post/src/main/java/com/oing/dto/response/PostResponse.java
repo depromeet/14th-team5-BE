@@ -27,6 +27,9 @@ public record PostResponse(
         @Schema(description = "피드 게시물 사진 주소", example = "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97")
         String imageUrl,
 
+        @Schema(description = "피드 게시물 내용", example = "맛있는 밥!")
+        String content,
+
         @Schema(description = "피드 작성 시간", example = "2021-12-05T12:30:00.000+09:00")
         ZonedDateTime createdAt
 ) {
