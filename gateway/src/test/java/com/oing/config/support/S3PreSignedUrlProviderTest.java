@@ -40,7 +40,7 @@ public class S3PreSignedUrlProviderTest extends InfraTest {
         when(amazonS3Client.generatePresignedUrl(any(GeneratePresignedUrlRequest.class))).thenReturn(mockPresignedUrl);
 
         // when
-        PreSignedUrlResponse response = provider.getFeedPreSignedUrl(imageName, memberId);
+        PreSignedUrlResponse response = provider.getFeedPreSignedUrl(imageName);
 
         // then
         Assertions.assertAll(

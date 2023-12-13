@@ -28,11 +28,8 @@ import java.time.LocalDate;
 @RequestMapping("/v1/posts")
 public interface PostApi {
     @Operation(summary = "S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
-    @PostMapping("/presigned-url")
+    @PostMapping("/image-upload-request")
     PreSignedUrlResponse requestPresignedUrl(
-            @Parameter(description = "회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E")
-            Long memberId,
-
             @Parameter(description = "이미지 이름", example = "image")
             String imageName
     );

@@ -26,10 +26,10 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     private final AmazonS3Client amazonS3Client;
 
     @Override
-    public PreSignedUrlResponse getFeedPreSignedUrl(String imageName, Long memberId) {
+    public PreSignedUrlResponse getFeedPreSignedUrl(String imageName) {
 
         GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest("feed",
-                imageName, memberId);
+                imageName);
 
         return new PreSignedUrlResponse(generatePreSignedUrl(generatePresignedUrlRequest));
     }
@@ -45,8 +45,8 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
         return preSignedUrl;
     }
 
-    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String directory, String imageName, Long memberId) {
-        String savedImageName = uniqueImageName(imageName, memberId);
+    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String directory, String imageName) {
+        String savedImageName = uniqueImageName(imageName);
         String savedImagePath = "images" + "/" + directory + "/" + savedImageName;
 
         return getPreSignedUrlRequest(bucket, savedImagePath);
@@ -65,9 +65,9 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     }
 
     /**
-     * image path 형식 : "images" + "/" + memberId + "/" + UUID + "_" + imageName + 확장자;
+     * image path 형식 : "images" + "/" + "기능 dir" + "/" + UUID + "_" + imageName + 확장자;
      */
-    private String uniqueImageName(String imageName, Long memberId) {
-        return memberId + "/" + UUID.randomUUID() + "_" + imageName;
+    private String uniqueImageName(String imageName) {
+        return UUID.randomUUID() + "_" + imageName;
     }
 }
