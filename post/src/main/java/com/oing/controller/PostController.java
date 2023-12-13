@@ -29,8 +29,8 @@ public class PostController implements PostApi {
     private final PreSignedUrlGenerator preSignedUrlGenerator;
 
     @Override
-    public PreSignedUrlResponse requestPresignedUrl(String imageName) {
-        return preSignedUrlGenerator.getFeedPreSignedUrl(imageName);
+    public ResponseEntity<PreSignedUrlResponse> requestPresignedUrl(String imageName) {
+        return ResponseEntity.ok(preSignedUrlGenerator.getFeedPreSignedUrl(imageName));
     }
 
     @Override
