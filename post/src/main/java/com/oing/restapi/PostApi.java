@@ -37,7 +37,7 @@ public interface PostApi {
             String imageName
     );
 
-    @Operation(summary = "게시물 조회", description = "게시물 목록을 조회합니다.")
+    @Operation(summary = "게시물 조회", description = "게시물 목록을 조회합니다. 조회 기준은 생성 순서입니다.")
     @GetMapping
     PaginationResponse<PostResponse> fetchDailyFeeds(
             @RequestParam(required = false, defaultValue = "1")
