@@ -57,7 +57,11 @@ public interface PostApi {
 
             @RequestParam(required = false)
             @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
-            String memberId
+            String memberId,
+
+            @RequestParam(required = false)
+            @Parameter(description = "정렬 방식", example = "DESC | ASC")
+            String sort
     );
 
     @Operation(summary = "게시물 생성", description = "게시물을 생성합니다.")
