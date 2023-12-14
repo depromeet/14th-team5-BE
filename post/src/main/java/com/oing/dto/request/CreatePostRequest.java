@@ -1,6 +1,7 @@
 package com.oing.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * no5ing-server
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "피드 게시물 생성 요청")
 public record CreatePostRequest(
+        @NotNull
         @Schema(description = "피드 게시물 사진 주소", example = "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97")
         String imageUrl,
 
