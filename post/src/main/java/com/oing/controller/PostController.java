@@ -34,7 +34,7 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId) {
+    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId, String sort) {
         if (page > 5) return new PaginationResponse<>(page, 5, size, false, List.of());
         if(memberId != null) {
             return new PaginationResponse<>(page, 5, size, false, List.of(
