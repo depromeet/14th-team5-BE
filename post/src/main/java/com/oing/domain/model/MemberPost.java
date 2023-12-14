@@ -30,7 +30,7 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @Column(name = "content")
+    @Column(name = "content", columnDefinition = "VARCHAR(6)")
     private String content;
 
     @Column(name = "comment_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
@@ -44,4 +44,15 @@ public class MemberPost extends BaseAuditEntity {
 
     @OneToMany(mappedBy = "post")
     private List<MemberPostReaction> reactions = new ArrayList<>();
+
+    public MemberPost(String id, String memberId, LocalDate postDate, String imageUrl, String content,
+                      int commentCnt, int reactionCnt) {
+        this.id = id;
+        this.memberId = memberId;
+        this.postDate = postDate;
+        this.imageUrl = imageUrl;
+        this.content = content;
+        this.commentCnt = commentCnt;
+        this.reactionCnt = reactionCnt;
+    }
 }
