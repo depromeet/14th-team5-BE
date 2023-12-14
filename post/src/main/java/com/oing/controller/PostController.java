@@ -1,7 +1,6 @@
 package com.oing.controller;
 
 
-import com.oing.domain.model.MemberPost;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
@@ -15,7 +14,6 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -46,6 +44,7 @@ public class PostController implements PostApi {
                             0,
                             0,
                             "https://picsum.photos/200/300?random=00",
+                            "즐거운 하루~",
                             ZonedDateTime.now()
                     )
             ));
