@@ -34,8 +34,20 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date) {
+    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId) {
         if (page > 5) return new PaginationResponse<>(page, 5, size, false, List.of());
+        if(memberId != null) {
+            return new PaginationResponse<>(page, 5, size, false, List.of(
+                    new PostResponse(
+                            "01HGW2N7EHJVJ4CJ999RRS2E",
+                            memberId,
+                            0,
+                            0,
+                            "https://picsum.photos/200/300?random=00",
+                            ZonedDateTime.now()
+                    )
+            ));
+        }
 
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
         String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
@@ -61,45 +73,19 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<PostResponse> fetchDailyFeeds() {
-//        Optional<MemberPost> myPost = memberPostService.findPostByMemberId(tokenAuthenticationHolder.getUserId());
-        Optional<MemberPost> myPost;
-        if (new Random().nextBoolean()) {
-            myPost = Optional.of(new MemberPost("01HGW2N7EHJVJ4CJ999RRS2E", "01HGW2N7EHJVJ4CJ888RRS2E", LocalDate.now(), "https://picsum.photos/200/300?random=00", 0, 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST));
-        } else {
-            myPost = Optional.empty();
-        }
-
-        if (myPost.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
-        PostResponse mockResponse = new PostResponse(
-                postIdBase,
-                writerIdBase,
-                0,
-                0,
-                "https://picsum.photos/200/300?random=00",
-                ZonedDateTime.now()
-        );
-
-        return ResponseEntity.ok(mockResponse);
-    }
-
-    @Override
     public PostResponse createPost(CreatePostRequest request) {
         return null;
     }
 
     @Override
     public PostResponse getPost(String postId) {
-        return null;
-    }
-
-    @Override
-    public PaginationResponse<PostResponse> getPostsByMember(String memberId) {
-        return null;
+        return new PostResponse(
+                postId,
+                "01HGW2N7EHJVJ4CJ888RRS2E",
+                0,
+                0,
+                "https://picsum.photos/200/300?random=00",
+                ZonedDateTime.now()
+        );
     }
 }
