@@ -9,12 +9,14 @@ import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.PostApi;
 import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * no5ing-server
@@ -29,8 +31,8 @@ public class PostController implements PostApi {
     private final PreSignedUrlGenerator preSignedUrlGenerator;
 
     @Override
-    public ResponseEntity<PreSignedUrlResponse> requestPresignedUrl(String imageName) {
-        return ResponseEntity.ok(preSignedUrlGenerator.getFeedPreSignedUrl(imageName));
+    public PreSignedUrlResponse requestPresignedUrl(String imageName) {
+        return preSignedUrlGenerator.getFeedPreSignedUrl(imageName);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<PostResponse> fetchDailyFeeds() {
+    public PostResponse fetchDailyFeeds() {
 //        Optional<MemberPost> myPost = memberPostService.findPostByMemberId(tokenAuthenticationHolder.getUserId());
         Optional<MemberPost> myPost;
         if (new Random().nextBoolean()) {
@@ -74,7 +76,7 @@ public class PostController implements PostApi {
         }
 
         if (myPost.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return null;
         }
 
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
@@ -89,11 +91,11 @@ public class PostController implements PostApi {
                 ZonedDateTime.now()
         );
 
-        return ResponseEntity.ok(mockResponse);
+        return mockResponse;
     }
 
     @Override
-    public ResponseEntity<PostResponse> createPost(CreatePostRequest request) {
+    public PostResponse createPost(CreatePostRequest request) {
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
         String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
         PostResponse mockResponse = new PostResponse(
@@ -106,7 +108,7 @@ public class PostController implements PostApi {
                 ZonedDateTime.now()
         );
 
-        return ResponseEntity.ok(mockResponse);
+        return mockResponse;
     }
 
     @Override

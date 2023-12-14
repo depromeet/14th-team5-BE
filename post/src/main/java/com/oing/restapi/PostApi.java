@@ -2,6 +2,7 @@ package com.oing.restapi;
 
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
+import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,9 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import com.oing.dto.response.PostResponse;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -29,7 +28,7 @@ import java.time.LocalDate;
 public interface PostApi {
     @Operation(summary = "S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
     @PostMapping("/image-upload-request")
-    ResponseEntity<PreSignedUrlResponse> requestPresignedUrl(
+    PreSignedUrlResponse requestPresignedUrl(
             @Parameter(description = "이미지 이름", example = "image")
             String imageName
     );
@@ -57,11 +56,11 @@ public interface PostApi {
     @ApiResponse(responseCode = "200", description = "오늘 자신이 올린 게시글이 있는 경우")
     @ApiResponse(responseCode = "204", description = "오늘 자신이 올린 게시글이 없는 경우")
     @GetMapping(params = {"type=DAILY", "scope=ME"})
-    ResponseEntity<PostResponse> fetchDailyFeeds();
+    PostResponse fetchDailyFeeds();
 
     @Operation(summary = "게시물 생성", description = "게시물을 생성합니다.")
     @PostMapping
-    ResponseEntity<PostResponse> createPost(
+    PostResponse createPost(
             @RequestBody
             CreatePostRequest request
     );
