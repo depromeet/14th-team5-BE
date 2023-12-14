@@ -48,6 +48,11 @@ public class MemberController implements MemberApi {
 
     @Override
     public MemberResponse updateMember(String memberId, UpdateMemberRequest request) {
-        return null;
+        //TODO: 프로필 이미지 수정 로직 추가
+        return new MemberResponse(
+                memberId,
+                request.name(),
+                request.profileImageUrl()
+        );
     }
 }
