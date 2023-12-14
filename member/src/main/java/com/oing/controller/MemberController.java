@@ -1,6 +1,7 @@
 package com.oing.controller;
 
-import com.oing.dto.request.DeleteMemberRequest;
+import com.oing.domain.exception.DomainException;
+import com.oing.domain.exception.ErrorCode;
 import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
@@ -54,16 +55,20 @@ public class MemberController implements MemberApi {
     }
 
     @Override
-    public MemberResponse deleteMember(String memberId, DeleteMemberRequest request) {
-        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String withdrawalReason = request.withdrawalReason();
-        //TODO: 탈퇴 요청한 회원 id와 요청으로 들어온 memberId 일치하는지 검증
+    public MemberResponse deleteMember(String memberId) {
+        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E97";
+        memberId = "01HGW2N7EHJVJ4CJ999RRS2E97";
         //TODO: 회원 탈퇴 사유 저장
 
-        return new MemberResponse(
-                memberIdBase,
-                null,
-                null
-        );
+        //TODO: 탈퇴 요청한 회원 id와 요청으로 들어온 memberId 일치하는지 검증
+        if (memberIdBase.equals(memberId)) {
+            //TODO: 타객체들간의 연관관계 해제 및 마스킹 처리
+            return new MemberResponse(
+                    memberIdBase,
+                    null,
+                    null
+            );
+        }
+        throw new DomainException(ErrorCode.AUTHORIZATION_FAILED);
     }
 }

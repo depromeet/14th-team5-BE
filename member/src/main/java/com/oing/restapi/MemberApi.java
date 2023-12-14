@@ -1,6 +1,5 @@
 package com.oing.restapi;
 
-import com.oing.dto.request.DeleteMemberRequest;
 import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
@@ -53,13 +52,10 @@ public interface MemberApi {
     );
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 수행합니다.")
-    @PutMapping("/{memberId}")
+    @DeleteMapping("/{memberId}")
     MemberResponse deleteMember(
             @Parameter(description = "탈퇴할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
-            String memberId,
-
-            @RequestBody
-            DeleteMemberRequest request
+            String memberId
     );
 }
