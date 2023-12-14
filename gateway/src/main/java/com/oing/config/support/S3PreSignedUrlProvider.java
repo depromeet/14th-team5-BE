@@ -7,13 +7,14 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import java.util.Date;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     private String bucket;
 
     private final AmazonS3Client amazonS3Client;
+    private final IdentityGenerator identityGenerator;
 
     @Override
     public PreSignedUrlResponse getFeedPreSignedUrl(String imageName) {
@@ -46,7 +48,7 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     }
 
     private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String directory, String imageName) {
-        String savedImageName = uniqueImageName(imageName);
+        String savedImageName = generateUniqueImageName(imageName);
         String savedImagePath = "images" + "/" + directory + "/" + savedImageName;
 
         return getPreSignedUrlRequest(bucket, savedImagePath);
@@ -65,9 +67,10 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     }
 
     /**
-     * image path 형식 : "images" + "/" + "기능 dir" + "/" + UUID + "_" + imageName + 확장자;
+     * image path 형식 : "images" + "/" + "기능 dir" + "/" + ULID + 확장자;
      */
-    private String uniqueImageName(String imageName) {
-        return UUID.randomUUID() + "_" + imageName;
+    private String generateUniqueImageName(String imageName) {
+        String ext = imageName.substring(imageName.lastIndexOf("."));
+        return identityGenerator.generateIdentity() + ext;
     }
 }
