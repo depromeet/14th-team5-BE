@@ -1,5 +1,6 @@
 package com.oing.controller;
 
+import com.oing.dto.request.DeleteMemberRequest;
 import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
@@ -48,6 +49,21 @@ public class MemberController implements MemberApi {
 
     @Override
     public MemberResponse updateMember(String memberId, UpdateMemberRequest request) {
+        //TODO: 수정 요청한 회원 id와 요청으로 들어온 memberId 일치하는지 검증
         return null;
+    }
+
+    @Override
+    public MemberResponse deleteMember(String memberId, DeleteMemberRequest request) {
+        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
+        String withdrawalReason = request.withdrawalReason();
+        //TODO: 탈퇴 요청한 회원 id와 요청으로 들어온 memberId 일치하는지 검증
+        //TODO: 회원 탈퇴 사유 저장
+
+        return new MemberResponse(
+                memberIdBase,
+                null,
+                null
+        );
     }
 }
