@@ -20,13 +20,14 @@ public class MemberPostService {
      * 범위 날짜 안에 가족들이 업로드한 게시물 중 대표(가장 최신) 게시물을 가져온다.
      */
     public List<MemberPost> findLatestFamilyPostOfEveryday(List<String> family, LocalDate startDate, LocalDate endDate) {
-        return memberPostRepository.findPostByMemberIdsBetweenDateGroupByMaxCreatedAtOrderByCreatedAtAsc(family, startDate, endDate);
+        return memberPostRepository.findLatestFamilyPostOfEveryday(family, startDate, endDate);
     }
 
+    
     /**
      *  범위 날짜 안에 가족들이 업로드한 게시물의 수를 가져온다.
      */
     public List<MemberPostCountDTO> countFamilyPostsOfEveryday(List<String> family, LocalDate startDate, LocalDate endDate) {
-        return memberPostRepository.countPostsByMemberIdsBetweenDateGroupByCreatedAtOrderByCreatedAtAsc(family, startDate, endDate);
+        return memberPostRepository.countFamilyPostsOfEveryday(family, startDate, endDate);
     }
 }

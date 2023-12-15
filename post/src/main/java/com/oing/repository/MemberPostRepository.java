@@ -15,7 +15,7 @@ public interface MemberPostRepository extends JpaRepository<MemberPost, String> 
                 "p.createdAt BETWEEN :startDate AND :endDate " +
             "GROUP BY p.createdAt HAVING p.createdAt = MAX(p.createdAt) " +
             "ORDER BY p.createdAt ASC")
-    List<MemberPost> findPostByMemberIdsBetweenDateGroupByMaxCreatedAtOrderByCreatedAtAsc(List<String> memberIds, LocalDate startDate, LocalDate endDate);
+    List<MemberPost> findLatestFamilyPostOfEveryday(List<String> memberIds, LocalDate startDate, LocalDate endDate);
 
 
     @Query("SELECT new com.oing.domain.MemberPostCountDTO(p.createdAt, COUNT(p)) FROM member_post p " +
@@ -23,5 +23,5 @@ public interface MemberPostRepository extends JpaRepository<MemberPost, String> 
                 "p.createdAt BETWEEN :startDate AND :endDate " +
             "GROUP BY p.createdAt " +
             "ORDER BY p.createdAt ASC")
-    List<MemberPostCountDTO> countPostsByMemberIdsBetweenDateGroupByCreatedAtOrderByCreatedAtAsc(List<String> memberIds, LocalDate startDate, LocalDate endDate);
+    List<MemberPostCountDTO> countFamilyPostsOfEveryday(List<String> memberIds, LocalDate startDate, LocalDate endDate);
 }
