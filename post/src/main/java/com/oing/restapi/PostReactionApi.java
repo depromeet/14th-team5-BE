@@ -19,6 +19,7 @@ public interface PostReactionApi {
             @PathVariable
             String postId,
 
+            @Valid
             @RequestBody
             CreatePostReactionRequest request
     );
@@ -30,6 +31,7 @@ public interface PostReactionApi {
             @PathVariable
             String postId,
 
+            @Valid
             @RequestBody
             CreatePostReactionRequest request
     );
