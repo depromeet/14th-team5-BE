@@ -58,8 +58,8 @@ public class CalendarController implements CalendarApi {
     }
 
     private List<CalendarResponse> getCalendarResponses(List<String> familyIds, LocalDate startDate, LocalDate endDate) {
-        List<MemberPost> representativePosts = memberPostService.findLatestFamilyPostOfEveryday(familyIds, startDate, endDate);
-        List<MemberPostCountDTO> postCounts = memberPostService.countFamilyPostsOfEveryday(familyIds, startDate, endDate);
+        List<MemberPost> representativePosts = memberPostService.findLatestPostOfEveryday(familyIds, startDate, endDate);
+        List<MemberPostCountDTO> postCounts = memberPostService.countPostsOfEveryday(familyIds, startDate, endDate);
 
         return mapPostToCalendar(representativePosts, postCounts, familyIds.size());
     }

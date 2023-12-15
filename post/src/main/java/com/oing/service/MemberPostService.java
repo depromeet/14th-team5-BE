@@ -17,17 +17,25 @@ public class MemberPostService {
 
 
     /**
-     * 범위 날짜 안에 가족들이 업로드한 게시물 중 대표(가장 최신) 게시물을 가져온다.
+     * 멤버들이 범위 날짜 안에 올린 대표 게시물을 가져온다.
+     * (대표 게시글의 기준은 당일 가장 늦게 올라온 게시글)
+     * @param memberIds 조회 대상 멤버들의 ID
+     * @param startDate 조회 시작 날짜
+     * @param endDate 조회 종료 날짜
      */
-    public List<MemberPost> findLatestFamilyPostOfEveryday(List<String> family, LocalDate startDate, LocalDate endDate) {
-        return memberPostRepository.findLatestFamilyPostOfEveryday(family, startDate, endDate);
+    public List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDate startDate, LocalDate endDate) {
+        return memberPostRepository.findLatestPostOfEveryday(memberIds, startDate, endDate);
     }
 
     
     /**
-     *  범위 날짜 안에 가족들이 업로드한 게시물의 수를 가져온다.
+     *  멤버들이 범위 날짜 안에 올린 게시글의 갯수를 가져온다.
+     * @param memberIds 조회 대상 멤버들의 ID
+     * @param startDate 조회 시작 날짜
+     * @param endDate 조회 종료 날짜
+     * @return 날짜별 게시글 갯수 DTO
      */
-    public List<MemberPostCountDTO> countFamilyPostsOfEveryday(List<String> family, LocalDate startDate, LocalDate endDate) {
-        return memberPostRepository.countFamilyPostsOfEveryday(family, startDate, endDate);
+    public List<MemberPostCountDTO> countPostsOfEveryday(List<String> memberIds, LocalDate startDate, LocalDate endDate) {
+        return memberPostRepository.countPostsOfEveryday(memberIds, startDate, endDate);
     }
 }
