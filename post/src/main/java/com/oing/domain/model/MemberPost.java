@@ -1,5 +1,7 @@
 package com.oing.domain.model;
 
+import com.oing.domain.exception.DomainException;
+import com.oing.domain.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,7 +32,7 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @Column(name = "content", columnDefinition = "VARCHAR(6)")
+    @Column(name = "content")
     private String content;
 
     @Column(name = "comment_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
@@ -47,6 +49,7 @@ public class MemberPost extends BaseAuditEntity {
 
     public MemberPost(String id, String memberId, LocalDate postDate, String imageUrl, String content,
                       int commentCnt, int reactionCnt) {
+        validateContent();
         this.id = id;
         this.memberId = memberId;
         this.postDate = postDate;
@@ -54,5 +57,11 @@ public class MemberPost extends BaseAuditEntity {
         this.content = content;
         this.commentCnt = commentCnt;
         this.reactionCnt = reactionCnt;
+    }
+
+    private void validateContent() {
+        if (this.content.length() > 8) {
+            throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
+        }
     }
 }
