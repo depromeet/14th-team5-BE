@@ -47,6 +47,7 @@ public interface MemberApi {
             @PathVariable
             String memberId,
 
+            @Valid
             @RequestBody
             UpdateMemberRequest request
     );

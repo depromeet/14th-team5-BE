@@ -50,8 +50,19 @@ public class MemberController implements MemberApi {
 
     @Override
     public MemberResponse updateMember(String memberId, UpdateMemberRequest request) {
-        //TODO: 수정 요청한 회원 id와 요청으로 들어온 memberId 일치하는지 검증
-        return null;
+        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
+        memberId = "01HGW2N7EHJVJ4CJ999RRS2E";
+
+        //TODO: 로그인한 사용자의 ID와 정보수정 대상 사용자의 ID가 같은지 확인
+        if (memberIdBase.equals(memberId)) {
+            //TODO: 프로필 이미지 및 닉네임 수정 로직 추가
+            return new MemberResponse(
+                    memberId,
+                    request.name(),
+                    request.profileImageUrl()
+            );
+        }
+        throw new DomainException(ErrorCode.AUTHORIZATION_FAILED);
     }
 
     @Override

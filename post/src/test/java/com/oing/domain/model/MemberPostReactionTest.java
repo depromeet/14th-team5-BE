@@ -16,14 +16,16 @@ public class MemberPostReactionTest {
         // Given
         String postId = "samplePostId";
         String memberId = "sampleMemberId";
+        String imageUrl = "https://picsum.photos/200/300?random=1";
+        String content = "밥 맛있다!";
         String reactionId = "sampleCommentId";
-        String ascii = "sampleAscii";
+        String emoji = "sampleAscii";
         LocalDate postDate = LocalDate.of(2023, 7, 8);
-        MemberPost post = new MemberPost(postId, memberId, postDate, null, 0, 0,
+        MemberPost post = new MemberPost(postId, memberId, postDate, imageUrl, content, 0, 0,
                 null, null);
 
         // When
-        MemberPostReaction reaction = new MemberPostReaction(reactionId, post, memberId, ascii);
+        MemberPostReaction reaction = new MemberPostReaction(reactionId, post, memberId, emoji);
 
         // Then
         assertNotNull(reaction);

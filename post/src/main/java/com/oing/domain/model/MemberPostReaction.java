@@ -25,6 +25,6 @@ public class MemberPostReaction extends BaseEntity {
     @Column(name = "member_id", columnDefinition = "CHAR(26)", nullable = false)
     private String memberId;
 
-    @Column(name = "ascii", nullable = false)
-    private String ascii;
+    @Column(name = "emoji", nullable = false)
+    private String emoji;
 }

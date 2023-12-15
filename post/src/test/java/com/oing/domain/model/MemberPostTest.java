@@ -17,9 +17,11 @@ public class MemberPostTest {
         String postId = "samplePostId";
         String memberId = "sampleMemberId";
         LocalDate postDate = LocalDate.of(2023, 7, 8);
+        String imageUrl = "https://picsum.photos/200/300?random=1";
+        String content = "밥 맛있다!";
 
         // When
-        MemberPost post = new MemberPost(postId, memberId, postDate, null, 0, 0,
+        MemberPost post = new MemberPost(postId, memberId, postDate, imageUrl, content, 0, 0,
                 null, null);
 
         // Then
