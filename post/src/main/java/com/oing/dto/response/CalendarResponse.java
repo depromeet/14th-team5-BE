@@ -1,6 +1,5 @@
 package com.oing.dto.response;
 
-import com.oing.domain.model.MemberPost;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -21,6 +20,6 @@ public record CalendarResponse(
         String representativeThumbnailUrl,
 
         @Schema(description = "가족 모두 업로드했는지 여부", example = "true")
-        boolean allFamilyUploaded
+        boolean allFamilyMembersUploaded
 ) {
 }
