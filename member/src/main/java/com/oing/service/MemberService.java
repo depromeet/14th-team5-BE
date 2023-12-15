@@ -5,6 +5,7 @@ import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.model.Member;
 import com.oing.domain.model.SocialMember;
 import com.oing.domain.model.key.SocialMemberKey;
+import com.oing.exception.MemberNotFoundException;
 import com.oing.repository.MemberRepository;
 import com.oing.repository.SocialMemberRepository;
 import com.oing.util.IdentityGenerator;
@@ -12,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -21,6 +23,12 @@ public class MemberService {
     private final SocialMemberRepository socialMemberRepository;
 
     private final IdentityGenerator identityGenerator;
+
+    private Member findMemberById(String memberId) {
+        return memberRepository
+                .findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+    }
 
     @Transactional
     public Optional<Member> findMemberBySocialMemberKey(SocialLoginProvider provider, String identifier) {
@@ -47,5 +55,14 @@ public class MemberService {
         socialMemberRepository.save(socialMember);
 
         return member;
+    }
+
+    public List<String> findFamilyMemberIdByMemberId(String memberId) {
+        Member member = findMemberById(memberId);
+        List<Member> family = memberRepository.findAllByFamilyId(member.getFamilyId());
+
+        return family.stream()
+                .map(Member::getId)
+                .toList();
     }
 }
