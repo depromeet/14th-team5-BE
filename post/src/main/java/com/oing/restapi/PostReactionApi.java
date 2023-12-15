@@ -1,6 +1,6 @@
 package com.oing.restapi;
 
-import com.oing.dto.request.CreatePostReactionRequest;
+import com.oing.dto.request.PostReactionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +21,7 @@ public interface PostReactionApi {
 
             @Valid
             @RequestBody
-            CreatePostReactionRequest request
+            PostReactionRequest request
     );
 
     @Operation(summary = "게시물 반응 삭제", description = "게시물에 반응을 삭제합니다.")
@@ -33,6 +33,6 @@ public interface PostReactionApi {
 
             @Valid
             @RequestBody
-            CreatePostReactionRequest request
+            PostReactionRequest request
     );
 }
