@@ -1,7 +1,6 @@
 package com.oing.controller;
 
 
-import com.oing.domain.model.MemberPost;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
@@ -9,12 +8,13 @@ import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.PostApi;
 import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * no5ing-server
@@ -29,8 +29,8 @@ public class PostController implements PostApi {
     private final PreSignedUrlGenerator preSignedUrlGenerator;
 
     @Override
-    public PreSignedUrlResponse requestPresignedUrl(Long memberId, String imageName) {
-        return preSignedUrlGenerator.getPreSignedUrl(imageName, memberId);
+    public PreSignedUrlResponse requestPresignedUrl(String imageName) {
+        return preSignedUrlGenerator.getFeedPreSignedUrl(imageName);
     }
 
     @Override
@@ -44,6 +44,7 @@ public class PostController implements PostApi {
                             0,
                             0,
                             "https://picsum.photos/200/300?random=00",
+                            "즐거운 하루~",
                             ZonedDateTime.now()
                     )
             ));
@@ -64,6 +65,7 @@ public class PostController implements PostApi {
                             random.nextInt(5),
                             random.nextInt(5),
                             "https://picsum.photos/200/300?random=" + currentIndex,
+                            "hi",
                             ZonedDateTime.now().minusSeconds(currentIndex * 30L)
                     )
             );
@@ -74,7 +76,19 @@ public class PostController implements PostApi {
 
     @Override
     public PostResponse createPost(CreatePostRequest request) {
-        return null;
+        String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
+        String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
+        PostResponse mockResponse = new PostResponse(
+                postIdBase,
+                writerIdBase,
+                0,
+                0,
+                request.imageUrl(),
+                request.content(),
+                ZonedDateTime.now()
+        );
+
+        return mockResponse;
     }
 
     @Override
@@ -85,6 +99,7 @@ public class PostController implements PostApi {
                 0,
                 0,
                 "https://picsum.photos/200/300?random=00",
+                "즐거운 하루~",
                 ZonedDateTime.now()
         );
     }
