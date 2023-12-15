@@ -55,20 +55,14 @@ public class MemberController implements MemberApi {
     }
 
     @Override
-    public MemberResponse deleteMember(String memberId) {
+    public void deleteMember(String memberId) {
         String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E97";
         memberId = "01HGW2N7EHJVJ4CJ999RRS2E97";
-        //TODO: 회원 탈퇴 사유 저장
 
         //TODO: 탈퇴 요청한 회원 id와 요청으로 들어온 memberId 일치하는지 검증
-        if (memberIdBase.equals(memberId)) {
-            //TODO: 타객체들간의 연관관계 해제 및 마스킹 처리
-            return new MemberResponse(
-                    memberIdBase,
-                    null,
-                    null
-            );
+        if (!memberIdBase.equals(memberId)) {
+            throw new DomainException(ErrorCode.AUTHORIZATION_FAILED);
         }
-        throw new DomainException(ErrorCode.AUTHORIZATION_FAILED);
+        //TODO: 타객체들간의 연관관계 해제 및 마스킹 처리
     }
 }
