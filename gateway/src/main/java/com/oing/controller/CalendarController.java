@@ -27,27 +27,12 @@ public class CalendarController implements CalendarApi {
     private final OptimizedImageUrlProvider optimizedImageUrlProvider;
 
 
-    @Override
-    public ArrayResponse<CalendarResponse> getWeeklyCalendar(String yearMonth, Integer week) {
-        return null;
+    private List<String> getFamilyIds() {
+        String memberId = tokenAuthenticationHolder.getUserId();
+        return memberService.findFamilyMemberIdByMemberId(memberId);
     }
 
-    @Override
-    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth) {
-        // 가족구성원들의 id를 로드한다.
-        String memberId = tokenAuthenticationHolder.getUserId();
-        List<String> familyIds = memberService.findFamilyMemberIdByMemberId(memberId);
-
-
-        // 한 달 동안, 매일을 대표하는 게시물과 그 날 업로드된 게시글 개수를 로드한다.
-        LocalDate startDate = LocalDate.parse(yearMonth + "-01");
-        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
-
-        List<MemberPost> representativePosts = memberPostService.findLatestFamilyPostOfEveryday(familyIds, startDate, endDate);
-        List<MemberPostCountDTO> postCounts = memberPostService.countFamilyPostsOfEveryday(familyIds, startDate, endDate);
-
-
-        // 대표 게시글과 게시글 개수를 CalendarResponse 에 매핑한다.
+    private List<CalendarResponse> mapPostToCalendar(List<MemberPost> representativePosts, List<MemberPostCountDTO> postCounts, int familySize) {
         List<CalendarResponse> calendar = new ArrayList<>();
         for (int index = 0; index < representativePosts.size(); index++) {
             MemberPost post = representativePosts.get(index);
@@ -56,7 +41,7 @@ public class CalendarController implements CalendarApi {
             LocalDate date = post.getCreatedAt().toLocalDate();
             String postId = post.getId();
             String thumbnailUrl = optimizedImageUrlProvider.getThumbnailUrlGenerator(post.getImageUrl());
-            boolean allFamilyMembersUploaded = postCount.count() == familyIds.size();
+            boolean allFamilyMembersUploaded = postCount.count() == familySize;
 
 
             calendar.add(
@@ -69,6 +54,33 @@ public class CalendarController implements CalendarApi {
             );
         }
 
-        return new ArrayResponse<>(calendar);
+        return calendar;
+    }
+
+    private List<CalendarResponse> getCalendarResponses(List<String> familyIds, LocalDate startDate, LocalDate endDate) {
+        List<MemberPost> representativePosts = memberPostService.findLatestFamilyPostOfEveryday(familyIds, startDate, endDate);
+        List<MemberPostCountDTO> postCounts = memberPostService.countFamilyPostsOfEveryday(familyIds, startDate, endDate);
+
+        return mapPostToCalendar(representativePosts, postCounts, familyIds.size());
+    }
+
+    @Override
+    public ArrayResponse<CalendarResponse> getWeeklyCalendar(String yearMonth, Integer week) {
+        List<String> familyIds = getFamilyIds();
+        LocalDate startDate = LocalDate.parse(yearMonth + "-01").plusWeeks(week - 1);
+        LocalDate endDate = startDate.plusWeeks(1).minusDays(1);
+
+        List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
+        return new ArrayResponse<>(calendarResponses);
+    }
+
+    @Override
+    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth) {
+        List<String> familyIds = getFamilyIds();
+        LocalDate startDate = LocalDate.parse(yearMonth + "-01");
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+
+        List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
+        return new ArrayResponse<>(calendarResponses);
     }
 }
