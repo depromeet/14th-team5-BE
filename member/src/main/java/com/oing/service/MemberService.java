@@ -24,10 +24,19 @@ public class MemberService {
 
     private final IdentityGenerator identityGenerator;
 
-    private Member findMemberById(String memberId) {
+    public Member findMemberById(String memberId) {
         return memberRepository
                 .findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
+    }
+
+    public List<String> findFamilyMembersIdByMemberId(String memberId) {
+        Member member = findMemberById(memberId);
+        List<Member> family = memberRepository.findAllByFamilyId(member.getFamilyId());
+
+        return family.stream()
+                .map(Member::getId)
+                .toList();
     }
 
     @Transactional
@@ -55,14 +64,5 @@ public class MemberService {
         socialMemberRepository.save(socialMember);
 
         return member;
-    }
-
-    public List<String> findFamilyMemberIdByMemberId(String memberId) {
-        Member member = findMemberById(memberId);
-        List<Member> family = memberRepository.findAllByFamilyId(member.getFamilyId());
-
-        return family.stream()
-                .map(Member::getId)
-                .toList();
     }
 }
