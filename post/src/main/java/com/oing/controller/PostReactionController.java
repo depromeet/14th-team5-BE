@@ -11,7 +11,7 @@ import java.util.List;
 @Controller
 public class PostReactionController implements PostReactionApi {
     @Override
-    public void reactToPost(String postId, PostReactionRequest request) {
+    public void createPostReaction(String postId, PostReactionRequest request) {
         String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
 
         String content = request.content();
