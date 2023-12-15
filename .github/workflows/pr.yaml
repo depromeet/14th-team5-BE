@@ -9,7 +9,7 @@ jobs:
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           base-branch-regex: 'dev'
-          head-branch-regex: 'OING-\d+' # Branch에서 Ticket Regex
+          head-branch-regex: 'oing-\d+' # Branch에서 Ticket Regex
           title-template: '[%headbranch%] ' # PR Title Prefix 템플릿 (티켓 번호) (ex: [OING-1234] ~ )
           body-template: | # PR Body suffix 템플릿 (지라 링크)
             ## 🔗 참조 or 관련된 이슈
