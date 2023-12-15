@@ -68,7 +68,7 @@ public class CalendarController implements CalendarApi {
     public ArrayResponse<CalendarResponse> getWeeklyCalendar(String yearMonth, Integer week) {
         List<String> familyIds = getFamilyIds();
         LocalDate startDate = LocalDate.parse(yearMonth + "-01").plusWeeks(week - 1);
-        LocalDate endDate = startDate.plusWeeks(1).minusDays(1);
+        LocalDate endDate = startDate.plusWeeks(1);
 
         List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
         return new ArrayResponse<>(calendarResponses);
@@ -78,7 +78,7 @@ public class CalendarController implements CalendarApi {
     public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth) {
         List<String> familyIds = getFamilyIds();
         LocalDate startDate = LocalDate.parse(yearMonth + "-01");
-        LocalDate endDate = startDate.plusMonths(1).minusDays(1);
+        LocalDate endDate = startDate.plusMonths(1);
 
         List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
         return new ArrayResponse<>(calendarResponses);
