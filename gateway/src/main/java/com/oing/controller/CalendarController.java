@@ -65,7 +65,7 @@ public class CalendarController implements CalendarApi {
     }
 
     @Override
-    public ArrayResponse<CalendarResponse> getWeeklyCalendar(String yearMonth, Integer week) {
+    public ArrayResponse<CalendarResponse> getWeeklyCalendar(String yearMonth, Long week) {
         List<String> familyIds = getFamilyIds();
         LocalDate startDate = LocalDate.parse(yearMonth + "-01").plusWeeks(week - 1);
         LocalDate endDate = startDate.plusWeeks(1);

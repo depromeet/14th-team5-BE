@@ -31,7 +31,7 @@ public interface CalendarApi {
 
             @RequestParam(required = false)
             @Parameter(description = "조회할 주차", example = "1")
-            Integer week
+            Long week
     );
 
     @Operation(summary = "월별 캘린더 조회", description = "월별 캘린더를 조회합니다.")
