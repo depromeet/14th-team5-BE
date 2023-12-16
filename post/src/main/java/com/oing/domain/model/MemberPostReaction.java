@@ -1,5 +1,6 @@
 package com.oing.domain.model;
 
+import com.oing.domain.Emoji;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,7 @@ public class MemberPostReaction extends BaseEntity {
     @Column(name = "member_id", columnDefinition = "CHAR(26)", nullable = false)
     private String memberId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "emoji", nullable = false)
-    private String emoji;
+    private Emoji emoji;
 }
