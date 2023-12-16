@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 public record PostReactionRequest(
         @NotBlank
         @Schema(description = "이모지", example = "smile",
-                allowableValues = {"smile", "heart", "clap", "thumbs-up", "laugh"})
+                allowableValues = {"heart", "slightly_smiling_face", "shining_face", "smiling_face", "smile"})
         String content
 ) {
 }
