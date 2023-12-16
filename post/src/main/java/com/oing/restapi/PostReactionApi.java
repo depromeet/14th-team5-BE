@@ -1,6 +1,6 @@
 package com.oing.restapi;
 
-import com.oing.dto.request.CreatePostReactionRequest;
+import com.oing.dto.request.PostReactionRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.*;
 public interface PostReactionApi {
     @Operation(summary = "게시물 반응 추가", description = "게시물에 반응합니다.")
     @PostMapping
-    void reactToPost(
+    void createPostReaction(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String postId,
 
+            @Valid
             @RequestBody
-            CreatePostReactionRequest request
+            PostReactionRequest request
     );
 
     @Operation(summary = "게시물 반응 삭제", description = "게시물에 반응을 삭제합니다.")
@@ -30,7 +31,8 @@ public interface PostReactionApi {
             @PathVariable
             String postId,
 
+            @Valid
             @RequestBody
-            CreatePostReactionRequest request
+            PostReactionRequest request
     );
 }
