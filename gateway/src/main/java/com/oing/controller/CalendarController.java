@@ -29,7 +29,7 @@ public class CalendarController implements CalendarApi {
 
     private List<String> getFamilyIds() {
         String myId = tokenAuthenticationHolder.getUserId();
-        return memberService.findFamilyMemberIdByMemberId(myId);
+        return memberService.findFamilyMembersIdByMemberId(myId);
     }
 
     private List<CalendarResponse> mapPostToCalendar(
