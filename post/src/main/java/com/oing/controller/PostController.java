@@ -8,11 +8,12 @@ import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
-import com.oing.repository.MemberPostRepository;
 import com.oing.restapi.PostApi;
+import com.oing.service.MemberPostService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
@@ -35,8 +36,7 @@ public class PostController implements PostApi {
     private final AuthenticationHolder authenticationHolder;
     private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
-    private final MemberPostRepository memberPostRepository;
-
+    private final MemberPostService memberPostService;
 
     @Override
     public PreSignedUrlResponse requestPresignedUrl(String imageName) {
@@ -84,20 +84,29 @@ public class PostController implements PostApi {
         return new PaginationResponse<>(page, 5, size, 5 > page, mockResponses);
     }
 
+    @Transactional
     @Override
     public PostResponse createPost(CreatePostRequest request) {
         String myId = authenticationHolder.getUserId();
         String postId = identityGenerator.generateIdentity();
         ZonedDateTime uploadTime = ZonedDateTime.parse(request.uploadTime());
 
+        validateUserHasNotCreatedPostToday(myId, uploadTime);
         validateUploadTime(uploadTime);
 
         LocalDate uploadDate = uploadTime.toLocalDate();
         MemberPost post = new MemberPost(postId, myId, uploadDate, request.imageUrl(), request.content());
-        memberPostRepository.save(post);
+        memberPostService.save(post);
 
         return new PostResponse(postId, myId, 0, 0, request.imageUrl(), request.content(),
                 uploadTime);
+    }
+
+    private void validateUserHasNotCreatedPostToday(String memberId, ZonedDateTime uploadTime) {
+        LocalDate today = uploadTime.toLocalDate();
+        if (memberPostService.hasUserCreatedPostToday(memberId, today)) {
+            throw new DomainException(ErrorCode.INVALID_UPLOAD_TIME);
+        }
     }
 
     private void validateUploadTime(ZonedDateTime uploadTime) {

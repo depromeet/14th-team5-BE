@@ -38,4 +38,23 @@ public class MemberPostService {
     public List<MemberPostCountDTO> countPostsOfEveryday(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
         return memberPostRepository.countPostsOfEveryday(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
+
+
+    /**
+     * 멤버가 해당 요일(클라이언트 기준의 오늘)에 게시글을 작성했는지 확인한다.
+     * @param memberId 조회 대상 멤버들의 ID
+     * @param today 조회 날짜
+     * @return 오늘 회원이 작성한 글이 있는지 반환
+     */
+    public boolean hasUserCreatedPostToday(String memberId, LocalDate today) {
+        return memberPostRepository.existsByMemberIdAndPostDate(memberId, today);
+    }
+
+    /**
+     * 멤버가 오늘 작성한 게시물을 저장한다.
+     * @param post 저장할 MemberPost 객체
+     */
+    public void save(MemberPost post) {
+        memberPostRepository.save(post);
+    }
 }
