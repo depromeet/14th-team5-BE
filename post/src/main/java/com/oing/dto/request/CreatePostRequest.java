@@ -16,6 +16,10 @@ public record CreatePostRequest(
         String imageUrl,
 
         @Schema(description = "피드 게시물 내용", example = "안녕하세요")
-        String content
+        String content,
+
+        @NotNull
+        @Schema(description = "피드 게시물 작성 시간", example = "2021-12-05T12:30:00.000+09:00")
+        String uploadTime
 ) {
 }

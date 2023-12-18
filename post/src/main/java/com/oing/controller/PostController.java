@@ -1,11 +1,17 @@
 package com.oing.controller;
 
 
+import com.oing.domain.exception.DomainException;
+import com.oing.domain.exception.ErrorCode;
+import com.oing.domain.model.MemberPost;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.repository.MemberPostRepository;
 import com.oing.restapi.PostApi;
+import com.oing.util.AuthenticationHolder;
+import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -26,7 +32,11 @@ import java.util.Random;
 @Controller
 public class PostController implements PostApi {
 
+    private final AuthenticationHolder authenticationHolder;
+    private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
+    private final MemberPostRepository memberPostRepository;
+
 
     @Override
     public PreSignedUrlResponse requestPresignedUrl(String imageName) {
@@ -76,19 +86,28 @@ public class PostController implements PostApi {
 
     @Override
     public PostResponse createPost(CreatePostRequest request) {
-        String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
-        PostResponse mockResponse = new PostResponse(
-                postIdBase,
-                writerIdBase,
-                0,
-                0,
-                request.imageUrl(),
-                request.content(),
-                ZonedDateTime.now()
-        );
+        String myId = authenticationHolder.getUserId();
+        String postId = identityGenerator.generateIdentity();
+        ZonedDateTime serverTime = ZonedDateTime.now();
+        ZonedDateTime uploadTime = ZonedDateTime.parse(request.uploadTime());
 
-        return mockResponse;
+        validateUploadTime(uploadTime, serverTime);
+
+        LocalDate uploadDate = uploadTime.toLocalDate();
+        MemberPost post = new MemberPost(postId, myId, uploadDate, request.imageUrl(), request.content());
+        memberPostRepository.save(post);
+
+        return new PostResponse(postId, myId, 0, 0, request.imageUrl(), request.content(),
+                uploadTime);
+    }
+
+    private void validateUploadTime(ZonedDateTime uploadTime, ZonedDateTime serverTime) {
+        ZonedDateTime lowerBound = serverTime.minusHours(12);
+        ZonedDateTime upperBound = serverTime.plusHours(12);
+
+        if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
+            throw new DomainException(ErrorCode.INVALID_UPLOAD_TIME);
+        }
     }
 
     @Override

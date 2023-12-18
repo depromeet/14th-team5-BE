@@ -31,6 +31,7 @@ app:
       - /actuator/**
       - /swagger-ui.html
       - /v1/auth/**
+      - /v1/posts/**
       - /swagger-ui/**
       - /v3/api-docs/**
     url-no-logging:

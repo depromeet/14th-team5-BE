@@ -24,7 +24,7 @@ public class MemberService {
 
     private final IdentityGenerator identityGenerator;
 
-    private Member findMemberById(String memberId) {
+    public Member findMemberById(String memberId) {
         return memberRepository
                 .findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
