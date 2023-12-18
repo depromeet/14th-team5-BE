@@ -25,19 +25,19 @@ public interface CalendarApi {
     @Operation(summary = "주별 캘린더 조회", description = "주별 캘린더를 조회합니다.")
     @GetMapping(params = {"type=WEEKLY"})
     ArrayResponse<CalendarResponse> getWeeklyCalendar(
-            @RequestParam(required = false)
+            @RequestParam
             @Parameter(description = "조회할 년월", example = "2021-12")
             String yearMonth,
 
-            @RequestParam(required = false)
+            @RequestParam
             @Parameter(description = "조회할 주차", example = "1")
-            Integer week
+            Long week
     );
 
     @Operation(summary = "월별 캘린더 조회", description = "월별 캘린더를 조회합니다.")
     @GetMapping(params = {"type=MONTHLY"})
     ArrayResponse<CalendarResponse> getMonthlyCalendar(
-            @RequestParam(required = false)
+            @RequestParam
             @Parameter(description = "조회할 년월", example = "2021-12")
             String yearMonth
     );
