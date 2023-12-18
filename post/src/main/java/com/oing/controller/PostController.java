@@ -112,8 +112,9 @@ public class PostController implements PostApi {
 
     private void validateUploadTime(ZonedDateTime uploadTime) {
         ZonedDateTime serverTime = ZonedDateTime.now();
-        ZonedDateTime lowerBound = serverTime.with(LocalTime.of(12, 0)).minusDays(serverTime.getHour() < 12 ? 1 : 0);
-        ZonedDateTime upperBound = lowerBound.plusDays(1);
+
+        ZonedDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(12, 0));
+        ZonedDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(12, 0));
 
         if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
             throw new DomainException(ErrorCode.INVALID_UPLOAD_TIME);
