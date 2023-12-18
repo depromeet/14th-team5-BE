@@ -15,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,28 +35,23 @@ public class CalendarController implements CalendarApi {
     }
 
     private List<CalendarResponse> mapPostToCalendar(List<MemberPost> representativePosts, List<MemberPostCountDTO> postCounts, int familySize) {
-        List<CalendarResponse> calendar = new ArrayList<>();
-        for (int index = 0; index < representativePosts.size(); index++) {
-            MemberPost post = representativePosts.get(index);
-            MemberPostCountDTO postCount = postCounts.get(index);
+        return IntStream.range(0, representativePosts.size())
+                .mapToObj(index -> {
+                    MemberPost post = representativePosts.get(index);
+                    MemberPostCountDTO postCount = postCounts.get(index);
 
-            LocalDate date = post.getCreatedAt().toLocalDate();
-            String postId = post.getId();
-            String thumbnailUrl = optimizedImageUrlProvider.getThumbnailUrlGenerator(post.getImageUrl());
-            boolean allFamilyMembersUploaded = postCount.count() == familySize;
+                    LocalDate date = post.getCreatedAt().toLocalDate();
+                    String postId = post.getId();
+                    String thumbnailUrl = optimizedImageUrlProvider.getThumbnailUrlGenerator(post.getImageUrl());
+                    boolean allFamilyMembersUploaded = postCount.count() == familySize;
 
-
-            calendar.add(
-                    new CalendarResponse(
+                    return new CalendarResponse(
                             date,
                             postId,
                             thumbnailUrl,
                             allFamilyMembersUploaded
-                    )
-            );
-        }
-
-        return calendar;
+                    );
+                }).toList();
     }
 
     private List<CalendarResponse> getCalendarResponses(List<String> familyIds, LocalDate startDate, LocalDate endDate) {
