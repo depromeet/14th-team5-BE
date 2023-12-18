@@ -2,38 +2,46 @@ package com.oing.controller;
 
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
+import com.oing.domain.model.Member;
 import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.restapi.MemberApi;
+import com.oing.service.MemberService;
+import com.oing.util.AuthenticationHolder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class MemberController implements MemberApi {
+
+    private final AuthenticationHolder authenticationHolder;
+    private final MemberService memberService;
 
     @Override
     public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfile(Integer page, Integer size) {
-        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String memberNameBase = "디프만";
+        String userId = authenticationHolder.getUserId();
+        List<String> familyMembersId = memberService.findFamilyMembersIdByMemberId(userId);
 
-        List<FamilyMemberProfileResponse> mockResponses = new ArrayList<>();
-        for(int i = 0; i < size; i++) {
-            int currentIndex = i + ((page - 1) * size);
-            String suffix = String.format("%02d", currentIndex);
-            mockResponses.add(
-                    new FamilyMemberProfileResponse(
-                            memberIdBase + suffix,
-                            memberNameBase + suffix,
-                            "https://picsum.photos/200/300?random=" + currentIndex
-                    )
-            );
-        }
+        List<FamilyMemberProfileResponse> responses = familyMembersId.stream()
+                .map(this::mapToFamilyMemberProfileResponse)
+                .toList();
 
-        return new PaginationResponse<>(page, 3, size, false, mockResponses);
+        return new PaginationResponse<>(page, 3, size, false, responses);
+    }
+
+    private FamilyMemberProfileResponse mapToFamilyMemberProfileResponse(String memberId) {
+        Member member = memberService.findMemberById(memberId);
+
+        return new FamilyMemberProfileResponse(
+                member.getId(),
+                member.getName(),
+                member.getProfileImgUrl()
+        );
     }
 
     @Override
