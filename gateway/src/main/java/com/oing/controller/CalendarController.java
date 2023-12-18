@@ -1,7 +1,6 @@
 package com.oing.controller;
 
 import com.oing.component.TokenAuthenticationHolder;
-import com.oing.config.support.OptimizedImageUrlProvider;
 import com.oing.domain.MemberPostCountDTO;
 import com.oing.domain.model.MemberPost;
 import com.oing.dto.response.ArrayResponse;
@@ -9,6 +8,7 @@ import com.oing.dto.response.CalendarResponse;
 import com.oing.restapi.CalendarApi;
 import com.oing.service.MemberPostService;
 import com.oing.service.MemberService;
+import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
@@ -24,7 +24,7 @@ public class CalendarController implements CalendarApi {
     private final MemberPostService memberPostService;
 
     private final TokenAuthenticationHolder tokenAuthenticationHolder;
-    private final OptimizedImageUrlProvider optimizedImageUrlProvider;
+    private final OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
 
     private List<String> getFamilyIds() {
@@ -44,7 +44,7 @@ public class CalendarController implements CalendarApi {
 
                     LocalDate date = post.getCreatedAt().toLocalDate();
                     String postId = post.getId();
-                    String thumbnailUrl = optimizedImageUrlProvider.getThumbnailUrlGenerator(post.getImageUrl());
+                    String thumbnailUrl = optimizedImageUrlGenerator.getThumbnailUrlGenerator(post.getImageUrl());
                     boolean allFamilyMembersUploaded = postCount.count() == familySize;
 
                     return new CalendarResponse(
