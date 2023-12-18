@@ -13,9 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Controller
@@ -58,7 +57,7 @@ public class CalendarController implements CalendarApi {
                 }).toList();
     }
 
-    private List<CalendarResponse> getCalendarResponses(List<String> familyIds, LocalDate startDate, LocalDate endDate) {
+    private List<CalendarResponse> getCalendarResponses(List<String> familyIds, LocalDateTime startDate, LocalDateTime endDate) {
         List<MemberPost> representativePosts = memberPostService.findLatestPostOfEveryday(familyIds, startDate, endDate);
         List<MemberPostCountDTO> postCounts = memberPostService.countPostsOfEveryday(familyIds, startDate, endDate);
 
@@ -68,8 +67,8 @@ public class CalendarController implements CalendarApi {
     @Override
     public ArrayResponse<CalendarResponse> getWeeklyCalendar(String yearMonth, Long week) {
         List<String> familyIds = getFamilyIds();
-        LocalDate startDate = LocalDate.parse(yearMonth + "-01").plusWeeks(week - 1);
-        LocalDate endDate = startDate.plusWeeks(1);
+        LocalDateTime startDate = LocalDate.parse(yearMonth + "-01").plusWeeks(week - 1).atStartOfDay();
+        LocalDateTime endDate = startDate.plusWeeks(1);
 
         List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
         return new ArrayResponse<>(calendarResponses);
@@ -78,8 +77,8 @@ public class CalendarController implements CalendarApi {
     @Override
     public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth) {
         List<String> familyIds = getFamilyIds();
-        LocalDate startDate = LocalDate.parse(yearMonth + "-01");
-        LocalDate endDate = startDate.plusMonths(1);
+        LocalDateTime startDate = LocalDate.parse(yearMonth + "-01").atStartOfDay();
+        LocalDateTime endDate = startDate.plusMonths(1);
 
         List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
         return new ArrayResponse<>(calendarResponses);

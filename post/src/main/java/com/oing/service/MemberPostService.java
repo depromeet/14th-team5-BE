@@ -6,7 +6,7 @@ import com.oing.repository.MemberPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,7 +23,7 @@ public class MemberPostService {
      * @param startDate 조회 시작 날짜
      * @param endDate 조회 종료 날짜
      */
-    public List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDate startDate, LocalDate endDate) {
+    public List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
         return memberPostRepository.findLatestPostOfEveryday(memberIds, startDate, endDate);
     }
 
@@ -35,7 +35,7 @@ public class MemberPostService {
      * @param endDate 조회 종료 날짜
      * @return 날짜별 게시글 갯수 DTO
      */
-    public List<MemberPostCountDTO> countPostsOfEveryday(List<String> memberIds, LocalDate startDate, LocalDate endDate) {
+    public List<MemberPostCountDTO> countPostsOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
         return memberPostRepository.countPostsOfEveryday(memberIds, startDate, endDate);
     }
 }
