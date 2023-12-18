@@ -100,7 +100,8 @@ subprojects {
 						"**.*Config*",
 						"**.config.*",
 						"**.dto.*",
-						"**.*Dto*"
+						"**.*Dto*",
+						"**.*DTO*"
 				] + Qdomains
 			}
 		}

@@ -17,3 +17,4 @@ cloud:
     secret-key: secret-key
     storage:
       bucket: bucket
+    image-optimizer-cdn: https://cdn.com/abc
