@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,8 +112,8 @@ public class PostController implements PostApi {
 
     private void validateUploadTime(ZonedDateTime uploadTime) {
         ZonedDateTime serverTime = ZonedDateTime.now();
-        ZonedDateTime lowerBound = serverTime.minusHours(12);
-        ZonedDateTime upperBound = serverTime.plusHours(12);
+        ZonedDateTime lowerBound = serverTime.with(LocalTime.of(12, 0)).minusDays(serverTime.getHour() < 12 ? 1 : 0);
+        ZonedDateTime upperBound = lowerBound.plusDays(1);
 
         if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
             throw new DomainException(ErrorCode.INVALID_UPLOAD_TIME);
