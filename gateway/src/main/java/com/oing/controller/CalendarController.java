@@ -34,7 +34,11 @@ public class CalendarController implements CalendarApi {
         return memberService.findFamilyMemberIdByMemberId(myId);
     }
 
-    private List<CalendarResponse> mapPostToCalendar(List<MemberPost> representativePosts, List<MemberPostCountDTO> postCounts, int familySize) {
+    private List<CalendarResponse> mapPostToCalendar(
+            List<MemberPost> representativePosts,
+            List<MemberPostCountDTO> postCounts,
+            int familySize
+    ) {
         return IntStream.range(0, representativePosts.size())
                 .mapToObj(index -> {
                     MemberPost post = representativePosts.get(index);
