@@ -2,6 +2,7 @@ package com.oing.restapi;
 
 import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
+import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.*;
-import com.oing.dto.response.MemberResponse;
 
 @Tag(name = "회원 API", description = "회원 관련 API")
 @RestController
@@ -47,7 +47,16 @@ public interface MemberApi {
             @PathVariable
             String memberId,
 
+            @Valid
             @RequestBody
             UpdateMemberRequest request
+    );
+
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 수행합니다.")
+    @DeleteMapping("/{memberId}")
+    void deleteMember(
+            @Parameter(description = "탈퇴할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String memberId
     );
 }

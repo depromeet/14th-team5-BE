@@ -21,10 +21,12 @@ public class PostFeedResponseTest {
         Integer commentCount = 3;
         Integer emojiCount = 2;
         String imageUrl = "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97";
+        String content = "맛있는 밥!";
         ZonedDateTime createdAt = ZonedDateTime.parse("2021-12-05T12:30:00.000+09:00");
 
         // When
-        PostResponse postFeedResponse = new PostResponse(postId, authorId, commentCount, emojiCount, imageUrl, createdAt);
+        PostResponse postFeedResponse = new PostResponse(postId, authorId, commentCount, emojiCount, imageUrl,
+                content, createdAt);
 
         // Then
         assertNotNull(postFeedResponse);

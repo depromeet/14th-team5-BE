@@ -1,7 +1,6 @@
 package com.oing.controller;
 
 
-import com.oing.domain.model.MemberPost;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
@@ -9,12 +8,13 @@ import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.PostApi;
 import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * no5ing-server
@@ -29,13 +29,26 @@ public class PostController implements PostApi {
     private final PreSignedUrlGenerator preSignedUrlGenerator;
 
     @Override
-    public PreSignedUrlResponse requestPresignedUrl(Long memberId, String imageName) {
-        return preSignedUrlGenerator.getPreSignedUrl(imageName, memberId);
+    public PreSignedUrlResponse requestPresignedUrl(String imageName) {
+        return preSignedUrlGenerator.getFeedPreSignedUrl(imageName);
     }
 
     @Override
-    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date) {
+    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId, String sort) {
         if (page > 5) return new PaginationResponse<>(page, 5, size, false, List.of());
+        if(memberId != null) {
+            return new PaginationResponse<>(page, 5, size, false, List.of(
+                    new PostResponse(
+                            "01HGW2N7EHJVJ4CJ999RRS2E",
+                            memberId,
+                            0,
+                            0,
+                            "https://picsum.photos/200/300?random=00",
+                            "즐거운 하루~",
+                            ZonedDateTime.now()
+                    )
+            ));
+        }
 
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
         String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
@@ -52,6 +65,7 @@ public class PostController implements PostApi {
                             random.nextInt(5),
                             random.nextInt(5),
                             "https://picsum.photos/200/300?random=" + currentIndex,
+                            "hi",
                             ZonedDateTime.now().minusSeconds(currentIndex * 30L)
                     )
             );
@@ -61,19 +75,7 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public ResponseEntity<PostResponse> fetchDailyFeeds() {
-//        Optional<MemberPost> myPost = memberPostService.findPostByMemberId(tokenAuthenticationHolder.getUserId());
-        Optional<MemberPost> myPost;
-        if (new Random().nextBoolean()) {
-            myPost = Optional.of(new MemberPost("01HGW2N7EHJVJ4CJ999RRS2E", "01HGW2N7EHJVJ4CJ888RRS2E", LocalDate.now(), "https://picsum.photos/200/300?random=00", 0, 0, Collections.EMPTY_LIST, Collections.EMPTY_LIST));
-        } else {
-            myPost = Optional.empty();
-        }
-
-        if (myPost.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
+    public PostResponse createPost(CreatePostRequest request) {
         String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
         String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
         PostResponse mockResponse = new PostResponse(
@@ -81,25 +83,24 @@ public class PostController implements PostApi {
                 writerIdBase,
                 0,
                 0,
-                "https://picsum.photos/200/300?random=00",
+                request.imageUrl(),
+                request.content(),
                 ZonedDateTime.now()
         );
 
-        return ResponseEntity.ok(mockResponse);
-    }
-
-    @Override
-    public PostResponse createPost(CreatePostRequest request) {
-        return null;
+        return mockResponse;
     }
 
     @Override
     public PostResponse getPost(String postId) {
-        return null;
-    }
-
-    @Override
-    public PaginationResponse<PostResponse> getPostsByMember(String memberId) {
-        return null;
+        return new PostResponse(
+                postId,
+                "01HGW2N7EHJVJ4CJ888RRS2E",
+                0,
+                0,
+                "https://picsum.photos/200/300?random=00",
+                "즐거운 하루~",
+                ZonedDateTime.now()
+        );
     }
 }
