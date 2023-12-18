@@ -24,7 +24,7 @@ public class MemberService {
 
     private final IdentityGenerator identityGenerator;
 
-    private Member findMemberById(String memberId) {
+    public Member findMemberById(String memberId) {
         return memberRepository
                 .findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
@@ -57,7 +57,7 @@ public class MemberService {
         return member;
     }
 
-    public List<String> findFamilyMemberIdByMemberId(String memberId) {
+    public List<String> findFamilyMembersIdByMemberId(String memberId) {
         Member member = findMemberById(memberId);
         List<Member> family = memberRepository.findAllByFamilyId(member.getFamilyId());
 
