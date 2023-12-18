@@ -28,7 +28,7 @@ public class WidgetController implements WidgetApi {
     @Override
     public ResponseEntity<SingleRecentPostWidgetResponse> getSingleRecentFamilyPostWidget(String date) {
         String myId = tokenAuthenticationHolder.getUserId();
-        List<String> familyIdsExceptMe = memberService.findFamilyMemberIdByMemberId(myId).stream().filter(id -> !id.equals(myId)).toList();
+        List<String> familyIdsExceptMe = memberService.findFamilyMembersIdByMemberId(myId).stream().filter(id -> !id.equals(myId)).toList();
 
         Optional<String> dateString = Optional.ofNullable(date);
         LocalDate startDate = dateString.map(LocalDate::parse).orElse(LocalDate.now());
