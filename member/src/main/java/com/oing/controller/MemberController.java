@@ -46,14 +46,9 @@ public class MemberController implements MemberApi {
 
     @Override
     public MemberResponse getMember(String memberId) {
-        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String memberNameBase = "디프만";
+        Member member = memberService.findMemberById(memberId);
 
-        return new MemberResponse(
-                memberIdBase,
-                memberNameBase,
-                "https://picsum.photos/200/300?random=1"
-        );
+        return new MemberResponse(memberId, member.getName(), member.getProfileImgUrl());
     }
 
     @Override
