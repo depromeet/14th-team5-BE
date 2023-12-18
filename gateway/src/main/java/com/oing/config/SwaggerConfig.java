@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +34,8 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("앱 엑세스 토큰", bearerAuth()));
+                .components(new Components().addSecuritySchemes("앱 엑세스 토큰", bearerAuth()))
+                .addSecurityItem(new SecurityRequirement().addList("앱 엑세스 토큰"));
     }
 
     public SecurityScheme bearerAuth() {
