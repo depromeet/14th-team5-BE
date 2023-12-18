@@ -88,10 +88,9 @@ public class PostController implements PostApi {
     public PostResponse createPost(CreatePostRequest request) {
         String myId = authenticationHolder.getUserId();
         String postId = identityGenerator.generateIdentity();
-        ZonedDateTime serverTime = ZonedDateTime.now();
         ZonedDateTime uploadTime = ZonedDateTime.parse(request.uploadTime());
 
-        validateUploadTime(uploadTime, serverTime);
+        validateUploadTime(uploadTime);
 
         LocalDate uploadDate = uploadTime.toLocalDate();
         MemberPost post = new MemberPost(postId, myId, uploadDate, request.imageUrl(), request.content());
@@ -101,7 +100,8 @@ public class PostController implements PostApi {
                 uploadTime);
     }
 
-    private void validateUploadTime(ZonedDateTime uploadTime, ZonedDateTime serverTime) {
+    private void validateUploadTime(ZonedDateTime uploadTime) {
+        ZonedDateTime serverTime = ZonedDateTime.now();
         ZonedDateTime lowerBound = serverTime.minusHours(12);
         ZonedDateTime upperBound = serverTime.plusHours(12);
 

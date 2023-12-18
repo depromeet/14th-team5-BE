@@ -59,7 +59,7 @@ public class MemberPost extends BaseAuditEntity {
     }
 
     private void validateContent(String content) {
-        if (content.length() > 8) {
+        if (content != null && content.length() > 8) {
             throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
         }
     }
