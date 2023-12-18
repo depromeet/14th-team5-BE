@@ -16,7 +16,11 @@ public enum ErrorCode {
      */
     AUTHENTICATION_FAILED("AU0001", "Authentication failed"),
     AUTHORIZATION_FAILED("AU0002", "No Permission"),
-    REFRESH_TOKEN_INVALID("AU0003", "Refresh Token is invalid");
+    REFRESH_TOKEN_INVALID("AU0003", "Refresh Token is invalid"),
+    /**
+     * Member Related Errors
+     */
+    MEMBER_NOT_FOUND("MB0001", "Member not found");
 
     private final String code;
     private final String message;
