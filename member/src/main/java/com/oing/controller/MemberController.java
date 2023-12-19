@@ -12,6 +12,7 @@ import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.PreSignedUrlGenerator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
@@ -49,14 +50,8 @@ public class MemberController implements MemberApi {
 
     @Override
     public MemberResponse getMember(String memberId) {
-        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String memberNameBase = "디프만";
-
-        return new MemberResponse(
-                memberIdBase,
-                memberNameBase,
-                "https://picsum.photos/200/300?random=1"
-        );
+        Member member = memberService.findMemberById(memberId);
+        return new MemberResponse(memberId, member.getName(), member.getProfileImgUrl());
     }
 
     @Override
@@ -64,6 +59,7 @@ public class MemberController implements MemberApi {
         return preSignedUrlGenerator.getProfileImagePreSignedUrl(imageName);
     }
 
+    @Transactional
     @Override
     public MemberResponse updateMember(UpdateMemberRequest request) {
         String memberId = authenticationHolder.getUserId();
