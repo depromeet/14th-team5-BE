@@ -5,6 +5,7 @@ import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Member;
 import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
+import com.oing.dto.response.FamilyMemberProfilesResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.restapi.MemberApi;
@@ -23,10 +24,17 @@ public class MemberController implements MemberApi {
     private final MemberService memberService;
 
     @Override
-    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfile(Integer page, Integer size) {
+    public FamilyMemberProfilesResponse getFamilyMemberProfileAndCreatedAt(Integer page, Integer size) {
         String userId = authenticationHolder.getUserId();
-        List<String> familyMembersId = memberService.findFamilyMembersIdByMemberId(userId);
+        PaginationResponse<FamilyMemberProfileResponse> familyMemberProfile = getFamilyMemberProfile(userId, page, size);
+        String familyCreatedAt = memberService.findFamilyCreatedAt(userId);
+        return new FamilyMemberProfilesResponse(familyMemberProfile, familyCreatedAt);
+    }
 
+    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfile(
+            String userId, Integer page, Integer size
+    ) {
+        List<String> familyMembersId = memberService.findFamilyMembersIdByMemberId(userId);
         List<FamilyMemberProfileResponse> responses = familyMembersId.stream()
                 .map(this::mapToFamilyMemberProfileResponse)
                 .toList();
@@ -37,11 +45,7 @@ public class MemberController implements MemberApi {
     private FamilyMemberProfileResponse mapToFamilyMemberProfileResponse(String memberId) {
         Member member = memberService.findMemberById(memberId);
 
-        return new FamilyMemberProfileResponse(
-                member.getId(),
-                member.getName(),
-                member.getProfileImgUrl()
-        );
+        return new FamilyMemberProfileResponse(member.getId(), member.getName(), member.getProfileImgUrl());
     }
 
     @Override

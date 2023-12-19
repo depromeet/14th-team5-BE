@@ -1,9 +1,8 @@
 package com.oing.restapi;
 
 import com.oing.dto.request.UpdateMemberRequest;
-import com.oing.dto.response.FamilyMemberProfileResponse;
+import com.oing.dto.response.FamilyMemberProfilesResponse;
 import com.oing.dto.response.MemberResponse;
-import com.oing.dto.response.PaginationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @Valid
 @RequestMapping("/v1/members")
 public interface MemberApi {
-    @Operation(summary = "가족 구성원 프로필 조회", description = "가족 구성원 프로필을 조회합니다.", parameters = {
+    @Operation(summary = "가족 구성원 프로필 및 가족 생성일 조회", description = "가족 구성원 프로필 및 생성일을 조회합니다.", parameters = {
             @Parameter(name = "type", description = "가족 구성원 타입", example = "FAMILY", required = true)
     })
     @GetMapping(params = {"type=FAMILY"})
-    PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfile(
+    FamilyMemberProfilesResponse getFamilyMemberProfileAndCreatedAt(
             @RequestParam(required = false, defaultValue = "1")
             @Parameter(description = "가져올 현재 페이지", example = "1")
             @Min(value = 1)
