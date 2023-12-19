@@ -50,8 +50,14 @@ public class MemberController implements MemberApi {
 
     @Override
     public MemberResponse getMember(String memberId) {
-        Member member = memberService.findMemberById(memberId);
-        return new MemberResponse(memberId, member.getName(), member.getProfileImgUrl());
+        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
+        String memberNameBase = "디프만";
+
+        return new MemberResponse(
+                memberIdBase,
+                memberNameBase,
+                "https://picsum.photos/200/300?random=1"
+        );
     }
 
     @Override
@@ -59,8 +65,8 @@ public class MemberController implements MemberApi {
         return preSignedUrlGenerator.getProfileImagePreSignedUrl(imageName);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public MemberResponse updateMember(UpdateMemberRequest request) {
         String memberId = authenticationHolder.getUserId();
         Member member = memberService.findMemberById(memberId);
