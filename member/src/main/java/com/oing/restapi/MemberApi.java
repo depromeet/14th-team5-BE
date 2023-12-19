@@ -4,6 +4,7 @@ import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
+import com.oing.dto.response.PreSignedUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,8 +41,15 @@ public interface MemberApi {
             String memberId
     );
 
+    @Operation(summary = "회원 프로필 사진 S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
+    @PostMapping("/image-upload-request")
+    PreSignedUrlResponse requestPresignedUrl(
+            @Parameter(description = "이미지 이름(확장자 포함)", example = "image.jpg")
+            String imageName
+    );
+
     @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다.")
-    @PutMapping("/{memberId}")
+    @PutMapping
     MemberResponse updateMember(
             @Valid
             @RequestBody

@@ -7,9 +7,11 @@ import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
+import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
+import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
@@ -21,6 +23,7 @@ import java.util.List;
 public class MemberController implements MemberApi {
 
     private final AuthenticationHolder authenticationHolder;
+    private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final MemberService memberService;
 
     @Override
@@ -54,6 +57,11 @@ public class MemberController implements MemberApi {
                 memberNameBase,
                 "https://picsum.photos/200/300?random=1"
         );
+    }
+
+    @Override
+    public PreSignedUrlResponse requestPresignedUrl(String imageName) {
+        return preSignedUrlGenerator.getProfileImagePreSignedUrl(imageName);
     }
 
     @Override
