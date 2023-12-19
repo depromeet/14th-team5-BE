@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
 @Controller
-@Slf4j
 @RequiredArgsConstructor
 public class MemberController implements MemberApi {
 
