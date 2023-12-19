@@ -1,6 +1,7 @@
 package com.oing.restapi;
 
-import com.oing.dto.request.UpdateMemberRequest;
+import com.oing.dto.request.UpdateMemberNameRequest;
+import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
@@ -48,12 +49,20 @@ public interface MemberApi {
             String imageName
     );
 
-    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다.")
-    @PutMapping
-    MemberResponse updateMember(
+    @Operation(summary = "회원 프로필 이미지 수정", description = "회원 프로필 이미지를 수정합니다.")
+    @PutMapping("/profile-image-url")
+    MemberResponse updateMemberProfileImageUrl(
             @Valid
             @RequestBody
-            UpdateMemberRequest request
+            UpdateMemberProfileImageUrlRequest request
+    );
+
+    @Operation(summary = "회원 이름 수정", description = "회원 이름을 수정합니다.")
+    @PutMapping("/name")
+    MemberResponse updateMemberName(
+            @Valid
+            @RequestBody
+            UpdateMemberNameRequest request
     );
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 수행합니다.")

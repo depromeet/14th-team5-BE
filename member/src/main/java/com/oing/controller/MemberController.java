@@ -3,7 +3,8 @@ package com.oing.controller;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Member;
-import com.oing.dto.request.UpdateMemberRequest;
+import com.oing.dto.request.UpdateMemberNameRequest;
+import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
@@ -67,11 +68,22 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public MemberResponse updateMember(UpdateMemberRequest request) {
+    public MemberResponse updateMemberProfileImageUrl(UpdateMemberProfileImageUrlRequest request) {
         String memberId = authenticationHolder.getUserId();
         Member member = memberService.findMemberById(memberId);
 
-        member.updateProfileInfo(request.name(), request.profileImageUrl());
+        member.updateProfileImgUrl(request.profileImageUrl());
+
+        return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());
+    }
+
+    @Override
+    @Transactional
+    public MemberResponse updateMemberName(UpdateMemberNameRequest request) {
+        String memberId = authenticationHolder.getUserId();
+        Member member = memberService.findMemberById(memberId);
+
+        member.updateName(request.name());
 
         return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());
     }

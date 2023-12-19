@@ -38,10 +38,13 @@ public class Member extends BaseAuditEntity {
     @Column(name = "profile_img_url")
     private String profileImgUrl;
 
-    public void updateProfileInfo(String name, String profileImgUrl) {
+    public void updateProfileImgUrl(String profileImgUrl) {
+        this.profileImgUrl = profileImgUrl;
+    }
+
+    public void updateName(String name) {
         validateName(name);
         this.name = name;
-        this.profileImgUrl = profileImgUrl;
     }
 
     private void validateName(String name) {
