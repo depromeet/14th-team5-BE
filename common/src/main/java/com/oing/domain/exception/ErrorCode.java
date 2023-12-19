@@ -30,7 +30,8 @@ public enum ErrorCode {
     /**
      * MemberEmoji Related Errors
      */
-    EMOJI_ALREADY_EXISTS("EM0001", "Emoji already exists");
+    EMOJI_ALREADY_EXISTS("EM0001", "Emoji already exists"),
+    EMOJI_NOT_FOUND("EM0002", "Emoji not found");
 
     private final String code;
     private final String message;

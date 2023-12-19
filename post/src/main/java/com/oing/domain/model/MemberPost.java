@@ -69,4 +69,9 @@ public class MemberPost extends BaseAuditEntity {
         this.reactions.add(reaction);
         this.reactionCnt += 1;
     }
+
+    public void removeReaction(MemberPostReaction reaction) {
+        this.reactions.remove(reaction);
+        this.reactionCnt -= 1;
+    }
 }
