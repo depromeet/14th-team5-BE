@@ -81,4 +81,14 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
         String ext = imageName.substring(imageName.lastIndexOf("."));
         return identityGenerator.generateIdentity() + ext;
     }
+
+    @Override
+    public void deleteImageByImageUrl(String imageUrl) {
+        try {
+            amazonS3Client.deleteObject(bucket, imageUrl);
+        } catch (AmazonServiceException e) {
+            log.error("이미지 삭제 실패했습니다. {}", e.getMessage());
+            throw new IllegalStateException("이미지 삭제 실패했습니다.");
+        }
+    }
 }

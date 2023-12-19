@@ -6,4 +6,6 @@ public interface PreSignedUrlGenerator {
     PreSignedUrlResponse getFeedPreSignedUrl(String imageName);
 
     PreSignedUrlResponse getProfileImagePreSignedUrl(String imageName);
+
+    void deleteImageByImageUrl(String imageUrl);
 }
