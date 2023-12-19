@@ -5,6 +5,8 @@ import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.model.Member;
 import com.oing.domain.model.SocialMember;
 import com.oing.domain.model.key.SocialMemberKey;
+import com.oing.dto.response.FamilyMemberProfileResponse;
+import com.oing.exception.FamilyNotFoundException;
 import com.oing.exception.MemberNotFoundException;
 import com.oing.repository.FamilyRepository;
 import com.oing.repository.MemberRepository;
@@ -12,12 +14,17 @@ import com.oing.repository.SocialMemberRepository;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -32,6 +39,10 @@ public class MemberService {
         return memberRepository
                 .findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
+    }
+
+    public String findFamilyIdByMemberId(String memberId) {
+        return findMemberById(memberId).getFamilyId();
     }
 
     @Transactional
@@ -75,12 +86,25 @@ public class MemberService {
         Member member = findMemberById(memberId);
         LocalDateTime familyCreatedAt = familyRepository
                 .findById(member.getFamilyId())
-                .orElseThrow(MemberNotFoundException::new)
+                .orElseThrow(FamilyNotFoundException::new)
                 .getCreatedAt();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         return familyCreatedAt.toLocalDate()
                 .format(formatter);
+    }
+
+    @Transactional
+    public Page<FamilyMemberProfileResponse> findFamilyProfilesByFamilyId(String userId, String familyId, int page, int size) {
+        Page<Member> memberPage = memberRepository.findAllByFamilyId(familyId, PageRequest.of(page - 1, size));
+        List<Member> members = memberPage.getContent();
+
+        List<FamilyMemberProfileResponse> familyMemberProfiles = members.stream()
+                .map(member -> new FamilyMemberProfileResponse(member.getId(), member.getName(), member.getProfileImgUrl()))
+                .sorted(Comparator.comparing(profile -> userId.equals(profile.memberId()) ? 0 : 1))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(familyMemberProfiles, memberPage.getPageable(), memberPage.getTotalElements());
     }
 }

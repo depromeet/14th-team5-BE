@@ -1,5 +1,6 @@
 package com.oing.controller;
 
+import com.oing.domain.PaginationDTO;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Member;
@@ -8,15 +9,17 @@ import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.FamilyMemberProfilesResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
+import com.oing.repository.MemberRepository;
 import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
-
 @Controller
+@Slf4j
 @RequiredArgsConstructor
 public class MemberController implements MemberApi {
 
@@ -26,26 +29,21 @@ public class MemberController implements MemberApi {
     @Override
     public FamilyMemberProfilesResponse getFamilyMemberProfileAndCreatedAt(Integer page, Integer size) {
         String userId = authenticationHolder.getUserId();
-        PaginationResponse<FamilyMemberProfileResponse> familyMemberProfile = getFamilyMemberProfile(userId, page, size);
+        PaginationResponse<FamilyMemberProfileResponse> familyMemberProfile = getFamilyMemberProfiles(userId, page, size);
+
         String familyCreatedAt = memberService.findFamilyCreatedAt(userId);
         return new FamilyMemberProfilesResponse(familyMemberProfile, familyCreatedAt);
     }
 
-    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfile(
-            String userId, Integer page, Integer size
-    ) {
-        List<String> familyMembersId = memberService.findFamilyMembersIdByMemberId(userId);
-        List<FamilyMemberProfileResponse> responses = familyMembersId.stream()
-                .map(this::mapToFamilyMemberProfileResponse)
-                .toList();
+    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfiles(String userId, Integer page, Integer size) {
+        String familyId = memberService.findFamilyIdByMemberId(userId);
+        Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyProfilesByFamilyId(
+                userId, familyId, page, size
+        );
 
-        return new PaginationResponse<>(page, 3, size, false, responses);
-    }
+        PaginationDTO<FamilyMemberProfileResponse> paginationDTO = PaginationDTO.of(profilePage);
 
-    private FamilyMemberProfileResponse mapToFamilyMemberProfileResponse(String memberId) {
-        Member member = memberService.findMemberById(memberId);
-
-        return new FamilyMemberProfileResponse(member.getId(), member.getName(), member.getProfileImgUrl());
+        return PaginationResponse.of(paginationDTO, page, size);
     }
 
     @Override
