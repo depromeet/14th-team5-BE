@@ -20,7 +20,17 @@ public enum ErrorCode {
     /**
      * Member Related Errors
      */
-    MEMBER_NOT_FOUND("MB0001", "Member not found");
+    MEMBER_NOT_FOUND("MB0001", "Member not found"),
+
+    /**
+     * MemberPost Related Errors
+     */
+    POST_NOT_FOUND("PO0001", "Post not found"),
+
+    /**
+     * MemberEmoji Related Errors
+     */
+    EMOJI_ALREADY_EXISTS("EM0001", "Emoji already exists");
 
     private final String code;
     private final String message;

@@ -1,7 +1,10 @@
 package com.oing.service;
 
+import com.oing.domain.Emoji;
 import com.oing.domain.MemberPostCountDTO;
 import com.oing.domain.model.MemberPost;
+import com.oing.exception.PostNotFoundException;
+import com.oing.repository.MemberPostReactionRepository;
 import com.oing.repository.MemberPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import java.util.List;
 public class MemberPostService {
 
     private final MemberPostRepository memberPostRepository;
+    private final MemberPostReactionRepository memberPostReactionRepository;
 
 
     /**
@@ -37,5 +41,15 @@ public class MemberPostService {
      */
     public List<MemberPostCountDTO> countPostsOfEveryday(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
         return memberPostRepository.countPostsOfEveryday(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
+    }
+
+    public MemberPost findMemberPostById(String postId) {
+        return memberPostRepository
+                .findById(postId)
+                .orElseThrow(PostNotFoundException::new);
+    }
+
+    public boolean isMemberPostReactionExists(MemberPost post, String memberId, Emoji emoji) {
+        return memberPostReactionRepository.existsByPostAndMemberIdAndEmoji(post, memberId, emoji);
     }
 }
