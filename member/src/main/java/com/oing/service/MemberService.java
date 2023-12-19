@@ -96,12 +96,16 @@ public class MemberService {
     }
 
     @Transactional
-    public Page<FamilyMemberProfileResponse> findFamilyProfilesByFamilyId(String userId, String familyId, int page, int size) {
+    public Page<FamilyMemberProfileResponse> findFamilyProfilesByFamilyId(
+            String userId, String familyId, int page, int size
+    ) {
         Page<Member> memberPage = memberRepository.findAllByFamilyId(familyId, PageRequest.of(page - 1, size));
         List<Member> members = memberPage.getContent();
 
         List<FamilyMemberProfileResponse> familyMemberProfiles = members.stream()
-                .map(member -> new FamilyMemberProfileResponse(member.getId(), member.getName(), member.getProfileImgUrl()))
+                .map(member -> new FamilyMemberProfileResponse(
+                        member.getId(), member.getName(), member.getProfileImgUrl())
+                )
                 .sorted(Comparator.comparing(profile -> userId.equals(profile.memberId()) ? 0 : 1))
                 .collect(Collectors.toList());
 

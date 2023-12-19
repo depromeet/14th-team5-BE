@@ -9,7 +9,6 @@ import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.FamilyMemberProfilesResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
-import com.oing.repository.MemberRepository;
 import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
@@ -35,7 +34,9 @@ public class MemberController implements MemberApi {
         return new FamilyMemberProfilesResponse(familyMemberProfile, familyCreatedAt);
     }
 
-    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfiles(String userId, Integer page, Integer size) {
+    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfiles(
+            String userId, Integer page, Integer size
+    ) {
         String familyId = memberService.findFamilyIdByMemberId(userId);
         Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyProfilesByFamilyId(
                 userId, familyId, page, size
