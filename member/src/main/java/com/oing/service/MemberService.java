@@ -6,9 +6,7 @@ import com.oing.domain.model.Member;
 import com.oing.domain.model.SocialMember;
 import com.oing.domain.model.key.SocialMemberKey;
 import com.oing.dto.response.FamilyMemberProfileResponse;
-import com.oing.exception.FamilyNotFoundException;
 import com.oing.exception.MemberNotFoundException;
-import com.oing.repository.FamilyRepository;
 import com.oing.repository.MemberRepository;
 import com.oing.repository.SocialMemberRepository;
 import com.oing.util.IdentityGenerator;
@@ -19,8 +17,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +26,6 @@ import java.util.stream.Collectors;
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final FamilyRepository familyRepository;
     private final SocialMemberRepository socialMemberRepository;
 
     private final IdentityGenerator identityGenerator;
@@ -79,20 +74,6 @@ public class MemberService {
         return family.stream()
                 .map(Member::getId)
                 .toList();
-    }
-
-    @Transactional
-    public String findFamilyCreatedAt(String memberId) {
-        Member member = findMemberById(memberId);
-        LocalDateTime familyCreatedAt = familyRepository
-                .findById(member.getFamilyId())
-                .orElseThrow(FamilyNotFoundException::new)
-                .getCreatedAt();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        return familyCreatedAt.toLocalDate()
-                .format(formatter);
     }
 
     @Transactional

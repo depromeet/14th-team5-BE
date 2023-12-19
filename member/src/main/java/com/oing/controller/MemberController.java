@@ -6,7 +6,6 @@ import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Member;
 import com.oing.dto.request.UpdateMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
-import com.oing.dto.response.FamilyMemberProfilesResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.restapi.MemberApi;
@@ -26,20 +25,11 @@ public class MemberController implements MemberApi {
     private final MemberService memberService;
 
     @Override
-    public FamilyMemberProfilesResponse getFamilyMemberProfileAndCreatedAt(Integer page, Integer size) {
-        String userId = authenticationHolder.getUserId();
-        PaginationResponse<FamilyMemberProfileResponse> familyMemberProfile = getFamilyMemberProfiles(userId, page, size);
-
-        String familyCreatedAt = memberService.findFamilyCreatedAt(userId);
-        return new FamilyMemberProfilesResponse(familyMemberProfile, familyCreatedAt);
-    }
-
-    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfiles(
-            String userId, Integer page, Integer size
-    ) {
-        String familyId = memberService.findFamilyIdByMemberId(userId);
+    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfiles(Integer page, Integer size) {
+        String memberId = authenticationHolder.getUserId();
+        String familyId = memberService.findFamilyIdByMemberId(memberId);
         Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyProfilesByFamilyId(
-                userId, familyId, page, size
+                memberId, familyId, page, size
         );
 
         PaginationDTO<FamilyMemberProfileResponse> paginationDTO = PaginationDTO.of(profilePage);

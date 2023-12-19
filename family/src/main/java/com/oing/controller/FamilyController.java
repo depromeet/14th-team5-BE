@@ -1,9 +1,11 @@
 package com.oing.controller;
 
+import com.oing.dto.response.FamilyCreatedAtResponse;
 import com.oing.dto.response.FamilyInvitationLinkResponse;
 import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.restapi.FamilyApi;
+import com.oing.service.FamilyService;
 import com.oing.util.IdentityGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import java.util.Random;
 @Controller
 public class FamilyController implements FamilyApi {
     private final IdentityGenerator identityGenerator;
+    private final FamilyService familyService;
 
     @Override
     public FamilyMonthlyStatisticsResponse getMonthlyFamilyStatistics(String familyId, String yearMonth) {
@@ -34,5 +37,10 @@ public class FamilyController implements FamilyApi {
     @Override
     public FamilyInvitationLinkResponse getInvitationLink(String familyId) {
         return new FamilyInvitationLinkResponse("https://no5ing.kr/o/bgE39230f");
+    }
+
+    @Override
+    public FamilyCreatedAtResponse getFamilyCreatedAt(String familyId) {
+        return new FamilyCreatedAtResponse(familyService.findFamilyCreatedAt(familyId));
     }
 }
