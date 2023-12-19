@@ -1,5 +1,7 @@
 package com.oing.domain.model;
 
+import com.oing.domain.exception.DomainException;
+import com.oing.domain.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -35,4 +37,16 @@ public class Member extends BaseAuditEntity {
 
     @Column(name = "profile_img_url")
     private String profileImgUrl;
+
+    public void updateProfileInfo(String name, String profileImgUrl) {
+        validateName(name);
+        this.name = name;
+        this.profileImgUrl = profileImgUrl;
+    }
+
+    private void validateName(String name) {
+        if (name.length()<2) {
+            throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+    }
 }

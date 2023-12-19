@@ -43,10 +43,6 @@ public interface MemberApi {
     @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다.")
     @PutMapping("/{memberId}")
     MemberResponse updateMember(
-            @Parameter(description = "수정할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
-            @PathVariable
-            String memberId,
-
             @Valid
             @RequestBody
             UpdateMemberRequest request
