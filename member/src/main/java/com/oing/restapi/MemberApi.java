@@ -26,7 +26,7 @@ public interface MemberApi {
             @Min(value = 1)
             Integer page,
 
-            @RequestParam(required = false, defaultValue = "3")
+            @RequestParam(required = false, defaultValue = "10")
             @Parameter(description = "가져올 페이지당 크기", example = "10")
             @Min(value = 1)
             Integer size
