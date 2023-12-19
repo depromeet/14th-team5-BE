@@ -90,7 +90,7 @@ public class PostController implements PostApi {
     public PostResponse createPost(CreatePostRequest request) {
         String myId = authenticationHolder.getUserId();
         String postId = identityGenerator.generateIdentity();
-        ZonedDateTime uploadTime = ZonedDateTime.parse(request.uploadTime());
+        ZonedDateTime uploadTime = request.uploadTime();
 
         validateUserHasNotCreatedPostToday(myId, uploadTime);
         validateUploadTime(uploadTime);
