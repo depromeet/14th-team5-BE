@@ -83,7 +83,7 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     }
 
     @Override
-    public void deleteImageByImageUrl(String imageUrl) {
+    public void deleteImageByPath(String imageUrl) {
         try {
             amazonS3Client.deleteObject(bucket, imageUrl);
         } catch (AmazonServiceException e) {

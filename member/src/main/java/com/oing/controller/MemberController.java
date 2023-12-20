@@ -79,7 +79,7 @@ public class MemberController implements MemberApi {
 
     private void deleteMemberProfileImage(String profileImageUrl) {
         if (profileImageUrl != null) {
-            preSignedUrlGenerator.deleteImageByImageUrl(profileImageUrl);
+            preSignedUrlGenerator.deleteImageByPath(profileImageUrl);
         }
     }
 
