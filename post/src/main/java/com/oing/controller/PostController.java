@@ -1,13 +1,12 @@
 package com.oing.controller;
 
 
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.MemberPost;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.exception.InvalidUploadTimeException;
 import com.oing.restapi.PostApi;
 import com.oing.service.MemberPostService;
 import com.oing.util.AuthenticationHolder;
@@ -106,7 +105,7 @@ public class PostController implements PostApi {
     private void validateUserHasNotCreatedPostToday(String memberId, ZonedDateTime uploadTime) {
         LocalDate today = uploadTime.toLocalDate();
         if (memberPostService.hasUserCreatedPostToday(memberId, today)) {
-            throw new DomainException(ErrorCode.INVALID_UPLOAD_TIME);
+            throw new InvalidUploadTimeException();
         }
     }
 
@@ -117,7 +116,7 @@ public class PostController implements PostApi {
         ZonedDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(12, 0));
 
         if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
-            throw new DomainException(ErrorCode.INVALID_UPLOAD_TIME);
+            throw new InvalidUploadTimeException();
         }
     }
 
