@@ -48,7 +48,7 @@ public class Member extends BaseAuditEntity {
     }
 
     private void validateName(String name) {
-        if (name.length()<2) {
+        if (name.length()<2 || name.length()>10) {
             throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
         }
     }
