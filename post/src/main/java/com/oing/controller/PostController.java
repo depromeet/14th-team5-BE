@@ -87,18 +87,18 @@ public class PostController implements PostApi {
     @Transactional
     @Override
     public PostResponse createPost(CreatePostRequest request) {
-        String myId = authenticationHolder.getUserId();
+        String memberId = authenticationHolder.getUserId();
         String postId = identityGenerator.generateIdentity();
         ZonedDateTime uploadTime = request.uploadTime();
 
-        validateUserHasNotCreatedPostToday(myId, uploadTime);
+        validateUserHasNotCreatedPostToday(memberId, uploadTime);
         validateUploadTime(uploadTime);
 
         LocalDate uploadDate = uploadTime.toLocalDate();
-        MemberPost post = new MemberPost(postId, myId, uploadDate, request.imageUrl(), request.content());
+        MemberPost post = new MemberPost(postId, memberId, uploadDate, request.imageUrl(), request.content());
         memberPostService.save(post);
 
-        return new PostResponse(postId, myId, 0, 0, request.imageUrl(), request.content(),
+        return new PostResponse(postId, memberId, 0, 0, request.imageUrl(), request.content(),
                 uploadTime);
     }
 
