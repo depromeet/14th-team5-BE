@@ -1,5 +1,6 @@
 package com.oing.restapi;
 
+import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
@@ -45,8 +46,9 @@ public interface MemberApi {
     @Operation(summary = "회원 프로필 사진 S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
     @PostMapping("/image-upload-request")
     PreSignedUrlResponse requestPresignedUrl(
-            @Parameter(description = "이미지 이름(확장자 포함)", example = "image.jpg")
-            String imageName
+            @Valid
+            @RequestBody
+            PreSignedUrlRequest request
     );
 
     @Operation(summary = "회원 프로필 이미지 수정", description = "회원 프로필 이미지를 수정합니다.")

@@ -2,6 +2,7 @@ package com.oing.controller;
 
 
 import com.oing.dto.request.CreatePostRequest;
+import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
@@ -29,7 +30,8 @@ public class PostController implements PostApi {
     private final PreSignedUrlGenerator preSignedUrlGenerator;
 
     @Override
-    public PreSignedUrlResponse requestPresignedUrl(String imageName) {
+    public PreSignedUrlResponse requestPresignedUrl(PreSignedUrlRequest request) {
+        String imageName = request.imageName();
         return preSignedUrlGenerator.getFeedPreSignedUrl(imageName);
     }
 

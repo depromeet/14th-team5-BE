@@ -1,6 +1,7 @@
 package com.oing.restapi;
 
 import com.oing.dto.request.CreatePostRequest;
+import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
@@ -28,8 +29,9 @@ public interface PostApi {
     @Operation(summary = "게시물 사진 S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
     @PostMapping("/image-upload-request")
     PreSignedUrlResponse requestPresignedUrl(
-            @Parameter(description = "이미지 이름(확장자 포함)", example = "image.jpg")
-            String imageName
+            @Valid
+            @RequestBody
+            PreSignedUrlRequest request
     );
 
     @Operation(summary = "게시물 조회", description = "게시물 목록을 조회합니다. 조회 기준은 생성 순서입니다.")
