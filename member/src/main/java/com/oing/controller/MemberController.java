@@ -91,9 +91,16 @@ public class MemberController implements MemberApi {
         String memberId = authenticationHolder.getUserId();
         Member member = memberService.findMemberById(memberId);
 
+        validateName(request.name());
         member.updateName(request.name());
 
         return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());
+    }
+
+    private void validateName(String name) {
+        if (name.length()<2 || name.length()>10) {
+            throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
+        }
     }
 
     @Override
