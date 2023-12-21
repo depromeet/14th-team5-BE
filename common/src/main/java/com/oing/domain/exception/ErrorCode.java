@@ -11,6 +11,7 @@ public enum ErrorCode {
      */
     UNKNOWN_SERVER_ERROR("CM0001", "Unknown Server Error"),
     INVALID_INPUT_VALUE("CM0002", "Invalid Input Value"),
+    INVALID_UPLOAD_TIME("CM0003", "Invalid Upload Time"),
     /**
      * Auth Related Errors
      */
