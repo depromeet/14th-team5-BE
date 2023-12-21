@@ -1,5 +1,7 @@
 package com.oing.service;
 
+import com.oing.domain.exception.DomainException;
+import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Family;
 import com.oing.repository.FamilyRepository;
 import com.oing.util.IdentityGenerator;
@@ -18,5 +20,12 @@ public class FamilyService {
     public Family createFamily() {
         Family family = new Family(identityGenerator.generateIdentity());
         return familyRepository.save(family);
+    }
+
+    @Transactional
+    public Family getFamilyById(String familyId) {
+        return familyRepository
+                .findById(familyId)
+                .orElseThrow(() -> new DomainException(ErrorCode.FAMILY_NOT_FOUND));
     }
 }

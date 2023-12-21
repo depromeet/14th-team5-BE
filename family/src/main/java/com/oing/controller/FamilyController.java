@@ -5,8 +5,10 @@ import com.oing.dto.response.FamilyInvitationLinkResponse;
 import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.restapi.FamilyApi;
+import com.oing.service.FamilyInviteLinkService;
 import com.oing.service.FamilyService;
 import com.oing.util.IdentityGenerator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
@@ -16,8 +18,8 @@ import java.util.Random;
 @RequiredArgsConstructor
 @Controller
 public class FamilyController implements FamilyApi {
-    private final IdentityGenerator identityGenerator;
     private final FamilyService familyService;
+    private final FamilyInviteLinkService familyInviteLinkService;
 
     @Override
     public FamilyMonthlyStatisticsResponse getMonthlyFamilyStatistics(String familyId, String yearMonth) {
@@ -35,8 +37,11 @@ public class FamilyController implements FamilyApi {
         return FamilyResponse.from(family);
     }
 
+    @Transactional
     @Override
     public FamilyInvitationLinkResponse getInvitationLink(String familyId) {
-        return new FamilyInvitationLinkResponse("https://no5ing.kr/o/bgE39230f");
+        Family family = familyService.getFamilyById(familyId);
+        String link = familyInviteLinkService.generateFamilyInviteLink(family);
+        return new FamilyInvitationLinkResponse(link);
     }
 }
