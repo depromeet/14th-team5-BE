@@ -1,7 +1,10 @@
 package com.oing.dto.response;
 
+import com.oing.domain.model.MemberPost;
+import com.oing.domain.model.MemberPostProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 /**
@@ -33,4 +36,15 @@ public record PostResponse(
         @Schema(description = "피드 작성 시간", example = "2021-12-05T12:30:00.000+09:00")
         ZonedDateTime createdAt
 ) {
+        public static PostResponse from(MemberPost post) {
+                return new PostResponse(
+                        post.getId(),
+                        post.getMemberId(),
+                        post.getCommentCnt(),
+                        post.getReactionCnt(),
+                        post.getImageUrl(),
+                        post.getContent(),
+                        post.getCreatedAt().atZone(ZoneId.systemDefault())
+                );
+        }
 }

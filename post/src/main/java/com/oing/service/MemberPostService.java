@@ -1,8 +1,11 @@
 package com.oing.service;
 
 import com.oing.domain.MemberPostCountDTO;
+import com.oing.domain.exception.DomainException;
+import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.MemberPost;
 import com.oing.repository.MemberPostRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +30,7 @@ public class MemberPostService {
         return memberPostRepository.findLatestPostOfEveryday(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
 
-    
+
     /**
      *  멤버들이 범위 날짜 안에 올린 게시글의 갯수를 가져온다.
      * @param memberIds 조회 대상 멤버들의 ID
@@ -56,5 +59,10 @@ public class MemberPostService {
      */
     public void save(MemberPost post) {
         memberPostRepository.save(post);
+    }
+
+    @Transactional
+    public MemberPost getMemberPostProjectionById(String postId) {
+        return memberPostRepository.findById(postId).orElseThrow(() -> new DomainException(ErrorCode.MEMBER_NOT_FOUND));
     }
 }

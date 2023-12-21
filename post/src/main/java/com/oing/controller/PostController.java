@@ -122,14 +122,7 @@ public class PostController implements PostApi {
 
     @Override
     public PostResponse getPost(String postId) {
-        return new PostResponse(
-                postId,
-                "01HGW2N7EHJVJ4CJ888RRS2E",
-                0,
-                0,
-                "https://picsum.photos/200/300?random=00",
-                "즐거운 하루~",
-                ZonedDateTime.now()
-        );
+        MemberPost memberPostProjection = memberPostService.getMemberPostProjectionById(postId);
+        return PostResponse.from(memberPostProjection);
     }
 }
