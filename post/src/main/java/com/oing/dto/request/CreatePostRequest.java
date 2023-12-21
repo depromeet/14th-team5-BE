@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 @Schema(description = "피드 게시물 생성 요청")
 public record CreatePostRequest(
         @NotNull
-        @Schema(description = "피드 게시물 사진 주소", example = "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97")
+        @Schema(description = "피드 게시물 사진 주소", example = "images/feed/01HJ1SEEEFDSA5ZZVRW.jpg")
         String imageUrl,
 
         @Schema(description = "피드 게시물 내용", example = "안녕하세요")
