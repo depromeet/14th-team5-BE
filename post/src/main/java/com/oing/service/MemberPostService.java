@@ -1,14 +1,17 @@
 package com.oing.service;
 
 import com.oing.domain.MemberPostCountDTO;
+import com.oing.domain.PaginationDTO;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.MemberPost;
 import com.oing.repository.MemberPostRepository;
+import com.querydsl.core.QueryResults;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Member;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -62,7 +65,16 @@ public class MemberPostService {
     }
 
     @Transactional
-    public MemberPost getMemberPostProjectionById(String postId) {
+    public MemberPost getMemberPostById(String postId) {
         return memberPostRepository.findById(postId).orElseThrow(() -> new DomainException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    @Transactional
+    public PaginationDTO<MemberPost> searchMemberPost(int page, int size, LocalDate date, String memberId, boolean asc) {
+        QueryResults<MemberPost> results = memberPostRepository.searchPosts(page, size, date, memberId, asc);
+        return new PaginationDTO<>(
+                (int) results.getTotal(),
+                results.getResults()
+        );
     }
 }

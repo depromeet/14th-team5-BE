@@ -1,7 +1,6 @@
 package com.oing.dto.response;
 
 import com.oing.domain.model.MemberPost;
-import com.oing.domain.model.MemberPostProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.ZoneId;
