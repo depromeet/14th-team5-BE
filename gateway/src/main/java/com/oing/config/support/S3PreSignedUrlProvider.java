@@ -12,6 +12,7 @@ import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -82,6 +83,7 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
         return identityGenerator.generateIdentity() + ext;
     }
 
+    @Async
     @Override
     public void deleteImageByPath(String imageUrl) {
         try {
