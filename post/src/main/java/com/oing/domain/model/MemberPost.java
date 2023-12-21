@@ -47,20 +47,19 @@ public class MemberPost extends BaseAuditEntity {
     @OneToMany(mappedBy = "post")
     private List<MemberPostReaction> reactions = new ArrayList<>();
 
-    public MemberPost(String id, String memberId, LocalDate postDate, String imageUrl, String content,
-                      int commentCnt, int reactionCnt) {
-        validateContent();
+    public MemberPost(String id, String memberId, LocalDate postDate, String imageUrl, String content) {
+        validateContent(content);
         this.id = id;
         this.memberId = memberId;
         this.postDate = postDate;
         this.imageUrl = imageUrl;
         this.content = content;
-        this.commentCnt = commentCnt;
-        this.reactionCnt = reactionCnt;
+        this.commentCnt = 0;
+        this.reactionCnt = 0;
     }
 
-    private void validateContent() {
-        if (this.content.length() > 8) {
+    private void validateContent(String content) {
+        if (content != null && content.length() > 8) {
             throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
         }
     }
