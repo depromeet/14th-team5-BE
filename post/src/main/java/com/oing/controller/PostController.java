@@ -34,7 +34,6 @@ import java.util.Random;
  */
 @RequiredArgsConstructor
 @Controller
-@Slf4j
 public class PostController implements PostApi {
 
     private final AuthenticationHolder authenticationHolder;
@@ -103,7 +102,6 @@ public class PostController implements PostApi {
 
         MemberPost post = new MemberPost(postId, memberId, uploadDate, request.imageUrl(), request.content());
         MemberPost savedPost = memberPostService.save(post);
-        log.info("uploadDate: {}", uploadDate);
         return new PostResponse(savedPost.getId(), savedPost.getMemberId(), 0, 0,
                 savedPost.getImageUrl(), savedPost.getContent(), uploadTime);
     }
