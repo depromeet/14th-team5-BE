@@ -15,10 +15,12 @@ import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ import java.util.Random;
  */
 @RequiredArgsConstructor
 @Controller
+@Slf4j
 public class PostController implements PostApi {
 
     private final AuthenticationHolder authenticationHolder;
@@ -96,12 +99,13 @@ public class PostController implements PostApi {
         validateUserHasNotCreatedPostToday(memberId, uploadTime);
         validateUploadTime(uploadTime);
 
-        LocalDate uploadDate = uploadTime.toLocalDate();
-        MemberPost post = new MemberPost(postId, memberId, uploadDate, request.imageUrl(), request.content());
-        memberPostService.save(post);
+        LocalDate uploadDate = extractLocalDate(uploadTime);
 
-        return new PostResponse(postId, memberId, 0, 0, request.imageUrl(), request.content(),
-                uploadTime);
+        MemberPost post = new MemberPost(postId, memberId, uploadDate, request.imageUrl(), request.content());
+        MemberPost savedPost = memberPostService.save(post);
+        log.info("uploadDate: {}", uploadDate);
+        return new PostResponse(savedPost.getId(), savedPost.getMemberId(), 0, 0,
+                savedPost.getImageUrl(), savedPost.getContent(), uploadTime);
     }
 
     private void validateUserHasNotCreatedPostToday(String memberId, ZonedDateTime uploadTime) {
@@ -120,6 +124,10 @@ public class PostController implements PostApi {
         if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
             throw new InvalidUploadTimeException();
         }
+    }
+
+    private LocalDate extractLocalDate(ZonedDateTime zonedDateTime) {
+        return zonedDateTime.withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDate();
     }
 
     @Override
