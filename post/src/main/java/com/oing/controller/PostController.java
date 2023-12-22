@@ -1,16 +1,24 @@
 package com.oing.controller;
 
 
+import com.oing.domain.model.MemberPost;
 import com.oing.dto.request.CreatePostRequest;
+import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.exception.InvalidUploadTimeException;
 import com.oing.restapi.PostApi;
+import com.oing.service.MemberPostService;
+import com.oing.util.AuthenticationHolder;
+import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +34,14 @@ import java.util.Random;
 @Controller
 public class PostController implements PostApi {
 
+    private final AuthenticationHolder authenticationHolder;
+    private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
+    private final MemberPostService memberPostService;
 
     @Override
-    public PreSignedUrlResponse requestPresignedUrl(String imageName) {
+    public PreSignedUrlResponse requestPresignedUrl(PreSignedUrlRequest request) {
+        String imageName = request.imageName();
         return preSignedUrlGenerator.getFeedPreSignedUrl(imageName);
     }
 
@@ -74,21 +86,40 @@ public class PostController implements PostApi {
         return new PaginationResponse<>(page, 5, size, 5 > page, mockResponses);
     }
 
+    @Transactional
     @Override
     public PostResponse createPost(CreatePostRequest request) {
-        String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
-        PostResponse mockResponse = new PostResponse(
-                postIdBase,
-                writerIdBase,
-                0,
-                0,
-                request.imageUrl(),
-                request.content(),
-                ZonedDateTime.now()
-        );
+        String memberId = authenticationHolder.getUserId();
+        String postId = identityGenerator.generateIdentity();
+        ZonedDateTime uploadTime = request.uploadTime();
 
-        return mockResponse;
+        validateUserHasNotCreatedPostToday(memberId, uploadTime);
+        validateUploadTime(uploadTime);
+
+        LocalDate uploadDate = uploadTime.toLocalDate();
+        MemberPost post = new MemberPost(postId, memberId, uploadDate, request.imageUrl(), request.content());
+        memberPostService.save(post);
+
+        return new PostResponse(postId, memberId, 0, 0, request.imageUrl(), request.content(),
+                uploadTime);
+    }
+
+    private void validateUserHasNotCreatedPostToday(String memberId, ZonedDateTime uploadTime) {
+        LocalDate today = uploadTime.toLocalDate();
+        if (memberPostService.hasUserCreatedPostToday(memberId, today)) {
+            throw new InvalidUploadTimeException();
+        }
+    }
+
+    private void validateUploadTime(ZonedDateTime uploadTime) {
+        ZonedDateTime serverTime = ZonedDateTime.now();
+
+        ZonedDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(12, 0));
+        ZonedDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(12, 0));
+
+        if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
+            throw new InvalidUploadTimeException();
+        }
     }
 
     @Override
