@@ -30,7 +30,7 @@ public record PostResponse(
         @Schema(description = "피드 게시물 내용", example = "맛있는 밥!")
         String content,
 
-        @Schema(description = "피드 작성 시간", example = "2021-12-05T12:30:00.000+09:00")
+        @Schema(description = "피드 작성 시간", example = "2023-12-23T01:53:21.577347+09:00")
         ZonedDateTime createdAt
 ) {
 }

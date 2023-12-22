@@ -18,10 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -80,7 +77,7 @@ public class PostController implements PostApi {
                             random.nextInt(5),
                             "https://picsum.photos/200/300?random=" + currentIndex,
                             "hi",
-                            ZonedDateTime.now().minusSeconds(currentIndex * 30L)
+                           ZonedDateTime.now().minusSeconds(currentIndex * 30L)
                     )
             );
         }
@@ -93,20 +90,21 @@ public class PostController implements PostApi {
     public PostResponse createPost(CreatePostRequest request) {
         String memberId = authenticationHolder.getUserId();
         String postId = identityGenerator.generateIdentity();
-        ZonedDateTime uploadTime = request.uploadTime();
+        LocalDateTime uploadTime = request.uploadTime().toLocalDateTime();
+        LocalDate uploadDate = uploadTime.toLocalDate();
 
         validateUserHasNotCreatedPostToday(memberId, uploadTime);
         validateUploadTime(uploadTime);
 
-        LocalDate uploadDate = extractLocalDate(uploadTime);
-
         MemberPost post = new MemberPost(postId, memberId, uploadDate, request.imageUrl(), request.content());
         MemberPost savedPost = memberPostService.save(post);
+        ZonedDateTime createdAt = convertToZonedDateTime(savedPost.getCreatedAt());
+
         return new PostResponse(savedPost.getId(), savedPost.getMemberId(), 0, 0,
-                savedPost.getImageUrl(), savedPost.getContent(), uploadTime);
+                savedPost.getImageUrl(), savedPost.getContent(), createdAt);
     }
 
-    private void validateUserHasNotCreatedPostToday(String memberId, ZonedDateTime uploadTime) {
+    private void validateUserHasNotCreatedPostToday(String memberId, LocalDateTime uploadTime) {
         LocalDate today = uploadTime.toLocalDate();
         if (memberPostService.hasUserCreatedPostToday(memberId, today)) {
             throw new DuplicatePostUploadException();
@@ -115,24 +113,25 @@ public class PostController implements PostApi {
 
     /**
      * 업로드 시간이 허용 가능한 범위 내에 있는지 검증합니다.
-     * 범위는 서버의 로컬 시간을 기준으로 전 날의 오후 12시부터 현재 날의 오후 12시까지로 정의됩니다.
+     * 범위는 서버의 로컬 시간을 기준으로 전 날의 오후 12시부터 다음 날의 오후 12시까지로 정의됩니다.
      *
      * @param uploadTime 검증할 업로드 시간입니다.
      * @throws InvalidUploadTimeException 업로드 시간이 허용 가능한 범위를 벗어난 경우 발생하는 예외입니다.
      */
-    private void validateUploadTime(ZonedDateTime uploadTime) {
-        ZonedDateTime serverTime = ZonedDateTime.now();
+    private void validateUploadTime(LocalDateTime uploadTime) {
+        LocalDateTime serverTime = LocalDateTime.now();
 
-        ZonedDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(12, 0));
-        ZonedDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(12, 0));
+        LocalDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(12, 0));
+        LocalDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(12, 0));
 
         if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
             throw new InvalidUploadTimeException();
         }
     }
 
-    private LocalDate extractLocalDate(ZonedDateTime zonedDateTime) {
-        return zonedDateTime.withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDate();
+    private ZonedDateTime convertToZonedDateTime(LocalDateTime localDateTime) {
+        ZoneId serverTimeZone = ZoneId.of("Asia/Seoul");
+        return localDateTime.atZone(serverTimeZone);
     }
 
     @Override
