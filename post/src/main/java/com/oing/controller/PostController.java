@@ -7,6 +7,7 @@ import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.exception.DuplicatePostUploadException;
 import com.oing.exception.InvalidUploadTimeException;
 import com.oing.restapi.PostApi;
 import com.oing.service.MemberPostService;
@@ -15,7 +16,6 @@ import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
@@ -109,7 +109,7 @@ public class PostController implements PostApi {
     private void validateUserHasNotCreatedPostToday(String memberId, ZonedDateTime uploadTime) {
         LocalDate today = uploadTime.toLocalDate();
         if (memberPostService.hasUserCreatedPostToday(memberId, today)) {
-            throw new InvalidUploadTimeException();
+            throw new DuplicatePostUploadException();
         }
     }
 

@@ -11,7 +11,6 @@ public enum ErrorCode {
      */
     UNKNOWN_SERVER_ERROR("CM0001", "Unknown Server Error"),
     INVALID_INPUT_VALUE("CM0002", "Invalid Input Value"),
-    INVALID_UPLOAD_TIME("CM0003", "Invalid Upload Time"),
     /**
      * Auth Related Errors
      */
@@ -21,7 +20,12 @@ public enum ErrorCode {
     /**
      * Member Related Errors
      */
-    MEMBER_NOT_FOUND("MB0001", "Member not found");
+    MEMBER_NOT_FOUND("MB0001", "Member not found"),
+    /**
+     * Post Related Errors
+     */
+    INVALID_UPLOAD_TIME("PO0001", "Invalid Upload Time"),
+    DUPLICATE_POST_UPLOAD("PO0002", "Duplicate Post Upload");
 
     private final String code;
     private final String message;
