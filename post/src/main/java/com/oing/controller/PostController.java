@@ -90,11 +90,12 @@ public class PostController implements PostApi {
     public PostResponse createPost(CreatePostRequest request) {
         String memberId = authenticationHolder.getUserId();
         String postId = identityGenerator.generateIdentity();
-        LocalDateTime uploadTime = request.uploadTime().toLocalDateTime();
-        LocalDate uploadDate = uploadTime.toLocalDate();
+        ZonedDateTime uploadTime = request.uploadTime();
+        LocalDateTime uploadLocalDateTime = request.uploadTime().toLocalDateTime();
+        LocalDate uploadDate = extractLocalDate(uploadTime);
 
-        validateUserHasNotCreatedPostToday(memberId, uploadTime);
-        validateUploadTime(uploadTime);
+        validateUserHasNotCreatedPostToday(memberId, uploadLocalDateTime);
+        validateUploadTime(uploadLocalDateTime);
 
         MemberPost post = new MemberPost(postId, memberId, uploadDate, request.imageUrl(), request.content());
         MemberPost savedPost = memberPostService.save(post);
@@ -102,6 +103,10 @@ public class PostController implements PostApi {
 
         return new PostResponse(savedPost.getId(), savedPost.getMemberId(), 0, 0,
                 savedPost.getImageUrl(), savedPost.getContent(), createdAt);
+    }
+
+    private LocalDate extractLocalDate(ZonedDateTime zonedDateTime) {
+        return zonedDateTime.withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDate();
     }
 
     private void validateUserHasNotCreatedPostToday(String memberId, LocalDateTime uploadTime) {
