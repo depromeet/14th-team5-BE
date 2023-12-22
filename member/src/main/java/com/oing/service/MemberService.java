@@ -17,10 +17,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -83,13 +83,20 @@ public class MemberService {
         Page<Member> memberPage = memberRepository.findAllByFamilyId(familyId, PageRequest.of(page - 1, size));
         List<Member> members = memberPage.getContent();
 
-        List<FamilyMemberProfileResponse> familyMemberProfiles = members.stream()
-                .map(member -> new FamilyMemberProfileResponse(
-                        member.getId(), member.getName(), member.getProfileImgUrl())
-                )
-                .sorted(Comparator.comparing(profile -> userId.equals(profile.memberId()) ? 0 : 1))
-                .collect(Collectors.toList());
+        List<FamilyMemberProfileResponse> familyMemberProfiles = createFamilyMemberProfiles(members);
+        familyMemberProfiles.sort(Comparator.comparing(profile -> userId.equals(profile.memberId()) ? 0 : 1));
 
         return new PageImpl<>(familyMemberProfiles, memberPage.getPageable(), memberPage.getTotalElements());
+    }
+
+    private List<FamilyMemberProfileResponse> createFamilyMemberProfiles(List<Member> members) {
+        List<FamilyMemberProfileResponse> familyMemberProfiles = new ArrayList<>();
+
+        for (Member member : members) {
+            FamilyMemberProfileResponse profileResponse = new FamilyMemberProfileResponse(
+                    member.getId(), member.getName(), member.getProfileImgUrl());
+            familyMemberProfiles.add(profileResponse);
+        }
+        return familyMemberProfiles;
     }
 }
