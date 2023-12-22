@@ -12,7 +12,6 @@ import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
@@ -24,10 +23,10 @@ public class MemberController implements MemberApi {
     private final MemberService memberService;
 
     @Override
-    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfiles(Integer page, Integer size) {
+    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(Integer page, Integer size) {
         String memberId = authenticationHolder.getUserId();
         String familyId = memberService.findFamilyIdByMemberId(memberId);
-        Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyProfilesByFamilyId(
+        Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyMembersProfilesByFamilyId(
                 memberId, familyId, page, size
         );
 

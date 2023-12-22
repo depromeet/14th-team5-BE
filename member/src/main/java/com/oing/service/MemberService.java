@@ -77,7 +77,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Page<FamilyMemberProfileResponse> findFamilyProfilesByFamilyId(
+    public Page<FamilyMemberProfileResponse> findFamilyMembersProfilesByFamilyId(
             String userId, String familyId, int page, int size
     ) {
         Page<Member> memberPage = memberRepository.findAllByFamilyId(familyId, PageRequest.of(page - 1, size));

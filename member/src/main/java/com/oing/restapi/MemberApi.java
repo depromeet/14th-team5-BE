@@ -20,7 +20,7 @@ public interface MemberApi {
             @Parameter(name = "type", description = "가족 구성원 타입", example = "FAMILY", required = true)
     })
     @GetMapping(params = {"type=FAMILY"})
-    PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfiles(
+    PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(
             @RequestParam(required = false, defaultValue = "1")
             @Parameter(description = "가져올 현재 페이지", example = "1")
             @Min(value = 1)
