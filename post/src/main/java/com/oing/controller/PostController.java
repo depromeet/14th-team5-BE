@@ -101,8 +101,7 @@ public class PostController implements PostApi {
         MemberPost savedPost = memberPostService.save(post);
         ZonedDateTime createdAt = convertToZonedDateTime(savedPost.getCreatedAt());
 
-        return new PostResponse(savedPost.getId(), savedPost.getMemberId(), 0, 0,
-                savedPost.getImageUrl(), savedPost.getContent(), createdAt);
+        return PostResponse.of(savedPost, createdAt);
     }
 
     private LocalDate extractLocalDate(ZonedDateTime zonedDateTime) {
