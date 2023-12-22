@@ -31,16 +31,16 @@ public class PostReactionController implements PostReactionApi {
         Emoji emoji = Emoji.fromString(request.content());
         MemberPost post = memberPostService.findMemberPostById(postId);
 
-        if (postReactionService.isMemberPostReactionExists(post, memberId, emoji)) {
-            throw new EmojiAlreadyExistsException();
-        }
-        addPostReaction(post, memberId, emoji);
-    }
-
-    private void addPostReaction(MemberPost post, String memberId, Emoji emoji) {
+        validatePostReactionForAddition(post, memberId, emoji);
         String reactionId = identityGenerator.generateIdentity();
         MemberPostReaction reaction = postReactionService.createPostReaction(reactionId, post, memberId, emoji);
         post.addReaction(reaction);
+    }
+
+    private void validatePostReactionForAddition(MemberPost post, String memberId, Emoji emoji) {
+        if (postReactionService.isMemberPostReactionExists(post, memberId, emoji)) {
+            throw new EmojiAlreadyExistsException();
+        }
     }
 
     @Override
@@ -49,17 +49,16 @@ public class PostReactionController implements PostReactionApi {
         String memberId = authenticationHolder.getUserId();
         Emoji emoji = Emoji.fromString(request.content());
         MemberPost post = memberPostService.findMemberPostById(postId);
+
+        validatePostReactionForDeletion(post, memberId, emoji);
+        MemberPostReaction reaction = postReactionService.findReaction(post, memberId, emoji);
+        post.removeReaction(reaction);
+        postReactionService.deletePostReaction(reaction);
+    }
+
+    private void validatePostReactionForDeletion(MemberPost post, String memberId, Emoji emoji) {
         if (!postReactionService.isMemberPostReactionExists(post, memberId, emoji)) {
             throw new EmojiNotFoundException();
         }
-
-        removePostReaction(post, memberId, emoji);
-    }
-
-    private void removePostReaction(MemberPost post, String memberId, Emoji emoji) {
-        String postId = post.getId();
-        MemberPostReaction reaction = postReactionService.findReaction(postId, memberId, emoji);
-        post.removeReaction(reaction);
-        postReactionService.deletePostReaction(reaction);
     }
 }

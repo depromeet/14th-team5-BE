@@ -26,9 +26,9 @@ public class PostReactionService {
         return reaction;
     }
 
-    public MemberPostReaction findReaction(String postId, String memberId, Emoji emoji) {
+    public MemberPostReaction findReaction(MemberPost post, String memberId, Emoji emoji) {
         Optional<MemberPostReaction> reaction = memberPostReactionRepository
-                .findReactionByPostIdAndMemberIdAndEmoji(postId, memberId, emoji);
+                .findReactionByPostAndMemberIdAndEmoji(post, memberId, emoji);
         if (reaction.isPresent()) {
             return reaction.get();
         } else {
