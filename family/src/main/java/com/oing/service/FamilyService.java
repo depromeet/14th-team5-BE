@@ -1,5 +1,6 @@
 package com.oing.service;
 
+import com.oing.domain.model.Family;
 import com.oing.exception.FamilyNotFoundException;
 import com.oing.repository.FamilyRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +18,19 @@ public class FamilyService {
     private final FamilyRepository familyRepository;
 
     public ZonedDateTime findFamilyCreatedAt(String familyId) {
+        Family family = findFamilyById(familyId);
+        return convertCreatedAtToZonedDateTime(family);
+    }
+
+    private Family findFamilyById(String familyId) {
         return familyRepository
                 .findById(familyId)
-                .map(family -> {
-                    Instant createdAtInstant = family.getCreatedAt().toInstant(ZoneOffset.ofHours(9));
-                    ZoneId zoneId = ZoneId.systemDefault();
-                    return ZonedDateTime.ofInstant(createdAtInstant, zoneId);
-                })
                 .orElseThrow(FamilyNotFoundException::new);
+    }
+
+    private ZonedDateTime convertCreatedAtToZonedDateTime(Family family) {
+        Instant createdAtInstant = family.getCreatedAt().toInstant(ZoneOffset.ofHours(9));
+        ZoneId zoneId = ZoneId.of("Asia/Seoul");
+        return ZonedDateTime.ofInstant(createdAtInstant, zoneId);
     }
 }
