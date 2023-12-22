@@ -8,8 +8,6 @@ import com.oing.repository.MemberPostReactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class PostReactionService {
@@ -27,13 +25,9 @@ public class PostReactionService {
     }
 
     public MemberPostReaction findReaction(MemberPost post, String memberId, Emoji emoji) {
-        Optional<MemberPostReaction> reaction = memberPostReactionRepository
-                .findReactionByPostAndMemberIdAndEmoji(post, memberId, emoji);
-        if (reaction.isPresent()) {
-            return reaction.get();
-        } else {
-            throw new EmojiNotFoundException();
-        }
+        return memberPostReactionRepository
+                .findReactionByPostAndMemberIdAndEmoji(post, memberId, emoji)
+                .orElseThrow(EmojiNotFoundException::new);
     }
 
     public void deletePostReaction(MemberPostReaction reaction) {
