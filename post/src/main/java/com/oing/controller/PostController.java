@@ -113,6 +113,13 @@ public class PostController implements PostApi {
         }
     }
 
+    /**
+     * 업로드 시간이 허용 가능한 범위 내에 있는지 검증합니다.
+     * 범위는 서버의 로컬 시간을 기준으로 전 날의 오후 12시부터 현재 날의 오후 12시까지로 정의됩니다.
+     *
+     * @param uploadTime 검증할 업로드 시간입니다.
+     * @throws InvalidUploadTimeException 업로드 시간이 허용 가능한 범위를 벗어난 경우 발생하는 예외입니다.
+     */
     private void validateUploadTime(ZonedDateTime uploadTime) {
         ZonedDateTime serverTime = ZonedDateTime.now();
 
