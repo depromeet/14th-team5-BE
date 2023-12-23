@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Schema(description = "사용자 회원가입 요청")
 public record CreateNewMemberRequest(
         @NotNull
-        @Size(min = 1, max = 10)
+        @Size(min = 2, max = 10)
         @Schema(description = "사용자 이름", example = "송영민")
         String memberName,
 

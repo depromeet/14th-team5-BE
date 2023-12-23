@@ -2,18 +2,32 @@ package com.oing.controller;
 
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
-import com.oing.dto.request.UpdateMemberRequest;
+import com.oing.domain.model.Member;
+import com.oing.dto.request.PreSignedUrlRequest;
+import com.oing.dto.request.UpdateMemberNameRequest;
+import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
+import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.MemberApi;
+import com.oing.service.MemberService;
+import com.oing.util.AuthenticationHolder;
+import com.oing.util.PreSignedUrlGenerator;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class MemberController implements MemberApi {
+
+    private final AuthenticationHolder authenticationHolder;
+    private final PreSignedUrlGenerator preSignedUrlGenerator;
+    private final MemberService memberService;
 
     @Override
     public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfile(Integer page, Integer size) {
@@ -49,20 +63,44 @@ public class MemberController implements MemberApi {
     }
 
     @Override
-    public MemberResponse updateMember(String memberId, UpdateMemberRequest request) {
-        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        memberId = "01HGW2N7EHJVJ4CJ999RRS2E";
+    public PreSignedUrlResponse requestPresignedUrl(PreSignedUrlRequest request) {
+        String imageName = request.imageName();
+        return preSignedUrlGenerator.getProfileImagePreSignedUrl(imageName);
+    }
 
-        //TODO: 로그인한 사용자의 ID와 정보수정 대상 사용자의 ID가 같은지 확인
-        if (memberIdBase.equals(memberId)) {
-            //TODO: 프로필 이미지 및 닉네임 수정 로직 추가
-            return new MemberResponse(
-                    memberId,
-                    request.name(),
-                    request.profileImageUrl()
-            );
+    @Override
+    @Transactional
+    public MemberResponse updateMemberProfileImageUrl(UpdateMemberProfileImageUrlRequest request) {
+        String memberId = authenticationHolder.getUserId();
+        Member member = memberService.findMemberById(memberId);
+        deleteMemberProfileImage(member.getProfileImgUrl());
+        member.updateProfileImgUrl(request.profileImageUrl());
+
+        return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());
+    }
+
+    private void deleteMemberProfileImage(String profileImageUrl) {
+        if (profileImageUrl != null) {
+            preSignedUrlGenerator.deleteImageByPath(profileImageUrl);
         }
-        throw new DomainException(ErrorCode.AUTHORIZATION_FAILED);
+    }
+
+    @Override
+    @Transactional
+    public MemberResponse updateMemberName(UpdateMemberNameRequest request) {
+        String memberId = authenticationHolder.getUserId();
+        Member member = memberService.findMemberById(memberId);
+
+        validateName(request.name());
+        member.updateName(request.name());
+
+        return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());
+    }
+
+    private void validateName(String name) {
+        if (name.length()<2 || name.length()>10) {
+            throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
+        }
     }
 
     @Override

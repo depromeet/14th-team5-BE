@@ -11,6 +11,7 @@ public enum ErrorCode {
      */
     UNKNOWN_SERVER_ERROR("CM0001", "Unknown Server Error"),
     INVALID_INPUT_VALUE("CM0002", "Invalid Input Value"),
+    INVALID_UPLOAD_TIME("CM0003", "Invalid Upload Time"),
     /**
      * Auth Related Errors
      */
@@ -21,7 +22,6 @@ public enum ErrorCode {
      * Member Related Errors
      */
     MEMBER_NOT_FOUND("MB0001", "Member not found"),
-
     /**
      * MemberPost Related Errors
      */
@@ -31,7 +31,11 @@ public enum ErrorCode {
      * MemberEmoji Related Errors
      */
     EMOJI_ALREADY_EXISTS("EM0001", "Emoji already exists"),
-    EMOJI_NOT_FOUND("EM0002", "Emoji not found");
+    EMOJI_NOT_FOUND("EM0002", "Emoji not found"),
+    /**
+     * Family Related Errors
+     */
+    FAMILY_NOT_FOUND("FM0001", "Family not found");
 
     private final String code;
     private final String message;
