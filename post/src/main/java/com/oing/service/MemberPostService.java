@@ -11,7 +11,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Member;
 import java.time.LocalDate;
 import java.util.List;
 
