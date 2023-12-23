@@ -1,7 +1,6 @@
 package com.oing.repository;
 
 import com.oing.domain.MemberPostCountDTO;
-import com.oing.domain.PaginationDTO;
 import com.oing.domain.model.MemberPost;
 import com.querydsl.core.QueryResults;
 
