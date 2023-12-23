@@ -24,6 +24,8 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
     @Value("${cloud.ncp.storage.bucket}")
     private String bucket;
+    @Value("${cloud.ncp.storage.end-point}")
+    private String endPoint;
 
     private final AmazonS3Client amazonS3Client;
     private final IdentityGenerator identityGenerator;
@@ -85,12 +87,17 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
     @Async
     @Override
-    public void deleteImageByPath(String imageUrl) {
+    public void deleteImageByPath(String imagePath) {
         try {
-            amazonS3Client.deleteObject(bucket, imageUrl);
+            amazonS3Client.deleteObject(bucket, imagePath);
         } catch (AmazonServiceException e) {
             log.error("이미지 삭제 실패했습니다. {}", e.getMessage());
             throw new IllegalStateException("이미지 삭제 실패했습니다.");
         }
+    }
+
+    @Override
+    public String convertImageUrl(String imagePath) {
+        return endPoint+ "/" + bucket + "/" + imagePath;
     }
 }

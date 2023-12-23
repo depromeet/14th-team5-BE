@@ -7,5 +7,7 @@ public interface PreSignedUrlGenerator {
 
     PreSignedUrlResponse getProfileImagePreSignedUrl(String imageName);
 
-    void deleteImageByPath(String imageUrl);
+    void deleteImageByPath(String imagePath);
+
+    String convertImageUrl(String imagePath);
 }
