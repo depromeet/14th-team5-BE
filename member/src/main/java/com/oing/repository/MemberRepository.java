@@ -1,6 +1,8 @@
 package com.oing.repository;
 
 import com.oing.domain.model.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,4 +15,5 @@ import java.util.List;
  */
 public interface MemberRepository extends JpaRepository<Member, String> {
     List<Member> findAllByFamilyId(String familyId);
+    Page<Member> findAllByFamilyId(String familyId, PageRequest pageRequest);
 }

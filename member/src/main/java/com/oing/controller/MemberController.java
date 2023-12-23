@@ -1,5 +1,6 @@
 package com.oing.controller;
 
+import com.oing.domain.PaginationDTO;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Member;
@@ -13,13 +14,12 @@ import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -30,36 +30,23 @@ public class MemberController implements MemberApi {
     private final MemberService memberService;
 
     @Override
-    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMemberProfile(Integer page, Integer size) {
-        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String memberNameBase = "디프만";
+    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(Integer page, Integer size) {
+        String memberId = authenticationHolder.getUserId();
+        String familyId = memberService.findFamilyIdByMemberId(memberId);
+        Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyMembersProfilesByFamilyId(
+                familyId, page, size
+        );
 
-        List<FamilyMemberProfileResponse> mockResponses = new ArrayList<>();
-        for(int i = 0; i < size; i++) {
-            int currentIndex = i + ((page - 1) * size);
-            String suffix = String.format("%02d", currentIndex);
-            mockResponses.add(
-                    new FamilyMemberProfileResponse(
-                            memberIdBase + suffix,
-                            memberNameBase + suffix,
-                            "https://picsum.photos/200/300?random=" + currentIndex
-                    )
-            );
-        }
+        PaginationDTO<FamilyMemberProfileResponse> paginationDTO = PaginationDTO.of(profilePage);
 
-        return new PaginationResponse<>(page, 3, size, false, mockResponses);
+        return PaginationResponse.of(paginationDTO, page, size);
     }
 
     @Override
     public MemberResponse getMember(String memberId) {
-        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String memberNameBase = "디프만";
+        Member member = memberService.findMemberById(memberId);
 
-        return new MemberResponse(
-                memberIdBase,
-                memberNameBase,
-                "https://picsum.photos/200/300?random=1"
-        );
+        return new MemberResponse(memberId, member.getName(), member.getProfileImgUrl());
     }
 
     @Override
