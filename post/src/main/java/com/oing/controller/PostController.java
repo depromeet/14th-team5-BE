@@ -44,14 +44,18 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId, String sort) {
+    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId,
+                                                            String sort) {
         PaginationDTO<MemberPost> fetchResult = memberPostService.searchMemberPost(
                 page, size, date, memberId, sort == null || sort.equalsIgnoreCase("ASC")
         );
 
         return PaginationResponse
                 .of(fetchResult, page, size)
-                .map(PostResponse::from);
+                .map(post -> {
+                    String convertedImageUrl = preSignedUrlGenerator.convertImageUrl(post.getImageUrl());
+                    return PostResponse.from(post, convertedImageUrl);
+                });
     }
 
     @Transactional
@@ -67,8 +71,9 @@ public class PostController implements PostApi {
         LocalDate uploadDate = uploadTime.toLocalDate();
         MemberPost post = new MemberPost(postId, memberId, uploadDate, request.imageUrl(), request.content());
         memberPostService.save(post);
+        String convertedImageUrl = preSignedUrlGenerator.convertImageUrl(request.imageUrl());
 
-        return new PostResponse(postId, memberId, 0, 0, request.imageUrl(), request.content(),
+        return new PostResponse(postId, memberId, 0, 0, convertedImageUrl, request.content(),
                 uploadTime);
     }
 
@@ -93,6 +98,7 @@ public class PostController implements PostApi {
     @Override
     public PostResponse getPost(String postId) {
         MemberPost memberPostProjection = memberPostService.getMemberPostById(postId);
-        return PostResponse.from(memberPostProjection);
+        String convertedImageUrl = preSignedUrlGenerator.convertImageUrl(memberPostProjection.getImageUrl());
+        return PostResponse.from(memberPostProjection, convertedImageUrl);
     }
 }

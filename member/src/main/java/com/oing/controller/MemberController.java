@@ -76,7 +76,9 @@ public class MemberController implements MemberApi {
         deleteMemberProfileImage(member.getProfileImgUrl());
         member.updateProfileImgUrl(request.profileImageUrl());
 
-        return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());
+        String convertedImageUrl = preSignedUrlGenerator.convertImageUrl(request.profileImageUrl());
+
+        return new MemberResponse(member.getId(), member.getName(), convertedImageUrl);
     }
 
     private void deleteMemberProfileImage(String profileImageUrl) {
@@ -94,7 +96,9 @@ public class MemberController implements MemberApi {
         validateName(request.name());
         member.updateName(request.name());
 
-        return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());
+        String convertedImageUrl = preSignedUrlGenerator.convertImageUrl(member.getProfileImgUrl());
+
+        return new MemberResponse(member.getId(), member.getName(), convertedImageUrl);
     }
 
     private void validateName(String name) {
