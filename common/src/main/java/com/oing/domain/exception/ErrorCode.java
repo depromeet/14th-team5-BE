@@ -23,7 +23,7 @@ public enum ErrorCode {
      */
     MEMBER_NOT_FOUND("MB0001", "Member not found"),
     /**
-     * Family Related Errors
+     * FAMILY Related Errors
      */
     FAMILY_NOT_FOUND("FM0001", "Family not found");
 
