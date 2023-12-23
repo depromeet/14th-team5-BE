@@ -1,6 +1,7 @@
 package com.oing.controller;
 
 
+import com.oing.domain.PaginationDTO;
 import com.oing.domain.model.MemberPost;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
@@ -19,9 +20,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * no5ing-server
@@ -46,43 +44,13 @@ public class PostController implements PostApi {
 
     @Override
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId, String sort) {
-        if (page > 5) return new PaginationResponse<>(page, 5, size, false, List.of());
-        if(memberId != null) {
-            return new PaginationResponse<>(page, 5, size, false, List.of(
-                    new PostResponse(
-                            "01HGW2N7EHJVJ4CJ999RRS2E",
-                            memberId,
-                            0,
-                            0,
-                            "https://picsum.photos/200/300?random=00",
-                            "즐거운 하루~",
-                            ZonedDateTime.now()
-                    )
-            ));
-        }
+        PaginationDTO<MemberPost> fetchResult = memberPostService.searchMemberPost(
+                page, size, date, memberId, sort == null || sort.equalsIgnoreCase("ASC")
+        );
 
-        String postIdBase = "01HGW2N7EHJVJ4CJ999RRS2E";
-        String writerIdBase = "01HGW2N7EHJVJ4CJ888RRS2E";
-
-        List<PostResponse> mockResponses = new ArrayList<>();
-        Random random = new Random();
-        for(int i = 0; i < size; i++) {
-            int currentIndex = i + ((page - 1) * size);
-            String suffix = String.format("%02d", currentIndex);
-            mockResponses.add(
-                    new PostResponse(
-                            postIdBase + suffix,
-                            writerIdBase + suffix,
-                            random.nextInt(5),
-                            random.nextInt(5),
-                            "https://picsum.photos/200/300?random=" + currentIndex,
-                            "hi",
-                           ZonedDateTime.now().minusSeconds(currentIndex * 30L)
-                    )
-            );
-        }
-
-        return new PaginationResponse<>(page, 5, size, 5 > page, mockResponses);
+        return PaginationResponse
+                .of(fetchResult, page, size)
+                .map(PostResponse::from);
     }
 
     @Transactional
@@ -98,9 +66,8 @@ public class PostController implements PostApi {
 
         MemberPost post = new MemberPost(postId, memberId, uploadTime.toLocalDate(), request.imageUrl(), request.content());
         MemberPost savedPost = memberPostService.save(post);
-        ZonedDateTime createdAt = convertToZonedDateTime(savedPost.getCreatedAt());
 
-        return PostResponse.of(savedPost, createdAt);
+        return PostResponse.from(savedPost);
     }
 
     private void validateUserHasNotCreatedPostToday(String memberId, LocalDateTime uploadTime) {
@@ -128,21 +95,9 @@ public class PostController implements PostApi {
         }
     }
 
-    private ZonedDateTime convertToZonedDateTime(LocalDateTime localDateTime) {
-        ZoneId serverTimeZone = ZoneId.of("Asia/Seoul");
-        return localDateTime.atZone(serverTimeZone);
-    }
-
     @Override
     public PostResponse getPost(String postId) {
-        return new PostResponse(
-                postId,
-                "01HGW2N7EHJVJ4CJ888RRS2E",
-                0,
-                0,
-                "https://picsum.photos/200/300?random=00",
-                "즐거운 하루~",
-                ZonedDateTime.now()
-        );
+        MemberPost memberPostProjection = memberPostService.getMemberPostById(postId);
+        return PostResponse.from(memberPostProjection);
     }
 }
