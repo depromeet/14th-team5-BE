@@ -1,6 +1,5 @@
 package com.oing.restapi;
 
-import com.oing.dto.response.FamilyCreatedAtResponse;
 import com.oing.dto.response.FamilyInvitationLinkResponse;
 import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.dto.response.FamilyResponse;
@@ -41,7 +40,7 @@ public interface FamilyApi {
 
     @Operation(summary = "가족 그룹 생성 시간 조회", description = "가족 그룹 생성 시간을 조회합니다.")
     @GetMapping("/{familyId}/created-at")
-    FamilyCreatedAtResponse getFamilyCreatedAt(
+    FamilyResponse getFamilyCreatedAt(
             @Parameter(description = "가족 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String familyId

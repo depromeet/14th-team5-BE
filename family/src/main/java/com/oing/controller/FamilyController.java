@@ -1,6 +1,5 @@
 package com.oing.controller;
 
-import com.oing.dto.response.FamilyCreatedAtResponse;
 import com.oing.dto.response.FamilyInvitationLinkResponse;
 import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.dto.response.FamilyResponse;
@@ -40,7 +39,7 @@ public class FamilyController implements FamilyApi {
     }
 
     @Override
-    public FamilyCreatedAtResponse getFamilyCreatedAt(String familyId) {
-        return new FamilyCreatedAtResponse(familyService.findFamilyCreatedAt(familyId));
+    public FamilyResponse getFamilyCreatedAt(String familyId) {
+        return new FamilyResponse(familyId, familyService.findFamilyCreatedAt(familyId));
     }
 }
