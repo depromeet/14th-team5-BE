@@ -22,11 +22,16 @@ public enum ErrorCode {
      */
     MEMBER_NOT_FOUND("MB0001", "Member not found"),
     /**
+     * Family Related Errors
+     */
+    FAMILY_NOT_FOUND("FM0001", "Family not found"),
+    /**
      * Post Related Errors
      */
     INVALID_UPLOAD_TIME("PO0001", "Invalid Upload Time. The request is outside the valid time range" +
             "(from 12:00 AM yesterday to 12:00 AM today)."),
     DUPLICATE_POST_UPLOAD("PO0002", "Duplicate Post Upload");
+
 
     private final String code;
     private final String message;
