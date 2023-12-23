@@ -38,7 +38,7 @@ public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {
     @Override
     public List<MemberPostCountDTO> countPostsOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
         return queryFactory
-                .select(Projections.bean(MemberPostCountDTO.class, memberPost.createdAt, memberPost.count()))
+                .select(Projections.bean(MemberPostCountDTO.class, memberPost.createdAt, memberPost.count().as("count")))
                 .from(memberPost)
                 .where(memberPost.memberId.in(memberIds)
                         .and(memberPost.createdAt.between(startDate, endDate)))
