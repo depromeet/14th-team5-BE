@@ -3,6 +3,7 @@ package com.oing.service;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Family;
+import com.oing.exception.FamilyNotFoundException;
 import com.oing.repository.FamilyRepository;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
@@ -26,6 +27,6 @@ public class FamilyService {
     public Family getFamilyById(String familyId) {
         return familyRepository
                 .findById(familyId)
-                .orElseThrow(() -> new DomainException(ErrorCode.FAMILY_NOT_FOUND));
+                .orElseThrow(FamilyNotFoundException::new);
     }
 }
