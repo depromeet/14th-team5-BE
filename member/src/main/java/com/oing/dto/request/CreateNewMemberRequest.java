@@ -23,7 +23,7 @@ public record CreateNewMemberRequest(
         @Schema(description = "생년월일 yyyy-MM-dd", example = "2001-01-25")
         LocalDate dayOfBirth,
 
-        @Schema(description = "프로필 이미지 URL", example = "https://no5ing.com/profile/1")
+        @Schema(description = "프로필 이미지 URL", example = "images/profile/01HJ1SEEEFDSA5ZZVRW.jpg")
         String profileImgUrl
 ) {
 }

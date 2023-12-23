@@ -26,7 +26,7 @@ public record PostResponse(
         @Schema(description = "피드 게시물 반응 수", example = "2")
         Integer emojiCount,
 
-        @Schema(description = "피드 게시물 사진 주소", example = "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97")
+        @Schema(description = "피드 게시물 사진 주소", example = "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97.jpg")
         String imageUrl,
 
         @Schema(description = "피드 게시물 내용", example = "맛있는 밥!")
