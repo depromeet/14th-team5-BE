@@ -45,7 +45,7 @@ public class CalendarController implements CalendarApi {
                     LocalDate date = post.getCreatedAt().toLocalDate();
                     String postId = post.getId();
                     String thumbnailUrl = optimizedImageUrlGenerator.getThumbnailUrlGenerator(post.getImageUrl());
-                    boolean allFamilyMembersUploaded = postCount.count() == familySize;
+                    boolean allFamilyMembersUploaded = postCount.getCount() == familySize;
 
                     return new CalendarResponse(
                             date,
