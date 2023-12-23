@@ -6,6 +6,7 @@ import com.oing.domain.model.MemberPost;
 import com.oing.domain.model.QMemberPost;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAQueryBase;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -48,17 +49,21 @@ public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {
 
     @Override
     public QueryResults<MemberPost> searchPosts(int page, int size, LocalDate date, String memberId, boolean asc) {
-        JPAQueryBase<MemberPost, ?> baseQuery = queryFactory
+        return queryFactory
                 .select(memberPost)
-                .from(memberPost);
-
-        if(date != null) baseQuery = baseQuery.where(memberPost.postDate.eq(date));
-        if(memberId != null) baseQuery = baseQuery.where(memberPost.memberId.eq(memberId));
-
-        return baseQuery
+                .from(memberPost)
+                .where(eqDate(date), eqMemberId(memberId))
                 .orderBy(asc ? memberPost.id.asc() : memberPost.id.desc())
                 .offset((long) (page - 1) * size)
                 .limit(size)
                 .fetchResults();
+    }
+
+    private BooleanExpression eqDate(LocalDate date) {
+        return date == null ? null : memberPost.postDate.eq(date);
+    }
+
+    private BooleanExpression eqMemberId(String memberId) {
+        return memberId == null ? null : memberPost.memberId.eq(memberId);
     }
 }
