@@ -17,9 +17,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -88,13 +88,8 @@ public class MemberService {
     }
 
     private List<FamilyMemberProfileResponse> createFamilyMemberProfiles(List<Member> members) {
-        List<FamilyMemberProfileResponse> familyMemberProfiles = new ArrayList<>();
-
-        for (Member member : members) {
-            FamilyMemberProfileResponse profileResponse = new FamilyMemberProfileResponse(
-                    member.getId(), member.getName(), member.getProfileImgUrl());
-            familyMemberProfiles.add(profileResponse);
-        }
-        return familyMemberProfiles;
+        return members.stream()
+                .map(FamilyMemberProfileResponse::of)
+                .collect(Collectors.toList());
     }
 }
