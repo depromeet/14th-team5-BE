@@ -19,7 +19,7 @@ public class MemberPostReaction extends BaseEntity {
     @Column(name = "reaction_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private MemberPost post;
 
