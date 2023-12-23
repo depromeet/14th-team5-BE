@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class FamilyInviteLinkService {
+    public static String FAMILY_LINK_PREFIX = "https://no5ing.kr/o/";
+
     private final FamilyInviteLinkRepository familyInviteLinkRepository;
 
     @Transactional
@@ -30,6 +32,6 @@ public class FamilyInviteLinkService {
         //링크 생성
         FamilyInviteLink inviteLink = new FamilyInviteLink(linkId, family);
         familyInviteLinkRepository.save(inviteLink);
-        return "https://no5ing.kr/o/" + linkId;
+        return FAMILY_LINK_PREFIX + linkId;
     }
 }
