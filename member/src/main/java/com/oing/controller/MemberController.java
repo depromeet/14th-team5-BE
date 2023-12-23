@@ -27,7 +27,7 @@ public class MemberController implements MemberApi {
         String memberId = authenticationHolder.getUserId();
         String familyId = memberService.findFamilyIdByMemberId(memberId);
         Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyMembersProfilesByFamilyId(
-                memberId, familyId, page, size
+                familyId, page, size
         );
 
         PaginationDTO<FamilyMemberProfileResponse> paginationDTO = PaginationDTO.of(profilePage);

@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,13 +77,12 @@ public class MemberService {
 
     @Transactional
     public Page<FamilyMemberProfileResponse> findFamilyMembersProfilesByFamilyId(
-            String userId, String familyId, int page, int size
+            String familyId, int page, int size
     ) {
         Page<Member> memberPage = memberRepository.findAllByFamilyId(familyId, PageRequest.of(page - 1, size));
         List<Member> members = memberPage.getContent();
 
         List<FamilyMemberProfileResponse> familyMemberProfiles = createFamilyMemberProfiles(members);
-        familyMemberProfiles.sort(Comparator.comparing(profile -> userId.equals(profile.memberId()) ? 0 : 1));
 
         return new PageImpl<>(familyMemberProfiles, memberPage.getPageable(), memberPage.getTotalElements());
     }
