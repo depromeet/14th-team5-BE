@@ -7,12 +7,10 @@ import com.oing.dto.response.FamilyResponse;
 import com.oing.restapi.FamilyApi;
 import com.oing.service.FamilyInviteLinkService;
 import com.oing.service.FamilyService;
-import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.time.ZonedDateTime;
 import java.util.Random;
 
 @RequiredArgsConstructor
@@ -34,7 +32,7 @@ public class FamilyController implements FamilyApi {
     @Override
     public FamilyResponse createFamily() {
         Family family = familyService.createFamily();
-        return FamilyResponse.from(family);
+        return FamilyResponse.of(family);
     }
 
     @Transactional
