@@ -1,15 +1,17 @@
 package com.oing.controller;
 
+import com.oing.domain.model.Family;
 import com.oing.dto.response.FamilyInvitationLinkResponse;
 import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.restapi.FamilyApi;
 import com.oing.service.FamilyService;
 import com.oing.util.IdentityGenerator;
+import com.oing.service.FamilyInviteLinkService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.time.ZonedDateTime;
 import java.util.Random;
 
 @RequiredArgsConstructor
@@ -17,6 +19,7 @@ import java.util.Random;
 public class FamilyController implements FamilyApi {
     private final IdentityGenerator identityGenerator;
     private final FamilyService familyService;
+    private final FamilyInviteLinkService familyInviteLinkService;
 
     @Override
     public FamilyMonthlyStatisticsResponse getMonthlyFamilyStatistics(String familyId, String yearMonth) {
@@ -30,12 +33,16 @@ public class FamilyController implements FamilyApi {
 
     @Override
     public FamilyResponse createFamily() {
-        return new FamilyResponse(identityGenerator.generateIdentity(), ZonedDateTime.now());
+        Family family = familyService.createFamily();
+        return FamilyResponse.of(family);
     }
 
+    @Transactional
     @Override
     public FamilyInvitationLinkResponse getInvitationLink(String familyId) {
-        return new FamilyInvitationLinkResponse("https://no5ing.kr/o/bgE39230f");
+        Family family = familyService.getFamilyById(familyId);
+        String link = familyInviteLinkService.generateFamilyInviteLink(family);
+        return new FamilyInvitationLinkResponse(link);
     }
 
     @Override
