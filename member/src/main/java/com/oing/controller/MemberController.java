@@ -14,11 +14,10 @@ import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -60,7 +59,7 @@ public class MemberController implements MemberApi {
     public MemberResponse updateMemberProfileImageUrl(UpdateMemberProfileImageUrlRequest request) {
         String memberId = authenticationHolder.getUserId();
         Member member = memberService.findMemberById(memberId);
-        deleteMemberProfileImage(member.getProfileImgUrl());
+        //deleteMemberProfileImage(member.getProfileImgUrl());
         member.updateProfileImgUrl(request.profileImageUrl());
 
         return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());
