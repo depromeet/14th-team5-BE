@@ -32,8 +32,6 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
      */
     @Override
     public String getThumbnailUrlGenerator(String bucketImageUrl) {
-        String imagePath = bucketImageUrl.split(bucketName)[1];
-
-        return imageOptimizerCdnUrl + imagePath + THUMBNAIL_OPTIMIZER_QUERY_STRING;
+        return imageOptimizerCdnUrl + bucketImageUrl + THUMBNAIL_OPTIMIZER_QUERY_STRING;
     }
 }
