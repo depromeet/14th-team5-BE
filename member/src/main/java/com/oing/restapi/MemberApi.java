@@ -1,9 +1,12 @@
 package com.oing.restapi;
 
-import com.oing.dto.request.UpdateMemberRequest;
+import com.oing.dto.request.PreSignedUrlRequest;
+import com.oing.dto.request.UpdateMemberNameRequest;
+import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
+import com.oing.dto.response.PreSignedUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,16 +43,28 @@ public interface MemberApi {
             String memberId
     );
 
-    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정합니다.")
-    @PutMapping("/{memberId}")
-    MemberResponse updateMember(
-            @Parameter(description = "수정할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
-            @PathVariable
-            String memberId,
-
+    @Operation(summary = "회원 프로필 사진 S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
+    @PostMapping("/image-upload-request")
+    PreSignedUrlResponse requestPresignedUrl(
             @Valid
             @RequestBody
-            UpdateMemberRequest request
+            PreSignedUrlRequest request
+    );
+
+    @Operation(summary = "회원 프로필 이미지 수정", description = "회원 프로필 이미지를 수정합니다.")
+    @PutMapping("/profile-image-url")
+    MemberResponse updateMemberProfileImageUrl(
+            @Valid
+            @RequestBody
+            UpdateMemberProfileImageUrlRequest request
+    );
+
+    @Operation(summary = "회원 이름 수정", description = "회원 이름을 수정합니다.")
+    @PutMapping("/name")
+    MemberResponse updateMemberName(
+            @Valid
+            @RequestBody
+            UpdateMemberNameRequest request
     );
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 수행합니다.")
