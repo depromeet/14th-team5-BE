@@ -21,7 +21,11 @@ public enum ErrorCode {
     /**
      * Member Related Errors
      */
-    MEMBER_NOT_FOUND("MB0001", "Member not found");
+    MEMBER_NOT_FOUND("MB0001", "Member not found"),
+    /**
+     * Family Related Errors
+     */
+    FAMILY_NOT_FOUND("FM0001", "Family not found");
 
     private final String code;
     private final String message;
