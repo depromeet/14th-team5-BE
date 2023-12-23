@@ -24,7 +24,7 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
     @Value("${cloud.ncp.storage.bucket}")
     private String bucket;
-    @Value("${cloud.ncp.storage.end-point}")
+    @Value("${cloud.ncp.end-point}")
     private String endPoint;
 
     private final AmazonS3Client amazonS3Client;
