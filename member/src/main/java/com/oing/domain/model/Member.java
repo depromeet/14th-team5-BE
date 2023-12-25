@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * no5ing-server
@@ -45,7 +46,7 @@ public class Member extends BaseAuditEntityWithDelete {
     }
 
     public void deleteMemberInfo() {
-        super.updateDeletedAt(super.getCreatedAt());
+        super.updateDeletedAt(LocalDateTime.now());
         this.name = "DeletedUser";
         this.profileImgUrl = null;
     }
