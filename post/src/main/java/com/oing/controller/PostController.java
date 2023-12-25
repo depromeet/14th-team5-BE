@@ -59,10 +59,9 @@ public class PostController implements PostApi {
         String memberId = authenticationHolder.getUserId();
         String postId = identityGenerator.generateIdentity();
         ZonedDateTime uploadTime = request.uploadTime();
-        LocalDateTime uploadLocalDateTime = request.uploadTime().toLocalDateTime();
 
-        validateUserHasNotCreatedPostToday(memberId, uploadLocalDateTime);
-        validateUploadTime(uploadLocalDateTime);
+        validateUserHasNotCreatedPostToday(memberId, uploadTime);
+        validateUploadTime(uploadTime);
 
         MemberPost post = new MemberPost(postId, memberId, uploadTime.toLocalDate(), request.imageUrl(), request.content());
         MemberPost savedPost = memberPostService.save(post);
@@ -70,7 +69,7 @@ public class PostController implements PostApi {
         return PostResponse.from(savedPost);
     }
 
-    private void validateUserHasNotCreatedPostToday(String memberId, LocalDateTime uploadTime) {
+    private void validateUserHasNotCreatedPostToday(String memberId, ZonedDateTime uploadTime) {
         LocalDate today = uploadTime.toLocalDate();
         if (memberPostService.hasUserCreatedPostToday(memberId, today)) {
             throw new DuplicatePostUploadException();
@@ -84,11 +83,11 @@ public class PostController implements PostApi {
      * @param uploadTime 검증할 업로드 시간입니다.
      * @throws InvalidUploadTimeException 업로드 시간이 허용 가능한 범위를 벗어난 경우 발생하는 예외입니다.
      */
-    private void validateUploadTime(LocalDateTime uploadTime) {
-        LocalDateTime serverTime = LocalDateTime.now();
+    private void validateUploadTime(ZonedDateTime uploadTime) {
+        ZonedDateTime serverTime = ZonedDateTime.now();
 
-        LocalDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(12, 0));
-        LocalDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(12, 0));
+        ZonedDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(12, 0));
+        ZonedDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(12, 0));
 
         if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
             throw new InvalidUploadTimeException();
