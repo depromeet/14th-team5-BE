@@ -15,7 +15,7 @@ public class BaseAuditEntityWithDelete extends BaseAuditEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    public void updateDeletedAt(LocalDateTime deletedAt) {
-        this.deletedAt = deletedAt;
+    public void updateDeletedAt() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
