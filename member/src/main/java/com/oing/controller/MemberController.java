@@ -4,6 +4,7 @@ import com.oing.domain.PaginationDTO;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Member;
+import com.oing.domain.model.SocialMember;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
@@ -14,12 +15,13 @@ import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -91,14 +93,13 @@ public class MemberController implements MemberApi {
     }
 
     @Override
-    public void deleteMember(String memberId) {
-        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E97";
-        memberId = "01HGW2N7EHJVJ4CJ999RRS2E97";
+    @Transactional
+    public void deleteMember() {
+        String memberId = authenticationHolder.getUserId();
+        Member member = memberService.findMemberById(memberId);
+        List<SocialMember> socialMembers = memberService.findAllSocialMemberByMember(member);
 
-        //TODO: 탈퇴 요청한 회원 id와 요청으로 들어온 memberId 일치하는지 검증
-        if (!memberIdBase.equals(memberId)) {
-            throw new DomainException(ErrorCode.AUTHORIZATION_FAILED);
-        }
-        //TODO: 타객체들간의 연관관계 해제 및 마스킹 처리
+        socialMembers.forEach(memberService::deleteMember);
+        member.deleteMemberInfo();
     }
 }

@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @Entity(name = "member")
-public class Member extends BaseAuditEntity {
+public class Member extends BaseAuditEntityWithDelete {
     @Id
     @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
     private String id;
@@ -42,5 +42,11 @@ public class Member extends BaseAuditEntity {
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public void deleteMemberInfo() {
+        super.updateDeletedAt(super.getCreatedAt());
+        this.name = "DeletedUser";
+        this.profileImgUrl = null;
     }
 }

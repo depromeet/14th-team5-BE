@@ -68,10 +68,6 @@ public interface MemberApi {
     );
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 수행합니다.")
-    @DeleteMapping("/{memberId}")
-    void deleteMember(
-            @Parameter(description = "탈퇴할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
-            @PathVariable
-            String memberId
-    );
+    @DeleteMapping
+    void deleteMember();
 }
