@@ -96,4 +96,8 @@ public class MemberService {
     public void deleteMember(SocialMember socialMember) {
         socialMemberRepository.delete(socialMember);
     }
+
+    public List<SocialMember> findAllSocialMemberByMember(Member member) {
+        return socialMemberRepository.findAllSocialMemberByMember(member);
+    }
 }
