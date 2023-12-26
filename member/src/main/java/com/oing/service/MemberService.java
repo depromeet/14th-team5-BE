@@ -92,4 +92,8 @@ public class MemberService {
                 .map(FamilyMemberProfileResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public void deleteAllSocialMembersByMember(String memberId) {
+        socialMemberRepository.deleteAllByMemberId(memberId);
+    }
 }

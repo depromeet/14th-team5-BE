@@ -23,9 +23,10 @@ public class SocialLoginProviderTest {
 
         // Then
         assertNotNull(providers);
-        assertEquals(2, providers.length);
+        assertEquals(3, providers.length);
         assertEquals(SocialLoginProvider.APPLE, providers[0]);
-        assertEquals(SocialLoginProvider.INTERNAL, providers[1]);
+        assertEquals(SocialLoginProvider.KAKAO, providers[1]);
+        assertEquals(SocialLoginProvider.INTERNAL, providers[2]);
     }
 
     @DisplayName("SocialLoginProvider valueOf 테스트")

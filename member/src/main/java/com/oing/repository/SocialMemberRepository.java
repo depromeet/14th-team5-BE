@@ -11,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 11:45 AM
  */
 public interface SocialMemberRepository extends JpaRepository<SocialMember, SocialMemberKey> {
+    void deleteAllByMemberId(String memberId);
 }
