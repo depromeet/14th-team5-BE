@@ -52,16 +52,24 @@ public interface MemberApi {
     );
 
     @Operation(summary = "회원 프로필 이미지 수정", description = "회원 프로필 이미지를 수정합니다.")
-    @PutMapping("/profile-image-url")
+    @PutMapping("/profile-image-url/{memberId}")
     MemberResponse updateMemberProfileImageUrl(
+            @Parameter(description = "수정할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String memberId,
+
             @Valid
             @RequestBody
             UpdateMemberProfileImageUrlRequest request
     );
 
     @Operation(summary = "회원 이름 수정", description = "회원 이름을 수정합니다.")
-    @PutMapping("/name")
+    @PutMapping("/name/{memberId}")
     MemberResponse updateMemberName(
+            @Parameter(description = "수정할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String memberId,
+
             @Valid
             @RequestBody
             UpdateMemberNameRequest request

@@ -11,6 +11,7 @@ import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
@@ -56,9 +57,10 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public MemberResponse updateMemberProfileImageUrl(UpdateMemberProfileImageUrlRequest request) {
-        String memberId = authenticationHolder.getUserId();
+    public MemberResponse updateMemberProfileImageUrl(String memberId, UpdateMemberProfileImageUrlRequest request) {
+        validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
+
         //deleteMemberProfileImage(member.getProfileImgUrl());
         member.updateProfileImgUrl(request.profileImageUrl());
 
@@ -73,8 +75,8 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public MemberResponse updateMemberName(UpdateMemberNameRequest request) {
-        String memberId = authenticationHolder.getUserId();
+    public MemberResponse updateMemberName(String memberId, UpdateMemberNameRequest request) {
+        validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
 
         validateName(request.name());
@@ -90,14 +92,18 @@ public class MemberController implements MemberApi {
     }
 
     @Override
+    @Transactional
     public void deleteMember(String memberId) {
-        String memberIdBase = "01HGW2N7EHJVJ4CJ999RRS2E97";
-        memberId = "01HGW2N7EHJVJ4CJ999RRS2E97";
+        validateMemberId(memberId);
+        Member member = memberService.findMemberById(memberId);
+        memberService.deleteAllSocialMembersByMember(memberId);
+        member.deleteMemberInfo();
+    }
 
-        //TODO: 탈퇴 요청한 회원 id와 요청으로 들어온 memberId 일치하는지 검증
-        if (!memberIdBase.equals(memberId)) {
-            throw new DomainException(ErrorCode.AUTHORIZATION_FAILED);
+    private void validateMemberId(String memberId) {
+        String loginId = authenticationHolder.getUserId();
+        if (!loginId.equals(memberId)) {
+            throw new AuthorizationFailedException();
         }
-        //TODO: 타객체들간의 연관관계 해제 및 마스킹 처리
     }
 }
