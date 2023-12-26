@@ -12,6 +12,7 @@ import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
@@ -94,8 +95,10 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public void deleteMember() {
-        String memberId = authenticationHolder.getUserId();
+    public void deleteMember(String memberId) {
+        if (!memberId.equals(authenticationHolder.getUserId())) {
+            throw new AuthorizationFailedException();
+        }
         Member member = memberService.findMemberById(memberId);
         List<SocialMember> socialMembers = memberService.findAllSocialMemberByMember(member);
 
