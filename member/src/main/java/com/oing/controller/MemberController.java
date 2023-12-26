@@ -57,9 +57,10 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public MemberResponse updateMemberProfileImageUrl(UpdateMemberProfileImageUrlRequest request) {
-        String memberId = authenticationHolder.getUserId();
+    public MemberResponse updateMemberProfileImageUrl(String memberId, UpdateMemberProfileImageUrlRequest request) {
+        validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
+
         deleteMemberProfileImage(member.getProfileImgUrl());
         member.updateProfileImgUrl(request.profileImageUrl());
 
@@ -74,8 +75,8 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public MemberResponse updateMemberName(UpdateMemberNameRequest request) {
-        String memberId = authenticationHolder.getUserId();
+    public MemberResponse updateMemberName(String memberId, UpdateMemberNameRequest request) {
+        validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
 
         validateName(request.name());
@@ -93,11 +94,16 @@ public class MemberController implements MemberApi {
     @Override
     @Transactional
     public void deleteMember(String memberId) {
-        if (!memberId.equals(authenticationHolder.getUserId())) {
-            throw new AuthorizationFailedException();
-        }
+        validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
         memberService.deleteAllSocialMembersByMember(memberId);
         member.deleteMemberInfo();
+    }
+
+    private void validateMemberId(String memberId) {
+        String loginId = authenticationHolder.getUserId();
+        if (!loginId.equals(memberId)) {
+            throw new AuthorizationFailedException();
+        }
     }
 }
