@@ -61,7 +61,7 @@ public class MemberController implements MemberApi {
         validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
 
-        deleteMemberProfileImage(member.getProfileImgUrl());
+        //deleteMemberProfileImage(member.getProfileImgUrl());
         member.updateProfileImgUrl(request.profileImageUrl());
 
         return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());

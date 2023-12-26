@@ -1,13 +1,10 @@
 package com.oing.repository;
 
 import com.oing.domain.MemberPostCountDTO;
-import com.oing.domain.PaginationDTO;
 import com.oing.domain.model.MemberPost;
-import com.oing.domain.model.QMemberPost;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPAQueryBase;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +35,7 @@ public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {
     @Override
     public List<MemberPostCountDTO> countPostsOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
         return queryFactory
-                .select(Projections.bean(MemberPostCountDTO.class, memberPost.createdAt, memberPost.count().as("count")))
+                .select(Projections.fields(MemberPostCountDTO.class, memberPost.createdAt, memberPost.count().as("count")))
                 .from(memberPost)
                 .where(memberPost.memberId.in(memberIds)
                         .and(memberPost.createdAt.between(startDate, endDate)))

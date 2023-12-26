@@ -1,9 +1,17 @@
 package com.oing.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
-public record MemberPostCountDTO(
-        LocalDateTime createdAt,
-        long count
-) {
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class MemberPostCountDTO {
+
+    LocalDateTime createdAt;
+
+    long count;
 }

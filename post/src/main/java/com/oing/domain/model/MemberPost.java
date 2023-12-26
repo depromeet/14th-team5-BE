@@ -63,4 +63,14 @@ public class MemberPost extends BaseAuditEntity {
             throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
         }
     }
+
+    public void addReaction(MemberPostReaction reaction) {
+        this.reactions.add(reaction);
+        this.reactionCnt += 1;
+    }
+
+    public void removeReaction(MemberPostReaction reaction) {
+        this.reactions.remove(reaction);
+        this.reactionCnt -= 1;
+    }
 }
