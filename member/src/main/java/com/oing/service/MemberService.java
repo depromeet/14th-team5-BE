@@ -93,11 +93,7 @@ public class MemberService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteMember(SocialMember socialMember) {
-        socialMemberRepository.delete(socialMember);
-    }
-
-    public List<SocialMember> findAllSocialMemberByMember(Member member) {
-        return socialMemberRepository.findAllSocialMemberByMember(member);
+    public void deleteAllSocialMembersByMember(String memberId) {
+        socialMemberRepository.deleteAllByMemberId(memberId);
     }
 }

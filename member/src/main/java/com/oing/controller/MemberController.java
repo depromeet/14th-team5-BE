@@ -4,7 +4,6 @@ import com.oing.domain.PaginationDTO;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Member;
-import com.oing.domain.model.SocialMember;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
@@ -21,8 +20,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -100,9 +97,7 @@ public class MemberController implements MemberApi {
             throw new AuthorizationFailedException();
         }
         Member member = memberService.findMemberById(memberId);
-        List<SocialMember> socialMembers = memberService.findAllSocialMemberByMember(member);
-
-        socialMembers.forEach(memberService::deleteMember);
+        memberService.deleteAllSocialMembersByMember(memberId);
         member.deleteMemberInfo();
     }
 }

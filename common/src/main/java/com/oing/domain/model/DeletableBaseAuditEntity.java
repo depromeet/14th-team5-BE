@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 @Getter
-public class BaseAuditEntityWithDelete extends BaseAuditEntity {
+public class DeletableBaseAuditEntity extends BaseAuditEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 

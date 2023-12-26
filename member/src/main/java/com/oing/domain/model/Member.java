@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 @Entity(name = "member")
-public class Member extends BaseAuditEntityWithDelete {
+public class Member extends DeletableBaseAuditEntity {
     @Id
     @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
     private String id;
