@@ -11,6 +11,7 @@ import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.dto.response.AppleKeyListResponse;
 import com.oing.dto.response.AppleKeyResponse;
+import com.oing.dto.response.KakaoAuthResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -44,6 +45,7 @@ public class AuthService {
     public SocialLoginResult authenticateFromProvider(SocialLoginProvider provider, String accessToken) {
         return switch (provider) {
             case APPLE -> authenticateFromApple(accessToken);
+            case KAKAO -> authenticateFromKakao(accessToken);
             default -> throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
         };
     }
@@ -67,6 +69,23 @@ public class AuthService {
         } catch(Exception ex) {
             throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
         }
+    }
+
+    private SocialLoginResult authenticateFromKakao(String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.put("Authorization", Collections.singletonList("Bearer " + accessToken));
+
+        ResponseEntity<KakaoAuthResponse> authResponse = restTemplate.exchange(RequestEntity
+                .post("https://kapi.kakao.com/v2/user/me")
+                .headers(headers)
+                .build(), KakaoAuthResponse.class);
+
+        // 인증 실패시 throw
+        if(!authResponse.getStatusCode().is2xxSuccessful())
+            throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
+
+        return new SocialLoginResult(Objects.requireNonNull(authResponse.getBody()).id().toString());
     }
 
     private AppleKeyResponse[] retrieveAppleKeys() {
