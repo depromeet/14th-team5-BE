@@ -23,7 +23,17 @@ public enum ErrorCode {
      */
     MEMBER_NOT_FOUND("MB0001", "Member not found"),
     /**
-     * FAMILY Related Errors
+     * MemberPost Related Errors
+     */
+    POST_NOT_FOUND("PO0001", "Post not found"),
+
+    /**
+     * MemberEmoji Related Errors
+     */
+    EMOJI_ALREADY_EXISTS("EM0001", "Emoji already exists"),
+    EMOJI_NOT_FOUND("EM0002", "Emoji not found"),
+    /**
+     * Family Related Errors
      */
     FAMILY_NOT_FOUND("FM0001", "Family not found");
 
