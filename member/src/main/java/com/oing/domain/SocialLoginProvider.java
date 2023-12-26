@@ -11,12 +11,14 @@ import com.oing.domain.exception.ErrorCode;
  */
 public enum SocialLoginProvider {
     APPLE, //애플 로그인
+    KAKAO, //카카오 로그인
     INTERNAL; //내부 로그인
 
     public static SocialLoginProvider fromString(String provider) {
         return switch (provider.toUpperCase()) {
             case "APPLE" -> APPLE;
             case "INTERNAL" -> INTERNAL;
+            case "KAKAO" -> KAKAO;
             default -> throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
         };
     }
