@@ -64,8 +64,8 @@ public class MemberPostService {
      * 멤버가 오늘 작성한 게시물을 저장한다.
      * @param post 저장할 MemberPost 객체
      */
-    public void save(MemberPost post) {
-        memberPostRepository.save(post);
+    public MemberPost save(MemberPost post) {
+        return memberPostRepository.save(post);
     }
 
     @Transactional

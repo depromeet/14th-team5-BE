@@ -8,6 +8,7 @@ import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.exception.DuplicatePostUploadException;
 import com.oing.exception.InvalidUploadTimeException;
 import com.oing.restapi.PostApi;
 import com.oing.service.MemberPostService;
@@ -18,9 +19,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 
 /**
  * no5ing-server
@@ -64,21 +63,26 @@ public class PostController implements PostApi {
         validateUserHasNotCreatedPostToday(memberId, uploadTime);
         validateUploadTime(uploadTime);
 
-        LocalDate uploadDate = uploadTime.toLocalDate();
-        MemberPost post = new MemberPost(postId, memberId, uploadDate, request.imageUrl(), request.content());
-        memberPostService.save(post);
+        MemberPost post = new MemberPost(postId, memberId, uploadTime.toLocalDate(), request.imageUrl(), request.content());
+        MemberPost savedPost = memberPostService.save(post);
 
-        return new PostResponse(postId, memberId, 0, 0, request.imageUrl(), request.content(),
-                uploadTime);
+        return PostResponse.from(savedPost);
     }
 
     private void validateUserHasNotCreatedPostToday(String memberId, ZonedDateTime uploadTime) {
         LocalDate today = uploadTime.toLocalDate();
         if (memberPostService.hasUserCreatedPostToday(memberId, today)) {
-            throw new InvalidUploadTimeException();
+            throw new DuplicatePostUploadException();
         }
     }
 
+    /**
+     * 업로드 시간이 허용 가능한 범위 내에 있는지 검증합니다.
+     * 범위는 서버의 로컬 시간을 기준으로 전 날의 오후 12시부터 다음 날의 오후 12시까지로 정의됩니다.
+     *
+     * @param uploadTime 검증할 업로드 시간입니다.
+     * @throws InvalidUploadTimeException 업로드 시간이 허용 가능한 범위를 벗어난 경우 발생하는 예외입니다.
+     */
     private void validateUploadTime(ZonedDateTime uploadTime) {
         ZonedDateTime serverTime = ZonedDateTime.now();
 

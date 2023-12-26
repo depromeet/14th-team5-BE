@@ -11,7 +11,6 @@ public enum ErrorCode {
      */
     UNKNOWN_SERVER_ERROR("CM0001", "Unknown Server Error"),
     INVALID_INPUT_VALUE("CM0002", "Invalid Input Value"),
-    INVALID_UPLOAD_TIME("CM0003", "Invalid Upload Time"),
     /**
      * Auth Related Errors
      */
@@ -35,7 +34,14 @@ public enum ErrorCode {
     /**
      * Family Related Errors
      */
-    FAMILY_NOT_FOUND("FM0001", "Family not found");
+    FAMILY_NOT_FOUND("FM0001", "Family not found"),
+    /**
+     * Post Related Errors
+     */
+    INVALID_UPLOAD_TIME("PO0001", "Invalid Upload Time. The request is outside the valid time range" +
+            "(from 12:00 AM yesterday to 12:00 AM today)."),
+    DUPLICATE_POST_UPLOAD("PO0002", "Duplicate Post Upload");
+
 
     private final String code;
     private final String message;
