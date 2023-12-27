@@ -1,5 +1,6 @@
 package com.oing.repository;
 
+import com.oing.domain.model.Family;
 import com.oing.domain.model.FamilyInviteLink;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 7:17 PM
  */
 public interface FamilyInviteLinkRepository extends JpaRepository<FamilyInviteLink, String> {
+    public FamilyInviteLink findByFamily(Family family);
 }
