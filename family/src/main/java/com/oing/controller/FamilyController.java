@@ -41,7 +41,7 @@ public class FamilyController implements FamilyApi {
     @Override
     public FamilyInvitationLinkResponse getInvitationLink(String familyId) {
         Family family = familyService.getFamilyById(familyId);
-        String link = familyInviteLinkService.generateFamilyInviteLink(family);
+        String link = familyInviteLinkService.getOrCreateFamilyInviteLink(family);
         return new FamilyInvitationLinkResponse(link);
     }
 
