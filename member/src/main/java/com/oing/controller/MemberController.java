@@ -46,7 +46,7 @@ public class MemberController implements MemberApi {
     public MemberResponse getMember(String memberId) {
         Member member = memberService.findMemberById(memberId);
 
-        return new MemberResponse(memberId, member.getName(), member.getProfileImgUrl());
+        return MemberResponse.of(member);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class MemberController implements MemberApi {
         //deleteMemberProfileImage(member.getProfileImgUrl());
         member.updateProfileImgUrl(request.profileImageUrl());
 
-        return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());
+        return MemberResponse.of(member);
     }
 
     private void deleteMemberProfileImage(String profileImageUrl) {
@@ -82,7 +82,7 @@ public class MemberController implements MemberApi {
         validateName(request.name());
         member.updateName(request.name());
 
-        return new MemberResponse(member.getId(), member.getName(), member.getProfileImgUrl());
+        return MemberResponse.of(member);
     }
 
     private void validateName(String name) {
