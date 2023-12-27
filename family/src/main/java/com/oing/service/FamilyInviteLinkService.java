@@ -22,7 +22,12 @@ public class FamilyInviteLinkService {
     private final FamilyInviteLinkRepository familyInviteLinkRepository;
 
     @Transactional
-    public String generateFamilyInviteLink(Family family) {
+    public String getOrCreateFamilyInviteLink(Family family) {
+        //이미 생성된 링크가 있는지 검증
+        FamilyInviteLink previousLink = familyInviteLinkRepository.findByFamily(family);
+        if(previousLink != null) {
+            return FAMILY_LINK_PREFIX + previousLink.getLinkId();
+        }
         //이미 존재하는 링크인지 검증
         String linkId;
         do {
