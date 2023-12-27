@@ -48,7 +48,7 @@ public class MemberPostService {
                 .findById(postId)
                 .orElseThrow(PostNotFoundException::new);
     }
-      
+
     /**
      * 멤버가 해당 요일(클라이언트 기준의 오늘)에 게시글을 작성했는지 확인한다.
      * @param memberId 조회 대상 멤버들의 ID
@@ -76,8 +76,9 @@ public class MemberPostService {
     @Transactional
     public PaginationDTO<MemberPost> searchMemberPost(int page, int size, LocalDate date, String memberId, boolean asc) {
         QueryResults<MemberPost> results = memberPostRepository.searchPosts(page, size, date, memberId, asc);
+        int totalPage = (int) Math.ceil((double) results.getTotal() / size);
         return new PaginationDTO<>(
-                (int) results.getTotal(),
+                totalPage,
                 results.getResults()
         );
     }
