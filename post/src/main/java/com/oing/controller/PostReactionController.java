@@ -5,6 +5,7 @@ import com.oing.domain.model.MemberPost;
 import com.oing.domain.model.MemberPostReaction;
 import com.oing.dto.request.PostReactionRequest;
 import com.oing.dto.response.ArrayResponse;
+import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PostReactionResponse;
 import com.oing.dto.response.PostReactionSummaryResponse;
 import com.oing.exception.EmojiAlreadyExistsException;
@@ -32,7 +33,7 @@ public class PostReactionController implements PostReactionApi {
 
     @Override
     @Transactional
-    public void createPostReaction(String postId, PostReactionRequest request) {
+    public DefaultResponse createPostReaction(String postId, PostReactionRequest request) {
         String memberId = authenticationHolder.getUserId();
         Emoji emoji = Emoji.fromString(request.content());
         MemberPost post = memberPostService.findMemberPostById(postId);
@@ -41,6 +42,8 @@ public class PostReactionController implements PostReactionApi {
         String reactionId = identityGenerator.generateIdentity();
         MemberPostReaction reaction = postReactionService.createPostReaction(reactionId, post, memberId, emoji);
         post.addReaction(reaction);
+
+        return DefaultResponse.ok();
     }
 
     private void validatePostReactionForAddition(MemberPost post, String memberId, Emoji emoji) {
@@ -51,7 +54,7 @@ public class PostReactionController implements PostReactionApi {
 
     @Override
     @Transactional
-    public void deletePostReaction(String postId, PostReactionRequest request) {
+    public DefaultResponse deletePostReaction(String postId, PostReactionRequest request) {
         String memberId = authenticationHolder.getUserId();
         Emoji emoji = Emoji.fromString(request.content());
         MemberPost post = memberPostService.findMemberPostById(postId);
@@ -60,6 +63,8 @@ public class PostReactionController implements PostReactionApi {
         MemberPostReaction reaction = postReactionService.findReaction(post, memberId, emoji);
         post.removeReaction(reaction);
         postReactionService.deletePostReaction(reaction);
+
+        return DefaultResponse.ok();
     }
 
     @Override

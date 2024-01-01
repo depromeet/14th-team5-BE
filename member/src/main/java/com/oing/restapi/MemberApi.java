@@ -3,10 +3,7 @@ package com.oing.restapi;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
-import com.oing.dto.response.FamilyMemberProfileResponse;
-import com.oing.dto.response.MemberResponse;
-import com.oing.dto.response.PaginationResponse;
-import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -77,7 +74,7 @@ public interface MemberApi {
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 수행합니다.")
     @DeleteMapping("/{memberId}")
-    void deleteMember(
+    DefaultResponse deleteMember(
             @Parameter(description = "탈퇴할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String memberId
