@@ -7,10 +7,7 @@ import com.oing.domain.model.Member;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
-import com.oing.dto.response.FamilyMemberProfileResponse;
-import com.oing.dto.response.MemberResponse;
-import com.oing.dto.response.PaginationResponse;
-import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.MemberApi;
 import com.oing.service.MemberService;
@@ -93,11 +90,13 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public void deleteMember(String memberId) {
+    public DefaultResponse deleteMember(String memberId) {
         validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
         memberService.deleteAllSocialMembersByMember(memberId);
         member.deleteMemberInfo();
+
+        return DefaultResponse.ok();
     }
 
     private void validateMemberId(String memberId) {
