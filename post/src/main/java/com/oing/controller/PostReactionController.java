@@ -84,6 +84,7 @@ public class PostReactionController implements PostReactionApi {
     }
 
     @Override
+    @Transactional
     public ArrayResponse<PostReactionResponse> getPostReactions(String postId) {
         MemberPost post = memberPostService.findMemberPostById(postId);
         return ArrayResponse.of(
