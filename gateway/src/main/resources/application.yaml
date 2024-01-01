@@ -30,7 +30,9 @@ app:
     url-whitelists:
       - /actuator/**
       - /swagger-ui.html
-      - /v1/auth/**
+      - /v1/auth/social/**
+      - /v1/auth/refresh
+      - /v1/auth/force-token
       - /swagger-ui/**
       - /v3/api-docs/**
     url-no-logging:

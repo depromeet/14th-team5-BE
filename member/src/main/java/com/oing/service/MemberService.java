@@ -53,6 +53,9 @@ public class MemberService {
         Member member = Member
                 .builder()
                 .id(identityGenerator.generateIdentity())
+                .dayOfBirth(createNewUserDTO.dayOfBirth())
+                .profileImgUrl(createNewUserDTO.profileImgUrl())
+                .name(createNewUserDTO.memberName())
                 .build();
         memberRepository.save(member);
 
