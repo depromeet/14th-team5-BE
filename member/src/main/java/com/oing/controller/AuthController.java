@@ -70,7 +70,7 @@ public class AuthController implements AuthApi {
     @Override
     public AuthResultResponse register(Authentication authentication, CreateNewMemberRequest request) {
         //사용자 회원가입
-        if(authentication.getCredentials() instanceof Token token) {
+        if(authentication.getCredentials() instanceof Token token && token.tokenType() == TokenType.TEMPORARY) {
             CreateNewUserDTO createNewUserDTO = new CreateNewUserDTO(
                     SocialLoginProvider.fromString(token.provider()),
                     token.userId(),
