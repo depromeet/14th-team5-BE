@@ -19,7 +19,7 @@ public record SingleRecentPostWidgetResponse(
         public static SingleRecentPostWidgetResponse of(Member member, MemberPost memberPost) {
                 return new SingleRecentPostWidgetResponse(
                         member.getProfileImgUrl(),
-                        memberPost.getPostImgUrl(),
+                        memberPost.getImageUrl(),
                         memberPost.getContent()
                 );
         }

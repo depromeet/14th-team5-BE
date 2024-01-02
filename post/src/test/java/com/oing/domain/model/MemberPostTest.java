@@ -18,12 +18,11 @@ public class MemberPostTest {
         String memberId = "sampleMemberId";
         LocalDate postDate = LocalDate.of(2023, 7, 8);
         String imageUrl = "https://picsum.photos/200/300?random=1";
-        String imageKey = "/200/300?random=1";
         String content = "밥 맛있다!";
 
         // When
-        MemberPost post = new MemberPost(postId, memberId, postDate, imageUrl, imageKey, content, 0,
-                0, null, null);
+        MemberPost post = new MemberPost(postId, memberId, postDate, imageUrl, content, 0, 0,
+                null, null);
 
         // Then
         assertNotNull(post);
