@@ -26,6 +26,6 @@ public class MemberDevice extends BaseEntity {
     @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
     private String memberId;
 
-    @Column(name = "family_id", columnDefinition = "VARCHAR(255)")
+    @Column(name = "fcm_token", columnDefinition = "VARCHAR(255)")
     private String fcmToken;
 }
