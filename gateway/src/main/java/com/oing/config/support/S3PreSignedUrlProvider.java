@@ -83,7 +83,7 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     }
 
     @Override
-    public String extractImagePath(String imageUrl) {
+    public String extractImageKey(String imageUrl) {
         int bucketIndex = imageUrl.indexOf(bucket);
         String imagePath = imageUrl.substring(bucketIndex + bucket.length());
         return imagePath.startsWith("/") ? imagePath.substring(1) : imagePath;

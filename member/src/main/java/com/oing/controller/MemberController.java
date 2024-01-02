@@ -57,7 +57,7 @@ public class MemberController implements MemberApi {
     public MemberResponse updateMemberProfileImageUrl(String memberId, UpdateMemberProfileImageUrlRequest request) {
         validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
-        String profileImgKey = preSignedUrlGenerator.extractImagePath(request.profileImageUrl());
+        String profileImgKey = preSignedUrlGenerator.extractImageKey(request.profileImageUrl());
         member.updateProfileImg(request.profileImageUrl(), profileImgKey);
 
         return MemberResponse.of(member);
