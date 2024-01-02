@@ -25,7 +25,7 @@ public class SocialMemberTest {
 
         // When
         Member member = new Member("sampleId", "sampleFamilyId",
-                LocalDate.of(2023, 7, 8), "sampleName", null);
+                LocalDate.of(2023, 7, 8), "sampleName", null, null);
 
         // When
         SocialMember socialMember = new SocialMember(provider, identifier, member);
@@ -44,7 +44,7 @@ public class SocialMemberTest {
         SocialLoginProvider provider = SocialLoginProvider.APPLE;
         String identifier = "user123";
         Member member = new Member("sampleId", "sampleFamilyId",
-                LocalDate.of(2023, 7, 8), "sampleName", null);
+                LocalDate.of(2023, 7, 8), "sampleName", null, null);
 
         // When
         SocialMember socialMember1 = new SocialMember(provider, identifier, member);
