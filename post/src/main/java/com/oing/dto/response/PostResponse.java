@@ -41,7 +41,7 @@ public record PostResponse(
                         post.getMemberId(),
                         post.getCommentCnt(),
                         post.getReactionCnt(),
-                        post.getPostImgUrl(),
+                        post.getImageUrl(),
                         post.getContent(),
                         post.getCreatedAt().atZone(ZoneId.systemDefault())
                 );

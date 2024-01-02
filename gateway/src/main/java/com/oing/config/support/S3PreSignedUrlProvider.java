@@ -12,6 +12,7 @@ import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -82,10 +83,14 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
         return identityGenerator.generateIdentity() + ext;
     }
 
+    @Async
     @Override
-    public String extractImageKey(String imageUrl) {
-        int bucketIndex = imageUrl.indexOf(bucket);
-        String imagePath = imageUrl.substring(bucketIndex + bucket.length());
-        return imagePath.startsWith("/") ? imagePath.substring(1) : imagePath;
+    public void deleteImageByPath(String imageUrl) {
+        try {
+            amazonS3Client.deleteObject(bucket, imageUrl);
+        } catch (AmazonServiceException e) {
+            log.error("이미지 삭제 실패했습니다. {}", e.getMessage());
+            throw new IllegalStateException("이미지 삭제 실패했습니다.");
+        }
     }
 }
