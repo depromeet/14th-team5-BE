@@ -57,17 +57,10 @@ public class MemberController implements MemberApi {
     public MemberResponse updateMemberProfileImageUrl(String memberId, UpdateMemberProfileImageUrlRequest request) {
         validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
-
-        //deleteMemberProfileImage(member.getProfileImgUrl());
-        member.updateProfileImgUrl(request.profileImageUrl());
+        String profileImgKey = preSignedUrlGenerator.extractImageKey(request.profileImageUrl());
+        member.updateProfileImg(request.profileImageUrl(), profileImgKey);
 
         return MemberResponse.of(member);
-    }
-
-    private void deleteMemberProfileImage(String profileImageUrl) {
-        if (profileImageUrl != null) {
-            preSignedUrlGenerator.deleteImageByPath(profileImageUrl);
-        }
     }
 
     @Override
