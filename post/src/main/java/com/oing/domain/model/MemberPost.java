@@ -29,8 +29,11 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "post_date", nullable = false)
     private LocalDate postDate;
 
-    @Column(name = "image_url", nullable = false)
-    private String imageUrl;
+    @Column(name = "post_img_url", nullable = false)
+    private String postImgUrl;
+
+    @Column(name = "post_img_key", nullable = false)
+    private String postImgKey;
 
     @Column(name = "content")
     private String content;
@@ -47,12 +50,12 @@ public class MemberPost extends BaseAuditEntity {
     @OneToMany(mappedBy = "post")
     private List<MemberPostReaction> reactions = new ArrayList<>();
 
-    public MemberPost(String id, String memberId, LocalDate postDate, String imageUrl, String content) {
+    public MemberPost(String id, String memberId, LocalDate postDate, String postImgUrl, String content) {
         validateContent(content);
         this.id = id;
         this.memberId = memberId;
         this.postDate = postDate;
-        this.imageUrl = imageUrl;
+        this.postImgUrl = postImgUrl;
         this.content = content;
         this.commentCnt = 0;
         this.reactionCnt = 0;
