@@ -63,7 +63,9 @@ public class PostController implements PostApi {
         validateUserHasNotCreatedPostToday(memberId, uploadTime);
         validateUploadTime(uploadTime);
 
-        MemberPost post = new MemberPost(postId, memberId, uploadTime.toLocalDate(), request.imageUrl(), request.content());
+        String postImgKey = preSignedUrlGenerator.extractImagePath(request.imageUrl());
+        MemberPost post = new MemberPost(postId, memberId, uploadTime.toLocalDate(), request.imageUrl(),
+                postImgKey, request.content());
         MemberPost savedPost = memberPostService.save(post);
 
         return PostResponse.from(savedPost);

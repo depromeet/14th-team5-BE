@@ -25,7 +25,7 @@ public class MemberTest {
         String name = "sampleName";
 
         // When
-        Member member = new Member(memberId, familyId, dayofBirth, name, null);
+        Member member = new Member(memberId, familyId, dayofBirth, name, null, null);
 
         // Then
         assertNotNull(member);
@@ -42,8 +42,8 @@ public class MemberTest {
         String name = "sampleName";
 
         // When
-        Member member1 = new Member(memberId, familyId, dayofBirth, name, null);
-        Member member2 = new Member(memberId, familyId, dayofBirth, name, null);
+        Member member1 = new Member(memberId, familyId, dayofBirth, name, null, null);
+        Member member2 = new Member(memberId, familyId, dayofBirth, name, null, null);
 
         // Then
         assertEquals(member1, member2);

@@ -50,12 +50,13 @@ public class MemberPost extends BaseAuditEntity {
     @OneToMany(mappedBy = "post")
     private List<MemberPostReaction> reactions = new ArrayList<>();
 
-    public MemberPost(String id, String memberId, LocalDate postDate, String postImgUrl, String content) {
+    public MemberPost(String id, String memberId, LocalDate postDate, String postImgUrl, String postImgKey, String content) {
         validateContent(content);
         this.id = id;
         this.memberId = memberId;
         this.postDate = postDate;
         this.postImgUrl = postImgUrl;
+        this.postImgKey = postImgKey;
         this.content = content;
         this.commentCnt = 0;
         this.reactionCnt = 0;
