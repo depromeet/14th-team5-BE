@@ -5,6 +5,8 @@ import com.oing.domain.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Getter
 public enum Emoji {
@@ -26,6 +28,14 @@ public enum Emoji {
             case "EMOJI_5" -> EMOJI_5;
             default -> throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
         };
+    }
+
+    public static final List<Emoji> EMOJI_LIST = List.of(
+            Emoji.EMOJI_1, Emoji.EMOJI_2, Emoji.EMOJI_3, Emoji.EMOJI_4, Emoji.EMOJI_5
+    );
+
+    public static List<Emoji> getEmojiList() {
+        return EMOJI_LIST;
     }
 }
 

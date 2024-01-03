@@ -18,8 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.util.EnumSet;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -93,19 +92,20 @@ public class PostReactionController implements PostReactionApi {
     @Override
     @Transactional
     public PostReactionsResponse getPostReactions(String postId) {
-        Map<Emoji, List<String>> emojiMemberIdsMap = new HashMap<>();
+        List<MemberPostReaction> reactions = postReactionService.getMemberPostReactionsByPostId(postId);
 
-        for (Emoji emoji : EnumSet.of(Emoji.EMOJI_1, Emoji.EMOJI_2, Emoji.EMOJI_3, Emoji.EMOJI_4, Emoji.EMOJI_5)) {
-            List<String> emojiMemberIds = postReactionService.getMemberIdsByEmoji(postId, emoji);
-            emojiMemberIdsMap.put(emoji, emojiMemberIds);
-        }
+        Map<Emoji, List<String>> emojiMemberIdsMap = reactions.stream()
+                .collect(Collectors.groupingBy(
+                        MemberPostReaction::getEmoji,
+                        Collectors.mapping(MemberPostReaction::getMemberId, Collectors.toList())
+                ));
 
         return new PostReactionsResponse(
-                emojiMemberIdsMap.get(Emoji.EMOJI_1),
-                emojiMemberIdsMap.get(Emoji.EMOJI_2),
-                emojiMemberIdsMap.get(Emoji.EMOJI_3),
-                emojiMemberIdsMap.get(Emoji.EMOJI_4),
-                emojiMemberIdsMap.get(Emoji.EMOJI_5)
+                emojiMemberIdsMap.getOrDefault(Emoji.EMOJI_1, Collections.emptyList()),
+                emojiMemberIdsMap.getOrDefault(Emoji.EMOJI_2, Collections.emptyList()),
+                emojiMemberIdsMap.getOrDefault(Emoji.EMOJI_3, Collections.emptyList()),
+                emojiMemberIdsMap.getOrDefault(Emoji.EMOJI_4, Collections.emptyList()),
+                emojiMemberIdsMap.getOrDefault(Emoji.EMOJI_5, Collections.emptyList())
         );
     }
 

@@ -36,7 +36,7 @@ public class PostReactionService {
         memberPostReactionRepository.deleteById(reaction.getId());
     }
 
-    public List<String> getMemberIdsByEmoji(String postId, Emoji emoji) {
-        return memberPostReactionRepository.getMemberIdsByPostAndEmoji(postId, emoji);
+    public List<MemberPostReaction> getMemberPostReactionsByPostId(String postId) {
+        return memberPostReactionRepository.findAllByPostId(postId);
     }
 }
