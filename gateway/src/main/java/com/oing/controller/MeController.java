@@ -2,6 +2,8 @@ package com.oing.controller;
 
 import com.oing.domain.model.Family;
 import com.oing.domain.model.FamilyInviteLink;
+import com.oing.domain.exception.DomainException;
+import com.oing.domain.exception.ErrorCode;
 import com.oing.domain.model.Member;
 import com.oing.dto.request.AddFcmTokenRequest;
 import com.oing.dto.request.JoinFamilyRequest;
@@ -55,6 +57,7 @@ public class MeController implements MeApi {
         return new DefaultResponse(result);
     }
 
+
     @Transactional
     @Override
     public FamilyResponse joinFamily(JoinFamilyRequest request) {
@@ -67,5 +70,17 @@ public class MeController implements MeApi {
         member.setFamilyId(targetFamily.getId());
 
         return FamilyResponse.of(targetFamily);
+    }
+
+    @Transactional
+    @Override
+    public FamilyResponse createFamilyAndJoin() {
+        String memberId = authenticationHolder.getUserId();
+        Member member = memberService.findMemberById(memberId);
+        if (member.hasFamily()) throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
+
+        Family family = familyService.createFamily();
+        member.setFamilyId(family.getId());
+        return FamilyResponse.of(family);
     }
 }

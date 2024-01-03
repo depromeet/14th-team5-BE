@@ -42,6 +42,7 @@ public interface MeApi {
             String fcmToken
     );
 
+
     @Operation(summary = "가족 가입", description = "가족에 가입합니다.")
     @PostMapping("/join-family")
     FamilyResponse joinFamily(
@@ -49,4 +50,8 @@ public interface MeApi {
             @RequestBody
             JoinFamilyRequest request
     );
+
+    @Operation(summary = "가족 생성 및 가입", description = "가족을 생성하고 가입합니다.")
+    @PostMapping("/create-family")
+    FamilyResponse createFamilyAndJoin();
 }

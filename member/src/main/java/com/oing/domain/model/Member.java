@@ -57,4 +57,8 @@ public class Member extends DeletableBaseAuditEntity {
     public void setFamilyId(String familyId) {
         this.familyId = familyId;
     }
+
+    public boolean hasFamily() {
+        return this.familyId != null;
+    }
 }
