@@ -2,6 +2,7 @@ package com.oing.service;
 
 import com.oing.domain.model.Family;
 import com.oing.domain.model.FamilyInviteLink;
+import com.oing.exception.LinkNotValidException;
 import com.oing.repository.FamilyInviteLinkRepository;
 import com.oing.util.RandomStringGenerator;
 import jakarta.transaction.Transactional;
@@ -38,5 +39,12 @@ public class FamilyInviteLinkService {
         FamilyInviteLink inviteLink = new FamilyInviteLink(linkId, family);
         familyInviteLinkRepository.save(inviteLink);
         return FAMILY_LINK_PREFIX + linkId;
+    }
+
+    @Transactional
+    public FamilyInviteLink getFamilyInviteLink(String linkId) {
+        return familyInviteLinkRepository
+                .findById(linkId)
+                .orElseThrow(LinkNotValidException::new);
     }
 }

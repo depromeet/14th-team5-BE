@@ -1,7 +1,9 @@
 package com.oing.restapi;
 
 import com.oing.dto.request.AddFcmTokenRequest;
+import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DefaultResponse;
+import com.oing.dto.response.FamilyResponse;
 import com.oing.dto.response.MemberResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,5 +40,13 @@ public interface MeApi {
             @PathVariable
             @Parameter(description = "삭제하고자 하는 fcmToken", example = "fcmToken")
             String fcmToken
+    );
+
+    @Operation(summary = "가족 가입", description = "가족에 가입합니다.")
+    @PostMapping("/join-family")
+    FamilyResponse joinFamily(
+            @Valid
+            @RequestBody
+            JoinFamilyRequest request
     );
 }
