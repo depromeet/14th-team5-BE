@@ -29,13 +29,5 @@ public enum Emoji {
             default -> throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
         };
     }
-
-    public static final List<Emoji> EMOJI_LIST = List.of(
-            Emoji.EMOJI_1, Emoji.EMOJI_2, Emoji.EMOJI_3, Emoji.EMOJI_4, Emoji.EMOJI_5
-    );
-
-    public static List<Emoji> getEmojiList() {
-        return EMOJI_LIST;
-    }
 }
 
