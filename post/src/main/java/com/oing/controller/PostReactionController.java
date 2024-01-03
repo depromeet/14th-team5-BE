@@ -18,9 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -93,20 +91,16 @@ public class PostReactionController implements PostReactionApi {
     @Transactional
     public PostReactionsResponse getPostReactions(String postId) {
         List<MemberPostReaction> reactions = postReactionService.getMemberPostReactionsByPostId(postId);
+        List<Emoji> emojiList = Emoji.getEmojiList();
 
-        Map<Emoji, List<String>> emojiMemberIdsMap = reactions.stream()
+        Map<String, List<String>> emojiMemberIdsMap = reactions.stream()
                 .collect(Collectors.groupingBy(
-                        MemberPostReaction::getEmoji,
+                        reaction -> reaction.getEmoji().getTypeKey(),
                         Collectors.mapping(MemberPostReaction::getMemberId, Collectors.toList())
                 ));
+        emojiList.forEach(emoji -> emojiMemberIdsMap.putIfAbsent(emoji.getTypeKey(), Collections.emptyList()));
 
-        return new PostReactionsResponse(
-                emojiMemberIdsMap.getOrDefault(Emoji.EMOJI_1, Collections.emptyList()),
-                emojiMemberIdsMap.getOrDefault(Emoji.EMOJI_2, Collections.emptyList()),
-                emojiMemberIdsMap.getOrDefault(Emoji.EMOJI_3, Collections.emptyList()),
-                emojiMemberIdsMap.getOrDefault(Emoji.EMOJI_4, Collections.emptyList()),
-                emojiMemberIdsMap.getOrDefault(Emoji.EMOJI_5, Collections.emptyList())
-        );
+        return new PostReactionsResponse(emojiMemberIdsMap);
     }
 
     private void validatePostReactionForDeletion(MemberPost post, String memberId, Emoji emoji) {

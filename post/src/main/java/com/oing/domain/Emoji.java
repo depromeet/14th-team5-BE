@@ -5,6 +5,8 @@ import com.oing.domain.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -28,6 +30,13 @@ public enum Emoji {
             case "EMOJI_5" -> EMOJI_5;
             default -> throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
         };
+    }
+
+    private static final List<Emoji> EMOJI_LIST = Arrays.asList(
+            Emoji.EMOJI_1, Emoji.EMOJI_2, Emoji.EMOJI_3, Emoji.EMOJI_4, Emoji.EMOJI_5);
+
+    public static List<Emoji> getEmojiList() {
+        return Collections.unmodifiableList(EMOJI_LIST);
     }
 }
 
