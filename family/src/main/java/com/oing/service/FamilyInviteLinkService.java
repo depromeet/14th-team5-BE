@@ -17,32 +17,21 @@ import org.springframework.stereotype.Service;
  */
 @RequiredArgsConstructor
 @Service
-public class FamilyInviteLinkService {
-    public static String FAMILY_LINK_PREFIX = "https://no5ing.kr/o/";
-
+public class FamilyInviteLinkService implements DeepLinkDetailService<FamilyInviteLink> {
     private final FamilyInviteLinkRepository familyInviteLinkRepository;
-
     @Transactional
-    public String getOrCreateFamilyInviteLink(Family family) {
-        //이미 생성된 링크가 있는지 검증
-        FamilyInviteLink previousLink = familyInviteLinkRepository.findByFamily(family);
-        if(previousLink != null) {
-            return FAMILY_LINK_PREFIX + previousLink.getLinkId();
-        }
-        //이미 존재하는 링크인지 검증
-        String linkId;
-        do {
-            linkId = RandomStringGenerator.generateAlphanumericString(8);
-        } while(familyInviteLinkRepository.existsById(linkId));
-
-        //링크 생성
-        FamilyInviteLink inviteLink = new FamilyInviteLink(linkId, family);
-        familyInviteLinkRepository.save(inviteLink);
-        return FAMILY_LINK_PREFIX + linkId;
+    @Override
+    public FamilyInviteLink storeDeepLinkDetails(FamilyInviteLink details) {
+        return familyInviteLinkRepository.save(details);
     }
 
-    @Transactional
-    public FamilyInviteLink getFamilyInviteLink(String linkId) {
+    @Override
+    public FamilyInviteLink findPriorDeepLinkDetails(FamilyInviteLink details) {
+        return familyInviteLinkRepository.findByFamilyId(details.getFamilyId());
+    }
+
+    @Override
+    public FamilyInviteLink retrieveDeepLinkDetails(String linkId) {
         return familyInviteLinkRepository
                 .findById(linkId)
                 .orElseThrow(LinkNotValidException::new);

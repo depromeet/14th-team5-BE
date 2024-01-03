@@ -25,6 +25,7 @@ public class MeController implements MeApi {
     private final AuthenticationHolder authenticationHolder;
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
+    private final FamilyService familyService;
     private final FamilyInviteLinkService familyInviteLinkService;
 
     @Override
@@ -58,8 +59,8 @@ public class MeController implements MeApi {
     @Override
     public FamilyResponse joinFamily(JoinFamilyRequest request) {
         String memberId = authenticationHolder.getUserId();
-        FamilyInviteLink link = familyInviteLinkService.getFamilyInviteLink(request.inviteCode());
-        Family targetFamily = link.getFamily();
+        FamilyInviteLink link = familyInviteLinkService.retrieveDeepLinkDetails(request.inviteCode());
+        Family targetFamily = familyService.getFamilyById(link.getFamilyId());
 
         Member member = memberService.findMemberById(memberId);
         if (member.getFamilyId() != null) throw new AlreadyInFamilyException();
