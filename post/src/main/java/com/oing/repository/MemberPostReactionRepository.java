@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface MemberPostReactionRepository extends JpaRepository<MemberPostReaction, String> {
+public interface MemberPostReactionRepository extends JpaRepository<MemberPostReaction, String>, MemberPostReactionRepositoryCustom {
     boolean existsByPostAndMemberIdAndEmoji(MemberPost post, String memberId, Emoji emoji);
 
     Optional<MemberPostReaction> findReactionByPostAndMemberIdAndEmoji(MemberPost post, String memberId, Emoji emoji);

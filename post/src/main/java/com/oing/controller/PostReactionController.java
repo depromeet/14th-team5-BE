@@ -4,10 +4,7 @@ import com.oing.domain.Emoji;
 import com.oing.domain.model.MemberPost;
 import com.oing.domain.model.MemberPostReaction;
 import com.oing.dto.request.PostReactionRequest;
-import com.oing.dto.response.ArrayResponse;
-import com.oing.dto.response.DefaultResponse;
-import com.oing.dto.response.PostReactionResponse;
-import com.oing.dto.response.PostReactionSummaryResponse;
+import com.oing.dto.response.*;
 import com.oing.exception.EmojiAlreadyExistsException;
 import com.oing.exception.EmojiNotFoundException;
 import com.oing.restapi.PostReactionApi;
@@ -90,13 +87,15 @@ public class PostReactionController implements PostReactionApi {
 
     @Override
     @Transactional
-    public ArrayResponse<PostReactionResponse> getPostReactions(String postId) {
-        MemberPost post = memberPostService.findMemberPostById(postId);
-        return ArrayResponse.of(
-                post.getReactions().stream()
-                        .map(PostReactionResponse::from)
-                        .toList()
-        );
+    public PostReactionsResponse getPostReactions(String postId) {
+        List<String> emoji1MemberIds = postReactionService.getMemberIdsByEmoji(postId, Emoji.EMOJI_1);
+        List<String> emoji2MemberIds = postReactionService.getMemberIdsByEmoji(postId, Emoji.EMOJI_2);
+        List<String> emoji3MemberIds = postReactionService.getMemberIdsByEmoji(postId, Emoji.EMOJI_3);
+        List<String> emoji4MemberIds = postReactionService.getMemberIdsByEmoji(postId, Emoji.EMOJI_4);
+        List<String> emoji5MemberIds = postReactionService.getMemberIdsByEmoji(postId, Emoji.EMOJI_5);
+
+        return new PostReactionsResponse(emoji1MemberIds, emoji2MemberIds, emoji3MemberIds,
+                emoji4MemberIds, emoji5MemberIds);
     }
 
     private void validatePostReactionForDeletion(MemberPost post, String memberId, Emoji emoji) {

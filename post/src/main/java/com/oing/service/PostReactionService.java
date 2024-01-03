@@ -8,6 +8,8 @@ import com.oing.repository.MemberPostReactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PostReactionService {
@@ -32,5 +34,9 @@ public class PostReactionService {
 
     public void deletePostReaction(MemberPostReaction reaction) {
         memberPostReactionRepository.deleteById(reaction.getId());
+    }
+
+    public List<String> getMemberIdsByEmoji(String postId, Emoji emoji) {
+        return memberPostReactionRepository.getMemberIdsByPostAndEmoji(postId, emoji);
     }
 }
