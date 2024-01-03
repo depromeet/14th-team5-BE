@@ -16,9 +16,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
 
-    @Value("${cloud.ncp.storage.bucket}")
-    private String bucketName;
-
     @Value("${cloud.ncp.image-optimizer-cdn}")
     private String imageOptimizerCdnUrl;
 
@@ -32,7 +29,7 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
      */
     @Override
     public String getThumbnailUrlGenerator(String bucketImageUrl) {
-        String imagePath = bucketImageUrl.split(bucketName)[1];
+        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
 
         return imageOptimizerCdnUrl + imagePath + THUMBNAIL_OPTIMIZER_QUERY_STRING;
     }
