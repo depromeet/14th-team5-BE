@@ -17,9 +17,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 @Controller
 public class FamilyController implements FamilyApi {
-    private final IdentityGenerator identityGenerator;
     private final FamilyService familyService;
-    private final FamilyInviteLinkService familyInviteLinkService;
 
     @Override
     public FamilyMonthlyStatisticsResponse getMonthlyFamilyStatistics(String familyId, String yearMonth) {
@@ -35,14 +33,6 @@ public class FamilyController implements FamilyApi {
     public FamilyResponse createFamily() {
         Family family = familyService.createFamily();
         return FamilyResponse.of(family);
-    }
-
-    @Transactional
-    @Override
-    public FamilyInvitationLinkResponse getInvitationLink(String familyId) {
-        Family family = familyService.getFamilyById(familyId);
-        String link = familyInviteLinkService.getOrCreateFamilyInviteLink(family);
-        return new FamilyInvitationLinkResponse(link);
     }
 
     @Override
