@@ -4,7 +4,9 @@ import com.oing.domain.Emoji;
 import com.oing.domain.model.MemberPost;
 import com.oing.domain.model.MemberPostReaction;
 import com.oing.dto.request.PostReactionRequest;
-import com.oing.dto.response.*;
+import com.oing.dto.response.DefaultResponse;
+import com.oing.dto.response.PostReactionSummaryResponse;
+import com.oing.dto.response.PostReactionsResponse;
 import com.oing.exception.EmojiAlreadyExistsException;
 import com.oing.exception.EmojiNotFoundException;
 import com.oing.restapi.PostReactionApi;
@@ -16,7 +18,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -88,14 +93,20 @@ public class PostReactionController implements PostReactionApi {
     @Override
     @Transactional
     public PostReactionsResponse getPostReactions(String postId) {
-        List<String> emoji1MemberIds = postReactionService.getMemberIdsByEmoji(postId, Emoji.EMOJI_1);
-        List<String> emoji2MemberIds = postReactionService.getMemberIdsByEmoji(postId, Emoji.EMOJI_2);
-        List<String> emoji3MemberIds = postReactionService.getMemberIdsByEmoji(postId, Emoji.EMOJI_3);
-        List<String> emoji4MemberIds = postReactionService.getMemberIdsByEmoji(postId, Emoji.EMOJI_4);
-        List<String> emoji5MemberIds = postReactionService.getMemberIdsByEmoji(postId, Emoji.EMOJI_5);
+        Map<Emoji, List<String>> emojiMemberIdsMap = new HashMap<>();
 
-        return new PostReactionsResponse(emoji1MemberIds, emoji2MemberIds, emoji3MemberIds,
-                emoji4MemberIds, emoji5MemberIds);
+        for (Emoji emoji : EnumSet.of(Emoji.EMOJI_1, Emoji.EMOJI_2, Emoji.EMOJI_3, Emoji.EMOJI_4, Emoji.EMOJI_5)) {
+            List<String> emojiMemberIds = postReactionService.getMemberIdsByEmoji(postId, emoji);
+            emojiMemberIdsMap.put(emoji, emojiMemberIds);
+        }
+
+        return new PostReactionsResponse(
+                emojiMemberIdsMap.get(Emoji.EMOJI_1),
+                emojiMemberIdsMap.get(Emoji.EMOJI_2),
+                emojiMemberIdsMap.get(Emoji.EMOJI_3),
+                emojiMemberIdsMap.get(Emoji.EMOJI_4),
+                emojiMemberIdsMap.get(Emoji.EMOJI_5)
+        );
     }
 
     private void validatePostReactionForDeletion(MemberPost post, String memberId, Emoji emoji) {
