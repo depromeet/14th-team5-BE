@@ -1,6 +1,7 @@
 package com.oing.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oing.component.HttpRequestEndpointChecker;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.dto.response.ErrorResponse;
 import jakarta.servlet.ServletException;
@@ -24,12 +25,17 @@ import java.io.IOException;
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
+    private final HttpRequestEndpointChecker endpointChecker;
 
     @Override
     public void handle(
             HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException
     ) throws IOException, ServletException {
-        writeErrorResponse(response, accessDeniedException);
+        if (!endpointChecker.isEndpointExists(request)) {
+            endpointChecker.writeNotFoundException(response);
+        } else {
+            writeErrorResponse(response, accessDeniedException);
+        }
     }
 
     private void writeErrorResponse(
