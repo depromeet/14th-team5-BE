@@ -109,6 +109,7 @@ subprojects {
 
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter-web'
+		implementation 'org.springframework.boot:spring-boot-starter-validation'
 		implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 		implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 		implementation 'org.springframework.boot:spring-boot-starter-actuator'
