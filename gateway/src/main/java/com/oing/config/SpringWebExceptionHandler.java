@@ -10,11 +10,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.security.InvalidParameterException;
 import java.util.Enumeration;
 
 /**
@@ -29,16 +35,9 @@ import java.util.Enumeration;
 public class SpringWebExceptionHandler {
     private final ApplicationEventPublisher eventPublisher;
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    ResponseEntity<ErrorResponse> handleValidateException(HttpMessageNotReadableException exception) {
-        return ResponseEntity
-                .badRequest()
-                .body(ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE));
-    }
-
-
     @ExceptionHandler(DomainException.class)
     ResponseEntity<ErrorResponse> handleDomainException(HttpServletRequest request, DomainException exception) {
+        log.debug("[DomainException]", exception);
         if(exception.getErrorCode() == ErrorCode.UNKNOWN_SERVER_ERROR) {
             return handleUnhandledException(request, exception);
         }
@@ -48,10 +47,38 @@ public class SpringWebExceptionHandler {
                 .body(ErrorResponse.of(exception.getErrorCode()));
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(value = {
+            HttpMessageNotReadableException.class,
+            HttpRequestMethodNotSupportedException.class,
+            InvalidParameterException.class,
+            ServletRequestBindingException.class,
+            MethodArgumentNotValidException.class
+    })
+    ResponseEntity<ErrorResponse> handleValidateException(Exception exception) {
+        log.warn("[InvalidParameterException]", exception);
+
+        return ResponseEntity
+                .badRequest()
+                .body(ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE));
+    }
+
+    @ExceptionHandler(IOException.class)
+    ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
+        if(exception.getMessage().contains("Broken pipe")) {
+            log.warn("[IOException] Broken Pipe");
+        } else{
+            log.error("[IOException]", exception);
+        }
+        return ResponseEntity
+                .badRequest()
+                .body(ErrorResponse.of(ErrorCode.UNKNOWN_SERVER_ERROR));
+    }
+
+
+    @ExceptionHandler(Throwable.class)
     ResponseEntity<ErrorResponse> handleUnhandledException(HttpServletRequest request, Throwable exception) {
         StringBuilder dump = dumpRequest(request).append("\n ").append(getStackTraceAsString(exception));
-        log.error(dump.toString());
+        log.error("[UnhandledException] {} \n", dump);
         eventPublisher.publishEvent(new ErrorReportDTO(exception.getMessage(), dump.toString()));
         return ResponseEntity
                 .badRequest()
