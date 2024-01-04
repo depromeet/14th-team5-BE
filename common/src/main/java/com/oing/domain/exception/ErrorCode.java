@@ -11,7 +11,6 @@ public enum ErrorCode {
      */
     UNKNOWN_SERVER_ERROR("CM0001", "Unknown Server Error"),
     INVALID_INPUT_VALUE("CM0002", "Invalid Input Value"),
-    API_PATH_NOT_FOUND("CM0003", "API Not Found"),
     /**
      * Auth Related Errors
      */
