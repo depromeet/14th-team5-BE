@@ -48,7 +48,7 @@ public interface PostReactionApi {
     );
 
     @Operation(summary = "게시물 반응 전체 조회", description = "게시물에 달린 모든 반응 목록을 조회합니다.")
-    @GetMapping
+    @GetMapping("/member")
     PostReactionsResponse getPostReactions(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
