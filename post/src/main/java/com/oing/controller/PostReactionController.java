@@ -4,9 +4,7 @@ import com.oing.domain.Emoji;
 import com.oing.domain.model.MemberPost;
 import com.oing.domain.model.MemberPostReaction;
 import com.oing.dto.request.PostReactionRequest;
-import com.oing.dto.response.DefaultResponse;
-import com.oing.dto.response.PostReactionSummaryResponse;
-import com.oing.dto.response.PostReactionsResponse;
+import com.oing.dto.response.*;
 import com.oing.exception.EmojiAlreadyExistsException;
 import com.oing.exception.EmojiNotFoundException;
 import com.oing.restapi.PostReactionApi;
@@ -18,7 +16,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -89,7 +89,18 @@ public class PostReactionController implements PostReactionApi {
 
     @Override
     @Transactional
-    public PostReactionsResponse getPostReactions(String postId) {
+    public ArrayResponse<PostReactionResponse> getPostReactions(String postId) {
+        MemberPost post = memberPostService.findMemberPostById(postId);
+        return ArrayResponse.of(
+                post.getReactions().stream()
+                        .map(PostReactionResponse::from)
+                        .toList()
+        );
+    }
+
+    @Override
+    @Transactional
+    public PostReactionsResponse getPostReactionMembers(String postId) {
         List<MemberPostReaction> reactions = postReactionService.getMemberPostReactionsByPostId(postId);
         List<Emoji> emojiList = Emoji.getEmojiList();
 
