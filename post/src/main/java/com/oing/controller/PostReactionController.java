@@ -4,10 +4,7 @@ import com.oing.domain.Emoji;
 import com.oing.domain.model.MemberPost;
 import com.oing.domain.model.MemberPostReaction;
 import com.oing.dto.request.PostReactionRequest;
-import com.oing.dto.response.ArrayResponse;
-import com.oing.dto.response.DefaultResponse;
-import com.oing.dto.response.PostReactionResponse;
-import com.oing.dto.response.PostReactionSummaryResponse;
+import com.oing.dto.response.*;
 import com.oing.exception.EmojiAlreadyExistsException;
 import com.oing.exception.EmojiNotFoundException;
 import com.oing.restapi.PostReactionApi;
@@ -19,7 +16,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -97,6 +96,22 @@ public class PostReactionController implements PostReactionApi {
                         .map(PostReactionResponse::from)
                         .toList()
         );
+    }
+
+    @Override
+    @Transactional
+    public PostReactionsResponse getPostReactionMembers(String postId) {
+        List<MemberPostReaction> reactions = postReactionService.getMemberPostReactionsByPostId(postId);
+        List<Emoji> emojiList = Emoji.getEmojiList();
+
+        Map<String, List<String>> emojiMemberIdsMap = reactions.stream()
+                .collect(Collectors.groupingBy(
+                        reaction -> reaction.getEmoji().getTypeKey(),
+                        Collectors.mapping(MemberPostReaction::getMemberId, Collectors.toList())
+                ));
+        emojiList.forEach(emoji -> emojiMemberIdsMap.putIfAbsent(emoji.getTypeKey(), Collections.emptyList()));
+
+        return new PostReactionsResponse(emojiMemberIdsMap);
     }
 
     private void validatePostReactionForDeletion(MemberPost post, String memberId, Emoji emoji) {
