@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: bbibbi-backend-api
   datasource:
     url: ${MYSQL_URL}
     username: ${MYSQL_USERNAME}
@@ -43,6 +45,22 @@ app:
     header-names:
       access-token: X-AUTH-TOKEN
       proxy-forward-header: X-FORWARDED-FOR
+
+server:
+  shutdown: graceful
+  tomcat:
+    threads:
+      min-spare: 10
+      max: 200
+    accept-count: 200
+  compression:
+    enabled: true
+    mime-types: text/html,text/plain,text/css,application/javascript,application/json
+    min-response-size: 1024
+
+logging:
+  level:
+    com.oing: DEBUG
 
 cloud:
   ncp:

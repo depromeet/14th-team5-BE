@@ -55,10 +55,15 @@ jib {
         jvmFlags = [
                 '-Dspring.profiles.active=' + activeProfile,
                 '-Dserver.port=' + serverPort,
-                '-Xms2G', '-Xmx2G',
+                '-Xms2G',
+                '-Xmx2G',
                 '-XX:+UseG1GC',
                 '-XX:+UseContainerSupport',
+                '-XX:MaxGCPauseMillis=400',
                 '-XX:+DisableExplicitGC',
+                '-XX:+AlwaysPreTouch', //미리 영역 채우기
+                '-Duser.timezone=Asia/Seoul', //타임존
+                '-Dfile.encoding=UTF-8',
                 '-server'
         ]
         ports = [serverPort]
