@@ -48,6 +48,7 @@ app:
       app-version-header: X-APP-VERSION
       platform-header: X-USER-PLATFORM
       userid-header: X-USER-ID
+      appkey-header: X-APP-KEY
 
 server:
   shutdown: graceful
