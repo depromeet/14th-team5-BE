@@ -11,6 +11,7 @@ public enum ErrorCode {
      */
     UNKNOWN_SERVER_ERROR("CM0001", "Unknown Server Error"),
     INVALID_INPUT_VALUE("CM0002", "Invalid Input Value"),
+    METHOD_NOT_ALLOWED("CM0003", "Method Not Allowed"),
 
     /**
      * APP Version Related Error

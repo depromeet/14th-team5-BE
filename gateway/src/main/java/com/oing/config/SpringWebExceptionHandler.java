@@ -49,7 +49,6 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(value = {
             HttpMessageNotReadableException.class,
-            HttpRequestMethodNotSupportedException.class,
             InvalidParameterException.class,
             ServletRequestBindingException.class,
             MethodArgumentNotValidException.class,
@@ -62,6 +61,18 @@ public class SpringWebExceptionHandler {
                 .badRequest()
                 .body(ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE));
     }
+
+    @ExceptionHandler(value = {
+            HttpRequestMethodNotSupportedException.class,
+    })
+    ResponseEntity<ErrorResponse> handleMethodNotAllowedException(HttpRequestMethodNotSupportedException exception) {
+        log.warn("[HttpRequestMethodNotSupportedException]", exception);
+
+        return ResponseEntity
+                .badRequest()
+                .body(ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED));
+    }
+
 
     @ExceptionHandler(IOException.class)
     ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
