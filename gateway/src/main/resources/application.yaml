@@ -45,6 +45,9 @@ app:
     header-names:
       access-token: X-AUTH-TOKEN
       proxy-forward-header: X-FORWARDED-FOR
+      app-version-header: X-APP-VERSION
+      platform-header: X-USER-PLATFORM
+      userid-header: X-USER-ID
 
 server:
   shutdown: graceful
