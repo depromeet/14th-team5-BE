@@ -7,6 +7,7 @@ import com.oing.domain.TokenPair;
 import com.oing.domain.TokenType;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
+import com.oing.exception.TokenNotValidException;
 import com.oing.service.TokenGenerator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -64,7 +65,7 @@ public class JWTTokenGenerator implements TokenGenerator {
             String provider = tokenClaim.getBody().get(PROVIDER_KEY_NAME, String.class);
             return new Token(userId, tokenType, provider);
         } catch(Exception e){
-            throw new DomainException(ErrorCode.AUTHENTICATION_FAILED);
+            throw new TokenNotValidException();
         }
     }
 

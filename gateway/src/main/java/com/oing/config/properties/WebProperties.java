@@ -16,11 +16,21 @@ import java.util.regex.Pattern;
 @ConfigurationPropertiesBinding
 public record WebProperties(
         String[] urlWhitelists,
+        String[] versionCheckWhitelists,
         String[] urlNoLogging,
         @NestedConfigurationProperty WebHeaderNameProperties headerNames
 ) {
     public boolean isWhitelisted(String path) {
         for (String pattern : urlWhitelists) {
+            if (isMatchPattern(pattern, path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isVersionCheckWhitelisted(String path) {
+        for (String pattern : versionCheckWhitelists) {
             if (isMatchPattern(pattern, path)) {
                 return true;
             }
