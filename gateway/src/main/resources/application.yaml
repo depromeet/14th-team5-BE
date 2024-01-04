@@ -37,11 +37,21 @@ app:
       - /v1/auth/force-token
       - /swagger-ui/**
       - /v3/api-docs/**
+      - /v3/api-docs
+      - /error
+    version-check-whitelists:
+      - /actuator/**
+      - /swagger-ui.html
+      - /swagger-ui/**
+      - /v3/api-docs/**
+      - /v3/api-docs
       - /error
     url-no-logging:
       - /swagger-ui.html
       - /swagger-ui/**
       - /v3/api-docs/**
+      - /v3/api-docs
+      - /actuator/**
     header-names:
       access-token: X-AUTH-TOKEN
       proxy-forward-header: X-FORWARDED-FOR

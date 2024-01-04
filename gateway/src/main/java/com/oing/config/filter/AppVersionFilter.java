@@ -3,6 +3,7 @@ package com.oing.config.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oing.component.AppVersionCache;
 import com.oing.config.properties.WebProperties;
+import com.oing.domain.exception.ErrorCode;
 import com.oing.dto.response.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -49,7 +50,7 @@ public class AppVersionFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
-        return webProperties.isWhitelisted(path);
+        return webProperties.isVersionCheckWhitelisted(path);
     }
 
     private void writeUpdateResponse(
@@ -61,9 +62,7 @@ public class AppVersionFilter extends OncePerRequestFilter {
         response.setStatus(426);
         response.getWriter()
                 .write(objectMapper.writeValueAsString(
-                        ErrorResponse.of("UR0001",
-                                isTokenExist ? "App Version Required Downgrade!!" : "App Key Not Found"
-                        )
+                        ErrorResponse.of(isTokenExist ? ErrorCode.APP_UPDATE_REQUIRED : ErrorCode.APP_KEY_NOT_FOUND)
                 ));
     }
 }

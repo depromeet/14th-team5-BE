@@ -11,6 +11,12 @@ public enum ErrorCode {
      */
     UNKNOWN_SERVER_ERROR("CM0001", "Unknown Server Error"),
     INVALID_INPUT_VALUE("CM0002", "Invalid Input Value"),
+
+    /**
+     * APP Version Related Error
+     */
+    APP_UPDATE_REQUIRED("AV0001", "Update Required"),
+    APP_KEY_NOT_FOUND("AV0002", "App Key Not Found"),
     /**
      * Auth Related Errors
      */
