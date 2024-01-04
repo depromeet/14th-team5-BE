@@ -35,6 +35,7 @@ app:
       - /v1/auth/force-token
       - /swagger-ui/**
       - /v3/api-docs/**
+      - /error
     url-no-logging:
       - /swagger-ui.html
       - /swagger-ui/**
