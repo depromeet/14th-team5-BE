@@ -1,6 +1,6 @@
 package com.oing.dto.response;
 
-import com.oing.domain.exception.ErrorCode;
+import com.oing.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "에러 응답")

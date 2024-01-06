@@ -1,25 +1,21 @@
-package com.oing.domain.model;
+package com.oing.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-/**
- * no5ing-server
- * User: CChuYong
- * Date: 2023/11/27
- * Time: 11:38 AM
- */
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 @Getter
-public class BaseEntity {
-    @CreatedDate
-    @Column(name = "created_at", updatable = false, nullable = false)
-    private LocalDateTime createdAt;
+public class DeletableBaseAuditEntity extends BaseAuditEntity {
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
+    public void updateDeletedAt() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }

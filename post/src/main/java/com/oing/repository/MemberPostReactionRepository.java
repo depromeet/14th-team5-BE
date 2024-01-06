@@ -1,8 +1,8 @@
 package com.oing.repository;
 
 import com.oing.domain.Emoji;
-import com.oing.domain.model.MemberPost;
-import com.oing.domain.model.MemberPostReaction;
+import com.oing.domain.MemberPost;
+import com.oing.domain.MemberPostReaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

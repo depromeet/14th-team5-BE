@@ -7,11 +7,11 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWK;
 import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.SocialLoginResult;
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
 import com.oing.dto.response.AppleKeyListResponse;
 import com.oing.dto.response.AppleKeyResponse;
 import com.oing.dto.response.KakaoAuthResponse;
+import com.oing.exception.DomainException;
+import com.oing.exception.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -65,7 +65,7 @@ public class AuthService {
 
             String identifier = parseIdentifierFromAppleToken(matchedKey, accessToken);
             return new SocialLoginResult(identifier);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
         }
     }
@@ -81,7 +81,7 @@ public class AuthService {
                 .build(), KakaoAuthResponse.class);
 
         // 인증 실패시 throw
-        if(!authResponse.getStatusCode().is2xxSuccessful())
+        if (!authResponse.getStatusCode().is2xxSuccessful())
             throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
 
         return new SocialLoginResult(Objects.requireNonNull(authResponse.getBody()).id().toString());
@@ -98,7 +98,7 @@ public class AuthService {
                 .build(), AppleKeyListResponse.class);
 
         // 키 반환 실패시 throw
-        if(!keyListResponse.getStatusCode().is2xxSuccessful())
+        if (!keyListResponse.getStatusCode().is2xxSuccessful())
             throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
 
         return Objects.requireNonNull(keyListResponse.getBody()).keys();

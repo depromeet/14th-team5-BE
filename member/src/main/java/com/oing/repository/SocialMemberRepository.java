@@ -1,7 +1,7 @@
 package com.oing.repository;
 
-import com.oing.domain.model.SocialMember;
-import com.oing.domain.model.key.SocialMemberKey;
+import com.oing.domain.SocialMember;
+import com.oing.domain.key.SocialMemberKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

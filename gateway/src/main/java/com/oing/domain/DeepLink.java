@@ -1,6 +1,5 @@
 package com.oing.domain;
 
-import com.oing.domain.model.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

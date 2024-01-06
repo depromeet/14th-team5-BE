@@ -52,7 +52,7 @@ public class SpringSecurityConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authorizeHttpRequests(requestsManagement ->{
+                .authorizeHttpRequests(requestsManagement -> {
                     RequestMatcher[] whitelistedMatchers = Arrays.stream(webProperties.urlWhitelists())
                             .map(AntPathRequestMatcher::new)
                             .toArray(AntPathRequestMatcher[]::new);

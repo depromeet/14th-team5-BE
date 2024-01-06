@@ -1,9 +1,11 @@
-package com.oing.domain.model.key;
+package com.oing.domain.key;
 
 import com.oing.domain.SocialLoginProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
  * no5ing-server
