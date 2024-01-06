@@ -2,8 +2,8 @@ package com.oing.controller;
 
 import com.oing.exception.DomainException;
 import com.oing.exception.ErrorCode;
-import com.oing.domain.model.Family;
-import com.oing.domain.model.FamilyInviteLink;
+import com.oing.domain.Family;
+import com.oing.domain.FamilyInviteLink;
 import com.oing.domain.model.Member;
 import com.oing.dto.request.AddFcmTokenRequest;
 import com.oing.dto.request.JoinFamilyRequest;

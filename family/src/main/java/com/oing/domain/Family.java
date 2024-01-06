@@ -1,4 +1,4 @@
-package com.oing.domain.model;
+package com.oing.domain;
 
 import com.oing.domain.BaseEntity;
 import jakarta.persistence.Column;

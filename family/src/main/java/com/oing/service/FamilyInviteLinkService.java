@@ -1,6 +1,6 @@
 package com.oing.service;
 
-import com.oing.domain.model.FamilyInviteLink;
+import com.oing.domain.FamilyInviteLink;
 import com.oing.exception.LinkNotValidException;
 import com.oing.repository.FamilyInviteLinkRepository;
 import jakarta.transaction.Transactional;
