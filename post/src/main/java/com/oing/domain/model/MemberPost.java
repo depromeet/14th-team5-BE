@@ -62,7 +62,7 @@ public class MemberPost extends BaseAuditEntity {
     }
 
     private void validateContent(String content) {
-        if (content != null && (content.length() >= 8 || content.contains(" "))) {
+        if (content != null && (content.length() > 8 || content.contains(" "))) {
             throw new InvalidParameterException();
         }
     }
