@@ -1,7 +1,9 @@
 package com.oing.repository;
 
 import com.oing.domain.MemberPostCountDTO;
+import com.oing.domain.model.Member;
 import com.oing.domain.model.MemberPost;
+import com.oing.exception.FamilyNotFoundException;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.oing.domain.model.QMemberPost.*;
+import static com.oing.domain.model.QMember.*;
 
 @RequiredArgsConstructor
 public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {
@@ -45,15 +48,28 @@ public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {
     }
 
     @Override
-    public QueryResults<MemberPost> searchPosts(int page, int size, LocalDate date, String memberId, boolean asc) {
+    public QueryResults<MemberPost> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId, boolean asc) {
+        String requesterFamilyId = getFamilyIdOfMember(requesterMemberId);
         return queryFactory
                 .select(memberPost)
                 .from(memberPost)
-                .where(eqDate(date), eqMemberId(memberId))
+                .leftJoin(member).on(memberPost.memberId.eq(member.id))
+                .where(member.familyId.eq(requesterFamilyId), eqDate(date), eqMemberId(memberId))
                 .orderBy(asc ? memberPost.id.asc() : memberPost.id.desc())
                 .offset((long) (page - 1) * size)
                 .limit(size)
                 .fetchResults();
+    }
+
+    private String getFamilyIdOfMember(String memberId) {
+        String requesterFamilyId = queryFactory
+                .select(member)
+                .from(member)
+                .where(member.id.eq(memberId))
+                .fetchFirst()
+                .getFamilyId();
+        if (requesterFamilyId == null) throw new FamilyNotFoundException();
+        return requesterFamilyId;
     }
 
     private BooleanExpression eqDate(LocalDate date) {

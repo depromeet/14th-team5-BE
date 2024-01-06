@@ -44,8 +44,9 @@ public class PostController implements PostApi {
 
     @Override
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId, String sort) {
+        String requesterMemberId = authenticationHolder.getUserId();
         PaginationDTO<MemberPost> fetchResult = memberPostService.searchMemberPost(
-                page, size, date, memberId, sort == null || sort.equalsIgnoreCase("ASC")
+                page, size, date, memberId, requesterMemberId, sort == null || sort.equalsIgnoreCase("ASC")
         );
 
         return PaginationResponse

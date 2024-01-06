@@ -74,8 +74,8 @@ public class MemberPostService {
     }
 
     @Transactional
-    public PaginationDTO<MemberPost> searchMemberPost(int page, int size, LocalDate date, String memberId, boolean asc) {
-        QueryResults<MemberPost> results = memberPostRepository.searchPosts(page, size, date, memberId, asc);
+    public PaginationDTO<MemberPost> searchMemberPost(int page, int size, LocalDate date, String memberId, String requesterMemberId, boolean asc) {
+        QueryResults<MemberPost> results = memberPostRepository.searchPosts(page, size, date, memberId, requesterMemberId, asc);
         int totalPage = (int) Math.ceil((double) results.getTotal() / size);
         return new PaginationDTO<>(
                 totalPage,
