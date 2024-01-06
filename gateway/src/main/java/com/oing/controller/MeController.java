@@ -1,16 +1,16 @@
 package com.oing.controller;
 
-import com.oing.domain.model.Family;
-import com.oing.domain.model.FamilyInviteLink;
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
-import com.oing.domain.model.Member;
+import com.oing.domain.Family;
+import com.oing.domain.FamilyInviteLink;
+import com.oing.domain.Member;
 import com.oing.dto.request.AddFcmTokenRequest;
 import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.exception.AlreadyInFamilyException;
+import com.oing.exception.DomainException;
+import com.oing.exception.ErrorCode;
 import com.oing.restapi.MeApi;
 import com.oing.service.FamilyInviteLinkService;
 import com.oing.service.FamilyService;

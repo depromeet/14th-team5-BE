@@ -1,4 +1,4 @@
-package com.oing.domain.exception;
+package com.oing.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

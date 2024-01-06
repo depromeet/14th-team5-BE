@@ -21,11 +21,10 @@ import java.util.Date;
 @Component
 public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
-    @Value("${cloud.ncp.storage.bucket}")
-    private String bucket;
-
     private final AmazonS3Client amazonS3Client;
     private final IdentityGenerator identityGenerator;
+    @Value("${cloud.ncp.storage.bucket}")
+    private String bucket;
 
     @Override
     public PreSignedUrlResponse getFeedPreSignedUrl(String imageName) {

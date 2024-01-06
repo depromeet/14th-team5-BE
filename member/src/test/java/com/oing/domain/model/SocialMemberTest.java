@@ -1,12 +1,15 @@
 package com.oing.domain.model;
 
+import com.oing.domain.Member;
 import com.oing.domain.SocialLoginProvider;
+import com.oing.domain.SocialMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * no5ing-server

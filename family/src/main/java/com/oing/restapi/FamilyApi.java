@@ -1,6 +1,5 @@
 package com.oing.restapi;
 
-import com.oing.dto.response.FamilyInvitationLinkResponse;
 import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.dto.response.FamilyResponse;
 import io.swagger.v3.oas.annotations.Operation;

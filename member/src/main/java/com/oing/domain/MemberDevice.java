@@ -1,13 +1,11 @@
-package com.oing.domain.model;
+package com.oing.domain;
 
-import com.oing.domain.model.key.MemberDeviceKey;
+import com.oing.domain.key.MemberDeviceKey;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import lombok.*;
-
-import java.time.LocalDate;
 
 /**
  * no5ing-server

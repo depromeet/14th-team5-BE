@@ -11,6 +11,8 @@ import com.oing.domain.SerializableDeepLink;
  */
 public interface DeepLinkDetailService<T extends SerializableDeepLink> {
     T storeDeepLinkDetails(T details);
+
     T findPriorDeepLinkDetails(T details);
+
     T retrieveDeepLinkDetails(String linkId);
 }

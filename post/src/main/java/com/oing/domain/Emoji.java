@@ -18,6 +18,8 @@ public enum Emoji {
     EMOJI_4("emoji_4"),
     EMOJI_5("emoji_5");
 
+    private static final List<Emoji> EMOJI_LIST = Arrays.asList(
+            Emoji.EMOJI_1, Emoji.EMOJI_2, Emoji.EMOJI_3, Emoji.EMOJI_4, Emoji.EMOJI_5);
     private final String typeKey;
 
     public static Emoji fromString(String typeKey) {
@@ -30,9 +32,6 @@ public enum Emoji {
             default -> throw new InvalidParameterException();
         };
     }
-
-    private static final List<Emoji> EMOJI_LIST = Arrays.asList(
-            Emoji.EMOJI_1, Emoji.EMOJI_2, Emoji.EMOJI_3, Emoji.EMOJI_4, Emoji.EMOJI_5);
 
     public static List<Emoji> getEmojiList() {
         return Collections.unmodifiableList(EMOJI_LIST);

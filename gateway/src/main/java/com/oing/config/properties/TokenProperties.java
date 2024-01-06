@@ -4,8 +4,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import java.util.regex.Pattern;
-
 /**
  * no5ing-server
  * User: CChuYong
