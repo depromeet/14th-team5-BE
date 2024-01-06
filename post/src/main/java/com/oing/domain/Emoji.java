@@ -1,10 +1,9 @@
 package com.oing.domain;
 
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +27,7 @@ public enum Emoji {
             case "EMOJI_3" -> EMOJI_3;
             case "EMOJI_4" -> EMOJI_4;
             case "EMOJI_5" -> EMOJI_5;
-            default -> throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
+            default -> throw new InvalidParameterException();
         };
     }
 
