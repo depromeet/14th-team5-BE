@@ -1,13 +1,12 @@
 package com.oing.controller;
 
 import com.oing.domain.*;
-import com.oing.exception.DomainException;
-import com.oing.exception.ErrorCode;
-import com.oing.domain.Member;
 import com.oing.dto.request.CreateNewMemberRequest;
 import com.oing.dto.request.NativeSocialLoginRequest;
 import com.oing.dto.request.RefreshAccessTokenRequest;
 import com.oing.dto.response.AuthResultResponse;
+import com.oing.exception.DomainException;
+import com.oing.exception.ErrorCode;
 import com.oing.exception.MemberAlreadyExistsException;
 import com.oing.restapi.AuthApi;
 import com.oing.service.AuthService;
