@@ -1,9 +1,9 @@
 package com.oing.domain;
 
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.security.InvalidParameterException;
 
 /**
  * no5ing-server
@@ -22,7 +22,7 @@ public enum TokenType {
             case "ACCESS" -> ACCESS;
             case "REFRESH" -> REFRESH;
             case "TEMPORARY" -> TEMPORARY;
-            default -> throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
+            default -> throw new InvalidParameterException();
         };
     }
 }

@@ -1,9 +1,9 @@
 package com.oing.domain.model;
 
-import com.oing.exception.InvalidInputValueException;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ public class MemberPost extends BaseAuditEntity {
 
     private void validateContent(String content) {
         if (content != null && (content.length() >= 8 || content.contains(" "))) {
-            throw new InvalidInputValueException();
+            throw new InvalidParameterException();
         }
     }
 
