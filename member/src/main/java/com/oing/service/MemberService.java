@@ -2,9 +2,9 @@ package com.oing.service;
 
 import com.oing.domain.CreateNewUserDTO;
 import com.oing.domain.SocialLoginProvider;
-import com.oing.domain.model.Member;
-import com.oing.domain.model.SocialMember;
-import com.oing.domain.model.key.SocialMemberKey;
+import com.oing.domain.Member;
+import com.oing.domain.SocialMember;
+import com.oing.domain.key.SocialMemberKey;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.exception.MemberNotFoundException;
 import com.oing.repository.MemberRepository;

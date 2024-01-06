@@ -1,8 +1,6 @@
-package com.oing.domain.model;
+package com.oing.domain;
 
-import com.oing.domain.BaseEntity;
-import com.oing.domain.SocialLoginProvider;
-import com.oing.domain.model.key.SocialMemberKey;
+import com.oing.domain.key.SocialMemberKey;
 import jakarta.persistence.*;
 import lombok.*;
 

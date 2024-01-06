@@ -1,6 +1,6 @@
 package com.oing.dto.response;
 
-import com.oing.domain.model.Member;
+import com.oing.domain.Member;
 import com.oing.domain.model.MemberPost;
 import io.swagger.v3.oas.annotations.media.Schema;
 

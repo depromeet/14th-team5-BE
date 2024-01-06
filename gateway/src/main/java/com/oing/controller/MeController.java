@@ -4,7 +4,7 @@ import com.oing.exception.DomainException;
 import com.oing.exception.ErrorCode;
 import com.oing.domain.Family;
 import com.oing.domain.FamilyInviteLink;
-import com.oing.domain.model.Member;
+import com.oing.domain.Member;
 import com.oing.dto.request.AddFcmTokenRequest;
 import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DefaultResponse;
