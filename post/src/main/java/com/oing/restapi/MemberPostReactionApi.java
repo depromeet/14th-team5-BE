@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Valid
 @RequestMapping("/v1/posts/{postId}/reactions")
-public interface PostReactionApi {
+public interface MemberPostReactionApi {
     @Operation(summary = "게시물 반응 추가", description = "게시물에 반응합니다.")
     @PostMapping
     DefaultResponse createPostReaction(

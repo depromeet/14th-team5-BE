@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PostReactionService {
+public class MemberPostReactionService {
 
     private final MemberPostReactionRepository memberPostReactionRepository;
 

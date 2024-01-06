@@ -7,9 +7,9 @@ import com.oing.dto.request.PostReactionRequest;
 import com.oing.dto.response.*;
 import com.oing.exception.EmojiAlreadyExistsException;
 import com.oing.exception.EmojiNotFoundException;
-import com.oing.restapi.PostReactionApi;
+import com.oing.restapi.MemberPostReactionApi;
 import com.oing.service.MemberPostService;
-import com.oing.service.PostReactionService;
+import com.oing.service.MemberPostReactionService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
-public class PostReactionController implements PostReactionApi {
+public class MemberPostReactionController implements MemberPostReactionApi {
 
     private final AuthenticationHolder authenticationHolder;
     private final IdentityGenerator identityGenerator;
     private final MemberPostService memberPostService;
-    private final PostReactionService postReactionService;
+    private final MemberPostReactionService memberPostReactionService;
 
     @Override
     @Transactional
@@ -39,14 +39,14 @@ public class PostReactionController implements PostReactionApi {
 
         validatePostReactionForAddition(post, memberId, emoji);
         String reactionId = identityGenerator.generateIdentity();
-        MemberPostReaction reaction = postReactionService.createPostReaction(reactionId, post, memberId, emoji);
+        MemberPostReaction reaction = memberPostReactionService.createPostReaction(reactionId, post, memberId, emoji);
         post.addReaction(reaction);
 
         return DefaultResponse.ok();
     }
 
     private void validatePostReactionForAddition(MemberPost post, String memberId, Emoji emoji) {
-        if (postReactionService.isMemberPostReactionExists(post, memberId, emoji)) {
+        if (memberPostReactionService.isMemberPostReactionExists(post, memberId, emoji)) {
             throw new EmojiAlreadyExistsException();
         }
     }
@@ -59,9 +59,9 @@ public class PostReactionController implements PostReactionApi {
         MemberPost post = memberPostService.findMemberPostById(postId);
 
         validatePostReactionForDeletion(post, memberId, emoji);
-        MemberPostReaction reaction = postReactionService.findReaction(post, memberId, emoji);
+        MemberPostReaction reaction = memberPostReactionService.findReaction(post, memberId, emoji);
         post.removeReaction(reaction);
-        postReactionService.deletePostReaction(reaction);
+        memberPostReactionService.deletePostReaction(reaction);
 
         return DefaultResponse.ok();
     }
@@ -101,7 +101,7 @@ public class PostReactionController implements PostReactionApi {
     @Override
     @Transactional
     public PostReactionsResponse getPostReactionMembers(String postId) {
-        List<MemberPostReaction> reactions = postReactionService.getMemberPostReactionsByPostId(postId);
+        List<MemberPostReaction> reactions = memberPostReactionService.getMemberPostReactionsByPostId(postId);
         List<Emoji> emojiList = Emoji.getEmojiList();
 
         Map<String, List<String>> emojiMemberIdsMap = reactions.stream()
@@ -115,7 +115,7 @@ public class PostReactionController implements PostReactionApi {
     }
 
     private void validatePostReactionForDeletion(MemberPost post, String memberId, Emoji emoji) {
-        if (!postReactionService.isMemberPostReactionExists(post, memberId, emoji)) {
+        if (!memberPostReactionService.isMemberPostReactionExists(post, memberId, emoji)) {
             throw new EmojiNotFoundException();
         }
     }
