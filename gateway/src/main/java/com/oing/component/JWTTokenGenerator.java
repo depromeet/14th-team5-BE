@@ -42,7 +42,7 @@ public class JWTTokenGenerator implements TokenGenerator {
     @Override
     public TokenPair generateTokenPair(String userId) {
         String accessToken = generateAccessToken(userId);
-        String refreshToken = generateRefreshToken();
+        String refreshToken = generateRefreshToken(userId);
         return new TokenPair(accessToken, refreshToken);
     }
 
@@ -97,10 +97,10 @@ public class JWTTokenGenerator implements TokenGenerator {
                 .compact();
     }
 
-    private String generateRefreshToken() {
+    private String generateRefreshToken(String userId) {
         return Jwts.builder()
                 .setHeader(createTokenHeader(TokenType.REFRESH))
-                .setClaims(Map.of())
+                .setClaims(Map.of(USER_ID_KEY_NAME, userId))
                 .setExpiration(generateRefreshTokenExpiration())
                 .signWith(signKey, SignatureAlgorithm.HS256)
                 .compact();
