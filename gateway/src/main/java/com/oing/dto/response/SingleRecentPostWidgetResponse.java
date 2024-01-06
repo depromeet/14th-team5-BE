@@ -1,7 +1,7 @@
 package com.oing.dto.response;
 
 import com.oing.domain.Member;
-import com.oing.domain.model.MemberPost;
+import com.oing.domain.MemberPost;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "단일 최근 게시물 위젯 응답")

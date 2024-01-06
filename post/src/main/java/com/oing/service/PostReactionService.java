@@ -1,8 +1,8 @@
 package com.oing.service;
 
 import com.oing.domain.Emoji;
-import com.oing.domain.model.MemberPost;
-import com.oing.domain.model.MemberPostReaction;
+import com.oing.domain.MemberPost;
+import com.oing.domain.MemberPostReaction;
 import com.oing.exception.EmojiNotFoundException;
 import com.oing.repository.MemberPostReactionRepository;
 import lombok.RequiredArgsConstructor;
