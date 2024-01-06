@@ -17,14 +17,13 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.InvalidParameterException;
 import java.security.Key;
-import java.security.interfaces.RSAKey;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Base64;
@@ -46,7 +45,7 @@ public class AuthService {
         return switch (provider) {
             case APPLE -> authenticateFromApple(accessToken);
             case KAKAO -> authenticateFromKakao(accessToken);
-            default -> throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
+            default -> throw new InvalidParameterException();
         };
     }
 
@@ -62,7 +61,7 @@ public class AuthService {
                     .filter(key -> key.kid().equals(kid))
                     .findFirst()
                     // 일치하는 키가 없음 => 만료된 토큰 or 이상한 토큰 => throw
-                    .orElseThrow(() -> new DomainException(ErrorCode.INVALID_INPUT_VALUE));
+                    .orElseThrow(InvalidParameterException::new);
 
             String identifier = parseIdentifierFromAppleToken(matchedKey, accessToken);
             return new SocialLoginResult(identifier);
