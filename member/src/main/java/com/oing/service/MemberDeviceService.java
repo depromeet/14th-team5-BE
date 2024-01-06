@@ -20,7 +20,7 @@ public class MemberDeviceService {
 
     @Transactional
     public boolean addDevice(String memberId, String fcmToken) {
-        if(memberDeviceRepository.existsById(new MemberDeviceKey(memberId, fcmToken))) {
+        if (memberDeviceRepository.existsById(new MemberDeviceKey(memberId, fcmToken))) {
             return false;
         }
         memberDeviceRepository.save(
@@ -31,7 +31,7 @@ public class MemberDeviceService {
 
     @Transactional
     public boolean removeDevice(String memberId, String fcmToken) {
-        if(!memberDeviceRepository.existsById(new MemberDeviceKey(memberId, fcmToken))) {
+        if (!memberDeviceRepository.existsById(new MemberDeviceKey(memberId, fcmToken))) {
             return false;
         }
         memberDeviceRepository.deleteById(new MemberDeviceKey(memberId, fcmToken));

@@ -65,7 +65,7 @@ public class AuthService {
 
             String identifier = parseIdentifierFromAppleToken(matchedKey, accessToken);
             return new SocialLoginResult(identifier);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
         }
     }
@@ -81,7 +81,7 @@ public class AuthService {
                 .build(), KakaoAuthResponse.class);
 
         // 인증 실패시 throw
-        if(!authResponse.getStatusCode().is2xxSuccessful())
+        if (!authResponse.getStatusCode().is2xxSuccessful())
             throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
 
         return new SocialLoginResult(Objects.requireNonNull(authResponse.getBody()).id().toString());
@@ -98,7 +98,7 @@ public class AuthService {
                 .build(), AppleKeyListResponse.class);
 
         // 키 반환 실패시 throw
-        if(!keyListResponse.getStatusCode().is2xxSuccessful())
+        if (!keyListResponse.getStatusCode().is2xxSuccessful())
             throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
 
         return Objects.requireNonNull(keyListResponse.getBody()).keys();

@@ -35,15 +35,15 @@ public record PostResponse(
         @Schema(description = "피드 작성 시간", example = "2023-12-23T01:53:21.577347+09:00")
         ZonedDateTime createdAt
 ) {
-        public static PostResponse from(MemberPost post) {
-                return new PostResponse(
-                        post.getId(),
-                        post.getMemberId(),
-                        post.getCommentCnt(),
-                        post.getReactionCnt(),
-                        post.getPostImgUrl(),
-                        post.getContent(),
-                        post.getCreatedAt().atZone(ZoneId.systemDefault())
-                );
-        }
+    public static PostResponse from(MemberPost post) {
+        return new PostResponse(
+                post.getId(),
+                post.getMemberId(),
+                post.getCommentCnt(),
+                post.getReactionCnt(),
+                post.getPostImgUrl(),
+                post.getContent(),
+                post.getCreatedAt().atZone(ZoneId.systemDefault())
+        );
+    }
 }

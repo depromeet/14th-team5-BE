@@ -38,13 +38,13 @@ public class SlackGateway {
     }
 
     @Builder
-    public static class SlackBotDto{
+    public static class SlackBotDto {
         @JsonProperty("attachments")
         final List<SlackBotAttachmentDto> attachments;
     }
 
     @Builder
-    public static class SlackBotAttachmentDto{
+    public static class SlackBotAttachmentDto {
         @JsonProperty("mrkdwn_in")
         final String mrkdwn_in = "[\"text\"]";
         @JsonProperty("color")

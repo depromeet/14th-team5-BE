@@ -16,11 +16,11 @@ public record SingleRecentPostWidgetResponse(
         @Schema(description = "피드 게시물 내용", example = "고양이가귀여워요")
         String postContent
 ) {
-        public static SingleRecentPostWidgetResponse of(Member member, MemberPost memberPost) {
-                return new SingleRecentPostWidgetResponse(
-                        member.getProfileImgUrl(),
-                        memberPost.getPostImgUrl(),
-                        memberPost.getContent()
-                );
-        }
+    public static SingleRecentPostWidgetResponse of(Member member, MemberPost memberPost) {
+        return new SingleRecentPostWidgetResponse(
+                member.getProfileImgUrl(),
+                memberPost.getPostImgUrl(),
+                memberPost.getContent()
+        );
+    }
 }

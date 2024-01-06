@@ -55,7 +55,7 @@ public class DeepLinkController implements DeepLinkApi {
 
         FamilyInviteLink newInviteLink = new FamilyInviteLink(linkId, familyId);
         FamilyInviteLink familyInviteLink = familyDeepLinkService.findPriorDeepLinkDetails(newInviteLink);
-        if(familyInviteLink != null) {
+        if (familyInviteLink != null) {
             return getLinkDetails(familyInviteLink.getLinkId());
         }
         newInviteLink = familyDeepLinkService.storeDeepLinkDetails(newInviteLink);
