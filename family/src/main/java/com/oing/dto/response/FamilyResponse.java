@@ -1,6 +1,6 @@
 package com.oing.dto.response;
 
-import com.oing.domain.model.Family;
+import com.oing.domain.Family;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.ZoneId;

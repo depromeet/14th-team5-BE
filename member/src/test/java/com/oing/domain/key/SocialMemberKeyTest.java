@@ -1,4 +1,4 @@
-package com.oing.domain.model.key;
+package com.oing.domain.key;
 
 import com.oing.domain.SocialLoginProvider;
 import org.junit.jupiter.api.DisplayName;

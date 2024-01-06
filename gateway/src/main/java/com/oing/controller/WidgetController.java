@@ -2,7 +2,7 @@ package com.oing.controller;
 
 
 import com.oing.component.TokenAuthenticationHolder;
-import com.oing.domain.model.Member;
+import com.oing.domain.Member;
 import com.oing.domain.model.MemberPost;
 import com.oing.dto.response.SingleRecentPostWidgetResponse;
 import com.oing.restapi.WidgetApi;

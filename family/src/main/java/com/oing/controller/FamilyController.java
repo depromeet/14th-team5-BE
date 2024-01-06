@@ -1,6 +1,6 @@
 package com.oing.controller;
 
-import com.oing.domain.model.Family;
+import com.oing.domain.Family;
 import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.restapi.FamilyApi;

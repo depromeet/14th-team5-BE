@@ -1,6 +1,6 @@
 package com.oing.dto.response;
 
-import com.oing.domain.model.Member;
+import com.oing.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "가족 구성원 프로필 응답")

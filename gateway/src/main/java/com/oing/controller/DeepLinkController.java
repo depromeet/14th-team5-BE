@@ -3,7 +3,7 @@ package com.oing.controller;
 import com.oing.domain.DeepLink;
 import com.oing.domain.DeepLinkType;
 import com.oing.domain.SerializableDeepLink;
-import com.oing.domain.model.FamilyInviteLink;
+import com.oing.domain.FamilyInviteLink;
 import com.oing.dto.response.DeepLinkResponse;
 import com.oing.exception.LinkNotValidException;
 import com.oing.restapi.DeepLinkApi;
