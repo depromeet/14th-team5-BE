@@ -50,7 +50,7 @@ public class AppVersionFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
-        return webProperties.isVersionCheckWhitelisted(path);
+        return !webProperties.versionFilterEnabled() || webProperties.isVersionCheckWhitelisted(path);
     }
 
     private void writeUpdateResponse(

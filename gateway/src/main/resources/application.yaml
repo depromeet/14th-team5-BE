@@ -29,6 +29,7 @@ app:
       access-token: 86400000
       refresh-token: 384000000
   web:
+    versionFilterEnabled: true
     url-whitelists:
       - /actuator/**
       - /swagger-ui.html
