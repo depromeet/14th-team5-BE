@@ -8,6 +8,8 @@ import com.oing.dto.request.CreateNewMemberRequest;
 import com.oing.dto.request.NativeSocialLoginRequest;
 import com.oing.dto.request.RefreshAccessTokenRequest;
 import com.oing.dto.response.AuthResultResponse;
+import com.oing.exception.MemberAlreadyExistsException;
+import com.oing.exception.MemberNotFoundException;
 import com.oing.restapi.AuthApi;
 import com.oing.service.AuthService;
 import com.oing.service.MemberService;
@@ -71,6 +73,15 @@ public class AuthController implements AuthApi {
     public AuthResultResponse register(Authentication authentication, CreateNewMemberRequest request) {
         //사용자 회원가입
         if(authentication.getCredentials() instanceof Token token && token.tokenType() == TokenType.TEMPORARY) {
+            SocialLoginProvider provider = SocialLoginProvider.fromString(token.provider());
+
+            // identifier로 이미 있는 사용자인지 확인
+            Optional<Member> preExistsMember = memberService
+                    .findMemberBySocialMemberKey(provider, token.userId());
+            if (preExistsMember.isPresent()) {
+                throw new MemberAlreadyExistsException();
+            }
+
             CreateNewUserDTO createNewUserDTO = new CreateNewUserDTO(
                     SocialLoginProvider.fromString(token.provider()),
                     token.userId(),
