@@ -25,7 +25,7 @@ import java.time.LocalDate;
 @RestController
 @Valid
 @RequestMapping("/v1/posts")
-public interface PostApi {
+public interface MemberPostApi {
     @Operation(summary = "게시물 사진 S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
     @PostMapping("/image-upload-request")
     PreSignedUrlResponse requestPresignedUrl(

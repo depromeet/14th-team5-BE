@@ -10,7 +10,7 @@ import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.DuplicatePostUploadException;
 import com.oing.exception.InvalidUploadTimeException;
-import com.oing.restapi.PostApi;
+import com.oing.restapi.MemberPostApi;
 import com.oing.service.MemberPostService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
@@ -31,7 +31,7 @@ import java.time.ZonedDateTime;
  */
 @RequiredArgsConstructor
 @Controller
-public class PostController implements PostApi {
+public class MemberPostController implements MemberPostApi {
 
     private final AuthenticationHolder authenticationHolder;
     private final IdentityGenerator identityGenerator;
