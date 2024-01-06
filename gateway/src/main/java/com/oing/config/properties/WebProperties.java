@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 @ConfigurationProperties(prefix = "app.web")
 @ConfigurationPropertiesBinding
 public record WebProperties(
+        boolean versionFilterEnabled,
         String[] urlWhitelists,
         String[] versionCheckWhitelists,
         String[] urlNoLogging,
