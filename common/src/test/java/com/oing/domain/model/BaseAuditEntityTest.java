@@ -1,5 +1,6 @@
 package com.oing.domain.model;
 
+import com.oing.domain.BaseAuditEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

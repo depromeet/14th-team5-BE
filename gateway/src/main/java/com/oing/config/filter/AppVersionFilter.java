@@ -3,7 +3,7 @@ package com.oing.config.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oing.component.AppVersionCache;
 import com.oing.config.properties.WebProperties;
-import com.oing.domain.exception.ErrorCode;
+import com.oing.exception.ErrorCode;
 import com.oing.dto.response.ErrorResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

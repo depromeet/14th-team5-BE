@@ -1,6 +1,6 @@
 package com.oing.dto.response;
 
-import com.oing.domain.exception.ErrorCode;
+import com.oing.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

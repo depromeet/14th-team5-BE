@@ -1,5 +1,7 @@
 package com.oing.domain.exception;
 
+import com.oing.exception.DomainException;
+import com.oing.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

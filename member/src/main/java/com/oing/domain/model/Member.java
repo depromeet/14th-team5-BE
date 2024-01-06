@@ -1,5 +1,6 @@
 package com.oing.domain.model;
 
+import com.oing.domain.DeletableBaseAuditEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
