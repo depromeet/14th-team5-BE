@@ -15,5 +15,6 @@ import java.util.List;
  */
 public interface MemberRepository extends JpaRepository<Member, String> {
     List<Member> findAllByFamilyId(String familyId);
+
     Page<Member> findAllByFamilyId(String familyId, PageRequest pageRequest);
 }

@@ -2,8 +2,6 @@ package com.oing.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.Collection;
-
 /**
  * no5ing-server
  * User: CChuYong
@@ -15,7 +13,7 @@ public record DefaultResponse(
         @Schema(description = "성공 유무", example = "true")
         boolean success
 ) {
-        public static DefaultResponse ok() {
-                return new DefaultResponse(true);
-        }
+    public static DefaultResponse ok() {
+        return new DefaultResponse(true);
+    }
 }

@@ -1,6 +1,5 @@
 package com.oing.domain.model.key;
 
-import com.oing.domain.SocialLoginProvider;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

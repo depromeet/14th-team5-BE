@@ -38,7 +38,7 @@ public class SpringWebExceptionHandler {
     @ExceptionHandler(DomainException.class)
     ResponseEntity<ErrorResponse> handleDomainException(HttpServletRequest request, DomainException exception) {
         log.debug("[DomainException]", exception);
-        if(exception.getErrorCode() == ErrorCode.UNKNOWN_SERVER_ERROR) {
+        if (exception.getErrorCode() == ErrorCode.UNKNOWN_SERVER_ERROR) {
             return handleUnhandledException(request, exception);
         }
 
@@ -76,9 +76,9 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
-        if(exception.getMessage().contains("Broken pipe")) {
+        if (exception.getMessage().contains("Broken pipe")) {
             log.warn("[IOException] Broken Pipe");
-        } else{
+        } else {
             log.error("[IOException]", exception);
         }
         return ResponseEntity

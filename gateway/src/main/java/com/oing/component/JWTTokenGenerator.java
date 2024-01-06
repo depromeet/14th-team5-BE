@@ -5,8 +5,6 @@ import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.Token;
 import com.oing.domain.TokenPair;
 import com.oing.domain.TokenType;
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
 import com.oing.exception.TokenNotValidException;
 import com.oing.service.TokenGenerator;
 import io.jsonwebtoken.Claims;
@@ -64,7 +62,7 @@ public class JWTTokenGenerator implements TokenGenerator {
             String userId = tokenClaim.getBody().get(USER_ID_KEY_NAME, String.class);
             String provider = tokenClaim.getBody().get(PROVIDER_KEY_NAME, String.class);
             return new Token(userId, tokenType, provider);
-        } catch(Exception e){
+        } catch (Exception e) {
             throw new TokenNotValidException();
         }
     }
@@ -92,11 +90,11 @@ public class JWTTokenGenerator implements TokenGenerator {
 
     private String generateAccessToken(String userId) {
         return Jwts.builder()
-                    .setHeader(createTokenHeader(TokenType.ACCESS))
-                    .setClaims(Map.of(USER_ID_KEY_NAME, userId))
-                    .setExpiration(generateAccessTokenExpiration())
-                    .signWith(signKey, SignatureAlgorithm.HS256)
-                    .compact();
+                .setHeader(createTokenHeader(TokenType.ACCESS))
+                .setClaims(Map.of(USER_ID_KEY_NAME, userId))
+                .setExpiration(generateAccessTokenExpiration())
+                .signWith(signKey, SignatureAlgorithm.HS256)
+                .compact();
     }
 
     private String generateRefreshToken() {

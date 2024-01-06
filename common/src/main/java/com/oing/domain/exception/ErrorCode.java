@@ -53,8 +53,7 @@ public enum ErrorCode {
     /**
      * Deep Link Related Errors
      */
-    LINK_NOT_VALID("DL0001", "Link is not valid")
-    ;
+    LINK_NOT_VALID("DL0001", "Link is not valid");
 
 
     private final String code;

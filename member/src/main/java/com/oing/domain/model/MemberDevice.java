@@ -7,8 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import lombok.*;
 
-import java.time.LocalDate;
-
 /**
  * no5ing-server
  * User: CChuYong

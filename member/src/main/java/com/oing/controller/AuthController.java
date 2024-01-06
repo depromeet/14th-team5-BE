@@ -9,7 +9,6 @@ import com.oing.dto.request.NativeSocialLoginRequest;
 import com.oing.dto.request.RefreshAccessTokenRequest;
 import com.oing.dto.response.AuthResultResponse;
 import com.oing.exception.MemberAlreadyExistsException;
-import com.oing.exception.MemberNotFoundException;
 import com.oing.restapi.AuthApi;
 import com.oing.service.AuthService;
 import com.oing.service.MemberService;
@@ -45,7 +44,7 @@ public class AuthController implements AuthApi {
         // 위 결과에서 나온 identifier로 이미 있는 사용자인지 확인
         Optional<Member> member = memberService
                 .findMemberBySocialMemberKey(socialLoginProvider, socialLoginResult.identifier());
-        if(member.isEmpty()) {
+        if (member.isEmpty()) {
             //회원가입이 안된 경우 임시 토큰 발행
             TokenPair temporaryTokenPair = tokenGenerator
                     .generateTemporaryTokenPair(socialLoginProvider, socialLoginResult.identifier());
@@ -72,7 +71,7 @@ public class AuthController implements AuthApi {
     @Override
     public AuthResultResponse register(Authentication authentication, CreateNewMemberRequest request) {
         //사용자 회원가입
-        if(authentication.getCredentials() instanceof Token token && token.tokenType() == TokenType.TEMPORARY) {
+        if (authentication.getCredentials() instanceof Token token && token.tokenType() == TokenType.TEMPORARY) {
             SocialLoginProvider provider = SocialLoginProvider.fromString(token.provider());
 
             // identifier로 이미 있는 사용자인지 확인
