@@ -1,5 +1,6 @@
 package com.oing.domain.model;
 
+import com.oing.domain.BaseEntity;
 import com.oing.domain.model.key.MemberDeviceKey;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

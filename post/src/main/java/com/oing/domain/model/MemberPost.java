@@ -1,5 +1,6 @@
 package com.oing.domain.model;
 
+import com.oing.domain.BaseAuditEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

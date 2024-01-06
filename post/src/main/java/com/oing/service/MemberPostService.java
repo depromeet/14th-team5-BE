@@ -2,8 +2,8 @@ package com.oing.service;
 
 import com.oing.domain.MemberPostCountDTO;
 import com.oing.domain.PaginationDTO;
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
+import com.oing.exception.DomainException;
+import com.oing.exception.ErrorCode;
 import com.oing.domain.model.MemberPost;
 import com.oing.exception.PostNotFoundException;
 import com.oing.repository.MemberPostRepository;

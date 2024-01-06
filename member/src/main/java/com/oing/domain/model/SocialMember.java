@@ -1,5 +1,6 @@
 package com.oing.domain.model;
 
+import com.oing.domain.BaseEntity;
 import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.model.key.SocialMemberKey;
 import jakarta.persistence.*;

@@ -1,7 +1,7 @@
 package com.oing.controller;
 
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
+import com.oing.exception.DomainException;
+import com.oing.exception.ErrorCode;
 import com.oing.domain.model.Family;
 import com.oing.domain.model.FamilyInviteLink;
 import com.oing.domain.model.Member;

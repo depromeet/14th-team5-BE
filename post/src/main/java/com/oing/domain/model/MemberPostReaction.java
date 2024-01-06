@@ -1,5 +1,6 @@
 package com.oing.domain.model;
 
+import com.oing.domain.BaseEntity;
 import com.oing.domain.Emoji;
 import jakarta.persistence.*;
 import lombok.*;

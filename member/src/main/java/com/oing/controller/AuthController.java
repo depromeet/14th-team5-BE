@@ -1,8 +1,8 @@
 package com.oing.controller;
 
 import com.oing.domain.*;
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
+import com.oing.exception.DomainException;
+import com.oing.exception.ErrorCode;
 import com.oing.domain.model.Member;
 import com.oing.dto.request.CreateNewMemberRequest;
 import com.oing.dto.request.NativeSocialLoginRequest;

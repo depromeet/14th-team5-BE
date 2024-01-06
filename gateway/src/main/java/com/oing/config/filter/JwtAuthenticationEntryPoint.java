@@ -1,7 +1,7 @@
 package com.oing.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oing.domain.exception.ErrorCode;
+import com.oing.exception.ErrorCode;
 import com.oing.dto.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
