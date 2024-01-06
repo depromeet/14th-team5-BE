@@ -1,6 +1,6 @@
 package com.oing.repository;
 
-import com.oing.domain.model.FamilyInviteLink;
+import com.oing.domain.FamilyInviteLink;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
