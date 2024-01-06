@@ -28,6 +28,7 @@ public enum ErrorCode {
      * Member Related Errors
      */
     MEMBER_NOT_FOUND("MB0001", "Member not found"),
+    MEMBER_ALREADY_EXISTS("MB0002", "Member With That Credentials Already Exists"),
     /**
      * MemberPost Related Errors
      */
