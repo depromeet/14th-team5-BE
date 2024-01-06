@@ -1,8 +1,8 @@
 package com.oing.controller;
 
 import com.oing.domain.Emoji;
-import com.oing.domain.model.MemberPost;
-import com.oing.domain.model.MemberPostReaction;
+import com.oing.domain.MemberPost;
+import com.oing.domain.MemberPostReaction;
 import com.oing.dto.request.PostReactionRequest;
 import com.oing.dto.response.*;
 import com.oing.exception.EmojiAlreadyExistsException;

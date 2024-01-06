@@ -1,6 +1,6 @@
 package com.oing.dto.response;
 
-import com.oing.domain.model.MemberPostReaction;
+import com.oing.domain.MemberPostReaction;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "피드 게시물 응답")

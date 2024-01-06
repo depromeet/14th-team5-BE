@@ -1,7 +1,7 @@
 package com.oing.repository;
 
 import com.oing.domain.MemberPostCountDTO;
-import com.oing.domain.model.MemberPost;
+import com.oing.domain.MemberPost;
 import com.oing.exception.FamilyNotFoundException;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
