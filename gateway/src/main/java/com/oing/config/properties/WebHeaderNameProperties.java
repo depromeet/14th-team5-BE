@@ -20,10 +20,6 @@ public record WebHeaderNameProperties(
     public WebHeaderNameProperties {
         if(accessToken == null) throw new IllegalArgumentException("accessToken cannot be null");
         if(proxyForwardHeader == null) throw new IllegalArgumentException("proxyForwardHeader cannot be null");
-        if(appVersionHeader == null) throw new IllegalArgumentException("appVersionHeader cannot be null");
-        if(platformHeader == null) throw new IllegalArgumentException("platformHeader cannot be null");
-        if(userIdHeader == null) throw new IllegalArgumentException("userIdHeader cannot be null");
-        if(appKeyHeader == null) throw new IllegalArgumentException("appKeyHeader cannot be null");
     }
 
 }
