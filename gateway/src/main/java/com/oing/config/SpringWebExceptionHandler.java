@@ -1,9 +1,9 @@
 package com.oing.config;
 
 import com.oing.domain.ErrorReportDTO;
+import com.oing.dto.response.ErrorResponse;
 import com.oing.exception.DomainException;
 import com.oing.exception.ErrorCode;
-import com.oing.dto.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;

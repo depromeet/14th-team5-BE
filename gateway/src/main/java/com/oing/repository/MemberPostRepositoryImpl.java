@@ -1,7 +1,7 @@
 package com.oing.repository;
 
-import com.oing.domain.MemberPostCountDTO;
 import com.oing.domain.MemberPost;
+import com.oing.domain.MemberPostCountDTO;
 import com.oing.exception.FamilyNotFoundException;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Projections;
@@ -13,8 +13,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.oing.domain.model.QMember.member;
-import static com.oing.domain.model.QMemberPost.memberPost;
+import static com.oing.domain.QMember.member;
+import static com.oing.domain.QMemberPost.memberPost;
 
 @RequiredArgsConstructor
 public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {

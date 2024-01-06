@@ -1,8 +1,8 @@
 package com.oing.service;
 
 import com.oing.domain.CreateNewUserDTO;
-import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.Member;
+import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.SocialMember;
 import com.oing.domain.key.SocialMemberKey;
 import com.oing.dto.response.FamilyMemberProfileResponse;
