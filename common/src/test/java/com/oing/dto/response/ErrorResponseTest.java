@@ -1,10 +1,10 @@
 package com.oing.dto.response;
 
-import com.oing.domain.exception.ErrorCode;
+import com.oing.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ErrorResponseTest {
     @DisplayName("ErrorResponse.of(String, String) 메서드 테스트")

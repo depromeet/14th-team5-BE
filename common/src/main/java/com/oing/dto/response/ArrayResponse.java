@@ -15,7 +15,7 @@ public record ArrayResponse<T>(
         @Schema(description = "실제 데이터 컬렉션", example = "[\"data\"]")
         Collection<T> results
 ) {
-        public static <T> ArrayResponse<T> of(Collection<T> results) {
-                return new ArrayResponse<>(results);
-        }
+    public static <T> ArrayResponse<T> of(Collection<T> results) {
+        return new ArrayResponse<>(results);
+    }
 }

@@ -8,5 +8,5 @@ public record PreSignedUrlResponse(
         @NotNull
         @Schema(description = "PreSingedUrl", example = "https://asset.no5ing.kr/post/01HGW2N7EHEEE7")
         String url
-){
+) {
 }

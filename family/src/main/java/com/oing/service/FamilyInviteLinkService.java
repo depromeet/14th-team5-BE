@@ -1,10 +1,8 @@
 package com.oing.service;
 
-import com.oing.domain.model.Family;
-import com.oing.domain.model.FamilyInviteLink;
+import com.oing.domain.FamilyInviteLink;
 import com.oing.exception.LinkNotValidException;
 import com.oing.repository.FamilyInviteLinkRepository;
-import com.oing.util.RandomStringGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class FamilyInviteLinkService implements DeepLinkDetailService<FamilyInviteLink> {
     private final FamilyInviteLinkRepository familyInviteLinkRepository;
+
     @Transactional
     @Override
     public FamilyInviteLink storeDeepLinkDetails(FamilyInviteLink details) {

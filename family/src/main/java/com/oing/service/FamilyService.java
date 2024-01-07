@@ -1,6 +1,6 @@
 package com.oing.service;
 
-import com.oing.domain.model.Family;
+import com.oing.domain.Family;
 import com.oing.exception.FamilyNotFoundException;
 import com.oing.repository.FamilyRepository;
 import com.oing.util.IdentityGenerator;
