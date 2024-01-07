@@ -4,8 +4,10 @@ import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostCountDTO;
 import com.oing.exception.FamilyNotFoundException;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
