@@ -10,6 +10,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -79,7 +80,7 @@ public class SpringWebExceptionHandler {
         log.warn("[AuthenticationFailedException]", exception);
 
         return ResponseEntity
-                .status(401)
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED));
     }
 
