@@ -1,6 +1,6 @@
 package com.oing.dto.response;
 
-import com.oing.domain.model.Member;
+import com.oing.domain.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
@@ -27,13 +27,13 @@ public record MemberResponse(
         @Schema(description = "구성원 생일", example = "2023-12-23")
         LocalDate dayOfBirth
 ) {
-        public static MemberResponse of(Member member) {
-                return new MemberResponse(
-                        member.getId(),
-                        member.getName(),
-                        member.getProfileImgUrl(),
-                        member.getFamilyId(),
-                        member.getDayOfBirth()
-                );
-        }
+    public static MemberResponse of(Member member) {
+        return new MemberResponse(
+                member.getId(),
+                member.getName(),
+                member.getProfileImgUrl(),
+                member.getFamilyId(),
+                member.getDayOfBirth()
+        );
+    }
 }

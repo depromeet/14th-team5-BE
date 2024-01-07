@@ -12,7 +12,6 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 
 @OpenAPIDefinition(
         servers = @Server(url = "https://dev.api.no5ing.kr/", description = "Default Server URL"),

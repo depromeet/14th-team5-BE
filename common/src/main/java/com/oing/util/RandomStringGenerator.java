@@ -1,6 +1,7 @@
 package com.oing.util;
 
 import lombok.NoArgsConstructor;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 /**

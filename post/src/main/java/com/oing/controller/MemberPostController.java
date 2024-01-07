@@ -1,8 +1,8 @@
 package com.oing.controller;
 
 
+import com.oing.domain.MemberPost;
 import com.oing.domain.PaginationDTO;
-import com.oing.domain.model.MemberPost;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PaginationResponse;
@@ -10,7 +10,7 @@ import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.DuplicatePostUploadException;
 import com.oing.exception.InvalidUploadTimeException;
-import com.oing.restapi.PostApi;
+import com.oing.restapi.MemberPostApi;
 import com.oing.service.MemberPostService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
@@ -19,7 +19,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 
 /**
  * no5ing-server
@@ -29,7 +31,7 @@ import java.time.*;
  */
 @RequiredArgsConstructor
 @Controller
-public class PostController implements PostApi {
+public class MemberPostController implements MemberPostApi {
 
     private final AuthenticationHolder authenticationHolder;
     private final IdentityGenerator identityGenerator;
