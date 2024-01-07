@@ -4,6 +4,7 @@ import com.oing.domain.ErrorReportDTO;
 import com.oing.domain.exception.DomainException;
 import com.oing.domain.exception.ErrorCode;
 import com.oing.dto.response.ErrorResponse;
+import com.oing.exception.TokenNotValidException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +74,14 @@ public class SpringWebExceptionHandler {
                 .body(ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED));
     }
 
+    @ExceptionHandler(TokenNotValidException.class)
+    ResponseEntity<ErrorResponse> handleAuthenticationFailedException(HttpRequestMethodNotSupportedException exception) {
+        log.warn("[TokenNotValidException]", exception);
+
+        return ResponseEntity
+                .status(401)
+                .body(ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED));
+    }
 
     @ExceptionHandler(IOException.class)
     ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
