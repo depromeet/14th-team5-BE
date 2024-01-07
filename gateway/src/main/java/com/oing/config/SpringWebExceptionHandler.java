@@ -76,7 +76,7 @@ public class SpringWebExceptionHandler {
     }
 
     @ExceptionHandler(TokenNotValidException.class)
-    ResponseEntity<ErrorResponse> handleAuthenticationFailedException(HttpRequestMethodNotSupportedException exception) {
+    ResponseEntity<ErrorResponse> handleAuthenticationFailedException(TokenNotValidException exception) {
         log.warn("[AuthenticationFailedException]", exception);
 
         return ResponseEntity
