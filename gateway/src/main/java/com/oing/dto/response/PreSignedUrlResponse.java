@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @ToString
-public class PreSignedUrlResponse{
+public class PreSignedUrlResponse {
 
     private String url;
 }

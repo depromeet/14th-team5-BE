@@ -1,4 +1,4 @@
-package com.oing.domain.model.key;
+package com.oing.domain.key;
 
 import com.oing.domain.SocialLoginProvider;
 import lombok.AllArgsConstructor;
@@ -10,13 +10,13 @@ import java.io.Serializable;
 /**
  * no5ing-server
  * User: CChuYong
- * Date: 2024/01/02
+ * Date: 2023/11/27
  * Time: 11:43 AM
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class MemberDeviceKey implements Serializable {
-    private String memberId;
-    private String fcmToken;
+public class SocialMemberKey implements Serializable {
+    private SocialLoginProvider provider;
+    private String identifier;
 }

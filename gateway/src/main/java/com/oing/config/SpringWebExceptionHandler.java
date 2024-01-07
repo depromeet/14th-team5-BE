@@ -1,10 +1,10 @@
 package com.oing.config;
 
 import com.oing.domain.ErrorReportDTO;
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
 import com.oing.dto.response.ErrorResponse;
 import com.oing.exception.TokenNotValidException;
+import com.oing.exception.DomainException;
+import com.oing.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class SpringWebExceptionHandler {
     @ExceptionHandler(DomainException.class)
     ResponseEntity<ErrorResponse> handleDomainException(HttpServletRequest request, DomainException exception) {
         log.debug("[DomainException]", exception);
-        if(exception.getErrorCode() == ErrorCode.UNKNOWN_SERVER_ERROR) {
+        if (exception.getErrorCode() == ErrorCode.UNKNOWN_SERVER_ERROR) {
             return handleUnhandledException(request, exception);
         }
 
@@ -85,9 +85,9 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
-        if(exception.getMessage().contains("Broken pipe")) {
+        if (exception.getMessage().contains("Broken pipe")) {
             log.warn("[IOException] Broken Pipe");
-        } else{
+        } else {
             log.error("[IOException]", exception);
         }
         return ResponseEntity

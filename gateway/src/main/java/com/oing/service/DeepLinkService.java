@@ -2,7 +2,6 @@ package com.oing.service;
 
 import com.oing.domain.DeepLink;
 import com.oing.domain.DeepLinkType;
-import com.oing.domain.model.FamilyInviteLink;
 import com.oing.exception.LinkNotValidException;
 import com.oing.repository.DeepLinkRepository;
 import com.oing.util.RandomStringGenerator;
@@ -28,7 +27,7 @@ public class DeepLinkService {
         String linkId;
         do {
             linkId = RandomStringGenerator.generateAlphanumericString(8);
-        } while(deepLinkRepository.existsById(linkId));
+        } while (deepLinkRepository.existsById(linkId));
         return linkId;
     }
 
@@ -37,7 +36,6 @@ public class DeepLinkService {
         DeepLink newDeepLink = new DeepLink(linkId, type);
         return deepLinkRepository.save(newDeepLink);
     }
-
 
 
     @Transactional

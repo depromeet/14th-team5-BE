@@ -1,8 +1,5 @@
 package com.oing.exception;
 
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
-
 /**
  * no5ing-server
  * User: CChuYong

@@ -18,8 +18,8 @@ public record WebHeaderNameProperties(
         String appKeyHeader
 ) {
     public WebHeaderNameProperties {
-        if(accessToken == null) throw new IllegalArgumentException("accessToken cannot be null");
-        if(proxyForwardHeader == null) throw new IllegalArgumentException("proxyForwardHeader cannot be null");
+        if (accessToken == null) throw new IllegalArgumentException("accessToken cannot be null");
+        if (proxyForwardHeader == null) throw new IllegalArgumentException("proxyForwardHeader cannot be null");
     }
 
 }

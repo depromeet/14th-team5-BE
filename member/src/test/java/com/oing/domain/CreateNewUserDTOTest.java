@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * no5ing-server
@@ -23,7 +24,7 @@ public class CreateNewUserDTOTest {
         SocialLoginProvider provider = SocialLoginProvider.APPLE;
         String identifier = "user123";
         String memberName = "디프만";
-        LocalDate dayOfBirth = LocalDate.of(2000, 7,8);
+        LocalDate dayOfBirth = LocalDate.of(2000, 7, 8);
         String profileImgUrl = "https://picsum.photos/200/300?random=1";
 
         // When
@@ -42,7 +43,7 @@ public class CreateNewUserDTOTest {
         SocialLoginProvider provider = SocialLoginProvider.INTERNAL;
         String identifier = "admin";
         String memberName = "관리자";
-        LocalDate dayOfBirth = LocalDate.of(2000, 7,8);
+        LocalDate dayOfBirth = LocalDate.of(2000, 7, 8);
         String profileImgUrl = "https://picsum.photos/200/300?random=1";
 
         // When

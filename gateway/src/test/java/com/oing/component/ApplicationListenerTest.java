@@ -1,18 +1,12 @@
 package com.oing.component;
 
-import com.oing.domain.ErrorReportDTO;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
-
-import static org.mockito.Mockito.*;
 
 /**
  * no5ing-server

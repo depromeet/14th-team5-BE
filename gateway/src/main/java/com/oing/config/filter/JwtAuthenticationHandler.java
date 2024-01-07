@@ -35,7 +35,7 @@ public class JwtAuthenticationHandler extends OncePerRequestFilter {
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
     ) throws ServletException, IOException {
         String accessToken = request.getHeader(webProperties.headerNames().accessToken());
-        if(accessToken == null) {
+        if (accessToken == null) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -45,7 +45,7 @@ public class JwtAuthenticationHandler extends OncePerRequestFilter {
             Authentication authentication = new APIKeyAuthentication(token, token.userId(),
                     token.tokenType() == TokenType.TEMPORARY);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch(TokenNotValidException ignored) {
+        } catch (TokenNotValidException ignored) {
 
         }
         filterChain.doFilter(request, response);
