@@ -44,7 +44,7 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
      */
     @Override
     public String getKBImageUrlGenerator(String bucketImageUrl) {
-        String imagePath = bucketImageUrl.split(bucketImageUrl)[1];
+        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
 
         return imageOptimizerCdnUrl + imagePath + KB_IMAGE_OPTIMIZER_QUERY_STRING;
     }
