@@ -6,8 +6,6 @@ import com.oing.domain.MemberPostReaction;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -24,8 +22,7 @@ public class MemberPostReactionTest {
         String content = "밥 맛있다!";
         String reactionId = "sampleCommentId";
         Emoji emoji = Emoji.EMOJI_1;
-        LocalDate postDate = LocalDate.of(2023, 7, 8);
-        MemberPost post = new MemberPost(postId, memberId, postDate, imageUrl, imageKey, content, 0,
+        MemberPost post = new MemberPost(postId, memberId, imageUrl, imageKey, content, 0,
                 0, null, null);
 
         // When

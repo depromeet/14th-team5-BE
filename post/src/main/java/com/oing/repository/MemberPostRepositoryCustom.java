@@ -15,4 +15,6 @@ public interface MemberPostRepositoryCustom {
     List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate);
 
     QueryResults<MemberPost> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId, boolean asc);
+
+    boolean existsByMemberIdAndCreatedAt(String memberId, LocalDate postDate);
 }

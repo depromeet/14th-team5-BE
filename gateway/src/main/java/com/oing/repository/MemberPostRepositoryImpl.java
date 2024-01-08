@@ -9,6 +9,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.core.types.dsl.DateTimeTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -81,10 +82,26 @@ public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {
     }
 
     private BooleanExpression eqDate(LocalDate date) {
-        return date == null ? null : memberPost.postDate.eq(date);
+        DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
+                "DATE({0})", memberPost.createdAt);
+
+        return date == null ? null : createdAtDate.eq(date);
     }
 
     private BooleanExpression eqMemberId(String memberId) {
         return memberId == null ? null : memberPost.memberId.eq(memberId);
+    }
+
+    @Override
+    public boolean existsByMemberIdAndCreatedAt(String memberId, LocalDate postDate) {
+        DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
+                "DATE({0})", memberPost.createdAt);
+
+        return queryFactory
+                .select(memberPost.id)
+                .from(memberPost)
+                .where(memberPost.memberId.eq(memberId)
+                        .and(createdAtDate.eq(postDate)))
+                .fetchFirst() != null;
     }
 }

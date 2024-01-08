@@ -1,6 +1,8 @@
 package com.oing.util;
 
 public interface OptimizedImageUrlGenerator {
-    String getThumbnailUrlGenerator(String imageUrl);
+    String getThumbnailUrlGenerator(String bucketImageUrl);
+
+    String getKBImageUrlGenerator(String bucketImageUrl);
 }
 
