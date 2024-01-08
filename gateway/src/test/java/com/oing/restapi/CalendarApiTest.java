@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc
-class CalendarControllerTest {
+class CalendarApiTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -108,14 +108,14 @@ class CalendarControllerTest {
         String yearMonth = "2023-11";
 
         // posts
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_date, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('1', '" + TEST_USER1_ID + "', '2023-11-01', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_date, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('2', '" + TEST_USER2_ID + "', '2023-11-01', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_date, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('3', '" + TEST_USER3_ID + "', '2023-11-01', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_date, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('4', '" + TEST_USER1_ID + "', '2023-11-02', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('1', '" + TEST_USER1_ID + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('2', '" + TEST_USER2_ID + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('3', '" + TEST_USER3_ID + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('4', '" + TEST_USER1_ID + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
 
         // family
         String familyId = familyService.createFamily().getId();
