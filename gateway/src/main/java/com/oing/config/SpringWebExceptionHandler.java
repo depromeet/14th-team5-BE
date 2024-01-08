@@ -2,6 +2,7 @@ package com.oing.config;
 
 import com.oing.domain.ErrorReportDTO;
 import com.oing.dto.response.ErrorResponse;
+import com.oing.exception.TokenNotValidException;
 import com.oing.exception.DomainException;
 import com.oing.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -73,6 +75,14 @@ public class SpringWebExceptionHandler {
                 .body(ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED));
     }
 
+    @ExceptionHandler(TokenNotValidException.class)
+    ResponseEntity<ErrorResponse> handleAuthenticationFailedException(TokenNotValidException exception) {
+        log.warn("[AuthenticationFailedException]", exception);
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED));
+    }
 
     @ExceptionHandler(IOException.class)
     ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
