@@ -2,7 +2,7 @@ package com.oing.controller;
 
 import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostCountDTO;
+import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.CalendarResponse;
 import com.oing.restapi.CalendarApi;
@@ -34,18 +34,18 @@ public class CalendarController implements CalendarApi {
 
     private List<CalendarResponse> mapPostToCalendar(
             List<MemberPost> representativePosts,
-            List<MemberPostCountDTO> postCounts,
+            List<MemberPostDailyCalendarDTO> calendarDTOs,
             int familySize
     ) {
         return IntStream.range(0, representativePosts.size())
                 .mapToObj(index -> {
                     MemberPost post = representativePosts.get(index);
-                    MemberPostCountDTO postCount = postCounts.get(index);
+                    MemberPostDailyCalendarDTO calendarDTO = calendarDTOs.get(index);
 
                     LocalDate date = post.getCreatedAt().toLocalDate();
                     String postId = post.getId();
                     String thumbnailUrl = optimizedImageUrlGenerator.getThumbnailUrlGenerator(post.getPostImgUrl());
-                    boolean allFamilyMembersUploaded = postCount.getCount() == familySize;
+                    boolean allFamilyMembersUploaded = calendarDTO.dailyPostCount() == familySize;
 
                     return new CalendarResponse(
                             date,
@@ -58,9 +58,9 @@ public class CalendarController implements CalendarApi {
 
     private List<CalendarResponse> getCalendarResponses(List<String> familyIds, LocalDate startDate, LocalDate endDate) {
         List<MemberPost> representativePosts = memberPostService.findLatestPostOfEveryday(familyIds, startDate, endDate);
-        List<MemberPostCountDTO> postCounts = memberPostService.countPostsOfEveryday(familyIds, startDate, endDate);
+        List<MemberPostDailyCalendarDTO> calendarDTOs = memberPostService.findPostDailyCalendarDTOs(familyIds, startDate, endDate);
 
-        return mapPostToCalendar(representativePosts, postCounts, familyIds.size());
+        return mapPostToCalendar(representativePosts, calendarDTOs, familyIds.size());
     }
 
     @Override
