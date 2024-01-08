@@ -3,6 +3,8 @@ package com.oing.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWK;
 import com.oing.domain.SocialLoginProvider;
@@ -40,11 +42,13 @@ import java.util.Objects;
 @Service
 public class AuthService {
     private final ObjectMapper objectMapper;
+    private final GoogleIdTokenVerifier googleIdTokenVerifier;
 
     public SocialLoginResult authenticateFromProvider(SocialLoginProvider provider, String accessToken) {
         return switch (provider) {
             case APPLE -> authenticateFromApple(accessToken);
             case KAKAO -> authenticateFromKakao(accessToken);
+            case GOOGLE -> authenticateFromGoogle(accessToken);
             default -> throw new InvalidParameterException();
         };
     }
@@ -65,6 +69,17 @@ public class AuthService {
 
             String identifier = parseIdentifierFromAppleToken(matchedKey, accessToken);
             return new SocialLoginResult(identifier);
+        } catch (Exception ex) {
+            throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
+        }
+    }
+
+    private SocialLoginResult authenticateFromGoogle(String accessToken) {
+        try {
+            GoogleIdToken idToken = googleIdTokenVerifier.verify(accessToken);
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String userId = payload.getSubject();
+            return new SocialLoginResult(userId);
         } catch (Exception ex) {
             throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
         }
