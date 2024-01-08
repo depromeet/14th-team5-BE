@@ -31,7 +31,7 @@ class JWTTokenGeneratorTest {
 
     @BeforeEach
     void setUp() {
-       jwtTokenGenerator = new JWTTokenGenerator(tokenProperties);
+        jwtTokenGenerator = new JWTTokenGenerator(tokenProperties);
     }
 
     @DisplayName("AccessToken 생성 테스트")

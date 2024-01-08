@@ -15,12 +15,23 @@ import java.util.regex.Pattern;
 @ConfigurationProperties(prefix = "app.web")
 @ConfigurationPropertiesBinding
 public record WebProperties(
+        boolean versionFilterEnabled,
         String[] urlWhitelists,
+        String[] versionCheckWhitelists,
         String[] urlNoLogging,
         @NestedConfigurationProperty WebHeaderNameProperties headerNames
 ) {
     public boolean isWhitelisted(String path) {
         for (String pattern : urlWhitelists) {
+            if (isMatchPattern(pattern, path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isVersionCheckWhitelisted(String path) {
+        for (String pattern : versionCheckWhitelists) {
             if (isMatchPattern(pattern, path)) {
                 return true;
             }

@@ -1,138 +1,140 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.1.5'
-	id 'io.spring.dependency-management' version '1.1.3'
-	id 'jacoco-report-aggregation'
+    id 'java'
+    id 'org.springframework.boot' version '3.1.5'
+    id 'io.spring.dependency-management' version '1.1.3'
+    id 'jacoco-report-aggregation'
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 subprojects {
-	group = 'com.oing'
-	version = '0.0.1-SNAPSHOT'
-	sourceCompatibility = '17'
+    group = 'com.oing'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '17'
 
-	apply plugin: 'java'
-	apply plugin: 'org.springframework.boot'
-	apply plugin: 'io.spring.dependency-management'
-	apply plugin: 'jacoco'
-	apply plugin: 'jacoco-report-aggregation'
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'jacoco'
+    apply plugin: 'jacoco-report-aggregation'
 
-	configurations {
-		compileOnly {
-			extendsFrom annotationProcessor
-		}
-	}
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
 
-	tasks.named('test') {
-		useJUnitPlatform()
-		finalizedBy 'jacocoTestReport'
-	}
+    tasks.named('test') {
+        useJUnitPlatform()
+        finalizedBy 'jacocoTestReport'
+    }
 
-	jacoco {
-		toolVersion = '0.8.8'
-	}
+    jacoco {
+        toolVersion = '0.8.8'
+    }
 
-	jacocoTestReport {
-		dependsOn test
-		reports{
-			html.required.set(true)
-			xml.required.set(true)
-			csv.required.set(true)
-			html.destination file("$buildDir/reports/jacoco/index.html")
-			xml.destination file("$buildDir/reports/jacoco/index.xml")
-			csv.destination file("$buildDir/reports/jacoco/index.csv")
-		}
+    jacocoTestReport {
+        dependsOn test
+        reports {
+            html.required.set(true)
+            xml.required.set(true)
+            csv.required.set(true)
+            html.destination file("$buildDir/reports/jacoco/index.html")
+            xml.destination file("$buildDir/reports/jacoco/index.xml")
+            csv.destination file("$buildDir/reports/jacoco/index.csv")
+        }
 
-		def Qdomains = []
-		for (qPattern in "**/QA" .. "**/QZ") {
-			Qdomains.add(qPattern + "*")
-		}
+        def Qdomains = []
+        for (qPattern in "**/QA".."**/QZ") {
+            Qdomains.add(qPattern + "*")
+        }
 
-		afterEvaluate {
-			classDirectories.setFrom(
-					files(classDirectories.files.collect {
-						fileTree(dir: it, excludes: [
-								// 측정 안하고 싶은 패턴
-								"**/*Application*",
-								"**/*Config*",
-								"**/config/*",
-								"**/dto/*",
-								"**/*Dto*"
-								// Querydsl 관련 제거
-						] + Qdomains)
-					})
-			)
-		}
-		finalizedBy 'jacocoTestCoverageVerification'
-	}
+        afterEvaluate {
+            classDirectories.setFrom(
+                    files(classDirectories.files.collect {
+                        fileTree(dir: it, excludes: [
+                                // 측정 안하고 싶은 패턴
+                                "**/*Application*",
+                                "**/*Config*",
+                                "**/config/*",
+                                "**/dto/*",
+                                "**/*Dto*"
+                                // Querydsl 관련 제거
+                        ] + Qdomains)
+                    })
+            )
+        }
+        finalizedBy 'jacocoTestCoverageVerification'
+    }
 
-	jacocoTestCoverageVerification {
-		def Qdomains = []
-		for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
-			Qdomains.add(qPattern + '*')
-		}
+    jacocoTestCoverageVerification {
+        def Qdomains = []
+        for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+            Qdomains.add(qPattern + '*')
+        }
 
-		violationRules {
-			rule {
-				failOnViolation = false
-				enabled = true
-				element = 'CLASS'
+        violationRules {
+            rule {
+                failOnViolation = false
+                enabled = true
+                element = 'CLASS'
 
-				// 라인 커버리지 설정
-				limit {
-					counter = 'LINE'
-					value = 'COVEREDRATIO'
-					minimum = 0.70
-				}
+                // 라인 커버리지 설정
+                limit {
+                    counter = 'LINE'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.70
+                }
 
-				// 브랜치 커버리지 설정
-				limit {
-					counter = 'BRANCH'
-					value = 'COVEREDRATIO'
-					minimum = 0.70
-				}
+                // 브랜치 커버리지 설정
+                limit {
+                    counter = 'BRANCH'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.70
+                }
 
-				excludes = [
-						"**.*Application*",
-						"**.*Config*",
-						"**.config.*",
-						"**.dto.*",
-						"**.*Dto*",
-						"**.*DTO*"
-				] + Qdomains
-			}
-		}
-	}
+                excludes = [
+                        "**.*Application*",
+                        "**.*Config*",
+                        "**.config.*",
+                        "**.dto.*",
+                        "**.*Dto*",
+                        "**.*DTO*"
+                ] + Qdomains
+            }
+        }
+    }
 
-	dependencies {
-		implementation 'org.springframework.boot:spring-boot-starter-web'
-		implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-		implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
-		implementation 'org.springframework.boot:spring-boot-starter-actuator'
-		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-		implementation 'org.springframework.boot:spring-boot-starter-security'
-		implementation 'com.github.f4b6a3:ulid-creator:5.2.2'
-		implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-		runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-		runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-		implementation("com.nimbusds:nimbus-jose-jwt:9.37")
-		compileOnly 'org.projectlombok:lombok'
-		annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
-		annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
-		annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
-		annotationProcessor 'org.projectlombok:lombok'
-		testImplementation 'org.springframework.boot:spring-boot-starter-test'
-		testImplementation 'org.springframework.security:spring-security-test'
-	}
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        implementation 'com.github.f4b6a3:ulid-creator:5.2.2'
+        implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+        implementation 'com.google.api-client:google-api-client:1.32.1'
+        runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+        runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+        implementation("com.nimbusds:nimbus-jose-jwt:9.37")
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
+        annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+        annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.springframework.security:spring-security-test'
+    }
 }
 
 tasks.named('bootJar') {
-	enabled = false
+    enabled = false
 }
 
 tasks.named('jar') {
-	enabled = true
+    enabled = true
 }

@@ -1,6 +1,5 @@
 package com.oing.restapi;
 
-import com.oing.dto.response.FamilyInvitationLinkResponse;
 import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.dto.response.FamilyResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,14 +28,6 @@ public interface FamilyApi {
     @Operation(summary = "가족 생성", description = "가족을 생성합니다.")
     @PostMapping
     FamilyResponse createFamily();
-
-    @Operation(summary = "가족 초대 링크 조회", description = "가족 초대 링크를 조회합니다.")
-    @GetMapping("/{familyId}/invitation-link")
-    FamilyInvitationLinkResponse getInvitationLink(
-            @Parameter(description = "가족 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
-            @PathVariable
-            String familyId
-    );
 
     @Operation(summary = "가족 그룹 생성 시간 조회", description = "가족 그룹 생성 시간을 조회합니다.")
     @GetMapping("/{familyId}/created-at")

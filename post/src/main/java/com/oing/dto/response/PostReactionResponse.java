@@ -1,18 +1,8 @@
 package com.oing.dto.response;
 
-import com.oing.domain.model.MemberPost;
-import com.oing.domain.model.MemberPostReaction;
+import com.oing.domain.MemberPostReaction;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
-/**
- * no5ing-server
- * User: CChuYong
- * Date: 2023/12/30
- * Time: 12:30 PM
- */
 @Schema(description = "피드 게시물 응답")
 public record PostReactionResponse(
         @Schema(description = "피드 게시물 반응 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
@@ -27,12 +17,12 @@ public record PostReactionResponse(
         @Schema(description = "피드 게시물 반응 타입", example = "EMOJI_1")
         String emojiType
 ) {
-        public static PostReactionResponse from(MemberPostReaction postReaction) {
-                return new PostReactionResponse(
-                        postReaction.getId(),
-                        postReaction.getPost().getId(),
-                        postReaction.getMemberId(),
-                        postReaction.getEmoji().getTypeKey()
-                );
-        }
+    public static PostReactionResponse from(MemberPostReaction postReaction) {
+        return new PostReactionResponse(
+                postReaction.getId(),
+                postReaction.getPost().getId(),
+                postReaction.getMemberId(),
+                postReaction.getEmoji().getTypeKey()
+        );
+    }
 }

@@ -30,6 +30,10 @@ spring:
     console:
       enabled: false
 
+logging:
+  level:
+    com.oing: INFO
+
 springdoc:
   api-docs:
     enabled: false

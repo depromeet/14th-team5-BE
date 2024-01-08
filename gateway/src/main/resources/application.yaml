@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: bbibbi-backend-api
   datasource:
     url: ${MYSQL_URL}
     username: ${MYSQL_USERNAME}
@@ -19,6 +21,8 @@ spring:
       settings:
         web-allow-others: true
 app:
+  oauth:
+    google-client-id: ${GOOGLE_CLIENT_ID}
   external-urls:
     slack-webhook: ${SLACK_WEBHOOK_URL}
   token:
@@ -27,6 +31,7 @@ app:
       access-token: 86400000
       refresh-token: 384000000
   web:
+    versionFilterEnabled: true
     url-whitelists:
       - /actuator/**
       - /swagger-ui.html
@@ -35,13 +40,46 @@ app:
       - /v1/auth/force-token
       - /swagger-ui/**
       - /v3/api-docs/**
+      - /v3/api-docs
+      - /error
+      - /v1/links/**
+    version-check-whitelists:
+      - /actuator/**
+      - /swagger-ui.html
+      - /swagger-ui/**
+      - /v3/api-docs/**
+      - /v3/api-docs
+      - /error
+      - /v1/links/**
     url-no-logging:
       - /swagger-ui.html
       - /swagger-ui/**
       - /v3/api-docs/**
+      - /v3/api-docs
+      - /actuator/**
     header-names:
       access-token: X-AUTH-TOKEN
       proxy-forward-header: X-FORWARDED-FOR
+      app-version-header: X-APP-VERSION
+      platform-header: X-USER-PLATFORM
+      userid-header: X-USER-ID
+      appkey-header: X-APP-KEY
+
+server:
+  shutdown: graceful
+  tomcat:
+    threads:
+      min-spare: 10
+      max: 200
+    accept-count: 200
+  compression:
+    enabled: true
+    mime-types: text/html,text/plain,text/css,application/javascript,application/json
+    min-response-size: 1024
+
+logging:
+  level:
+    com.oing: DEBUG
 
 cloud:
   ncp:

@@ -1,9 +1,7 @@
 package com.oing.controller;
 
+import com.oing.domain.Member;
 import com.oing.domain.PaginationDTO;
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
-import com.oing.domain.model.Member;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
@@ -17,6 +15,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+
+import java.security.InvalidParameterException;
 
 @Controller
 @RequiredArgsConstructor
@@ -76,8 +76,8 @@ public class MemberController implements MemberApi {
     }
 
     private void validateName(String name) {
-        if (name.length()<2 || name.length()>10) {
-            throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
+        if (name.length() < 2 || name.length() > 10) {
+            throw new InvalidParameterException();
         }
     }
 

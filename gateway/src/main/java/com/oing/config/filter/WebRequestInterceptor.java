@@ -39,6 +39,16 @@ public class WebRequestInterceptor implements HandlerInterceptor {
         if (webProperties.isNoLoggable(request.getServletPath())) return;
         if (isPreflight(request)) return;
 
+        String appVersionValue = request.getHeader(webProperties.headerNames().appVersionHeader());
+        String platformValue = request.getHeader(webProperties.headerNames().platformHeader());
+        String userIdValue = request.getHeader(webProperties.headerNames().userIdHeader());
+
+        String appVersion =
+                String.format("[%s]", appVersionValue != null ? appVersionValue : "UNKNOWN VERSION");
+        String platform =
+                String.format("[%s]", platformValue != null ? platformValue : "UNKNOWN PLATFORM");
+        String userId =
+                String.format("[%s]", userIdValue != null ? userIdValue : "UNKNOWN USER");
 
         long startTime = (long) request.getAttribute(START_TIME_ATTR_NAME);
         long endTime = System.currentTimeMillis();
@@ -46,7 +56,7 @@ public class WebRequestInterceptor implements HandlerInterceptor {
 
         String forwardedIp = request.getHeader(webProperties.headerNames().proxyForwardHeader());
         String originIp = forwardedIp != null ? forwardedIp : request.getRemoteAddr();
-        log.info("{} {} {} {}ms", request.getMethod(), request.getRequestURI(), originIp, executionTime);
+        log.info("{} {} {} {} {} {} {} {}ms", appVersion, platform, userId, request.getMethod(), request.getRequestURI(), originIp, response.getStatus(), executionTime);
     }
 
     private boolean isPreflight(HttpServletRequest request) {

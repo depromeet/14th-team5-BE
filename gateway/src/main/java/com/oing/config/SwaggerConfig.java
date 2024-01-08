@@ -12,7 +12,6 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 
 @OpenAPIDefinition(
         servers = @Server(url = "https://dev.api.no5ing.kr/", description = "Default Server URL"),
@@ -34,14 +33,27 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("앱 엑세스 토큰", bearerAuth()))
-                .addSecurityItem(new SecurityRequirement().addList("앱 엑세스 토큰"));
+                .components(new Components()
+                        .addSecuritySchemes("앱 엑세스 토큰", bearerAuth())
+                        .addSecuritySchemes("앱 버전 키", appKey())
+                )
+                .addSecurityItem(new SecurityRequirement()
+                        .addList("앱 엑세스 토큰")
+                        .addList("앱 버전 키")
+                );
     }
 
-    public SecurityScheme bearerAuth() {
+    private SecurityScheme bearerAuth() {
         return new SecurityScheme()
                 .type(SecurityScheme.Type.APIKEY)
                 .in(SecurityScheme.In.HEADER)
                 .name(webProperties.headerNames().accessToken());
+    }
+
+    private SecurityScheme appKey() {
+        return new SecurityScheme()
+                .type(SecurityScheme.Type.APIKEY)
+                .in(SecurityScheme.In.HEADER)
+                .name(webProperties.headerNames().appKeyHeader());
     }
 }

@@ -1,7 +1,6 @@
 package com.oing.domain;
 
-import com.oing.domain.exception.DomainException;
-import com.oing.domain.exception.ErrorCode;
+import java.security.InvalidParameterException;
 
 /**
  * no5ing-server
@@ -12,6 +11,7 @@ import com.oing.domain.exception.ErrorCode;
 public enum SocialLoginProvider {
     APPLE, //애플 로그인
     KAKAO, //카카오 로그인
+    GOOGLE, //구글 로그인
     INTERNAL; //내부 로그인
 
     public static SocialLoginProvider fromString(String provider) {
@@ -19,7 +19,8 @@ public enum SocialLoginProvider {
             case "APPLE" -> APPLE;
             case "INTERNAL" -> INTERNAL;
             case "KAKAO" -> KAKAO;
-            default -> throw new DomainException(ErrorCode.INVALID_INPUT_VALUE);
+            case "GOOGLE" -> GOOGLE;
+            default -> throw new InvalidParameterException();
         };
     }
 }

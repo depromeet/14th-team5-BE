@@ -16,7 +16,7 @@ public class TokenNotValidExceptionTest {
 
         //when
         Executable errorFunction = () -> {
-          throw exception;
+            throw exception;
         };
 
         //then

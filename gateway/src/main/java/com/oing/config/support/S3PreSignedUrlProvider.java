@@ -14,18 +14,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.security.InvalidParameterException;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
-    @Value("${cloud.ncp.storage.bucket}")
-    private String bucket;
-
     private final AmazonS3Client amazonS3Client;
     private final IdentityGenerator identityGenerator;
+    @Value("${cloud.ncp.storage.bucket}")
+    private String bucket;
 
     @Override
     public PreSignedUrlResponse getFeedPreSignedUrl(String imageName) {
@@ -84,8 +86,19 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
     @Override
     public String extractImageKey(String imageUrl) {
-        int bucketIndex = imageUrl.indexOf(bucket);
-        String imagePath = imageUrl.substring(bucketIndex + bucket.length());
-        return imagePath.startsWith("/") ? imagePath.substring(1) : imagePath;
+        Pattern pattern1 = Pattern.compile("https://.+?/" + Pattern.quote(bucket) + "/(.+)");
+        Pattern pattern2 = Pattern.compile("https://" + Pattern.quote(bucket) + ".+?/" + "(.+)");
+
+        Matcher matcher = pattern1.matcher(imageUrl);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+
+        matcher.usePattern(pattern2);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+
+        throw new InvalidParameterException();
     }
 }

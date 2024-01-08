@@ -1,5 +1,6 @@
 package com.oing.config;
 
+import com.oing.config.filter.AppVersionFilter;
 import com.oing.config.filter.JwtAccessDeniedHandler;
 import com.oing.config.filter.JwtAuthenticationEntryPoint;
 import com.oing.config.filter.JwtAuthenticationHandler;
@@ -12,7 +13,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -33,6 +33,11 @@ public class SpringSecurityConfig {
     private final JwtAuthenticationHandler authenticationHandler;
 
     /**
+     * 앱 버전 관리 필터
+     */
+    private final AppVersionFilter appVersionFilter;
+
+    /**
      * 인증/인가 관련 실패 처리기
      */
     private final JwtAccessDeniedHandler accessDeniedHandler;
@@ -47,7 +52,7 @@ public class SpringSecurityConfig {
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authorizeHttpRequests(requestsManagement ->{
+                .authorizeHttpRequests(requestsManagement -> {
                     RequestMatcher[] whitelistedMatchers = Arrays.stream(webProperties.urlWhitelists())
                             .map(AntPathRequestMatcher::new)
                             .toArray(AntPathRequestMatcher[]::new);
@@ -57,6 +62,7 @@ public class SpringSecurityConfig {
                             .anyRequest().authenticated();
                 })
                 .addFilterBefore(authenticationHandler, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(appVersionFilter, JwtAuthenticationHandler.class)
                 .exceptionHandling(exceptionHandlerManagement ->
                         exceptionHandlerManagement
                                 .authenticationEntryPoint(entryPoint)
