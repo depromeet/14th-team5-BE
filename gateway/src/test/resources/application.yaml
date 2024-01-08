@@ -1,4 +1,6 @@
 app:
+  oauth:
+    google-client-id: test
   web:
     url-whitelists:
       - /actuator/**
@@ -18,3 +20,5 @@ cloud:
     storage:
       bucket: bucket
     image-optimizer-cdn: https://cdn.com/abc
+
+
