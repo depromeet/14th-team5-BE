@@ -20,6 +20,9 @@ app:
     slack-webhook: https://www.naver.com # Must Be Replaced
   token:
     secret-key: thisiskeyfortestpurpose0101010101010thisiskeyfortestpurpose0101010101010
+    expiration:
+      access-token: 86400000
+      refresh-token: 384000000
   web:
     versionFilterEnabled: false
     url-whitelists:
