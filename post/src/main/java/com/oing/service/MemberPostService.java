@@ -1,7 +1,7 @@
 package com.oing.service;
 
 import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostCountDTO;
+import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.domain.PaginationDTO;
 import com.oing.exception.DomainException;
 import com.oing.exception.ErrorCode;
@@ -21,35 +21,40 @@ public class MemberPostService {
 
     private final MemberPostRepository memberPostRepository;
 
+
     /**
-     * 멤버들이 범위 날짜 안에 올린 대표 게시물을 가져온다.
+     * 멤버들이 범위 날짜 안에 올린 대표 게시물들을 가져온다.
      * (대표 게시글의 기준은 당일 가장 늦게 올라온 게시글)
      *
      * @param memberIds          조회 대상 멤버들의 ID
      * @param inclusiveStartDate 조회 시작 날짜
      * @param exclusiveEndDate   조회 종료 날짜
+     * @return 데일리 대표 게시물들
      */
     public List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
         return memberPostRepository.findLatestPostOfEveryday(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
 
+
     /**
-     * 멤버들이 범위 날짜 안에 올린 게시글의 갯수를 가져온다.
+     * 캘린더를 구성하기 위해 !게시글을 제외하고! 필요한 정보를 조회한다.
      *
      * @param memberIds          조회 대상 멤버들의 ID
      * @param inclusiveStartDate 조회 시작 날짜
      * @param exclusiveEndDate   조회 종료 날짜
-     * @return 날짜별 게시글 갯수 DTO
+     * @return 데일리 캘린더용 DTO
      */
-    public List<MemberPostCountDTO> countPostsOfEveryday(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
-        return memberPostRepository.countPostsOfEveryday(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
+    public List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
+        return memberPostRepository.findPostDailyCalendarDTOs(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
+
 
     public MemberPost findMemberPostById(String postId) {
         return memberPostRepository
                 .findById(postId)
                 .orElseThrow(PostNotFoundException::new);
     }
+
 
     /**
      * 멤버가 해당 요일(클라이언트 기준의 오늘)에 게시글을 작성했는지 확인한다.

@@ -148,11 +148,11 @@ class CalendarControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].date").value("2023-11-01"))
                 .andExpect(jsonPath("$.results[0].representativePostId").value("2"))
-                .andExpect(jsonPath("$.results[0].thumbnailUrl").value(imageOptimizerCdn + "1" + thumbnailOptimizerQuery))
+                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/2" + thumbnailOptimizerQuery))
                 .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(true))
                 .andExpect(jsonPath("$.results[1].date").value("2023-11-02"))
                 .andExpect(jsonPath("$.results[1].representativePostId").value("4"))
-                .andExpect(jsonPath("$.results[1].thumbnailUrl").value(imageOptimizerCdn + "4" + thumbnailOptimizerQuery))
+                .andExpect(jsonPath("$.results[1].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/4" + thumbnailOptimizerQuery))
                 .andExpect(jsonPath("$.results[1].allFamilyMembersUploaded").value(false));
     }
 }

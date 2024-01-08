@@ -1,13 +1,14 @@
 package com.oing.repository;
 
 import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostCountDTO;
+import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.exception.FamilyNotFoundException;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -23,30 +24,36 @@ public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-
     @Override
     public List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
         return queryFactory
                 .selectFrom(memberPost)
-                .where(memberPost.memberId.in(memberIds)
-                        .and(memberPost.createdAt.between(startDate, endDate)))
-                .groupBy(memberPost.createdAt)
-                .having(memberPost.createdAt.eq(memberPost.createdAt.max()))
+                .where(memberPost.id.in(
+                        JPAExpressions
+                                .select(memberPost.id.max())
+                                .from(memberPost)
+                                .where(memberPost.memberId.in(memberIds)
+                                        .and(memberPost.createdAt.between(startDate, endDate)))
+                                .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, memberPost.createdAt))
+                ))
                 .orderBy(memberPost.createdAt.asc())
                 .fetch();
+
     }
 
+
     @Override
-    public List<MemberPostCountDTO> countPostsOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
         return queryFactory
-                .select(Projections.fields(MemberPostCountDTO.class, memberPost.createdAt, memberPost.count().as("count")))
+                .select(Projections.constructor(MemberPostDailyCalendarDTO.class, memberPost.id.count()))
                 .from(memberPost)
                 .where(memberPost.memberId.in(memberIds)
                         .and(memberPost.createdAt.between(startDate, endDate)))
-                .groupBy(memberPost.createdAt)
-                .orderBy(memberPost.createdAt.asc())
+                .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, memberPost.createdAt))
                 .fetch();
+
     }
+
 
     @Override
     public QueryResults<MemberPost> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId, boolean asc) {
