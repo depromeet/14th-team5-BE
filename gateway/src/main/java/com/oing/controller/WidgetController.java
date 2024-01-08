@@ -8,6 +8,7 @@ import com.oing.dto.response.SingleRecentPostWidgetResponse;
 import com.oing.restapi.WidgetApi;
 import com.oing.service.MemberPostService;
 import com.oing.service.MemberService;
+import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ public class WidgetController implements WidgetApi {
     private final MemberPostService memberPostService;
 
     private final TokenAuthenticationHolder tokenAuthenticationHolder;
+    private final OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
     @Override
     public ResponseEntity<SingleRecentPostWidgetResponse> getSingleRecentFamilyPostWidget(String date) {
@@ -42,6 +44,10 @@ public class WidgetController implements WidgetApi {
 
         MemberPost latestPost = latestPosts.get(0);
         Member author = memberService.findMemberById(latestPost.getMemberId());
-        return ResponseEntity.ok(SingleRecentPostWidgetResponse.of(author, latestPost));
+        return ResponseEntity.ok(new SingleRecentPostWidgetResponse(
+                optimizedImageUrlGenerator.getKBImageUrlGenerator(author.getProfileImgUrl()),
+                optimizedImageUrlGenerator.getKBImageUrlGenerator(latestPost.getPostImgUrl()),
+                latestPost.getContent()
+        ));
     }
 }

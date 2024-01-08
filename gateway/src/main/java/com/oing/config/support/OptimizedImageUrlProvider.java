@@ -23,6 +23,7 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
     private String imageOptimizerCdnUrl;
 
     private static final String THUMBNAIL_OPTIMIZER_QUERY_STRING = "?type=f&w=96&h=96&quality=70&align=4&faceopt=false&anilimit=1";
+    private static final String KB_IMAGE_OPTIMIZER_QUERY_STRING = "?type=f&w=96&h=96&quality=70&align=4&faceopt=false&anilimit=1";
 
 
     /**
@@ -35,5 +36,18 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
         String imagePath = bucketImageUrl.split(bucketName)[1];
 
         return imageOptimizerCdnUrl + imagePath + THUMBNAIL_OPTIMIZER_QUERY_STRING;
+    }
+
+
+    /**
+     * KB (1MB 이하) 용량으로 압축한 이미지 URL 생성
+     * @param bucketImageUrl 원본 이미지 URL
+     * @return 썸네일 이미지 URL
+     */
+    @Override
+    public String getKBImageUrlGenerator(String bucketImageUrl) {
+        String imagePath = bucketImageUrl.split(bucketName)[1];
+
+        return imageOptimizerCdnUrl + imagePath + KB_IMAGE_OPTIMIZER_QUERY_STRING;
     }
 }
