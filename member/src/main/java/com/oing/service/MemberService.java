@@ -82,7 +82,7 @@ public class MemberService {
     public Page<FamilyMemberProfileResponse> findFamilyMembersProfilesByFamilyId(
             String familyId, int page, int size
     ) {
-        Page<Member> memberPage = memberRepository.findAllByFamilyId(familyId, PageRequest.of(page - 1, size));
+        Page<Member> memberPage = memberRepository.findAllByFamilyIdAndDeletedAtIsNull(familyId, PageRequest.of(page - 1, size));
         List<Member> members = memberPage.getContent();
 
         List<FamilyMemberProfileResponse> familyMemberProfiles = createFamilyMemberProfiles(members);

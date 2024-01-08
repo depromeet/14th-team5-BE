@@ -1,4 +1,6 @@
 app:
+  oauth:
+    google-client-id: test
   web:
     url-whitelists:
       - /actuator/**
