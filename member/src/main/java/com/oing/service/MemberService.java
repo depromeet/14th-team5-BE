@@ -6,6 +6,7 @@ import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.SocialMember;
 import com.oing.domain.key.SocialMemberKey;
 import com.oing.dto.response.FamilyMemberProfileResponse;
+import com.oing.exception.FamilyNotFoundException;
 import com.oing.exception.MemberNotFoundException;
 import com.oing.repository.MemberRepository;
 import com.oing.repository.SocialMemberRepository;
@@ -36,7 +37,11 @@ public class MemberService {
     }
 
     public String findFamilyIdByMemberId(String memberId) {
-        return findMemberById(memberId).getFamilyId();
+        Member findMember = findMemberById(memberId);
+        if (findMember.getFamilyId() == null) {
+            throw new FamilyNotFoundException();
+        }
+        return findMember.getFamilyId();
     }
 
     @Transactional
