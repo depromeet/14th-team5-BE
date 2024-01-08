@@ -16,7 +16,7 @@ env:
   SPRING_PROFILE: dev
   ENVIRONMENT: development
   IMAGE_NAME: no5ing/spring-was-dev
-  SERVICE_NAME: be-dev-was
+  SERVICE_NAME: spring-was-dev_be-dev-was
 
 concurrency:
   group: development
