@@ -1,13 +1,9 @@
-package com.oing.controller;
+package com.oing.restapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oing.component.JWTTokenGenerator;
-import com.oing.config.properties.TokenExpirationProperties;
-import com.oing.config.properties.TokenProperties;
 import com.oing.domain.*;
 import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DeepLinkResponse;
-import com.oing.dto.response.FamilyResponse;
 import com.oing.service.*;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,11 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
