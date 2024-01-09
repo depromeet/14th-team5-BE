@@ -48,7 +48,8 @@ public class MemberControllerTest {
     @BeforeEach
     void setUp() {
         TEST_MEMBER1 = new Member("1", "1",
-                LocalDate.of(2000, 7, 8), "testMember1", null, null);
+                LocalDate.of(2000, 7, 8), "testMember1",
+                "http://test.com/test-profile.jpg", null);
         TEST_MEMBER2 = new Member("2", "1",
                 LocalDate.of(2003, 7, 26), "testMember2", null, null);
     }
@@ -142,5 +143,20 @@ public class MemberControllerTest {
         // then
         verify(member).updateProfileImg(eq(newProfileImage), anyString());
         assertEquals(newProfileImage, member.getProfileImgUrl());
+    }
+
+    @Test
+    void 멤버_탈퇴_테스트() {
+        // given
+        Member member = spy(TEST_MEMBER1);
+        when(memberService.findMemberById(any())).thenReturn(member);
+        when(authenticationHolder.getUserId()).thenReturn("1");
+
+        // when
+        memberController.deleteMember(member.getId());
+
+        // then
+        assertEquals("DeletedMember", member.getName());
+        assertNull(member.getProfileImgUrl());
     }
 }
