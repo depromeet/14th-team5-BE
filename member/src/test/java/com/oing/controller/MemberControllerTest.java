@@ -116,9 +116,24 @@ public class MemberControllerTest {
     }
 
     @Test
-    void 잘못된_형식의_닉네임_수정_예외_테스트() {
+    void 열_자_초과_형식의_닉네임_수정_예외_테스트() {
         // given
         String newName = "wrong-length-name";
+        Member member = spy(TEST_MEMBER1);
+        when(memberService.findMemberById(any())).thenReturn(member);
+        when(authenticationHolder.getUserId()).thenReturn("1");
+
+        // when
+        UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
+
+        // then
+        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), request));
+    }
+
+    @Test
+    void 두_자_미만_형식의_닉네임_수정_예외_테스트() {
+        // given
+        String newName = "w";
         Member member = spy(TEST_MEMBER1);
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
@@ -137,7 +152,7 @@ public class MemberControllerTest {
 
         // when
         PreSignedUrlRequest request = new PreSignedUrlRequest(newProfileImage);
-        PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("http://test.com/dummy_profile.jpg");
+        PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("https://test.com/presigend-request-url");
         when(preSignedUrlGenerator.getProfileImagePreSignedUrl(any())).thenReturn(dummyResponse);
         PreSignedUrlResponse response = memberController.requestPresignedUrl(request);
 
