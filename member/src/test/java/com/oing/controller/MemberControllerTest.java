@@ -1,11 +1,14 @@
 package com.oing.controller;
 
 import com.oing.domain.Member;
+import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
+import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.exception.AuthorizationFailedException;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.PreSignedUrlGenerator;
@@ -128,6 +131,21 @@ public class MemberControllerTest {
     }
 
     @Test
+    void 멤버_프로필이미지_업로드_URL_요청_테스트() {
+        // given
+        String newProfileImage = "http://test.com/profile.jpg";
+
+        // when
+        PreSignedUrlRequest request = new PreSignedUrlRequest(newProfileImage);
+        PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("http://test.com/dummy_profile.jpg");
+        when(preSignedUrlGenerator.getProfileImagePreSignedUrl(any())).thenReturn(dummyResponse);
+        PreSignedUrlResponse response = memberController.requestPresignedUrl(request);
+
+        // then
+        assertNotNull(response.url());
+    }
+
+    @Test
     void 멤버_프로필이미지_수정_테스트() {
         // given
         String newProfileImage = "http://test.com/profile.jpg";
@@ -158,5 +176,15 @@ public class MemberControllerTest {
         // then
         assertEquals("DeletedMember", member.getName());
         assertNull(member.getProfileImgUrl());
+    }
+
+    @Test
+    void 잘못된_요청의_멤버_탈퇴_예외_테스트() {
+        // given
+        Member member = spy(TEST_MEMBER1);
+        when(authenticationHolder.getUserId()).thenReturn("2");
+
+        // then
+        assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember(member.getId()));
     }
 }
