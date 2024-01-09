@@ -24,7 +24,7 @@ public class FamilyInviteLink extends BaseEntity implements SerializableDeepLink
     @Column(name = "link_id", columnDefinition = "CHAR(20)", nullable = false)
     private String linkId;
 
-    @Column(name = "family_id", columnDefinition = "CHAR(20)", nullable = false)
+    @Column(name = "family_id", columnDefinition = "CHAR(26)", nullable = false)
     private String familyId;
 
     @Override

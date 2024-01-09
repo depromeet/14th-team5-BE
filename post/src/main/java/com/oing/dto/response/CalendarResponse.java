@@ -8,7 +8,6 @@ import java.time.LocalDate;
 
 @Schema(description = "캘린더 응답")
 public record CalendarResponse(
-
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         @Parameter(description = "오늘의 날짜", example = "2023-12-05")
         LocalDate date,

@@ -10,12 +10,41 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
         create_empty_composites:
           enabled: true
-        show_sql: true
-        format_sql: true
+        show_sql: false
+        format_sql: false
 app:
   external-urls:
     slack-webhook: https://www.naver.com # Must Be Replaced
   token:
     secret-key: thisiskeyfortestpurpose0101010101010thisiskeyfortestpurpose0101010101010
+    expiration:
+      access-token: 86400000
+      refresh-token: 384000000
+  web:
+    versionFilterEnabled: false
+    url-whitelists:
+      - /actuator/**
+      - /swagger-ui.html
+    url-no-logging:
+      - /swagger-ui.html
+    header-names:
+      access-token: X-AUTH-TOKEN
+      proxy-forward-header: X-FORWARDED-FOR
+      app-version-header: X-APP-VERSION
+      platform-header: X-USER-PLATFORM
+      userid-header: X-USER-ID
+      appkey-header: X-APP-KEY
+
+cloud:
+  ncp:
+    region: test
+    end-point: test
+    access-key: access-key
+    secret-key: secret-key
+    storage:
+      bucket: bucket
+    image-optimizer-cdn: https://cdn.com
+    thumbnail-optimizer-query: ?type=f&w=96&h=96&quality=70&align=4&faceopt=false&anilimit=1
