@@ -31,8 +31,11 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
      */
     @Override
     public String getThumbnailUrlGenerator(String bucketImageUrl) {
-        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
+        if (bucketImageUrl == null) {
+            return null;
+        }
 
+        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/igit bmages"));
         return imageOptimizerCdnUrl + imagePath + THUMBNAIL_OPTIMIZER_QUERY_STRING;
     }
 
@@ -44,8 +47,11 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
      */
     @Override
     public String getKBImageUrlGenerator(String bucketImageUrl) {
-        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
+        if (bucketImageUrl == null) {
+            return null;
+        }
 
+        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
         return imageOptimizerCdnUrl + imagePath + KB_IMAGE_OPTIMIZER_QUERY_STRING;
     }
 }
