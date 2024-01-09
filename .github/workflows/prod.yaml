@@ -16,7 +16,7 @@ env:
   SPRING_PROFILE: prod
   ENVIRONMENT: production
   IMAGE_NAME: no5ing/spring-was
-  SERVICE_NAME: be-prod-was
+  SERVICE_NAME: spring-was-prod_be-prod-was
 
 concurrency:
   group: production

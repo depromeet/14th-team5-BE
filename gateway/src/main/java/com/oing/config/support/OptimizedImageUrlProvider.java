@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
 
     private static final String THUMBNAIL_OPTIMIZER_QUERY_STRING = "?type=f&w=96&h=96&quality=70&align=4&faceopt=false&anilimit=1";
-    private static final String KB_IMAGE_OPTIMIZER_QUERY_STRING = "?type=f&w=96&h=96&quality=70&align=4&faceopt=false&anilimit=1";
+    private static final String KB_IMAGE_OPTIMIZER_QUERY_STRING = "?type=f&w=480&h=480&faceopt=false&quality=50&autorotate=false";
 
     @Value("${cloud.ncp.image-optimizer-cdn}")
     private String imageOptimizerCdnUrl;
@@ -44,7 +44,7 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
      */
     @Override
     public String getKBImageUrlGenerator(String bucketImageUrl) {
-        String imagePath = bucketImageUrl.split(bucketImageUrl)[1];
+        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
 
         return imageOptimizerCdnUrl + imagePath + KB_IMAGE_OPTIMIZER_QUERY_STRING;
     }

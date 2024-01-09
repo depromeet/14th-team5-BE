@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.security.InvalidParameterException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +23,6 @@ public class MemberPost extends BaseAuditEntity {
 
     @Column(name = "member_id", columnDefinition = "CHAR(26)", nullable = false)
     private String memberId;
-
-    @Column(name = "post_date", nullable = false)
-    private LocalDate postDate;
 
     @Column(name = "post_img_url", nullable = false)
     private String postImgUrl;
@@ -49,11 +45,10 @@ public class MemberPost extends BaseAuditEntity {
     @OneToMany(mappedBy = "post")
     private List<MemberPostReaction> reactions = new ArrayList<>();
 
-    public MemberPost(String id, String memberId, LocalDate postDate, String postImgUrl, String postImgKey, String content) {
+    public MemberPost(String id, String memberId, String postImgUrl, String postImgKey, String content) {
         validateContent(content);
         this.id = id;
         this.memberId = memberId;
-        this.postDate = postDate;
         this.postImgUrl = postImgUrl;
         this.postImgKey = postImgKey;
         this.content = content;
