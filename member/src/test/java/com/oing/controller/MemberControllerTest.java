@@ -148,7 +148,7 @@ public class MemberControllerTest {
     @Test
     void 멤버_프로필이미지_업로드_URL_요청_테스트() {
         // given
-        String newProfileImage = "http://test.com/profile.jpg";
+        String newProfileImage = "profile.jpg";
 
         // when
         PreSignedUrlRequest request = new PreSignedUrlRequest(newProfileImage);
@@ -163,19 +163,19 @@ public class MemberControllerTest {
     @Test
     void 멤버_프로필이미지_수정_테스트() {
         // given
-        String newProfileImage = "http://test.com/profile.jpg";
+        String newProfileImageUrl = "http://test.com/profile.jpg";
         Member member = spy(TEST_MEMBER1);
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
         when(preSignedUrlGenerator.extractImageKey(any())).thenReturn("/profile.jpg");
 
         // when
-        UpdateMemberProfileImageUrlRequest request = new UpdateMemberProfileImageUrlRequest(newProfileImage);
+        UpdateMemberProfileImageUrlRequest request = new UpdateMemberProfileImageUrlRequest(newProfileImageUrl);
         memberController.updateMemberProfileImageUrl(member.getId(), request);
 
         // then
-        verify(member).updateProfileImg(eq(newProfileImage), anyString());
-        assertEquals(newProfileImage, member.getProfileImgUrl());
+        verify(member).updateProfileImg(eq(newProfileImageUrl), anyString());
+        assertEquals(newProfileImageUrl, member.getProfileImgUrl());
     }
 
     @Test
