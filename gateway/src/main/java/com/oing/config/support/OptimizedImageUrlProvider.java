@@ -35,7 +35,7 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
             return null;
         }
 
-        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/igit bmages"));
+        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
         return imageOptimizerCdnUrl + imagePath + THUMBNAIL_OPTIMIZER_QUERY_STRING;
     }
 
