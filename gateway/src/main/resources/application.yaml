@@ -1,0 +1,102 @@
+spring:
+  application:
+    name: bbibbi-backend-api
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        create_empty_composites:
+          enabled: true
+        show_sql: true
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+app:
+  oauth:
+    google-client-id: ${GOOGLE_CLIENT_ID}
+  external-urls:
+    slack-webhook: ${SLACK_WEBHOOK_URL}
+  token:
+    secret-key: ${TOKEN_SECRET_KEY}
+    expiration:
+      access-token: 86400000
+      refresh-token: 384000000
+  web:
+    versionFilterEnabled: true
+    url-whitelists:
+      - /actuator/**
+      - /swagger-ui.html
+      - /v1/auth/social/**
+      - /v1/auth/refresh
+      - /v1/auth/force-token
+      - /swagger-ui/**
+      - /v3/api-docs/**
+      - /v3/api-docs
+      - /error
+      - /v1/links/**
+    version-check-whitelists:
+      - /actuator/**
+      - /swagger-ui.html
+      - /swagger-ui/**
+      - /v3/api-docs/**
+      - /v3/api-docs
+      - /error
+      - /v1/links/**
+    url-no-logging:
+      - /swagger-ui.html
+      - /swagger-ui/**
+      - /v3/api-docs/**
+      - /v3/api-docs
+      - /actuator/**
+    header-names:
+      access-token: X-AUTH-TOKEN
+      proxy-forward-header: X-FORWARDED-FOR
+      app-version-header: X-APP-VERSION
+      platform-header: X-USER-PLATFORM
+      userid-header: X-USER-ID
+      appkey-header: X-APP-KEY
+
+server:
+  shutdown: graceful
+  tomcat:
+    threads:
+      min-spare: 10
+      max: 200
+    accept-count: 200
+  compression:
+    enabled: true
+    mime-types: text/html,text/plain,text/css,application/javascript,application/json
+    min-response-size: 1024
+
+logging:
+  level:
+    com.oing: DEBUG
+
+cloud:
+  ncp:
+    region: ${OBJECT_STORAGE_REGION}
+    end-point: ${OBJECT_STORAGE_END_POINT}
+    access-key: ${OBJECT_STORAGE_ACCESS_KEY}
+    secret-key: ${OBJECT_STORAGE_SECRET_KEY}
+    storage:
+      bucket: ${OBJECT_STORAGE_BUCKET_NAME}
+    image-optimizer-cdn: ${IMAGE_OPTIMIZER_CDN_URL}
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+    tags-sorter: alpha

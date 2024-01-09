@@ -3,8 +3,11 @@ on:
   push:
     branches: [ 'main' ]
     paths:
-      - 'config/**' # Config 모듈 변경
-      - 'member/**' # Member 모듈 변뚶
+      - 'gateway/**' # Gateway 모듈 변경
+      - 'member/**' # Member 모듈 변경
+      - 'common/**' # Common 모듈 변경
+      - 'family/**' # Family 모듈 변경
+      - 'post/**' # Post 모듈 변경
       - '.github/workflows/**' # 워크플로우와 관련된 파일이 변경된 경우
       - 'build.gradle' # Parent Gradle 모듈 설정이 변경된 경우
       - 'settings.gradle' # Parent Gradle 설정이 변경된 경우
@@ -13,7 +16,7 @@ env:
   SPRING_PROFILE: prod
   ENVIRONMENT: production
   IMAGE_NAME: no5ing/spring-was
-  SERVICE_NAME: be-prod-was
+  SERVICE_NAME: spring-was-prod_be-prod-was
 
 concurrency:
   group: production
@@ -71,6 +74,7 @@ jobs:
       REMOTE_SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
       REMOTE_SSH_PASSPHRASE: ${{ secrets.REMOTE_SSH_PASSPHRASE }}
       REMOTE_SSH_PORT: ${{ secrets.REMOTE_SSH_PORT }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     with:
       image-tag: ${{ needs.prepare-variables.outputs.image-tag }}
       spring-profile: ${{ needs.prepare-variables.outputs.spring-profile }}

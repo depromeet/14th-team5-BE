@@ -1,0 +1,22 @@
+app:
+  oauth:
+    google-client-id: test
+  web:
+    url-whitelists:
+      - /actuator/**
+      - /swagger-ui.html
+    url-no-logging:
+      - /swagger-ui.html
+    header-names:
+      access-token: X-AUTH-TOKEN
+      proxy-forward-header: X-FORWARDED-FOR
+
+cloud:
+  ncp:
+    region: test
+    end-point: test
+    access-key: access-key
+    secret-key: secret-key
+    storage:
+      bucket: bucket
+    image-optimizer-cdn: https://cdn.com/abc

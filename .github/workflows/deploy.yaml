@@ -12,6 +12,8 @@ on:
         required: true
       REMOTE_SSH_PORT:
         required: true
+      SLACK_WEBHOOK_URL:
+        required: true
     inputs:
       environment:
         required: true
@@ -32,6 +34,7 @@ on:
 env:
   IMAGE_TAG: ${{ inputs.image-tag || 'latest' }}
   ACTIVE_PROFILE: ${{ inputs.spring-profile || 'local' }}
+  ENVIRONMENT: ${{ inputs.environment || 'local' }}
 
 jobs:
   deploy:
@@ -57,3 +60,41 @@ jobs:
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
             docker service update --image ${{ inputs.image-name }}:${{ inputs.image-tag }} ${{ inputs.service-name }}
+
+      - name: 배포 완료 슬랙 알림 보내기
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          fields: author, workflowRun, pullRequest
+          custom_payload: |
+            {
+              attachments: [{
+                color: '#59f764',
+                title: '백엔드 배포 알림',
+                text: `NO5ING 서버 새 리비전 배포 성공!`,
+                fields: [
+                  {
+                    title: '배포 환경',
+                    value: `${process.env.ENVIRONMENT}`,
+                    short: true,
+                  },
+                  {
+                    title: '배포자',
+                    value: `${process.env.AS_AUTHOR}`,
+                    short: true,
+                  },
+                  {
+                    title: '워크플로 링크',
+                    value: `${process.env.AS_WORKFLOW_RUN}`,
+                    short: true,
+                  },
+                  {
+                    title: 'PR 링크',
+                    value: `${process.env.AS_PULL_REQUEST}`,
+                    short: true,
+                  }
+                ]
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

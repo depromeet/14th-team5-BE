@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+application-local.yaml
+.env
+
+### QueryDSL ###
+generated/

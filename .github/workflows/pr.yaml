@@ -1,0 +1,19 @@
+name: "Pull Request 오토 템플릿 추가"
+on: pull_request
+
+jobs:
+  update_pr_templates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tzkhan/pr-update-action@v2 # https://github.com/tzkhan/pr-update-action
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          base-branch-regex: 'dev'
+          head-branch-regex: 'oing-\d+' # Branch에서 Ticket Regex
+          title-template: '[%headbranch%] ' # PR Title Prefix 템플릿 (티켓 번호) (ex: [OING-1234] ~ )
+          body-template: | # PR Body suffix 템플릿 (지라 링크)
+            ## 🔗 참조 or 관련된 이슈
+
+            ---
+            https://no5ing.atlassian.net/browse/%headbranch%
+          body-update-action: 'suffix'

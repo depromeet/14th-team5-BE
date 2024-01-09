@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    hikari:
+      auto-commit: false
+      pool-name: bbibbi-sql-pool
+      minimum-idle: 10
+      maximum-pool-size: 20
+      connection-timeout: 60000
+      max-lifetime: 1800000
+      idle-timeout: 60000
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        create_empty_composites:
+          enabled: true
+        show_sql: false
+        format_sql: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  h2:
+    console:
+      enabled: false
