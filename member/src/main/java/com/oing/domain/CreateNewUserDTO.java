@@ -1,5 +1,7 @@
 package com.oing.domain;
 
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 
 /**
@@ -11,6 +13,7 @@ import java.time.LocalDate;
 public record CreateNewUserDTO(
         SocialLoginProvider provider,
         String identifier,
+        @Size(min = 1, max = 9)
         String memberName,
         LocalDate dayOfBirth,
         String profileImgUrl
