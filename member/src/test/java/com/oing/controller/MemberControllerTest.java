@@ -116,9 +116,9 @@ public class MemberControllerTest {
     }
 
     @Test
-    void 열_자_초과_형식의_닉네임_수정_예외_테스트() {
+    void 아홉_자_초과_형식의_닉네임_수정_예외_테스트() {
         // given
-        String newName = "wrong-length-name";
+        String newName = "wrong-length-nam";
         Member member = spy(TEST_MEMBER1);
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
@@ -131,9 +131,9 @@ public class MemberControllerTest {
     }
 
     @Test
-    void 두_자_미만_형식의_닉네임_수정_예외_테스트() {
+    void 한_자_미만_형식의_닉네임_수정_예외_테스트() {
         // given
-        String newName = "w";
+        String newName = "";
         Member member = spy(TEST_MEMBER1);
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
