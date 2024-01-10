@@ -76,7 +76,7 @@ public class MemberController implements MemberApi {
     }
 
     private void validateName(String name) {
-        if (name.length() < 2 || name.length() > 10) {
+        if (name.length() < 1 || name.length() > 9) {
             throw new InvalidParameterException();
         }
     }
