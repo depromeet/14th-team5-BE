@@ -5,13 +5,17 @@ import com.oing.domain.DeepLinkType;
 import com.oing.domain.FamilyInviteLink;
 import com.oing.domain.SerializableDeepLink;
 import com.oing.dto.response.DeepLinkResponse;
+import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.LinkNotValidException;
 import com.oing.restapi.DeepLinkApi;
 import com.oing.service.DeepLinkDetailService;
 import com.oing.service.DeepLinkService;
+import com.oing.service.MemberBridge;
+import com.oing.util.AuthenticationHolder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import java.util.Objects;
 
 /**
  * no5ing-server
@@ -23,9 +27,9 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class DeepLinkController implements DeepLinkApi {
     public static String FAMILY_LINK_PREFIX = "https://no5ing.kr/o/";
-
     private final DeepLinkService deepLinkService;
-
+    private final AuthenticationHolder authenticationHolder;
+    private final MemberBridge memberBridge;
     private final DeepLinkDetailService<FamilyInviteLink> familyDeepLinkService;
 
     @Transactional
@@ -52,6 +56,11 @@ public class DeepLinkController implements DeepLinkApi {
             String familyId
     ) {
         String linkId = deepLinkService.generateNewDeepLinkId();
+        String loginId = authenticationHolder.getUserId();
+        String memberFamilyId = memberBridge.getFamilyIdByMemberId(loginId);
+
+        // 내 가족 외의 딥링크를 생성하려는 경우
+        if (!Objects.equals(memberFamilyId, familyId)) throw new AuthorizationFailedException();
 
         FamilyInviteLink newInviteLink = new FamilyInviteLink(linkId, familyId);
         FamilyInviteLink familyInviteLink = familyDeepLinkService.findPriorDeepLinkDetails(newInviteLink);
