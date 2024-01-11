@@ -58,8 +58,8 @@ public class DeepLinkController implements DeepLinkApi {
             String familyId
     ) {
         String linkId = deepLinkService.generateNewDeepLinkId();
-        String currentMemberId = authenticationHolder.getUserId();
-        String memberFamilyId = memberBridge.getFamilyIdByMemberId(currentMemberId);
+        String loginId = authenticationHolder.getUserId();
+        String memberFamilyId = memberBridge.getFamilyIdByMemberId(loginId);
 
         // 내 가족 외의 딥링크를 생성하려는 경우
         if (!Objects.equals(memberFamilyId, familyId)) throw new AuthorizationFailedException();
