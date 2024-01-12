@@ -11,6 +11,7 @@ import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.DuplicatePostUploadException;
 import com.oing.exception.InvalidUploadTimeException;
 import com.oing.restapi.MemberPostApi;
+import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
@@ -37,6 +38,7 @@ public class MemberPostController implements MemberPostApi {
     private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final MemberPostService memberPostService;
+    private final MemberBridge memberBridge;
 
     @Override
     public PreSignedUrlResponse requestPresignedUrl(PreSignedUrlRequest request) {
@@ -47,8 +49,9 @@ public class MemberPostController implements MemberPostApi {
     @Override
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId, String sort) {
         String requesterMemberId = authenticationHolder.getUserId();
+        String familyId = memberBridge.getFamilyIdByMemberId(requesterMemberId);
         PaginationDTO<MemberPost> fetchResult = memberPostService.searchMemberPost(
-                page, size, date, memberId, requesterMemberId, sort == null || sort.equalsIgnoreCase("ASC")
+                page, size, date, memberId, requesterMemberId, familyId, sort == null || sort.equalsIgnoreCase("ASC")
         );
 
         return PaginationResponse
