@@ -57,28 +57,16 @@ public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {
 
 
     @Override
-    public QueryResults<MemberPost> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId, boolean asc) {
-        String requesterFamilyId = getFamilyIdOfMember(requesterMemberId);
+    public QueryResults<MemberPost> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId, String familyId, boolean asc) {
         return queryFactory
                 .select(memberPost)
                 .from(memberPost)
                 .leftJoin(member).on(memberPost.memberId.eq(member.id))
-                .where(member.familyId.eq(requesterFamilyId), eqDate(date), eqMemberId(memberId))
+                .where(member.familyId.eq(familyId), eqDate(date), eqMemberId(memberId))
                 .orderBy(asc ? memberPost.id.asc() : memberPost.id.desc())
                 .offset((long) (page - 1) * size)
                 .limit(size)
                 .fetchResults();
-    }
-
-    private String getFamilyIdOfMember(String memberId) {
-        String requesterFamilyId = queryFactory
-                .select(member)
-                .from(member)
-                .where(member.id.eq(memberId))
-                .fetchFirst()
-                .getFamilyId();
-        if (requesterFamilyId == null) throw new FamilyNotFoundException();
-        return requesterFamilyId;
     }
 
     private BooleanExpression eqDate(LocalDate date) {

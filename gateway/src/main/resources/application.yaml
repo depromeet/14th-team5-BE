@@ -42,7 +42,7 @@ app:
       - /v3/api-docs/**
       - /v3/api-docs
       - /error
-      - /v1/links/**
+      - /v1/links/*
     version-check-whitelists:
       - /actuator/**
       - /swagger-ui.html
