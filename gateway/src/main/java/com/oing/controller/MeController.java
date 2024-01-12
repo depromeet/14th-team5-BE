@@ -77,7 +77,7 @@ public class MeController implements MeApi {
     public FamilyResponse createFamilyAndJoin() {
         String memberId = authenticationHolder.getUserId();
         Member member = memberService.findMemberById(memberId);
-        if (member.hasFamily()) throw new DomainException(ErrorCode.UNKNOWN_SERVER_ERROR);
+        if (member.hasFamily()) throw new AlreadyInFamilyException();
 
         Family family = familyService.createFamily();
         member.setFamilyId(family.getId());
