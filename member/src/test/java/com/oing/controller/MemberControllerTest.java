@@ -1,14 +1,20 @@
 package com.oing.controller;
 
 import com.oing.domain.Member;
+<<<<<<< HEAD
 import com.oing.dto.request.PreSignedUrlRequest;
+=======
+>>>>>>> 2f83f3f6bd36b636a70639707afe947551fb2403
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
+<<<<<<< HEAD
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.AuthorizationFailedException;
+=======
+>>>>>>> 2f83f3f6bd36b636a70639707afe947551fb2403
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.PreSignedUrlGenerator;
@@ -192,6 +198,7 @@ public class MemberControllerTest {
         assertEquals("DeletedMember", member.getName());
         assertNull(member.getProfileImgUrl());
     }
+<<<<<<< HEAD
 
     @Test
     void 잘못된_요청의_멤버_탈퇴_예외_테스트() {
@@ -202,4 +209,6 @@ public class MemberControllerTest {
         // then
         assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember(member.getId()));
     }
+=======
+>>>>>>> 2f83f3f6bd36b636a70639707afe947551fb2403
 }
