@@ -2,6 +2,7 @@ package com.oing.restapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oing.domain.Member;
+import com.oing.domain.MemberQuitReasonType;
 import com.oing.dto.request.QuitMemberRequest;
 import com.oing.repository.MemberRepository;
 import com.oing.service.TokenGenerator;
@@ -77,7 +78,7 @@ public class MemberApiTest {
     @Test
     void 회원탈퇴_이유있게_테스트() throws Exception {
         // given
-        QuitMemberRequest quitMemberRequest = new QuitMemberRequest("NO_FREQUENTLY_USE");
+        QuitMemberRequest quitMemberRequest = new QuitMemberRequest(MemberQuitReasonType.NO_FREQUENTLY_USE);
 
         // when
         ResultActions resultActions = mockMvc.perform(

@@ -1,8 +1,6 @@
 package com.oing.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 /**
@@ -21,6 +19,7 @@ public class MemberQuitReason extends BaseEntity {
     @Column(name = "member_id", length = 26, columnDefinition = "CHAR(26)")
     private String memberId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "reason_id", length = 255, columnDefinition = "VARCHAR(255)")
-    private String reasonId;
+    private MemberQuitReasonType reasonId;
 }
