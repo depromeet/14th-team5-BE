@@ -4,6 +4,7 @@ import com.oing.domain.Member;
 import com.oing.exception.FamilyNotFoundException;
 import com.oing.exception.MemberNotFoundException;
 import com.oing.repository.MemberRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +27,20 @@ public class MemberBridgeImpl implements MemberBridge {
         String familyId = member.getFamilyId();
         if (familyId == null) throw new FamilyNotFoundException();
         return familyId;
+    }
+
+    @Transactional
+    @Override
+    public boolean isInSameFamily(String memberIdFirst, String memberIdSecond) {
+        Member firstMember = memberRepository
+                .findById(memberIdFirst)
+                .orElseThrow(MemberNotFoundException::new);
+
+        Member secondMember = memberRepository
+                .findById(memberIdSecond)
+                .orElseThrow(MemberNotFoundException::new);
+
+        return firstMember.hasFamily() && secondMember.hasFamily() &&
+                firstMember.getFamilyId().equals(secondMember.getFamilyId());
     }
 }

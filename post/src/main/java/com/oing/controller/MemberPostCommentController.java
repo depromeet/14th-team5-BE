@@ -10,6 +10,7 @@ import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostCommentResponse;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.MemberPostCommentApi;
+import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostCommentService;
 import com.oing.service.MemberPostService;
 import com.oing.util.AuthenticationHolder;
@@ -25,18 +26,25 @@ public class MemberPostCommentController implements MemberPostCommentApi {
     private final IdentityGenerator identityGenerator;
     private final MemberPostService memberPostService;
     private final MemberPostCommentService memberPostCommentService;
+    private final MemberBridge memberBridge;
 
     /**
      * 게시물의 댓글을 생성합니다
      * @param postId 게시물 ID
      * @param request 댓글 생성 요청
      * @return 생성된 댓글
+     * @throws AuthorizationFailedException 내 가족이 올린 게시물이 아닌 경우
      */
     @Transactional
     @Override
     public PostCommentResponse createPostComment(String postId, CreatePostCommentRequest request) {
         String memberId = authenticationHolder.getUserId();
         MemberPost memberPost = memberPostService.getMemberPostById(postId);
+
+        // 내 가족의 게시물인지 검증
+        if (!memberBridge.isInSameFamily(memberId, memberPost.getMemberId()))
+            throw new AuthorizationFailedException();
+
         MemberPostComment memberPostComment = new MemberPostComment(
                 identityGenerator.generateIdentity(),
                 memberPost,
