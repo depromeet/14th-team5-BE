@@ -40,6 +40,10 @@ public enum ErrorCode {
     EMOJI_ALREADY_EXISTS("EM0001", "Emoji already exists"),
     EMOJI_NOT_FOUND("EM0002", "Emoji not found"),
     /**
+     * MemberComment Related Errors
+     */
+    POST_COMMENT_NOT_FOUND("CM0001", "Comment not found"),
+    /**
      * Family Related Errors
      */
     FAMILY_NOT_FOUND("FM0001", "Family not found"),
