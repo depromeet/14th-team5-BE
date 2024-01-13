@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 @Schema(description = "피드 게시물 댓글 응답")
 public record PostCommentResponse(
         @Schema(description = "피드 게시물 댓글 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
-        String reactionId,
+        String commentId,
 
         @Schema(description = "피드 게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
         String postId,
