@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oing.domain.*;
 import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DeepLinkResponse;
+import com.oing.dto.response.FamilyResponse;
 import com.oing.service.*;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -118,18 +119,20 @@ class CalendarApiTest {
                 "values ('4', '" + TEST_USER1_ID + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
 
         // family
-        String familyId = familyService.createFamily().getId();
-        String inviteCode = objectMapper.readValue(mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_USER1_TOKEN)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(), DeepLinkResponse.class).getLinkId();
-        JoinFamilyRequest joinFamilyRequest = new JoinFamilyRequest(inviteCode);
-        mockMvc.perform(post("/v1/me/join-family")
-                .header("X-AUTH-TOKEN", TEST_USER1_TOKEN)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(joinFamilyRequest))
-        ).andExpect(status().isOk());
+        String familyId = objectMapper.readValue(
+                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                        .andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString(), FamilyResponse.class
+        ).familyId();
+        String inviteCode = objectMapper.readValue(
+                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                        .andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString(), DeepLinkResponse.class
+        ).getLinkId();
         mockMvc.perform(post("/v1/me/join-family")
                 .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(joinFamilyRequest))
+                .content(objectMapper.writeValueAsString(new JoinFamilyRequest(inviteCode)))
         ).andExpect(status().isOk());
 
 
