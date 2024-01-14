@@ -39,4 +39,8 @@ public class AppVersionCache {
         AppVersion appVersion = appVersionMap.get(appKey);
         return appVersion != null && appVersion.isInService();
     }
+
+    public AppVersion getAppVersion(UUID appKey) {
+        return appVersionMap.get(appKey);
+    }
 }

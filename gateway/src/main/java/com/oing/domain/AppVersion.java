@@ -35,4 +35,7 @@ public class AppVersion extends BaseAuditEntity {
 
     @Column(name = "in_review")
     private boolean inReview;
+
+    @Column(name = "is_latest")
+    private boolean isLatest;
 }

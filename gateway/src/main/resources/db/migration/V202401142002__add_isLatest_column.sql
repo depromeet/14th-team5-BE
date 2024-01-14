@@ -1,0 +1,1 @@
+ALTER TABLE `app_version` ADD COLUMN (`is_latest` BOOL NOT NULL DEFAULT FALSE);
