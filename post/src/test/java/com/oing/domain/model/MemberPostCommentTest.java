@@ -22,7 +22,7 @@ public class MemberPostCommentTest {
         String commentId = "sampleCommentId";
         String commentContents = "sampleCommentContents";
         MemberPost post = new MemberPost(postId, memberId, imageUrl, imageKey, content, 0,
-                0, null, null);
+                0, 0, null, null, null);
 
         // When
         MemberPostComment comment = new MemberPostComment(commentId, post, memberId, commentContents);
