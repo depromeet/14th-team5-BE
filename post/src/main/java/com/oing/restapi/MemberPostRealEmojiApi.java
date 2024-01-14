@@ -3,7 +3,6 @@ package com.oing.restapi;
 import com.oing.dto.request.PostRealEmojiRequest;
 import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.DefaultResponse;
-import com.oing.dto.response.PostReactionResponse;
 import com.oing.dto.response.PostRealEmojiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

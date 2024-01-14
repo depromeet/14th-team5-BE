@@ -2,19 +2,13 @@ package com.oing.controller;
 
 
 import com.oing.dto.request.CreateMyRealEmojiRequest;
-import com.oing.dto.request.PostRealEmojiRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
-import com.oing.dto.response.*;
-import com.oing.restapi.MemberPostRealEmojiApi;
+import com.oing.dto.response.DefaultResponse;
+import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.dto.response.RealEmojisResponse;
 import com.oing.restapi.MemberRealEmojiApi;
-import com.oing.service.MemberBridge;
-import com.oing.util.AuthenticationHolder;
-import com.oing.util.IdentityGenerator;
-import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-
-import java.util.Collections;
 
 @RequiredArgsConstructor
 @Controller
@@ -36,7 +30,7 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
     }
 
     @Override
-    public MyPostRealEmojisResponse getMyRealEmojis(String memberId) {
-        return new MyPostRealEmojisResponse(Collections.emptyMap());
+    public RealEmojisResponse getMyRealEmojis(String memberId) {
+        return new RealEmojisResponse(null);
     }
 }

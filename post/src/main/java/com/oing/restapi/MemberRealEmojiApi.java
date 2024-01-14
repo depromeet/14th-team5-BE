@@ -3,7 +3,7 @@ package com.oing.restapi;
 import com.oing.dto.request.CreateMyRealEmojiRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.DefaultResponse;
-import com.oing.dto.response.MyPostRealEmojisResponse;
+import com.oing.dto.response.RealEmojisResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,7 +47,7 @@ public interface MemberRealEmojiApi {
 
     @Operation(summary = "회원의 리얼 이모지 조회", description = "자신의 리얼 이모지를 조회합니다.")
     @GetMapping("/{memberId}")
-    MyPostRealEmojisResponse getMyRealEmojis(
+    RealEmojisResponse getMyRealEmojis(
             @Parameter(description = "회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String memberId
