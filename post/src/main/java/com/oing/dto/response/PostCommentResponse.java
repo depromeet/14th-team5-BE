@@ -29,7 +29,7 @@ public record PostCommentResponse(
                 postComment.getPost().getId(),
                 postComment.getMemberId(),
                 postComment.getComment(),
-                postComment.getCreatedAt().atZone(ZoneId.systemDefault())
+                postComment.getCreatedAt() != null ? postComment.getCreatedAt().atZone(ZoneId.systemDefault()) : null
         );
     }
 }

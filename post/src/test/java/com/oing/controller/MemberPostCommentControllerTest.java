@@ -66,8 +66,6 @@ public class MemberPostCommentControllerTest {
         when(authenticationHolder.getUserId()).thenReturn("1");
         when(memberBridge.isInSameFamily("1", "1")).thenReturn(true);
         when(identityGenerator.generateIdentity()).thenReturn(memberPost.getId());
-        when(memberPostCommentService.savePostComment(any())).thenReturn(memberPostComment);
-        when(memberPostComment.getCreatedAt()).thenReturn(LocalDateTime.now());
 
         //when
         PostCommentResponse response = memberPostCommentController.createPostComment(
@@ -113,19 +111,20 @@ public class MemberPostCommentControllerTest {
     @Test
     void 게시물_댓글_삭제_테스트() {
         //given
-        MemberPost memberPost = new MemberPost(
+        MemberPost memberPost = spy(new MemberPost(
                 "1",
                 "1",
                 "1",
                 "1",
                 "1"
-        );
+        ));
         MemberPostComment memberPostComment = spy(new MemberPostComment(
                 "1",
                 memberPost,
                 "1",
                 "1"
         ));
+        when(memberPostService.getMemberPostById(memberPost.getId())).thenReturn(memberPost);
         when(memberPostCommentService.getMemberPostComment(memberPost.getId(), memberPostComment.getId()))
                 .thenReturn(memberPostComment);
         when(authenticationHolder.getUserId()).thenReturn("1");

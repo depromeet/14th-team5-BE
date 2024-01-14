@@ -51,9 +51,8 @@ public class MemberPostCommentController implements MemberPostCommentApi {
                 memberId,
                 request.content()
         );
-        MemberPostComment savedMemberPostComment = memberPostCommentService
-                .savePostComment(memberPostComment);
-        return PostCommentResponse.from(savedMemberPostComment);
+        MemberPostComment addedComment = memberPost.addComment(memberPostComment);
+        return PostCommentResponse.from(addedComment);
     }
 
     /**
@@ -68,6 +67,7 @@ public class MemberPostCommentController implements MemberPostCommentApi {
     @Override
     public DefaultResponse deletePostComment(String postId, String commentId) {
         String memberId = authenticationHolder.getUserId();
+        MemberPost memberPost = memberPostService.getMemberPostById(postId);
         MemberPostComment memberPostComment = memberPostCommentService.getMemberPostComment(postId, commentId);
 
         //내가 작성한 댓글인지 권한 검증
@@ -75,7 +75,7 @@ public class MemberPostCommentController implements MemberPostCommentApi {
             throw new AuthorizationFailedException();
         }
 
-        memberPostCommentService.deletePostComment(memberPostComment);
+        memberPost.removeComment(memberPostComment);
         return DefaultResponse.ok();
     }
 
