@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -78,7 +79,27 @@ public class MemberApiTest {
     @Test
     void 회원탈퇴_이유있게_테스트() throws Exception {
         // given
-        QuitMemberRequest quitMemberRequest = new QuitMemberRequest(MemberQuitReasonType.NO_FREQUENTLY_USE);
+        QuitMemberRequest quitMemberRequest = new QuitMemberRequest(List.of(MemberQuitReasonType.NO_FREQUENTLY_USE));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/v1/members/{memberId}", TEST_MEMBER_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(quitMemberRequest))
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.success").value(true));
+    }
+
+    @Test
+    void 회원탈퇴_이유여러개_테스트() throws Exception {
+        // given
+        QuitMemberRequest quitMemberRequest = new QuitMemberRequest(List.of(
+                MemberQuitReasonType.NO_FREQUENTLY_USE, MemberQuitReasonType.SERVICE_UX_IS_BAD));
 
         // when
         ResultActions resultActions = mockMvc.perform(

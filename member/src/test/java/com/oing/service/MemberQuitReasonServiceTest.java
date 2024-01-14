@@ -1,7 +1,9 @@
 package com.oing.service;
 
 import com.oing.domain.MemberQuitReason;
+import com.oing.domain.MemberQuitReasonType;
 import com.oing.repository.MemberQuitReasonRepository;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,20 +26,18 @@ public class MemberQuitReasonServiceTest {
     void 탈퇴_사유_저장_테스트() {
         // given
         String memberId = "memberId";
-        String reasonId = "reasonId";
-        when(memberQuitReasonRepository.save(any())).thenReturn(
-                new MemberQuitReason(
-                    memberId,
-                    reasonId
-                )
+        MemberQuitReasonType reasonId = MemberQuitReasonType.FAMILY_MEMBER_NOT_USING;
+        when(memberQuitReasonRepository.saveAll(any())).thenReturn(
+                Lists.list(new MemberQuitReason(
+                        memberId,
+                        reasonId
+                ))
         );
 
         // when
-        MemberQuitReason reason = memberQuitReasonService.recordMemberQuitReason(memberId, reasonId);
-
+        memberQuitReasonService.recordMemberQuitReason(memberId, Lists.list(reasonId));
         // then
-        assertEquals(reason.getReasonId(), reasonId);
-        assertEquals(reason.getMemberId(), memberId);
+        //nothing. just check no exception
     }
 
 }
