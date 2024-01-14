@@ -1,25 +1,18 @@
 package com.oing.controller;
 
 import com.oing.domain.Member;
-<<<<<<< HEAD
 import com.oing.dto.request.PreSignedUrlRequest;
-=======
->>>>>>> 2f83f3f6bd36b636a70639707afe947551fb2403
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
-<<<<<<< HEAD
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.AuthorizationFailedException;
-=======
->>>>>>> 2f83f3f6bd36b636a70639707afe947551fb2403
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,40 +44,31 @@ public class MemberControllerTest {
     @Mock
     private PreSignedUrlGenerator preSignedUrlGenerator;
 
-    private Member TEST_MEMBER1;
-    private Member TEST_MEMBER2;
-
-    @BeforeEach
-    void setUp() {
-        TEST_MEMBER1 = new Member("1", "1",
-                LocalDate.of(2000, 7, 8), "testMember1",
-                "http://test.com/test-profile.jpg", null);
-        TEST_MEMBER2 = new Member("2", "1",
-                LocalDate.of(2003, 7, 26), "testMember2", null, null);
-    }
-
     @Test
     void 멤버_프로필_조회_테스트() {
         // given
-        Member member = spy(TEST_MEMBER1);
+        Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
+                "testMember1", "http://test.com/test-profile.jpg", null);
         when(memberService.findMemberById(any())).thenReturn(member);
 
         // when
-        MemberResponse response = memberController.getMember(TEST_MEMBER1.getId());
+        MemberResponse response = memberController.getMember(member.getId());
 
         // then
-        assertEquals(TEST_MEMBER1.getId(), response.memberId());
-        assertEquals(TEST_MEMBER1.getName(), response.name());
-        assertEquals(TEST_MEMBER1.getProfileImgUrl(), response.imageUrl());
-        assertEquals(TEST_MEMBER1.getFamilyId(), response.familyId());
-        assertEquals(TEST_MEMBER1.getDayOfBirth(), response.dayOfBirth());
+        assertEquals(member.getId(), response.memberId());
+        assertEquals(member.getName(), response.name());
+        assertEquals(member.getProfileImgUrl(), response.imageUrl());
+        assertEquals(member.getFamilyId(), response.familyId());
+        assertEquals(member.getDayOfBirth(), response.dayOfBirth());
     }
 
     @Test
     void 가족_멤버_프로필_조회_테스트() {
         // given
-        Member member1 = spy(TEST_MEMBER1);
-        Member member2 = spy(TEST_MEMBER2);
+        Member member1 = new Member("1", "1", LocalDate.of(2000, 7, 8),
+                "testMember1", "http://test.com/test-profile.jpg", null);
+        Member member2 = new Member("2", "1", LocalDate.of(2003, 7, 26),
+                "testMember2", null, null);
         String familyId = "1";
         when(authenticationHolder.getUserId()).thenReturn("1");
         when(memberService.findFamilyIdByMemberId(anyString())).thenReturn(familyId);
@@ -108,7 +92,8 @@ public class MemberControllerTest {
     void 멤버_닉네임_수정_테스트() {
         // given
         String newName = "newName";
-        Member member = spy(TEST_MEMBER1);
+        Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
+                "testMember1", "http://test.com/test-profile.jpg", null);
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
 
@@ -117,7 +102,6 @@ public class MemberControllerTest {
         memberController.updateMemberName(member.getId(), request);
 
         // then
-        verify(member).updateName(eq(newName));
         assertEquals(newName, member.getName());
     }
 
@@ -125,7 +109,8 @@ public class MemberControllerTest {
     void 아홉_자_초과_형식의_닉네임_수정_예외_테스트() {
         // given
         String newName = "wrong-length-nam";
-        Member member = spy(TEST_MEMBER1);
+        Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
+                "testMember1", "http://test.com/test-profile.jpg", null);
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
 
@@ -140,7 +125,8 @@ public class MemberControllerTest {
     void 한_자_미만_형식의_닉네임_수정_예외_테스트() {
         // given
         String newName = "";
-        Member member = spy(TEST_MEMBER1);
+        Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
+                "testMember1", "http://test.com/test-profile.jpg", null);
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
 
@@ -170,7 +156,8 @@ public class MemberControllerTest {
     void 멤버_프로필이미지_수정_테스트() {
         // given
         String newProfileImageUrl = "http://test.com/profile.jpg";
-        Member member = spy(TEST_MEMBER1);
+        Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
+                "testMember1", "http://test.com/test-profile.jpg", null);
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
         when(preSignedUrlGenerator.extractImageKey(any())).thenReturn("/profile.jpg");
@@ -180,14 +167,14 @@ public class MemberControllerTest {
         memberController.updateMemberProfileImageUrl(member.getId(), request);
 
         // then
-        verify(member).updateProfileImg(eq(newProfileImageUrl), anyString());
         assertEquals(newProfileImageUrl, member.getProfileImgUrl());
     }
 
     @Test
     void 멤버_탈퇴_테스트() {
         // given
-        Member member = spy(TEST_MEMBER1);
+        Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
+                "testMember1", "http://test.com/test-profile.jpg", null);
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
 
@@ -198,17 +185,15 @@ public class MemberControllerTest {
         assertEquals("DeletedMember", member.getName());
         assertNull(member.getProfileImgUrl());
     }
-<<<<<<< HEAD
 
     @Test
     void 잘못된_요청의_멤버_탈퇴_예외_테스트() {
         // given
-        Member member = spy(TEST_MEMBER1);
+        Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
+                "testMember1", "http://test.com/test-profile.jpg", null);
         when(authenticationHolder.getUserId()).thenReturn("2");
 
         // then
         assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember(member.getId()));
     }
-=======
->>>>>>> 2f83f3f6bd36b636a70639707afe947551fb2403
 }
