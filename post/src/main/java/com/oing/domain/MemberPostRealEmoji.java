@@ -18,8 +18,9 @@ public class MemberPostRealEmoji extends BaseEntity {
     @Column(name = "post_real_emoji_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
 
-    @Column(name = "real_emoji_id", columnDefinition = "CHAR(26)", nullable = false)
-    private String realEmojiId;
+    @OneToOne
+    @JoinColumn(name = "real_emoji_id", nullable = false)
+    private MemberRealEmoji realEmoji;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
