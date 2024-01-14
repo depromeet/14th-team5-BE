@@ -50,4 +50,10 @@ public class JwtAuthenticationHandler extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        return webProperties.isWhitelisted(path);
+    }
 }

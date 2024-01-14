@@ -55,7 +55,6 @@ public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {
 
     }
 
-
     @Override
     public QueryResults<MemberPost> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId, String familyId, boolean asc) {
         return queryFactory

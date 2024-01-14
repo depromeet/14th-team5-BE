@@ -50,7 +50,7 @@ public class Member extends DeletableBaseAuditEntity {
 
     public void deleteMemberInfo() {
         super.updateDeletedAt();
-        this.name = "DeletedUser";
+        this.name = "DeletedMember";
         this.profileImgUrl = null;
     }
 

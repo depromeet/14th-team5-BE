@@ -13,6 +13,8 @@ spring:
         show_sql: true
         format_sql: true
 app:
+<<<<<<< HEAD
+=======
   oauth:
     google-client-id: ${GOOGLE_CLIENT_ID}
   web:
