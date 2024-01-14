@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * no5ing-server
@@ -15,7 +16,7 @@ import java.time.LocalDate;
  */
 @Schema(description = "사용자 회원탈퇴 요청")
 public record QuitMemberRequest(
-        @Schema(description = "탈퇴 사유", example = "NO_FREQUENTLY_USE")
-        MemberQuitReasonType reasonId
+        @Schema(description = "탈퇴 사유 목록", example = "NO_FREQUENTLY_USE")
+        List<MemberQuitReasonType> reasonIds
 ) {
 }
