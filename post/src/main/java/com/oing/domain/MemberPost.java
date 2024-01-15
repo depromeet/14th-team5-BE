@@ -74,18 +74,29 @@ public class MemberPost extends BaseAuditEntity {
         this.reactionCnt += 1;
     }
 
-    public void addRealEmoji(MemberPostRealEmoji realEmoji) {
-        this.realEmojis.add(realEmoji);
-        this.realEmojiCnt += 1;
-    }
-
     public void removeReaction(MemberPostReaction reaction) {
         this.reactions.remove(reaction);
         this.reactionCnt -= 1;
     }
 
+    public void addRealEmoji(MemberPostRealEmoji realEmoji) {
+        this.realEmojis.add(realEmoji);
+        this.realEmojiCnt += 1;
+    }
+
     public void removeRealEmoji(MemberPostRealEmoji realEmoji) {
         this.realEmojis.remove(realEmoji);
         this.realEmojiCnt -= 1;
+    }
+
+    public MemberPostComment addComment(MemberPostComment comment) {
+        this.comments.add(comment);
+        this.commentCnt = this.comments.size();
+        return comment;
+    }
+
+    public void removeComment(MemberPostComment comment) {
+        this.comments.remove(comment);
+        this.commentCnt = this.comments.size();
     }
 }

@@ -38,6 +38,10 @@ app:
       userid-header: X-USER-ID
       appkey-header: X-APP-KEY
 
+logging:
+  level:
+    com.oing: DEBUG
+
 cloud:
   ncp:
     region: test

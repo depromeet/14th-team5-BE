@@ -3,11 +3,13 @@ package com.oing.controller;
 import com.oing.domain.Member;
 import com.oing.domain.PaginationDTO;
 import com.oing.dto.request.PreSignedUrlRequest;
+import com.oing.dto.request.QuitMemberRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.MemberApi;
+import com.oing.service.MemberQuitReasonService;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.PreSignedUrlGenerator;
@@ -25,6 +27,7 @@ public class MemberController implements MemberApi {
     private final AuthenticationHolder authenticationHolder;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final MemberService memberService;
+    private final MemberQuitReasonService memberQuitReasonService;
 
     @Override
     public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(Integer page, Integer size) {
@@ -83,11 +86,15 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public DefaultResponse deleteMember(String memberId) {
+    public DefaultResponse deleteMember(String memberId, QuitMemberRequest request) {
         validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
         memberService.deleteAllSocialMembersByMember(memberId);
         member.deleteMemberInfo();
+
+        if (request != null) { //For Api Version Compatibility
+            memberQuitReasonService.recordMemberQuitReason(memberId, request.reasonIds());
+        }
 
         return DefaultResponse.ok();
     }

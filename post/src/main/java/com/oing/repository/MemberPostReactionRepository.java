@@ -14,4 +14,6 @@ public interface MemberPostReactionRepository extends JpaRepository<MemberPostRe
     Optional<MemberPostReaction> findReactionByPostAndMemberIdAndEmoji(MemberPost post, String memberId, Emoji emoji);
 
     List<MemberPostReaction> findAllByPostId(String postId);
+
+    void deleteAllByPostId(String memberPostId);
 }

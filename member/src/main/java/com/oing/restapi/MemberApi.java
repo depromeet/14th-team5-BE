@@ -1,6 +1,7 @@
 package com.oing.restapi;
 
 import com.oing.dto.request.PreSignedUrlRequest;
+import com.oing.dto.request.QuitMemberRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.*;
@@ -77,6 +78,9 @@ public interface MemberApi {
     DefaultResponse deleteMember(
             @Parameter(description = "탈퇴할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
-            String memberId
+            String memberId,
+
+            @RequestBody(required = false) //for api version compatibility
+            QuitMemberRequest request
     );
 }

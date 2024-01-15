@@ -12,21 +12,11 @@ import java.util.function.Function;
  * Date: 2023/12/05
  * Time: 12:30 PM
  */
-@Schema(description = "페이지네이션 응답")
 public record PaginationResponse<T>(
-        @Schema(description = "현재 페이지", example = "1")
         int currentPage,
-
-        @Schema(description = "전체 페이지 수", example = "30")
         int totalPage,
-
-        @Schema(description = "페이지당 데이터 수", example = "10")
         int itemPerPage,
-
-        @Schema(description = "더 데이터가 있는지", example = "true")
         boolean hasNext,
-
-        @Schema(description = "실제 데이터 컬렉션", example = "[\"data\"]")
         Collection<T> results
 ) {
     public static <T> PaginationResponse<T> of(PaginationDTO<T> dto, int currentPage, int itemPerPage) {
