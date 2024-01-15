@@ -23,7 +23,7 @@ public class MemberPostTest {
 
         // When
         MemberPost post = new MemberPost(postId, memberId, imageUrl, imageKey, content, 0,
-                0, null, null);
+                0, 0, null, null, null);
 
         // Then
         assertNotNull(post);

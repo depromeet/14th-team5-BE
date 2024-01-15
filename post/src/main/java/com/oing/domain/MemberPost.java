@@ -39,11 +39,17 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "reaction_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int reactionCnt;
 
+    @Column(name = "real_emoji_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private int realEmojiCnt;
+
     @OneToMany(mappedBy = "post")
     private List<MemberPostComment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
     private List<MemberPostReaction> reactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<MemberPostRealEmoji> realEmojis = new ArrayList<>();
 
     public MemberPost(String id, String memberId, String postImgUrl, String postImgKey, String content) {
         validateContent(content);
@@ -54,6 +60,7 @@ public class MemberPost extends BaseAuditEntity {
         this.content = content;
         this.commentCnt = 0;
         this.reactionCnt = 0;
+        this.realEmojiCnt = 0;
     }
 
     private void validateContent(String content) {
@@ -70,6 +77,16 @@ public class MemberPost extends BaseAuditEntity {
     public void removeReaction(MemberPostReaction reaction) {
         this.reactions.remove(reaction);
         this.reactionCnt -= 1;
+    }
+
+    public void addRealEmoji(MemberPostRealEmoji realEmoji) {
+        this.realEmojis.add(realEmoji);
+        this.realEmojiCnt += 1;
+    }
+
+    public void removeRealEmoji(MemberPostRealEmoji realEmoji) {
+        this.realEmojis.remove(realEmoji);
+        this.realEmojiCnt -= 1;
     }
 
     public MemberPostComment addComment(MemberPostComment comment) {

@@ -179,7 +179,7 @@ public class MemberControllerTest {
         when(authenticationHolder.getUserId()).thenReturn("1");
 
         // when
-        memberController.deleteMember(member.getId());
+        memberController.deleteMember(member.getId(), null);
 
         // then
         assertEquals("DeletedMember", member.getName());
@@ -194,6 +194,6 @@ public class MemberControllerTest {
         when(authenticationHolder.getUserId()).thenReturn("2");
 
         // then
-        assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember(member.getId()));
+        assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember(member.getId(), null));
     }
 }
