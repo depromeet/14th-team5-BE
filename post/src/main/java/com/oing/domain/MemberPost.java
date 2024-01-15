@@ -71,4 +71,15 @@ public class MemberPost extends BaseAuditEntity {
         this.reactions.remove(reaction);
         this.reactionCnt -= 1;
     }
+
+    public MemberPostComment addComment(MemberPostComment comment) {
+        this.comments.add(comment);
+        this.commentCnt = this.comments.size();
+        return comment;
+    }
+
+    public void removeComment(MemberPostComment comment) {
+        this.comments.remove(comment);
+        this.commentCnt = this.comments.size();
+    }
 }

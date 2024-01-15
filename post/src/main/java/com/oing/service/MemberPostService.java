@@ -78,7 +78,7 @@ public class MemberPostService {
 
     @Transactional
     public MemberPost getMemberPostById(String postId) {
-        return memberPostRepository.findById(postId).orElseThrow(() -> new DomainException(ErrorCode.MEMBER_NOT_FOUND));
+        return memberPostRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
     @Transactional
