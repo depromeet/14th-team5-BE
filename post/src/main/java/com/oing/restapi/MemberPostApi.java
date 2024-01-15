@@ -2,6 +2,7 @@ package com.oing.restapi;
 
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
+import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
@@ -72,6 +73,15 @@ public interface MemberPostApi {
     @Operation(summary = "단일 게시물 조회", description = "ID를 통해 게시물을 조회합니다.")
     @GetMapping("/{postId}")
     PostResponse getPost(
+            @PathVariable
+            @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            String postId
+    );
+
+    //* 테스트용 API
+    @Operation(summary = "게시물 삭제", description = "ID를 통해 게시물을 삭제합니다.")
+    @DeleteMapping("/{postId}")
+    DefaultResponse deletePost(
             @PathVariable
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             String postId
