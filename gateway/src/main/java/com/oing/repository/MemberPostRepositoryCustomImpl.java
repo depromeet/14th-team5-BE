@@ -2,7 +2,6 @@ package com.oing.repository;
 
 import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostDailyCalendarDTO;
-import com.oing.exception.FamilyNotFoundException;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
@@ -21,7 +20,7 @@ import static com.oing.domain.QMember.member;
 import static com.oing.domain.QMemberPost.memberPost;
 
 @RequiredArgsConstructor
-public class MemberPostRepositoryImpl implements MemberPostRepositoryCustom {
+public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
