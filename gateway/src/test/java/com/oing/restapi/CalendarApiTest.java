@@ -19,6 +19,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -156,6 +158,44 @@ class CalendarApiTest {
     }
 
     @Test
+    void 주간_캘린더_파라미터_없이_조회_테스트() throws Exception {
+        // Given
+        // posts
+        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('1', '" + TEST_USER1_ID + "', 'https://storage.com/images/1', 0, 0, '" + now + "', '" + now + "', 'post1111', '1');");
+
+        // family
+        String familyId = objectMapper.readValue(
+                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                        .andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString(), FamilyResponse.class
+        ).familyId();
+        String inviteCode = objectMapper.readValue(
+                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                        .andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString(), DeepLinkResponse.class
+        ).getLinkId();
+        mockMvc.perform(post("/v1/me/join-family")
+                .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new JoinFamilyRequest(inviteCode)))
+        ).andExpect(status().isOk());
+
+
+        // When & Then
+        mockMvc.perform(get("/v1/calendar")
+                        .param("type", "WEEKLY")
+                        .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.results[0].date").value(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
+                .andExpect(jsonPath("$.results[0].representativePostId").value("1"))
+                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/1" + thumbnailOptimizerQuery))
+                .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(false));
+    }
+
+    @Test
     void 월별_캘린더_조회_테스트() throws Exception {
         // Given
         // parameters
@@ -221,5 +261,43 @@ class CalendarApiTest {
                 .andExpect(jsonPath("$.results[3].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/8" + thumbnailOptimizerQuery))
                 .andExpect(jsonPath("$.results[3].allFamilyMembersUploaded").value(false));
 
+    }
+
+    @Test
+    void 월별_캘린더_파라미터_없이_조회_테스트() throws Exception {
+        // Given
+        // posts
+        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('1', '" + TEST_USER1_ID + "', 'https://storage.com/images/1', 0, 0, '" + now + "', '" + now + "', 'post1111', '1');");
+
+        // family
+        String familyId = objectMapper.readValue(
+                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                        .andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString(), FamilyResponse.class
+        ).familyId();
+        String inviteCode = objectMapper.readValue(
+                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                        .andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString(), DeepLinkResponse.class
+        ).getLinkId();
+        mockMvc.perform(post("/v1/me/join-family")
+                .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new JoinFamilyRequest(inviteCode)))
+        ).andExpect(status().isOk());
+
+
+        // When & Then
+        mockMvc.perform(get("/v1/calendar")
+                        .param("type", "MONTHLY")
+                        .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.results[0].date").value(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
+                .andExpect(jsonPath("$.results[0].representativePostId").value("1"))
+                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/1" + thumbnailOptimizerQuery))
+                .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(false));
     }
 }
