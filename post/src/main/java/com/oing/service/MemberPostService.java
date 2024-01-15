@@ -3,13 +3,13 @@ package com.oing.service;
 import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.domain.PaginationDTO;
-import com.oing.exception.DomainException;
-import com.oing.exception.ErrorCode;
 import com.oing.exception.PostNotFoundException;
 import com.oing.repository.MemberPostRepository;
+import com.oing.service.event.DeleteMemberPostEvent;
 import com.querydsl.core.QueryResults;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ import java.util.List;
 public class MemberPostService {
 
     private final MemberPostRepository memberPostRepository;
-
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * 멤버들이 범위 날짜 안에 올린 대표 게시물들을 가져온다.
@@ -89,5 +89,12 @@ public class MemberPostService {
                 totalPage,
                 results.getResults()
         );
+    }
+
+    @Transactional
+    public void deleteMemberPostById(String postId) {
+        MemberPost memberPost = memberPostRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+        applicationEventPublisher.publishEvent(new DeleteMemberPostEvent(memberPost));
+        memberPostRepository.delete(memberPost);
     }
 }
