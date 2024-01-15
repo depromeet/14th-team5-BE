@@ -51,12 +51,12 @@ class CalendarApiTest {
     @Autowired
     private TokenGenerator tokenGenerator;
 
-    private String TEST_USER1_ID;
-    private String TEST_USER1_TOKEN;
-    private String TEST_USER2_ID;
-    private String TEST_USER2_TOKEN;
-    private String TEST_USER3_ID;
-    private String TEST_USER3_TOKEN;
+    private String TEST_MEMBER1_ID;
+    private String TEST_MEMBER1_TOKEN;
+    private String TEST_MEMBER2_ID;
+    private String TEST_MEMBER2_TOKEN;
+    private String TEST_MEMBER3_ID;
+    private String TEST_MEMBER3_TOKEN;
     private List<String> TEST_FAMILIES_IDS;
 
     @Value("${cloud.ncp.image-optimizer-cdn}")
@@ -67,7 +67,7 @@ class CalendarApiTest {
 
     @BeforeEach
     void setUp() {
-        TEST_USER1_ID = memberService.createNewMember(
+        TEST_MEMBER1_ID = memberService.createNewMember(
                 new CreateNewUserDTO(
                         SocialLoginProvider.fromString("APPLE"),
                         "testUser1",
@@ -76,9 +76,9 @@ class CalendarApiTest {
                         "profile.com"
                 )
         ).getId();
-        TEST_USER1_TOKEN = tokenGenerator.generateTokenPair(TEST_USER1_ID).accessToken();
+        TEST_MEMBER1_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER1_ID).accessToken();
 
-        TEST_USER2_ID = memberService.createNewMember(
+        TEST_MEMBER2_ID = memberService.createNewMember(
                 new CreateNewUserDTO(
                         SocialLoginProvider.fromString("APPLE"),
                         "testUser2",
@@ -87,9 +87,9 @@ class CalendarApiTest {
                         "profile.com"
                 )
         ).getId();
-        TEST_USER2_TOKEN = tokenGenerator.generateTokenPair(TEST_USER2_ID).accessToken();
+        TEST_MEMBER2_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER2_ID).accessToken();
 
-        TEST_USER3_ID = memberService.createNewMember(
+        TEST_MEMBER3_ID = memberService.createNewMember(
                 new CreateNewUserDTO(
                         SocialLoginProvider.fromString("APPLE"),
                         "testUser3",
@@ -98,9 +98,9 @@ class CalendarApiTest {
                         "profile.com"
                 )
         ).getId();
-        TEST_USER3_TOKEN = tokenGenerator.generateTokenPair(TEST_USER3_ID).accessToken();
+        TEST_MEMBER3_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER3_ID).accessToken();
 
-        TEST_FAMILIES_IDS = List.of(TEST_USER1_ID, TEST_USER2_ID);
+        TEST_FAMILIES_IDS = List.of(TEST_MEMBER1_ID, TEST_MEMBER2_ID);
     }
 
 
@@ -113,27 +113,27 @@ class CalendarApiTest {
 
         // posts
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('1', '" + TEST_USER1_ID + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
+                "values ('1', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('2', '" + TEST_USER2_ID + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
+                "values ('2', '" + TEST_MEMBER2_ID + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('3', '" + TEST_USER3_ID + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
+                "values ('3', '" + TEST_MEMBER3_ID + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('4', '" + TEST_USER1_ID + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
+                "values ('4', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
 
         // family
         String familyId = objectMapper.readValue(
-                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), FamilyResponse.class
         ).familyId();
         String inviteCode = objectMapper.readValue(
-                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), DeepLinkResponse.class
         ).getLinkId();
         mockMvc.perform(post("/v1/me/join-family")
-                .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
+                .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new JoinFamilyRequest(inviteCode)))
         ).andExpect(status().isOk());
@@ -144,7 +144,7 @@ class CalendarApiTest {
                         .param("type", "WEEKLY")
                         .param("yearMonth", yearMonth)
                         .param("week", week.toString())
-                        .header("X-AUTH-TOKEN", TEST_USER1_TOKEN)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].date").value("2023-11-01"))
@@ -163,21 +163,21 @@ class CalendarApiTest {
         // posts
         String now = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('1', '" + TEST_USER1_ID + "', 'https://storage.com/images/1', 0, 0, '" + now + "', '" + now + "', 'post1111', '1');");
+                "values ('1', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/1', 0, 0, '" + now + "', '" + now + "', 'post1111', '1');");
 
         // family
         String familyId = objectMapper.readValue(
-                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), FamilyResponse.class
         ).familyId();
         String inviteCode = objectMapper.readValue(
-                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), DeepLinkResponse.class
         ).getLinkId();
         mockMvc.perform(post("/v1/me/join-family")
-                .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
+                .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new JoinFamilyRequest(inviteCode)))
         ).andExpect(status().isOk());
@@ -186,7 +186,7 @@ class CalendarApiTest {
         // When & Then
         mockMvc.perform(get("/v1/calendar")
                         .param("type", "WEEKLY")
-                        .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].date").value(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
@@ -203,35 +203,35 @@ class CalendarApiTest {
 
         // posts
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('1', '" + TEST_USER1_ID + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
+                "values ('1', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('2', '" + TEST_USER2_ID + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
+                "values ('2', '" + TEST_MEMBER2_ID + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('3', '" + TEST_USER3_ID + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
+                "values ('3', '" + TEST_MEMBER3_ID + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('4', '" + TEST_USER1_ID + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
+                "values ('4', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('5', '" + TEST_USER1_ID + "', 'https://storage.com/images/5', 0, 0, '2023-11-29 14:00:00', '2023-11-29 14:00:00', 'post5555', '5');");
+                "values ('5', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/5', 0, 0, '2023-11-29 14:00:00', '2023-11-29 14:00:00', 'post5555', '5');");
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('6', '" + TEST_USER2_ID + "', 'https://storage.com/images/6', 0, 0, '2023-11-29 15:00:00', '2023-11-29 15:00:00', 'post6666', '6');");
+                "values ('6', '" + TEST_MEMBER2_ID + "', 'https://storage.com/images/6', 0, 0, '2023-11-29 15:00:00', '2023-11-29 15:00:00', 'post6666', '6');");
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('7', '" + TEST_USER3_ID + "', 'https://storage.com/images/7', 0, 0, '2023-11-29 17:00:00', '2023-11-29 17:00:00', 'post7777', '7');");
+                "values ('7', '" + TEST_MEMBER3_ID + "', 'https://storage.com/images/7', 0, 0, '2023-11-29 17:00:00', '2023-11-29 17:00:00', 'post7777', '7');");
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('8', '" + TEST_USER1_ID + "', 'https://storage.com/images/8', 0, 0, '2023-11-30 14:00:00', '2023-11-30 14:00:00', 'post8888', '8');");
+                "values ('8', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/8', 0, 0, '2023-11-30 14:00:00', '2023-11-30 14:00:00', 'post8888', '8');");
 
         // family
         String familyId = objectMapper.readValue(
-                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), FamilyResponse.class
         ).familyId();
         String inviteCode = objectMapper.readValue(
-                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), DeepLinkResponse.class
         ).getLinkId();
         mockMvc.perform(post("/v1/me/join-family")
-                .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
+                .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new JoinFamilyRequest(inviteCode)))
         ).andExpect(status().isOk());
@@ -241,7 +241,7 @@ class CalendarApiTest {
         mockMvc.perform(get("/v1/calendar")
                         .param("type", "MONTHLY")
                         .param("yearMonth", yearMonth)
-                        .header("X-AUTH-TOKEN", TEST_USER1_TOKEN)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].date").value("2023-11-01"))
@@ -269,21 +269,21 @@ class CalendarApiTest {
         // posts
         String now = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('1', '" + TEST_USER1_ID + "', 'https://storage.com/images/1', 0, 0, '" + now + "', '" + now + "', 'post1111', '1');");
+                "values ('1', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/1', 0, 0, '" + now + "', '" + now + "', 'post1111', '1');");
 
         // family
         String familyId = objectMapper.readValue(
-                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), FamilyResponse.class
         ).familyId();
         String inviteCode = objectMapper.readValue(
-                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_USER1_TOKEN))
+                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), DeepLinkResponse.class
         ).getLinkId();
         mockMvc.perform(post("/v1/me/join-family")
-                .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
+                .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new JoinFamilyRequest(inviteCode)))
         ).andExpect(status().isOk());
@@ -292,7 +292,7 @@ class CalendarApiTest {
         // When & Then
         mockMvc.perform(get("/v1/calendar")
                         .param("type", "MONTHLY")
-                        .header("X-AUTH-TOKEN", TEST_USER2_TOKEN)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].date").value(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
