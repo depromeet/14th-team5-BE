@@ -73,8 +73,8 @@ public class MemberControllerTest {
         when(authenticationHolder.getUserId()).thenReturn("1");
         when(memberService.findFamilyIdByMemberId(anyString())).thenReturn(familyId);
         Page<FamilyMemberProfileResponse> profilePage = new PageImpl<>(Arrays.asList(
-                new FamilyMemberProfileResponse(member1.getId(), member1.getName(), member1.getProfileImgUrl()),
-                new FamilyMemberProfileResponse(member2.getId(), member2.getName(), member2.getProfileImgUrl())
+                new FamilyMemberProfileResponse(member1.getId(), member1.getName(), member1.getProfileImgUrl(), member1.getDayOfBirth()),
+                new FamilyMemberProfileResponse(member2.getId(), member2.getName(), member2.getProfileImgUrl(), member2.getDayOfBirth())
         ));
         when(memberService.findFamilyMembersProfilesByFamilyId(familyId, 1, 5))
                 .thenReturn(profilePage);
