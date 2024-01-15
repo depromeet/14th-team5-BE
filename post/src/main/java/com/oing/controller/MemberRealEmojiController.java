@@ -7,6 +7,7 @@ import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.dto.response.RealEmojisResponse;
 import com.oing.restapi.MemberRealEmojiApi;
+import com.oing.util.PreSignedUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
@@ -14,9 +15,12 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class MemberRealEmojiController implements MemberRealEmojiApi {
 
+    private final PreSignedUrlGenerator preSignedUrlGenerator;
+
     @Override
     public PreSignedUrlResponse requestPresignedUrl(String memberId, PreSignedUrlRequest request) {
-        return new PreSignedUrlResponse("https://test/2021-08-22/real-emoji-1.jpg");
+        String imageName = request.imageName();
+        return preSignedUrlGenerator.getFeedPreSignedUrl(imageName);
     }
 
     @Override
