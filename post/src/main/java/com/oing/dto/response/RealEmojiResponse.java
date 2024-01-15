@@ -1,5 +1,6 @@
 package com.oing.dto.response;
 
+import com.oing.domain.MemberRealEmoji;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "자신이 생성한 리얼 이모지 응답")
@@ -13,4 +14,8 @@ public record RealEmojiResponse (
         @Schema(description = "리얼 이모지 이미지 주소", example = "https://no5ing.com/profile/1.jpg")
         String imageUrl
 ){
+    public static RealEmojiResponse from(MemberRealEmoji realEmoji) {
+        return new RealEmojiResponse(realEmoji.getId(), realEmoji.getType().getTypeKey(),
+                realEmoji.getRealEmojiImageUrl());
+    }
 }
