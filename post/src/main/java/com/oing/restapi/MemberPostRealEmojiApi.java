@@ -29,15 +29,15 @@ public interface MemberPostRealEmojiApi {
     );
 
     @Operation(summary = "게시물에서 리얼 이모지 삭제", description = "게시물에서 리얼 이모지를 삭제합니다.")
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/{postId}/{realEmojiId}")
     DefaultResponse deleteRealEmoji(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String postId,
 
-            @Valid
-            @RequestBody
-            PostRealEmojiRequest request
+            @Parameter(description = "리얼 이모지 ID", example = "01HEFDFADFDFDAFDFDARS2E97")
+            @PathVariable
+            String realEmojiId
     );
 
     @Operation(summary = "게시물의 리얼 이모지 전체 조회", description = "게시물에 달린 모든 리얼 이모지 목록을 조회합니다.")

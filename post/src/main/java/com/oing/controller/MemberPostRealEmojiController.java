@@ -35,7 +35,7 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
     }
 
     @Override
-    public DefaultResponse deleteRealEmoji(String postId, PostRealEmojiRequest request) {
+    public DefaultResponse deleteRealEmoji(String postId, String realEmojiId) {
         return new DefaultResponse(true);
     }
 
