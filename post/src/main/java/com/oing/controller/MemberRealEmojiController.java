@@ -15,17 +15,17 @@ import org.springframework.stereotype.Controller;
 public class MemberRealEmojiController implements MemberRealEmojiApi {
 
     @Override
-    public PreSignedUrlResponse requestPresignedUrl(PreSignedUrlRequest request) {
+    public PreSignedUrlResponse requestPresignedUrl(String memberId, PreSignedUrlRequest request) {
         return new PreSignedUrlResponse("https://test/2021-08-22/real-emoji-1.jpg");
     }
 
     @Override
-    public DefaultResponse createMyRealEmoji(CreateMyRealEmojiRequest request) {
+    public DefaultResponse createMyRealEmoji(String memberId, CreateMyRealEmojiRequest request) {
         return new DefaultResponse(true);
     }
 
     @Override
-    public DefaultResponse changeMyRealEmoji(String realEmojiId, CreateMyRealEmojiRequest request) {
+    public DefaultResponse changeMyRealEmoji(String memberId, String realEmojiId, CreateMyRealEmojiRequest request) {
         return new DefaultResponse(true);
     }
 
