@@ -1,12 +1,15 @@
 package com.oing.service;
 
+import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostComment;
 import com.oing.domain.PaginationDTO;
 import com.oing.exception.MemberPostCommentNotFoundException;
 import com.oing.repository.MemberPostCommentRepository;
+import com.oing.service.event.DeleteMemberPostEvent;
 import com.querydsl.core.QueryResults;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -67,5 +70,11 @@ public class MemberPostCommentService {
                 totalPage,
                 results.getResults()
         );
+    }
+
+    @EventListener
+    public void deleteAllWhenPostDelete(DeleteMemberPostEvent event) {
+        MemberPost post = event.memberPost();
+        memberPostCommentRepository.deleteAllByPostId(post.getId());
     }
 }

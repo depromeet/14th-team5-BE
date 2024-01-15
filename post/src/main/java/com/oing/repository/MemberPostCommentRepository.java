@@ -4,4 +4,5 @@ import com.oing.domain.MemberPostComment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberPostCommentRepository extends JpaRepository<MemberPostComment, String>, MemberPostCommentRepositoryCustom {
+    void deleteAllByPostId(String memberPostId);
 }
