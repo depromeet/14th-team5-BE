@@ -14,7 +14,7 @@ app:
 cloud:
   ncp:
     region: test
-    end-point: test
+    end-point: https://test.com/
     access-key: access-key
     secret-key: secret-key
     storage:
