@@ -20,8 +20,8 @@ public record PostRealEmojiResponse(
         @Schema(description = "피드 게시물 리얼 이모지 이미지 주소", example = "http://test.com/test-profile.jpg")
         String emojiImageUrl
 ) {
-    public static PostRealEmojiResponse from(MemberPostRealEmoji emoji) {
-        return new PostRealEmojiResponse(emoji.getId(), emoji.getPost().getId(), emoji.getMemberId(),
-                emoji.getRealEmoji().getId(), emoji.getRealEmoji().getRealEmojiImageUrl());
+    public static PostRealEmojiResponse from(MemberPostRealEmoji postRealEmoji) {
+        return new PostRealEmojiResponse(postRealEmoji.getId(), postRealEmoji.getPost().getId(), postRealEmoji.getMemberId(),
+                postRealEmoji.getRealEmoji().getId(), postRealEmoji.getRealEmoji().getRealEmojiImageUrl());
     }
 }

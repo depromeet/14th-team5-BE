@@ -10,6 +10,7 @@ import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PostRealEmojiResponse;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.RealEmojiAlreadyExistsException;
+import com.oing.exception.RegisteredRealEmojiNotFoundException;
 import com.oing.restapi.MemberPostRealEmojiApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostRealEmojiService;
@@ -40,6 +41,7 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
      * @param request 리얼 이모지 등록 요청
      * @return 생성된 리얼 이모지
      * @throws AuthorizationFailedException 내 가족이 올린 게시물이 아닌 경우
+     * @throws RealEmojiAlreadyExistsException 이미 등록된 리얼 이모지인 경우
      */
     @Transactional
     @Override
@@ -51,23 +53,37 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
 
         MemberRealEmoji realEmoji = memberRealEmojiService.getMemberRealEmojiById(request.realEmojiId());
         validatePostRealEmojiForAddition(post, memberId, realEmoji);
-        MemberPostRealEmoji emoji = new MemberPostRealEmoji(identityGenerator.generateIdentity(), realEmoji,
+        MemberPostRealEmoji postRealEmoji = new MemberPostRealEmoji(identityGenerator.generateIdentity(), realEmoji,
                 post, memberId);
-        memberPostRealEmojiService.savePostRealEmoji(emoji);
-        MemberPostRealEmoji addedRealEmoji = post.addRealEmoji(emoji);
-        return PostRealEmojiResponse.from(addedRealEmoji);
+        MemberPostRealEmoji addedPostRealEmoji = memberPostRealEmojiService.savePostRealEmoji(postRealEmoji);
+        post.addRealEmoji(postRealEmoji);
+        return PostRealEmojiResponse.from(addedPostRealEmoji);
     }
 
     private void validatePostRealEmojiForAddition(MemberPost post, String memberId, MemberRealEmoji emoji) {
-        if (memberPostRealEmojiService.isMemberPostReactionExists(post, memberId, emoji)) {
+        if (memberPostRealEmojiService.isMemberPostRealEmojiExists(post, memberId, emoji)) {
             throw new RealEmojiAlreadyExistsException();
         }
     }
 
+    /**
+     * 게시물에 등록된 리얼 이모지를 삭제합니다
+     * @param postId 게시물 ID
+     * @param realEmojiId 리얼 이모지 ID
+     * @return 삭제 결과
+     * @throws RegisteredRealEmojiNotFoundException 등록한 리얼 이모지가 없는 경우
+     */
     @Transactional
     @Override
     public DefaultResponse deletePostRealEmoji(String postId, String realEmojiId) {
-        return new DefaultResponse(true);
+        String memberId = authenticationHolder.getUserId();
+        MemberPost post = memberPostService.getMemberPostById(postId);
+        MemberPostRealEmoji postRealEmoji = memberPostRealEmojiService
+                .getMemberPostRealEmojiByRealEmojiIdAndMemberId(realEmojiId, memberId);
+
+        memberPostRealEmojiService.deletePostRealEmoji(postRealEmoji);
+        post.removeRealEmoji(postRealEmoji);
+        return DefaultResponse.ok();
     }
 
     @Override

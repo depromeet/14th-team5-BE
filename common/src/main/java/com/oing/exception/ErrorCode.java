@@ -59,6 +59,7 @@ public enum ErrorCode {
      */
     REAL_EMOJI_NOT_FOUND("RE0001", "Real-Emoji not found"),
     REAL_EMOJI_ALREADY_EXISTS("RE0002", "Real-Emoji already exists"),
+    REGISTERED_REAL_EMOJI_NOT_FOUND("RE0003", "Registered Real-Emoji not found"),
     /**
      * Deep Link Related Errors
      */
