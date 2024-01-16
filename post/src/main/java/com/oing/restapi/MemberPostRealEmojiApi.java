@@ -18,7 +18,7 @@ public interface MemberPostRealEmojiApi {
 
     @Operation(summary = "게시물에 리얼 이모지 등록", description = "게시물에 리얼 이모지를 추가합니다.")
     @PostMapping
-    DefaultResponse createRealEmoji(
+    PostRealEmojiResponse createPostRealEmoji(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String postId,
@@ -30,7 +30,7 @@ public interface MemberPostRealEmojiApi {
 
     @Operation(summary = "게시물에서 리얼 이모지 삭제", description = "게시물에서 리얼 이모지를 삭제합니다.")
     @DeleteMapping("/{realEmojiId}")
-    DefaultResponse deleteRealEmoji(
+    DefaultResponse deletePostRealEmoji(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String postId,

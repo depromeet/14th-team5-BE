@@ -2,40 +2,71 @@ package com.oing.controller;
 
 
 import com.oing.domain.MemberPost;
-import com.oing.domain.PaginationDTO;
-import com.oing.dto.request.CreatePostRequest;
+import com.oing.domain.MemberPostRealEmoji;
+import com.oing.domain.MemberRealEmoji;
 import com.oing.dto.request.PostRealEmojiRequest;
-import com.oing.dto.request.PreSignedUrlRequest;
-import com.oing.dto.response.*;
-import com.oing.exception.DuplicatePostUploadException;
-import com.oing.exception.InvalidUploadTimeException;
-import com.oing.restapi.MemberPostApi;
+import com.oing.dto.response.ArrayResponse;
+import com.oing.dto.response.DefaultResponse;
+import com.oing.dto.response.PostRealEmojiResponse;
+import com.oing.exception.AuthorizationFailedException;
+import com.oing.exception.RealEmojiAlreadyExistsException;
 import com.oing.restapi.MemberPostRealEmojiApi;
 import com.oing.service.MemberBridge;
+import com.oing.service.MemberPostRealEmojiService;
 import com.oing.service.MemberPostService;
+import com.oing.service.MemberRealEmojiService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
-import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.util.Collections;
 
 @RequiredArgsConstructor
 @Controller
 public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
 
+    private final AuthenticationHolder authenticationHolder;
+    private final IdentityGenerator identityGenerator;
+    private final MemberPostService memberPostService;
+    private final MemberPostRealEmojiService memberPostRealEmojiService;
+    private final MemberRealEmojiService memberRealEmojiService;
+    private final MemberBridge memberBridge;
+
+    /**
+     * 게시물에 리얼 이모지를 등록합니다
+     * @param postId 게시물 ID
+     * @param request 리얼 이모지 등록 요청
+     * @return 생성된 리얼 이모지
+     * @throws AuthorizationFailedException 내 가족이 올린 게시물이 아닌 경우
+     */
+    @Transactional
     @Override
-    public DefaultResponse createRealEmoji(String postId, PostRealEmojiRequest request) {
-        return new DefaultResponse(true);
+    public PostRealEmojiResponse createPostRealEmoji(String postId, PostRealEmojiRequest request) {
+        String memberId = authenticationHolder.getUserId();
+        MemberPost post = memberPostService.getMemberPostById(postId);
+        if (!memberBridge.isInSameFamily(memberId, post.getMemberId()))
+            throw new AuthorizationFailedException();
+
+        MemberRealEmoji realEmoji = memberRealEmojiService.getMemberRealEmojiById(request.realEmojiId());
+        validatePostRealEmojiForAddition(post, memberId, realEmoji);
+        MemberPostRealEmoji emoji = new MemberPostRealEmoji(identityGenerator.generateIdentity(), realEmoji,
+                post, memberId);
+        memberPostRealEmojiService.savePostRealEmoji(emoji);
+        MemberPostRealEmoji addedRealEmoji = post.addRealEmoji(emoji);
+        return PostRealEmojiResponse.from(addedRealEmoji);
     }
 
+    private void validatePostRealEmojiForAddition(MemberPost post, String memberId, MemberRealEmoji emoji) {
+        if (memberPostRealEmojiService.isMemberPostReactionExists(post, memberId, emoji)) {
+            throw new RealEmojiAlreadyExistsException();
+        }
+    }
+
+    @Transactional
     @Override
-    public DefaultResponse deleteRealEmoji(String postId, String realEmojiId) {
+    public DefaultResponse deletePostRealEmoji(String postId, String realEmojiId) {
         return new DefaultResponse(true);
     }
 

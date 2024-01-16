@@ -79,9 +79,10 @@ public class MemberPost extends BaseAuditEntity {
         this.reactionCnt -= 1;
     }
 
-    public void addRealEmoji(MemberPostRealEmoji realEmoji) {
+    public MemberPostRealEmoji addRealEmoji(MemberPostRealEmoji realEmoji) {
         this.realEmojis.add(realEmoji);
         this.realEmojiCnt += 1;
+        return realEmoji;
     }
 
     public void removeRealEmoji(MemberPostRealEmoji realEmoji) {
