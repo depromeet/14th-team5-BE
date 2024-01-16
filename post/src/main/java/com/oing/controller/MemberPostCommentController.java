@@ -51,6 +51,7 @@ public class MemberPostCommentController implements MemberPostCommentApi {
                 memberId,
                 request.content()
         );
+        memberPostCommentService.savePostComment(memberPostComment);
         MemberPostComment addedComment = memberPost.addComment(memberPostComment);
         return PostCommentResponse.from(addedComment);
     }
@@ -75,6 +76,7 @@ public class MemberPostCommentController implements MemberPostCommentApi {
             throw new AuthorizationFailedException();
         }
 
+        memberPostCommentService.deletePostComment(memberPostComment);
         memberPost.removeComment(memberPostComment);
         return DefaultResponse.ok();
     }
