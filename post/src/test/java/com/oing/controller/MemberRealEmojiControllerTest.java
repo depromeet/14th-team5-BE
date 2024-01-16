@@ -10,6 +10,7 @@ import com.oing.dto.response.RealEmojiResponse;
 import com.oing.exception.DuplicateRealEmojiException;
 import com.oing.service.MemberRealEmojiService;
 import com.oing.util.AuthenticationHolder;
+import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ public class MemberRealEmojiControllerTest {
 
     @Mock
     private AuthenticationHolder authenticationHolder;
+    @Mock
+    private IdentityGenerator identityGenerator;
     @Mock
     private MemberRealEmojiService memberRealEmojiService;
     @Mock
