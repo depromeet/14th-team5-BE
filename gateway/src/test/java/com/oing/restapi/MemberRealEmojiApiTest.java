@@ -33,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 public class MemberRealEmojiApiTest {
-
     @Autowired
     private MockMvc mockMvc;
 
