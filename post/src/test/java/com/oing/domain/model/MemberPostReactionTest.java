@@ -23,7 +23,7 @@ public class MemberPostReactionTest {
         String reactionId = "sampleCommentId";
         Emoji emoji = Emoji.EMOJI_1;
         MemberPost post = new MemberPost(postId, memberId, imageUrl, imageKey, content, 0,
-                0, null, null);
+                0, 0, null, null, null);
 
         // When
         MemberPostReaction reaction = new MemberPostReaction(reactionId, post, memberId, emoji);

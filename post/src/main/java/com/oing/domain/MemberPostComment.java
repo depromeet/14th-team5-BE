@@ -27,4 +27,8 @@ public class MemberPostComment extends BaseAuditEntity {
 
     @Column(name = "comment", nullable = false)
     private String comment;
+
+    public void setContent(String comment) {
+        this.comment = comment;
+    }
 }

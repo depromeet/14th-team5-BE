@@ -64,4 +64,9 @@ public interface MeApi {
     AppVersionResponse getCurrentAppVersion(
             @RequestAppKey UUID appKey
     );
+
+    @Operation(summary = "가족 탈퇴", description = "가족을 탈퇴합니다.")
+    @PostMapping("/quit-family")
+    DefaultResponse quitFamily();
+
 }

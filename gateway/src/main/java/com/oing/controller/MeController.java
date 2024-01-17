@@ -14,6 +14,7 @@ import com.oing.dto.response.MemberResponse;
 import com.oing.exception.AlreadyInFamilyException;
 import com.oing.exception.DomainException;
 import com.oing.exception.ErrorCode;
+import com.oing.exception.FamilyNotFoundException;
 import com.oing.restapi.MeApi;
 import com.oing.service.FamilyInviteLinkService;
 import com.oing.service.FamilyService;
@@ -90,9 +91,21 @@ public class MeController implements MeApi {
         return FamilyResponse.of(family);
     }
 
+
     @Override
     public AppVersionResponse getCurrentAppVersion(UUID appKey) {
         AppVersion appVersion = appVersionCache.getAppVersion(appKey);
         return AppVersionResponse.from(appVersion);
+    }
+
+    @Transactional
+    @Override
+    public DefaultResponse quitFamily() {
+        String memberId = authenticationHolder.getUserId();
+        Member member = memberService.findMemberById(memberId);
+        if (!member.hasFamily()) throw new FamilyNotFoundException();
+        member.setFamilyId(null);
+
+        return DefaultResponse.ok();
     }
 }

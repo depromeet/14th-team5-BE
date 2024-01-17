@@ -5,6 +5,7 @@ import com.oing.domain.MemberPost;
 import com.oing.domain.PaginationDTO;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
+import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
@@ -106,5 +107,11 @@ public class MemberPostController implements MemberPostApi {
     public PostResponse getPost(String postId) {
         MemberPost memberPostProjection = memberPostService.getMemberPostById(postId);
         return PostResponse.from(memberPostProjection);
+    }
+
+    @Override
+    public DefaultResponse deletePost(String postId) {
+        memberPostService.deleteMemberPostById(postId);
+        return DefaultResponse.ok();
     }
 }

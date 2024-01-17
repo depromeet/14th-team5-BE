@@ -7,5 +7,7 @@ public interface PreSignedUrlGenerator {
 
     PreSignedUrlResponse getProfileImagePreSignedUrl(String imageName);
 
+    PreSignedUrlResponse getRealEmojiPreSignedUrl(String imageName);
+
     String extractImageKey(String imageUrl);
 }
