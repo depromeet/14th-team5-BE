@@ -30,7 +30,7 @@ public interface MemberRealEmojiApi {
             PreSignedUrlRequest request
     );
 
-    @Operation(summary = "회원의 리얼 이모지 추가", description = "자신의 리얼 이모지를 추가합니다.")
+    @Operation(summary = "회원의 리얼 이모지 추가", description = "회원의 리얼 이모지를 추가합니다.")
     @PostMapping
     RealEmojiResponse createMemberRealEmoji(
             @Parameter(description = "회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
@@ -42,7 +42,7 @@ public interface MemberRealEmojiApi {
             CreateMyRealEmojiRequest request
     );
 
-    @Operation(summary = "회원의 리얼 이모지 변경", description = "자신의 리얼 이모지 사진을 변경합니다.")
+    @Operation(summary = "회원의 리얼 이모지 변경", description = "회원의 리얼 이모지 사진을 변경합니다.")
     @PutMapping("/{realEmojiId}")
     RealEmojiResponse changeMemberRealEmoji(
             @Parameter(description = "회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
@@ -58,7 +58,7 @@ public interface MemberRealEmojiApi {
             UpdateMyRealEmojiRequest request
     );
 
-    @Operation(summary = "회원의 리얼 이모지 조회", description = "자신의 리얼 이모지를 조회합니다.")
+    @Operation(summary = "회원의 리얼 이모지 조회", description = "회원의 리얼 이모지를 조회합니다.")
     @GetMapping
     RealEmojisResponse getMemberRealEmojis(
             @Parameter(description = "회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
