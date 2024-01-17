@@ -28,6 +28,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Controller
 public class AuthController implements AuthApi {
+    private final static String MEMBER_PROFILE_DEFAULT_COLOR = "#353538";
     private final AuthService authService;
     private final MemberService memberService;
     private final TokenGenerator tokenGenerator;
@@ -80,13 +81,14 @@ public class AuthController implements AuthApi {
                 throw new MemberAlreadyExistsException();
             }
 
+            String profileColor = request.profileColor() != null ? request.profileColor() : MEMBER_PROFILE_DEFAULT_COLOR;
             CreateNewUserDTO createNewUserDTO = new CreateNewUserDTO(
                     SocialLoginProvider.fromString(token.provider()),
                     token.userId(),
                     request.memberName(),
                     request.dayOfBirth(),
                     request.profileImgUrl(),
-                    request.profileColor()
+                    profileColor
             );
             Member member = memberService.createNewMember(createNewUserDTO);
 
