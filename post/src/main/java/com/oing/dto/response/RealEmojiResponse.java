@@ -3,7 +3,7 @@ package com.oing.dto.response;
 import com.oing.domain.MemberRealEmoji;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "자신이 생성한 리얼 이모지 응답")
+@Schema(description = "회원이 생성한 리얼 이모지 응답")
 public record RealEmojiResponse (
         @Schema(description = "리얼 이모지 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
         String realEmojiId,
