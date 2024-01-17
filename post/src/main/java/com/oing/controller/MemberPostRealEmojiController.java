@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -135,17 +136,22 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
     @Override
     public PostRealEmojiMemberResponse getPostRealEmojiMembers(String postId) {
         MemberPost post = memberPostService.getMemberPostById(postId);
-        return new PostRealEmojiMemberResponse(post.getRealEmojis()
-                .stream()
-                .collect(Collectors.groupingBy(MemberPostRealEmoji::getRealEmoji))
-                .entrySet()
+
+        Map<MemberRealEmoji, List<String>> realEmojiMemberMap = groupByRealEmoji(post.getRealEmojis());
+        Map<String, List<String>> result = realEmojiMemberMap.entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey().getId(),
-                        entry -> entry.getValue().stream()
-                                .map(MemberPostRealEmoji::getMemberId)
-                                .toList()
-                ))
-        );
+                        Map.Entry::getValue
+                ));
+        return new PostRealEmojiMemberResponse(result);
+    }
+
+    private Map<MemberRealEmoji, List<String>> groupByRealEmoji(List<MemberPostRealEmoji> realEmojis) {
+        return realEmojis.stream()
+                .collect(Collectors.groupingBy(
+                        MemberPostRealEmoji::getRealEmoji,
+                        Collectors.mapping(MemberPostRealEmoji::getMemberId, Collectors.toList())
+                ));
     }
 }
