@@ -1,29 +1,16 @@
 package com.oing.controller;
 
 
-import com.oing.domain.MemberPost;
-import com.oing.domain.PaginationDTO;
-import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PostRealEmojiRequest;
-import com.oing.dto.request.PreSignedUrlRequest;
-import com.oing.dto.response.*;
-import com.oing.exception.DuplicatePostUploadException;
-import com.oing.exception.InvalidUploadTimeException;
-import com.oing.restapi.MemberPostApi;
+import com.oing.dto.response.ArrayResponse;
+import com.oing.dto.response.DefaultResponse;
+import com.oing.dto.response.PostRealEmojiResponse;
 import com.oing.restapi.MemberPostRealEmojiApi;
-import com.oing.service.MemberBridge;
-import com.oing.service.MemberPostService;
-import com.oing.util.AuthenticationHolder;
-import com.oing.util.IdentityGenerator;
-import com.oing.util.PreSignedUrlGenerator;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -41,6 +28,15 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
 
     @Override
     public ArrayResponse<PostRealEmojiResponse> getPostRealEmojis(String postId) {
-        return ArrayResponse.of(Collections.emptyList());
+        List<PostRealEmojiResponse> mockResponses = Arrays.asList(
+                new PostRealEmojiResponse("01HGW2N7EHJVJ4CJ999RRS2E97", "emoji_1", postId,
+                        "01HUUDFAOHJVJ4CJ999RRS2E97", "http://test.com/images/test1.jpg"),
+                new PostRealEmojiResponse("01HGW2N7EHJVJ4CJ999RRS2E97", "emoji_2", postId,
+                        "01HGW2N7EHJVJ4CJ999RRS2E97", "http://test.com/images/test2.jpg"),
+                new PostRealEmojiResponse("01DGW2N7EFFFEDFAG9RRS2E976", "emoji_2", postId,
+                        "01HGW2N7EHJVJEEFD99RRS2E97", "http://test.com/images/test2.jpg")
+        );
+
+        return ArrayResponse.of(mockResponses);
     }
 }
