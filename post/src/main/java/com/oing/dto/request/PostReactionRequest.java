@@ -12,8 +12,7 @@ import jakarta.validation.constraints.NotBlank;
 @Schema(description = "피드 게시물 반응 생성 및 삭제 요청")
 public record PostReactionRequest(
         @NotBlank
-        @Schema(description = "이모지", example = "smile",
-                allowableValues = {"heart", "slightly_smiling_face", "shining_face", "smiling_face", "smile"})
+        @Schema(description = "이모지", example = "emoji_1")
         String content
 ) {
 }

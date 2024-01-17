@@ -66,6 +66,12 @@ public class MemberPostReactionController implements MemberPostReactionApi {
         return DefaultResponse.ok();
     }
 
+    private void validatePostReactionForDeletion(MemberPost post, String memberId, Emoji emoji) {
+        if (!memberPostReactionService.isMemberPostReactionExists(post, memberId, emoji)) {
+            throw new EmojiNotFoundException();
+        }
+    }
+
     @Override
     @Transactional
     public PostReactionSummaryResponse getPostReactionSummary(String postId) {
@@ -112,11 +118,5 @@ public class MemberPostReactionController implements MemberPostReactionApi {
         emojiList.forEach(emoji -> emojiMemberIdsMap.putIfAbsent(emoji.getTypeKey(), Collections.emptyList()));
 
         return new PostReactionsResponse(emojiMemberIdsMap);
-    }
-
-    private void validatePostReactionForDeletion(MemberPost post, String memberId, Emoji emoji) {
-        if (!memberPostReactionService.isMemberPostReactionExists(post, memberId, emoji)) {
-            throw new EmojiNotFoundException();
-        }
     }
 }
