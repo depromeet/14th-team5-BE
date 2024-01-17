@@ -23,8 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -133,5 +132,34 @@ public class MemberRealEmojiApiTest {
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.imageUrl").value(realEmojiImageUrl));
+    }
+
+    @Test
+    void 회원_리얼이모지_조회_테스트() throws Exception {
+        //given
+        String realEmojiImageUrl = "https://test.com/bucket/images/realEmoji.jpg";
+        memberRealEmojiRepository.save(
+                new MemberRealEmoji(
+                        TEST_MEMBER_REAL_EMOJI_ID,
+                        TEST_MEMBER_ID,
+                        Emoji.EMOJI_1,
+                        realEmojiImageUrl,
+                        "images/defaultEmoji.jpg"
+                )
+        );
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get("/v1/members/{memberId}/real-emoji", TEST_MEMBER_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.myRealEmojiList[0].realEmojiId").value(TEST_MEMBER_REAL_EMOJI_ID))
+                .andExpect(jsonPath("$.myRealEmojiList[0].type").value(Emoji.EMOJI_1.getTypeKey()))
+                .andExpect(jsonPath("$.myRealEmojiList[0].imageUrl").value(realEmojiImageUrl));
     }
 }
