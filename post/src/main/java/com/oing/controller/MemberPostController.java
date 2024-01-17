@@ -41,6 +41,7 @@ public class MemberPostController implements MemberPostApi {
     private final MemberPostService memberPostService;
     private final MemberBridge memberBridge;
 
+    @Transactional
     @Override
     public PreSignedUrlResponse requestPresignedUrl(PreSignedUrlRequest request) {
         String imageName = request.imageName();
