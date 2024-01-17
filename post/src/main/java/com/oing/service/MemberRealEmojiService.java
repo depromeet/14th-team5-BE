@@ -15,6 +15,12 @@ public class MemberRealEmojiService {
 
     private final MemberRealEmojiRepository memberRealEmojiRepository;
 
+
+    public MemberRealEmoji getMemberRealEmojiById(String realEmojiId) {
+        return memberRealEmojiRepository.findById(realEmojiId)
+                .orElseThrow(RealEmojiNotFoundException::new);
+    }
+
     public MemberRealEmoji save(MemberRealEmoji emoji) {
         return memberRealEmojiRepository.save(emoji);
     }
@@ -34,4 +40,5 @@ public class MemberRealEmojiService {
     public List<MemberRealEmoji> findRealEmojisByMemberId(String memberId) {
         return memberRealEmojiRepository.findAllByMemberId(memberId);
     }
+
 }
