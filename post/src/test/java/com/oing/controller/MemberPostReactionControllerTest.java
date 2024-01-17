@@ -4,7 +4,7 @@ import com.oing.domain.Emoji;
 import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostReaction;
 import com.oing.dto.request.PostReactionRequest;
-import com.oing.dto.response.PostReactionsResponse;
+import com.oing.dto.response.PostReactionMemberResponse;
 import com.oing.exception.EmojiAlreadyExistsException;
 import com.oing.exception.EmojiNotFoundException;
 import com.oing.service.MemberPostReactionService;
@@ -122,7 +122,7 @@ public class MemberPostReactionControllerTest {
         when(memberPostReactionService.getMemberPostReactionsByPostId(post.getId())).thenReturn(mockReactions);
 
         //when
-        PostReactionsResponse response = memberPostReactionController.getPostReactionMembers(post.getId());
+        PostReactionMemberResponse response = memberPostReactionController.getPostReactionMembers(post.getId());
 
         //then
         assertTrue(response.emojiMemberIdsList().get(Emoji.EMOJI_1.getTypeKey()).contains(memberId));

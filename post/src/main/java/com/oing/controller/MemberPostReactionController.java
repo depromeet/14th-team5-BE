@@ -106,7 +106,7 @@ public class MemberPostReactionController implements MemberPostReactionApi {
 
     @Override
     @Transactional
-    public PostReactionsResponse getPostReactionMembers(String postId) {
+    public PostReactionMemberResponse getPostReactionMembers(String postId) {
         List<MemberPostReaction> reactions = memberPostReactionService.getMemberPostReactionsByPostId(postId);
         List<Emoji> emojiList = Emoji.getEmojiList();
 
@@ -117,6 +117,6 @@ public class MemberPostReactionController implements MemberPostReactionApi {
                 ));
         emojiList.forEach(emoji -> emojiMemberIdsMap.putIfAbsent(emoji.getTypeKey(), Collections.emptyList()));
 
-        return new PostReactionsResponse(emojiMemberIdsMap);
+        return new PostReactionMemberResponse(emojiMemberIdsMap);
     }
 }
