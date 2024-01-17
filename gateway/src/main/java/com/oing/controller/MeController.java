@@ -1,10 +1,13 @@
 package com.oing.controller;
 
+import com.oing.component.AppVersionCache;
+import com.oing.domain.AppVersion;
 import com.oing.domain.Family;
 import com.oing.domain.FamilyInviteLink;
 import com.oing.domain.Member;
 import com.oing.dto.request.AddFcmTokenRequest;
 import com.oing.dto.request.JoinFamilyRequest;
+import com.oing.dto.response.AppVersionResponse;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.dto.response.MemberResponse;
@@ -22,6 +25,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Controller
 public class MeController implements MeApi {
@@ -30,6 +35,7 @@ public class MeController implements MeApi {
     private final MemberDeviceService memberDeviceService;
     private final FamilyService familyService;
     private final FamilyInviteLinkService familyInviteLinkService;
+    private final AppVersionCache appVersionCache;
 
     @Override
     public MemberResponse getMe() {
@@ -83,6 +89,13 @@ public class MeController implements MeApi {
         Family family = familyService.createFamily();
         member.setFamilyId(family.getId());
         return FamilyResponse.of(family);
+    }
+
+
+    @Override
+    public AppVersionResponse getCurrentAppVersion(UUID appKey) {
+        AppVersion appVersion = appVersionCache.getAppVersion(appKey);
+        return AppVersionResponse.from(appVersion);
     }
 
     @Transactional

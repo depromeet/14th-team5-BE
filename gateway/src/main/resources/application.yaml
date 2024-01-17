@@ -43,6 +43,7 @@ app:
       - /v3/api-docs
       - /error
       - /v1/links/*
+      - /v1/me/app-version
     version-check-whitelists:
       - /actuator/**
       - /swagger-ui.html
