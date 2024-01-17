@@ -55,6 +55,11 @@ public enum ErrorCode {
             "(from 12:00 AM yesterday to 12:00 AM today)."),
     DUPLICATE_POST_UPLOAD("PO0002", "Duplicate Post Upload"),
     /**
+     * Real-Emoji Related Errors
+     */
+    REAL_EMOJI_NOT_FOUND("RE0001", "Real-Emoji not found"),
+    DUPLICATE_REAL_EMOJI("RE0002", "Duplicate Real Emoji"),
+    /**
      * Deep Link Related Errors
      */
     LINK_NOT_VALID("DL0001", "Link is not valid");

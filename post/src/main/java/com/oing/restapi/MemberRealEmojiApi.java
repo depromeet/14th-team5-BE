@@ -2,9 +2,10 @@ package com.oing.restapi;
 
 import com.oing.dto.request.CreateMyRealEmojiRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
-import com.oing.dto.response.DefaultResponse;
-import com.oing.dto.response.RealEmojisResponse;
+import com.oing.dto.request.UpdateMyRealEmojiRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.dto.response.RealEmojiResponse;
+import com.oing.dto.response.RealEmojisResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +32,7 @@ public interface MemberRealEmojiApi {
 
     @Operation(summary = "자신의 리얼 이모지 추가", description = "자신의 리얼 이모지를 추가합니다.")
     @PostMapping
-    DefaultResponse createMyRealEmoji(
+    RealEmojiResponse createMyRealEmoji(
             @Parameter(description = "회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String memberId,
@@ -43,7 +44,7 @@ public interface MemberRealEmojiApi {
 
     @Operation(summary = "자신의 리얼 이모지 변경", description = "자신의 리얼 이모지 사진을 변경합니다.")
     @PutMapping("/{realEmojiId}")
-    DefaultResponse changeMyRealEmoji(
+    RealEmojiResponse changeMyRealEmoji(
             @Parameter(description = "회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String memberId,
@@ -54,7 +55,7 @@ public interface MemberRealEmojiApi {
 
             @Valid
             @RequestBody
-            CreateMyRealEmojiRequest request
+            UpdateMyRealEmojiRequest request
     );
 
     @Operation(summary = "회원의 리얼 이모지 조회", description = "자신의 리얼 이모지를 조회합니다.")
