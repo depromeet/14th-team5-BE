@@ -46,6 +46,14 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
         return new PreSignedUrlResponse(generatePreSignedUrl(generatePresignedUrlRequest));
     }
 
+    @Override
+    public PreSignedUrlResponse getRealEmojiPreSignedUrl(String imageName) {
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest("real-emoji",
+                imageName);
+
+        return new PreSignedUrlResponse(generatePreSignedUrl(generatePresignedUrlRequest));
+    }
+
     private String generatePreSignedUrl(GeneratePresignedUrlRequest generatePresignedUrlRequest) {
         String preSignedUrl;
         try {

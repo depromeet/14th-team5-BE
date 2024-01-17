@@ -10,11 +10,12 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
         create_empty_composites:
           enabled: true
         show_sql: false
         format_sql: false
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
 app:
   external-urls:
     slack-webhook: https://www.naver.com # Must Be Replaced

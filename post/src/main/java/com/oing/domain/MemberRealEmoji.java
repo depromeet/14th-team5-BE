@@ -29,4 +29,9 @@ public class MemberRealEmoji extends BaseAuditEntity {
 
     @Column(name = "real_emoji_image_key", nullable = false)
     private String realEmojiImageKey;
+
+    public void updateRealEmoji(String realEmojiImageUrl, String realEmojiImageKey) {
+        this.realEmojiImageUrl = realEmojiImageUrl;
+        this.realEmojiImageKey = realEmojiImageKey;
+    }
 }

@@ -66,6 +66,7 @@ public class MemberPostCommentControllerTest {
         when(authenticationHolder.getUserId()).thenReturn("1");
         when(memberBridge.isInSameFamily("1", "1")).thenReturn(true);
         when(identityGenerator.generateIdentity()).thenReturn(memberPost.getId());
+        when(memberPostCommentService.savePostComment(any())).thenReturn(memberPostComment);
 
         //when
         PostCommentResponse response = memberPostCommentController.createPostComment(

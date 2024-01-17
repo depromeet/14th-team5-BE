@@ -1,9 +1,10 @@
 package com.oing.dto.response;
 
+
 import com.oing.domain.MemberPostRealEmoji;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "피드 리얼 이모지 응답")
+@Schema(description = "피드 게시물 리얼 이모지 응답")
 public record PostRealEmojiResponse(
         @Schema(description = "피드 게시물 리얼 이모지 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
         String postRealEmojiId,

@@ -10,9 +10,13 @@ import com.oing.service.MemberPostService;
 import com.oing.service.MemberService;
 import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Controller;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -64,10 +68,15 @@ public class CalendarController implements CalendarApi {
     }
 
     @Override
-    public ArrayResponse<CalendarResponse> getWeeklyCalendar(String yearMonth, Long week) {
-        List<String> familyIds = getFamilyIds();
-        LocalDate startDate = LocalDate.parse(yearMonth + "-01").plusWeeks(week - 1);
+    public ArrayResponse<CalendarResponse> getWeeklyCalendar(String yearMonth, Integer week) {
+        if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        if (week == null) week = LocalDate.now().get(WeekFields.of(DayOfWeek.MONDAY, 1).weekOfMonth());
+
+        // 1주 = 해당 주차 (+ 0), 2주 이상 = 주차 추가 (+ (week - 1))
+        LocalDate startDate = LocalDate.parse(yearMonth + "-01").plusWeeks(week - 1); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusWeeks(1);
+        List<String> familyIds = getFamilyIds();
+
 
         List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
         return new ArrayResponse<>(calendarResponses);
@@ -75,9 +84,11 @@ public class CalendarController implements CalendarApi {
 
     @Override
     public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth) {
-        List<String> familyIds = getFamilyIds();
-        LocalDate startDate = LocalDate.parse(yearMonth + "-01");
+        if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
+        LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
+        List<String> familyIds = getFamilyIds();
 
         List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
         return new ArrayResponse<>(calendarResponses);
