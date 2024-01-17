@@ -5,9 +5,7 @@ import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostRealEmoji;
 import com.oing.domain.MemberRealEmoji;
 import com.oing.dto.request.PostRealEmojiRequest;
-import com.oing.dto.response.ArrayResponse;
-import com.oing.dto.response.DefaultResponse;
-import com.oing.dto.response.PostRealEmojiResponse;
+import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.RealEmojiAlreadyExistsException;
 import com.oing.exception.RegisteredRealEmojiNotFoundException;
@@ -22,13 +20,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-import java.util.Collections;
-import com.oing.restapi.MemberPostRealEmojiApi;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -92,17 +85,67 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
         return DefaultResponse.ok();
     }
 
+    /**
+     * 게시물에 등록된 리얼 이모지 요약을 조회합니다
+     * @param postId 게시물 ID
+     * @return 리얼 이모지 요약
+     */
+    @Override
+    @Transactional
+    public PostRealEmojiSummaryResponse getPostRealEmojiSummary(String postId) {
+        MemberPost post = memberPostService.findMemberPostById(postId);
+        List<PostRealEmojiSummaryResponse.PostRealEmojiSummaryResponseElement> results = post.getRealEmojis()
+                .stream()
+                .collect(Collectors.groupingBy(MemberPostRealEmoji::getRealEmoji))
+                .values()
+                .stream().map(element ->
+                        new PostRealEmojiSummaryResponse.PostRealEmojiSummaryResponseElement(
+                                element.get(0).getRealEmoji().getId(),
+                                element.size()
+                        )
+                )
+                .toList();
+        return new PostRealEmojiSummaryResponse(
+                post.getId(),
+                results
+        );
+    }
+
+    /**
+     * 게시물에 등록된 리얼 이모지 목록을 조회합니다
+     * @param postId 게시물 ID
+     * @return 리얼 이모지 목록
+     */
+    @Transactional
     @Override
     public ArrayResponse<PostRealEmojiResponse> getPostRealEmojis(String postId) {
-        List<PostRealEmojiResponse> mockResponses = Arrays.asList(
-                new PostRealEmojiResponse("01HGW2N7EHJVJ4CJ999RRS2E97", "emoji_1", postId,
-                        "01HUUDFAOHJVJ4CJ999RRS2E97", "http://test.com/images/test1.jpg"),
-                new PostRealEmojiResponse("01HGW2N7EHJVJ4CJ999RRS2E97", "emoji_2", postId,
-                        "01HGW2N7EHJVJ4CJ999RRS2E97", "http://test.com/images/test2.jpg"),
-                new PostRealEmojiResponse("01DGW2N7EFFFEDFAG9RRS2E976", "emoji_2", postId,
-                        "01HGW2N7EHJVJEEFD99RRS2E97", "http://test.com/images/test2.jpg")
+        MemberPost post = memberPostService.getMemberPostById(postId);
+        return ArrayResponse.of(post.getRealEmojis().stream()
+                .map(PostRealEmojiResponse::from)
+                .toList()
         );
+    }
 
-        return ArrayResponse.of(mockResponses);
+    /**
+     * 게시물에 등록된 리얼 이모지를 남긴 멤버 목록을 조회합니다
+     * @param postId 게시물 ID
+     * @return 리얼 이모지를 남긴 멤버 목록
+     */
+    @Transactional
+    @Override
+    public PostRealEmojiMemberResponse getPostRealEmojiMembers(String postId) {
+        MemberPost post = memberPostService.getMemberPostById(postId);
+        return new PostRealEmojiMemberResponse(post.getRealEmojis()
+                .stream()
+                .collect(Collectors.groupingBy(MemberPostRealEmoji::getRealEmoji))
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().getId(),
+                        entry -> entry.getValue().stream()
+                                .map(MemberPostRealEmoji::getMemberId)
+                                .toList()
+                ))
+        );
     }
 }
