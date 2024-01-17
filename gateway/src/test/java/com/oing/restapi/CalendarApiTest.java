@@ -73,7 +73,7 @@ class CalendarApiTest {
                         "testUser1",
                         "testUser1",
                         LocalDate.of(1999, 10, 18),
-                        "profile.com"
+                        "profile.com", ""
                 )
         ).getId();
         TEST_MEMBER1_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER1_ID).accessToken();
@@ -84,7 +84,7 @@ class CalendarApiTest {
                         "testUser2",
                         "testUser2",
                         LocalDate.of(2000, 10, 18),
-                        "profile.com"
+                        "profile.com", ""
                 )
         ).getId();
         TEST_MEMBER2_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER2_ID).accessToken();
@@ -95,7 +95,7 @@ class CalendarApiTest {
                         "testUser3",
                         "testUser3",
                         LocalDate.of(2001, 10, 18),
-                        "profile.com"
+                        "profile.com", ""
                 )
         ).getId();
         TEST_MEMBER3_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER3_ID).accessToken();

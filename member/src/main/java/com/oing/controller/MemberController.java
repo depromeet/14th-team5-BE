@@ -92,7 +92,7 @@ public class MemberController implements MemberApi {
         memberService.deleteAllSocialMembersByMember(memberId);
         member.deleteMemberInfo();
 
-        if (request != null) { //For Api Version Compatibility
+        if (request != null && request.reasonIds() != null) { //For Api Version Compatibility
             memberQuitReasonService.recordMemberQuitReason(memberId, request.reasonIds());
         }
 

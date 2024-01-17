@@ -61,6 +61,7 @@ public class MemberService {
                 .dayOfBirth(createNewUserDTO.dayOfBirth())
                 .profileImgUrl(createNewUserDTO.profileImgUrl())
                 .name(createNewUserDTO.memberName())
+                .profileColor(createNewUserDTO.profileColor())
                 .build();
         memberRepository.save(member);
 

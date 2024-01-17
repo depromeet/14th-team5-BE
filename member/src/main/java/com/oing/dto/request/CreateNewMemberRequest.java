@@ -24,6 +24,9 @@ public record CreateNewMemberRequest(
         LocalDate dayOfBirth,
 
         @Schema(description = "프로필 이미지 URL", example = "https://no5ing.com/profile/1.jpg")
-        String profileImgUrl
+        String profileImgUrl,
+
+        @Schema(description = "프로필 배경 색", example = "#FFFFFF")
+        String profileColor
 ) {
 }

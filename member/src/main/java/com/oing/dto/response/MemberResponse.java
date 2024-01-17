@@ -21,6 +21,9 @@ public record MemberResponse(
         @Schema(description = "구성원 프로필 이미지 주소", example = "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97")
         String imageUrl,
 
+        @Schema(description = "구성원 프로필 배경 색", example = "#FFFFFF")
+        String profileColor,
+
         @Schema(description = "구성원 가족 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E")
         String familyId,
 
@@ -32,6 +35,7 @@ public record MemberResponse(
                 member.getId(),
                 member.getName(),
                 member.getProfileImgUrl(),
+                member.getProfileColor(),
                 member.getFamilyId(),
                 member.getDayOfBirth()
         );

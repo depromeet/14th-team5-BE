@@ -57,7 +57,7 @@ public class MemberRealEmojiApiTest {
                         TEST_MEMBER_ID,
                         "testUser1",
                         LocalDate.now(),
-                        "", "", ""
+                        "", "", "", ""
                 )
         );
         TEST_MEMBER_TOKEN = tokenGenerator

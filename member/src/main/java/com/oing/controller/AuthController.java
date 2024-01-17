@@ -85,7 +85,8 @@ public class AuthController implements AuthApi {
                     token.userId(),
                     request.memberName(),
                     request.dayOfBirth(),
-                    request.profileImgUrl()
+                    request.profileImgUrl(),
+                    request.profileColor()
             );
             Member member = memberService.createNewMember(createNewUserDTO);
 

@@ -18,6 +18,7 @@ public record CreateNewUserDTO(
         @Size(min = 1, max = 9)
         String memberName,
         LocalDate dayOfBirth,
-        String profileImgUrl
+        String profileImgUrl,
+        String profileColor
 ) {
 }

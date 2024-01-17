@@ -39,6 +39,9 @@ public class Member extends DeletableBaseAuditEntity {
     @Column(name = "profile_img_key")
     private String profileImgKey;
 
+    @Column(name = "profile_color", length = 7, columnDefinition = "CHAR(7)")
+    private String profileColor;
+
     public void updateProfileImg(String profileImgUrl, String profileImgKey) {
         this.profileImgUrl = profileImgUrl;
         this.profileImgKey = profileImgKey;
