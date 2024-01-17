@@ -147,6 +147,11 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
         return new PostRealEmojiMemberResponse(result);
     }
 
+    /**
+     * 리얼 이모지를 남긴 멤버 목록을 리얼 이모지 별로 그룹화합니다
+     * @param realEmojis 리얼 이모지 목록
+     * @return 리얼 이모지 별로 그룹화된 멤버 목록
+     */
     private Map<MemberRealEmoji, List<String>> groupByRealEmoji(List<MemberPostRealEmoji> realEmojis) {
         return realEmojis.stream()
                 .collect(Collectors.groupingBy(
