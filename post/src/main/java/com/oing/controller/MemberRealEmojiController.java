@@ -20,6 +20,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Controller
 public class MemberRealEmojiController implements MemberRealEmojiApi {
@@ -39,7 +42,7 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
 
     @Transactional
     @Override
-    public RealEmojiResponse createMyRealEmoji(String memberId, CreateMyRealEmojiRequest request) {
+    public RealEmojiResponse createMemberRealEmoji(String memberId, CreateMyRealEmojiRequest request) {
         validateMemberId(memberId);
         String emojiId = identityGenerator.generateIdentity();
         String emojiImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
@@ -59,7 +62,7 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
 
     @Transactional
     @Override
-    public RealEmojiResponse changeMyRealEmoji(String memberId, String realEmojiId, UpdateMyRealEmojiRequest request) {
+    public RealEmojiResponse changeMemberRealEmoji(String memberId, String realEmojiId, UpdateMyRealEmojiRequest request) {
         validateMemberId(memberId);
         String emojiImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
 
@@ -69,8 +72,14 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
     }
 
     @Override
-    public RealEmojisResponse getMyRealEmojis(String memberId) {
-        return new RealEmojisResponse(null);
+    public RealEmojisResponse getMemberRealEmojis(String memberId) {
+        validateMemberId(memberId);
+
+        List<MemberRealEmoji> realEmojis = memberRealEmojiService.findRealEmojisByMemberId(memberId);
+        List<RealEmojiResponse> emojiResponses = realEmojis.stream()
+                .map(RealEmojiResponse::from)
+                .collect(Collectors.toList());
+        return new RealEmojisResponse(emojiResponses);
     }
 
     private void validateMemberId(String memberId) {

@@ -7,6 +7,8 @@ import com.oing.repository.MemberRealEmojiRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MemberRealEmojiService {
@@ -27,5 +29,9 @@ public class MemberRealEmojiService {
         return memberRealEmojiRepository
                 .findByType(emoji)
                 .isPresent();
+    }
+
+    public List<MemberRealEmoji> findRealEmojisByMemberId(String memberId) {
+        return memberRealEmojiRepository.findAllByMemberId(memberId);
     }
 }
