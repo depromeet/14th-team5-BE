@@ -51,8 +51,8 @@ public class MemberPostCommentController implements MemberPostCommentApi {
                 memberId,
                 request.content()
         );
-        memberPostCommentService.savePostComment(memberPostComment);
-        MemberPostComment addedComment = memberPost.addComment(memberPostComment);
+        MemberPostComment savedComment = memberPostCommentService.savePostComment(memberPostComment);
+        MemberPostComment addedComment = memberPost.addComment(savedComment);
         return PostCommentResponse.from(addedComment);
     }
 
