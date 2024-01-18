@@ -5,7 +5,9 @@ import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostReaction;
 import com.oing.exception.EmojiNotFoundException;
 import com.oing.repository.MemberPostReactionRepository;
+import com.oing.service.event.DeleteMemberPostEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,5 +40,11 @@ public class MemberPostReactionService {
 
     public List<MemberPostReaction> getMemberPostReactionsByPostId(String postId) {
         return memberPostReactionRepository.findAllByPostId(postId);
+    }
+
+    @EventListener
+    public void deleteAllWhenPostDelete(DeleteMemberPostEvent event) {
+        MemberPost post = event.memberPost();
+        memberPostReactionRepository.deleteAllByPostId(post.getId());
     }
 }

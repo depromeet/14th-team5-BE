@@ -1,7 +1,9 @@
 package com.oing.restapi;
 
+import com.oing.config.support.RequestAppKey;
 import com.oing.dto.request.AddFcmTokenRequest;
 import com.oing.dto.request.JoinFamilyRequest;
+import com.oing.dto.response.AppVersionResponse;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.dto.response.MemberResponse;
@@ -10,6 +12,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 /**
  * no5ing-server
@@ -54,4 +58,15 @@ public interface MeApi {
     @Operation(summary = "가족 생성 및 가입", description = "가족을 생성하고 가입합니다.")
     @PostMapping("/create-family")
     FamilyResponse createFamilyAndJoin();
+
+    @Operation(summary = "내 접속 버전 조회", description = "현재 버전 정보를 조회합니다.")
+    @GetMapping("/app-version")
+    AppVersionResponse getCurrentAppVersion(
+            @RequestAppKey UUID appKey
+    );
+
+    @Operation(summary = "가족 탈퇴", description = "가족을 탈퇴합니다.")
+    @PostMapping("/quit-family")
+    DefaultResponse quitFamily();
+
 }

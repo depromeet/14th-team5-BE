@@ -40,6 +40,10 @@ public enum ErrorCode {
     EMOJI_ALREADY_EXISTS("EM0001", "Emoji already exists"),
     EMOJI_NOT_FOUND("EM0002", "Emoji not found"),
     /**
+     * MemberComment Related Errors
+     */
+    POST_COMMENT_NOT_FOUND("CM0001", "Comment not found"),
+    /**
      * Family Related Errors
      */
     FAMILY_NOT_FOUND("FM0001", "Family not found"),
@@ -50,6 +54,13 @@ public enum ErrorCode {
     INVALID_UPLOAD_TIME("PO0001", "Invalid Upload Time. The request is outside the valid time range" +
             "(from 12:00 AM yesterday to 12:00 AM today)."),
     DUPLICATE_POST_UPLOAD("PO0002", "Duplicate Post Upload"),
+    /**
+     * Real-Emoji Related Errors
+     */
+    REAL_EMOJI_NOT_FOUND("RE0001", "Real-Emoji not found"),
+    REAL_EMOJI_ALREADY_EXISTS("RE0002", "Real-Emoji already exists"),
+    REGISTERED_REAL_EMOJI_NOT_FOUND("RE0003", "Registered Real-Emoji not found"),
+    DUPLICATE_REAL_EMOJI("RE0004", "Duplicate Real Emoji"),
     /**
      * Deep Link Related Errors
      */

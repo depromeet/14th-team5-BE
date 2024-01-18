@@ -13,6 +13,12 @@ spring:
         show_sql: true
         format_sql: true
 app:
+<<<<<<< HEAD
+=======
+  oauth:
+    google-client-id: ${GOOGLE_CLIENT_ID}
+  web:
+    versionFilterEnabled: false
   external-urls:
     slack-webhook: ${SLACK_WEBHOOK_URL} # Must Be Replaced
   token:
@@ -24,5 +30,6 @@ cloud:
     end-point: ${OBJECT_STORAGE_END_POINT}
     access-key: ${OBJECT_STORAGE_ACCESS_KEY}
     secret-key: ${OBJECT_STORAGE_SECRET_KEY}
+    image-optimizer-cdn: ${IMAGE_OPTIMIZER_CDN_URL}
     storage:
       bucket: ${OBJECT_STORAGE_BUCKET_NAME}

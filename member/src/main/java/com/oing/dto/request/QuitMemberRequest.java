@@ -1,0 +1,22 @@
+package com.oing.dto.request;
+
+import com.oing.domain.MemberQuitReasonType;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.time.LocalDate;
+import java.util.List;
+
+/**
+ * no5ing-server
+ * User: CChuYong
+ * Date: 2024/01/13
+ * Time: 11:13 PM
+ */
+@Schema(description = "사용자 회원탈퇴 요청")
+public record QuitMemberRequest(
+        @Schema(description = "탈퇴 사유 목록", example = "NO_FREQUENTLY_USE")
+        List<MemberQuitReasonType> reasonIds
+) {
+}

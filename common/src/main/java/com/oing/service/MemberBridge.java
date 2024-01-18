@@ -15,4 +15,13 @@ public interface MemberBridge {
      * @return family id
      */
     String getFamilyIdByMemberId(String memberId);
+
+    /**
+     * 같은 가족에 속해있는지 확인합니다
+     * @param memberIdFirst 첫 번쨰 사용자 아이디
+     * @param memberIdSecond 두 번째 사용자 아이디
+     * @return 가족 같은지 여부 (한쪽이라도 null이면 false)
+     * @throws com.oing.exception.MemberNotFoundException 사용자가 존재하지 않을 경우
+     */
+    boolean isInSameFamily(String memberIdFirst, String memberIdSecond);
 }

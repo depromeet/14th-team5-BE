@@ -10,11 +10,11 @@ import com.oing.exception.LinkNotValidException;
 import com.oing.restapi.DeepLinkApi;
 import com.oing.service.DeepLinkDetailService;
 import com.oing.service.DeepLinkService;
-import com.oing.service.MemberBridge;
-import com.oing.util.AuthenticationHolder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import com.oing.service.MemberBridge;
+import com.oing.util.AuthenticationHolder;
 import java.util.Objects;
 
 /**
@@ -27,6 +27,7 @@ import java.util.Objects;
 @Controller
 public class DeepLinkController implements DeepLinkApi {
     public static String FAMILY_LINK_PREFIX = "https://no5ing.kr/o/";
+
     private final DeepLinkService deepLinkService;
     private final AuthenticationHolder authenticationHolder;
     private final MemberBridge memberBridge;

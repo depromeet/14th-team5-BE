@@ -1,5 +1,6 @@
 package com.oing.config.support;
 
+import com.oing.exception.StringEmptyWhiteSpaceException;
 import com.oing.util.OptimizedImageUrlGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,12 +32,17 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
      */
     @Override
     public String getThumbnailUrlGenerator(String bucketImageUrl) {
-        if (bucketImageUrl == null) {
-            return null;
-        }
+        try {
+            validateUrlEmptyOrWhiteSpace(bucketImageUrl);
 
-        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
-        return imageOptimizerCdnUrl + imagePath + THUMBNAIL_OPTIMIZER_QUERY_STRING;
+            String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
+            return imageOptimizerCdnUrl + imagePath + THUMBNAIL_OPTIMIZER_QUERY_STRING;
+
+        } catch (StringEmptyWhiteSpaceException e) {
+            return null;
+        } catch (IndexOutOfBoundsException e) {
+            return bucketImageUrl;
+        }
     }
 
 
@@ -47,11 +53,22 @@ public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
      */
     @Override
     public String getKBImageUrlGenerator(String bucketImageUrl) {
-        if (bucketImageUrl == null) {
-            return null;
-        }
+        try {
+            validateUrlEmptyOrWhiteSpace(bucketImageUrl);
 
-        String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
-        return imageOptimizerCdnUrl + imagePath + KB_IMAGE_OPTIMIZER_QUERY_STRING;
+            String imagePath = bucketImageUrl.substring(bucketImageUrl.indexOf("/images"));
+            return imageOptimizerCdnUrl + imagePath + KB_IMAGE_OPTIMIZER_QUERY_STRING;
+
+        } catch (StringEmptyWhiteSpaceException e) {
+            return null;
+        } catch (IndexOutOfBoundsException e) {
+            return bucketImageUrl;
+        }
+    }
+
+    private void validateUrlEmptyOrWhiteSpace(String url) throws StringEmptyWhiteSpaceException {
+        if (url == null || url.trim().isEmpty()) {
+            throw new StringEmptyWhiteSpaceException();
+        }
     }
 }

@@ -39,11 +39,17 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "reaction_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int reactionCnt;
 
+    @Column(name = "real_emoji_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private int realEmojiCnt;
+
     @OneToMany(mappedBy = "post")
     private List<MemberPostComment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
     private List<MemberPostReaction> reactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<MemberPostRealEmoji> realEmojis = new ArrayList<>();
 
     public MemberPost(String id, String memberId, String postImgUrl, String postImgKey, String content) {
         validateContent(content);
@@ -54,6 +60,7 @@ public class MemberPost extends BaseAuditEntity {
         this.content = content;
         this.commentCnt = 0;
         this.reactionCnt = 0;
+        this.realEmojiCnt = 0;
     }
 
     private void validateContent(String content) {
@@ -64,11 +71,32 @@ public class MemberPost extends BaseAuditEntity {
 
     public void addReaction(MemberPostReaction reaction) {
         this.reactions.add(reaction);
-        this.reactionCnt += 1;
+        this.reactionCnt = this.reactions.size();
     }
 
     public void removeReaction(MemberPostReaction reaction) {
         this.reactions.remove(reaction);
-        this.reactionCnt -= 1;
+        this.reactionCnt = this.reactions.size();
+    }
+
+    public void addRealEmoji(MemberPostRealEmoji realEmoji) {
+        this.realEmojis.add(realEmoji);
+        this.realEmojiCnt = this.realEmojis.size();
+    }
+
+    public void removeRealEmoji(MemberPostRealEmoji realEmoji) {
+        this.realEmojis.remove(realEmoji);
+        this.realEmojiCnt = this.realEmojis.size();
+    }
+
+    public MemberPostComment addComment(MemberPostComment comment) {
+        this.comments.add(comment);
+        this.commentCnt = this.comments.size();
+        return comment;
+    }
+
+    public void removeComment(MemberPostComment comment) {
+        this.comments.remove(comment);
+        this.commentCnt = this.comments.size();
     }
 }
