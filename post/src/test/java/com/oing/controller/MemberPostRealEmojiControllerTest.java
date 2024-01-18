@@ -5,7 +5,10 @@ import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostRealEmoji;
 import com.oing.domain.MemberRealEmoji;
 import com.oing.dto.request.PostRealEmojiRequest;
+import com.oing.dto.response.ArrayResponse;
+import com.oing.dto.response.PostRealEmojiMemberResponse;
 import com.oing.dto.response.PostRealEmojiResponse;
+import com.oing.dto.response.PostRealEmojiSummaryResponse;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.RealEmojiAlreadyExistsException;
 import com.oing.exception.RegisteredRealEmojiNotFoundException;
@@ -15,17 +18,23 @@ import com.oing.service.MemberPostService;
 import com.oing.service.MemberRealEmojiService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@Transactional
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 public class MemberPostRealEmojiControllerTest {
     @InjectMocks
@@ -147,5 +156,51 @@ public class MemberPostRealEmojiControllerTest {
         //then
         assertThrows(RegisteredRealEmojiNotFoundException.class,
                 () -> memberPostRealEmojiController.deletePostRealEmoji(post.getId(), realEmoji.getId()));
+    }
+
+    @Test
+    void 게시물_리얼이모지_요약_조회_테스트() {
+        //given
+        String memberId = "1";
+        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+                "안녕.오잉.");
+        when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
+
+        //when
+        PostRealEmojiSummaryResponse summary = memberPostRealEmojiController.getPostRealEmojiSummary(post.getId());
+
+        //then
+        assertEquals(0, summary.results().size());
+    }
+
+    @Test
+    void 게시물_리얼이모지_목록_조회_테스트() {
+        //given
+        String memberId = "1";
+        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+                "안녕.오잉.");
+        when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
+
+        //when
+        ArrayResponse<PostRealEmojiResponse> response = memberPostRealEmojiController.getPostRealEmojis(post.getId());
+
+        //then
+        assertEquals(0, response.results().size());
+        assertEquals(List.of(), response.results());
+    }
+
+    @Test
+    void 게시물_리얼이모지_멤버_조회_테스트() {
+        //given
+        String memberId = "1";
+        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+                "안녕.오잉.");
+        when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
+
+        //when
+        PostRealEmojiMemberResponse response = memberPostRealEmojiController.getPostRealEmojiMembers(post.getId());
+
+        //then
+        assertEquals(0, response.emojiMemberIdsList().size());
     }
 }

@@ -21,8 +21,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -108,5 +107,82 @@ public class MemberPostRealEmojiApiTest {
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
+    }
+
+    @Test
+    void 게시물_리얼이모지_요약_조회_테스트() throws Exception {
+        //given
+        PostRealEmojiRequest request = new PostRealEmojiRequest(TEST_REAL_EMOJI_ID);
+        mockMvc.perform(
+                post("/v1/posts/{postId}/real-emoji", TEST_POST_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        );
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get("/v1/posts/{postId}/real-emoji/summary", TEST_POST_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.postId").value(TEST_POST_ID))
+                .andExpect(jsonPath("$.results[0].realEmojiId").value(TEST_REAL_EMOJI_ID))
+                .andExpect(jsonPath("$.results[0].count").value(1));
+    }
+
+    @Test
+    void 게시물_리얼이모지_목록_조회_테스트() throws Exception {
+        //given
+        PostRealEmojiRequest request = new PostRealEmojiRequest(TEST_REAL_EMOJI_ID);
+        mockMvc.perform(
+                post("/v1/posts/{postId}/real-emoji", TEST_POST_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        );
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get("/v1/posts/{postId}/real-emoji", TEST_POST_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.results[0].postId").value(TEST_POST_ID))
+                .andExpect(jsonPath("$.results[0].memberId").value(TEST_MEMBER_ID))
+                .andExpect(jsonPath("$.results[0].realEmojiId").value(TEST_REAL_EMOJI_ID))
+                .andExpect(jsonPath("$.results[0].emojiImageUrl").value("https://test.com/bucket/real-emoji.jpg"));
+    }
+
+    @Test
+    void 게시물_리얼이모지_남긴_멤버_조회_테스트() throws Exception {
+        //given
+        PostRealEmojiRequest request = new PostRealEmojiRequest(TEST_REAL_EMOJI_ID);
+        mockMvc.perform(
+                post("/v1/posts/{postId}/real-emoji", TEST_POST_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        );
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get("/v1/posts/{postId}/real-emoji/member", TEST_POST_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.emojiMemberIdsList['01HGW2N7EHJVJ4CJ999RRS2A97'][0]").value(TEST_MEMBER_ID));
     }
 }

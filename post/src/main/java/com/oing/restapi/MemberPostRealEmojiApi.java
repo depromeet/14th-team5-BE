@@ -1,9 +1,7 @@
 package com.oing.restapi;
 
 import com.oing.dto.request.PostRealEmojiRequest;
-import com.oing.dto.response.ArrayResponse;
-import com.oing.dto.response.DefaultResponse;
-import com.oing.dto.response.PostRealEmojiResponse;
+import com.oing.dto.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,9 +38,25 @@ public interface MemberPostRealEmojiApi {
             String realEmojiId
     );
 
+    @Operation(summary = "게시물의 리얼 이모지 요약 조회", description = "게시물에 달린 리얼 이모지 요약을 조회합니다.")
+    @GetMapping("/summary")
+    PostRealEmojiSummaryResponse getPostRealEmojiSummary(
+            @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String postId
+    );
+
     @Operation(summary = "게시물의 리얼 이모지 전체 조회", description = "게시물에 달린 모든 리얼 이모지 목록을 조회합니다.")
     @GetMapping
     ArrayResponse<PostRealEmojiResponse> getPostRealEmojis(
+            @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String postId
+    );
+
+    @Operation(summary = "게시물의 리얼 이모지를 남긴 전체 멤버 조회", description = "게시물에 리얼 이모지를 남긴 모든 멤버 목록을 조회합니다.")
+    @GetMapping("/member")
+    PostRealEmojiMemberResponse getPostRealEmojiMembers(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String postId

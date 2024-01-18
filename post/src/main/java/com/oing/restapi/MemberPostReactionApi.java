@@ -55,7 +55,7 @@ public interface MemberPostReactionApi {
 
     @Operation(summary = "게시물 반응을 남긴 전체 멤버 조회", description = "게시물에 반응을 남긴 모든 멤버 목록을 조회합니다.")
     @GetMapping("/member")
-    PostReactionsResponse getPostReactionMembers(
+    PostReactionMemberResponse getPostReactionMembers(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String postId
