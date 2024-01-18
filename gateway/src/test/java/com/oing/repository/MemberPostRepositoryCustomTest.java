@@ -110,4 +110,28 @@ class MemberPostRepositoryCustomTest {
                 .extracting(MemberPostDailyCalendarDTO::dailyPostCount)
                 .containsExactly(2L, 1L);
     }
+
+    @Test
+    void 특정_날짜에_게시글이_존재하는지_확인한다() {
+        // given
+        LocalDate postDate = LocalDate.of(2023, 11, 1);
+
+        // when
+        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndCreatedAt(testMember1.getId(), postDate);
+
+        // then
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    void 특정_날짜에_게시글이_존재하지_않는지_확인한다() {
+        // given
+        LocalDate postDate = LocalDate.of(2023, 11, 8);
+
+        // when
+        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndCreatedAt(testMember1.getId(), postDate);
+
+        // then
+        assertThat(exists).isFalse();
+    }
 }
