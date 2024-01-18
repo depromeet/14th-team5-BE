@@ -20,6 +20,11 @@ spring:
       enabled: true
       settings:
         web-allow-others: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
 app:
   oauth:
     google-client-id: ${GOOGLE_CLIENT_ID}
