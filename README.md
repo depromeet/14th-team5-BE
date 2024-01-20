@@ -33,8 +33,8 @@ In the precious time spent with family, everything feels more special with Pippy
     <tbody>
     <tr>
          <td align="center" valign="top" width="22.28%"><a href="https://github.com/cchuyong"><img src="https://avatars.githubusercontent.com/u/67673493?v=4" width="140px;" alt="CChuYong"/><br /><sub><b>Yeongmin Song</b></sub></a><br /><span>백엔드 개발(파트장)</span></td>
-         <td align="center" valign="top" width="22.28%"><a href="https://github.com/cchuyong"><img src="https://avatars.githubusercontent.com/u/69844138?v=4" width="140px;" alt="CChuYong"/><br /><sub><b>Jisoo Lim</b></sub></a><br /><span>백엔드 개발</span></td>
-         <td align="center" valign="top" width="22.28%"><a href="https://github.com/cchuyong"><img src="https://avatars.githubusercontent.com/u/49567744?v=4" width="140px;" alt="CChuYong"/><br /><sub><b>Soonchan Kwon</b></sub></a><br /><span>백엔드 개발</span></td>
+         <td align="center" valign="top" width="22.28%"><a href="https://github.com/Ji-soo708"><img src="https://avatars.githubusercontent.com/u/69844138?v=4" width="140px;" alt="CChuYong"/><br /><sub><b>Jisoo Lim</b></sub></a><br /><span>백엔드 개발</span></td>
+         <td align="center" valign="top" width="22.28%"><a href="https://github.com/Kwon770"><img src="https://avatars.githubusercontent.com/u/49567744?v=4" width="140px;" alt="CChuYong"/><br /><sub><b>Soonchan Kwon</b></sub></a><br /><span>백엔드 개발</span></td>
     </tr>
     </tbody>
 </table>
