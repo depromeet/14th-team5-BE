@@ -1,6 +1,7 @@
 package com.oing.restapi;
 
 import com.oing.dto.response.ArrayResponse;
+import com.oing.dto.response.BannerResponse;
 import com.oing.dto.response.CalendarResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +27,14 @@ public interface CalendarApi {
     @Operation(summary = "월별 캘린더 조회", description = "월별 캘린더를 조회합니다.")
     @GetMapping(params = {"type=MONTHLY"})
     ArrayResponse<CalendarResponse> getMonthlyCalendar(
+            @RequestParam(required = false)
+            @Parameter(description = "조회할 년월", example = "2021-12")
+            String yearMonth
+    );
+
+    @Operation(summary = "캘린더 베너 조회", description = "캘린더 상단의 베너를 조회합니다.")
+    @GetMapping("/banner")
+    BannerResponse getBanner(
             @RequestParam(required = false)
             @Parameter(description = "조회할 년월", example = "2021-12")
             String yearMonth

@@ -4,6 +4,7 @@ import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.dto.response.ArrayResponse;
+import com.oing.dto.response.BannerResponse;
 import com.oing.dto.response.CalendarResponse;
 import com.oing.restapi.CalendarApi;
 import com.oing.service.MemberPostService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.IntStream;
 
 @Controller
@@ -74,5 +76,14 @@ public class CalendarController implements CalendarApi {
 
         List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
         return new ArrayResponse<>(calendarResponses);
+    }
+
+
+    @Override
+    public BannerResponse getBanner(String yearMonth) {
+        return new BannerResponse(
+                new Random().nextInt(0, 101),
+                new Random().nextInt(0, 28)
+        );
     }
 }
