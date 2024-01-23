@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class S3PreSignedUrlProviderTest extends InfraTest {
+class S3PreSignedUrlProviderTest extends InfraTest {
 
     private S3PreSignedUrlProvider provider;
 
@@ -46,7 +46,7 @@ public class S3PreSignedUrlProviderTest extends InfraTest {
         // then
         Assertions.assertAll(
                 () -> assertNotNull(response),
-                () -> assertEquals(mockPresignedUrl.toString(), response.getUrl())
+                () -> assertEquals(mockPresignedUrl.toString(), response.url())
         );
     }
 }
