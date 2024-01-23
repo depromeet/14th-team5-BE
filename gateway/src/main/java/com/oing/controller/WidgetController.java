@@ -30,14 +30,14 @@ public class WidgetController implements WidgetApi {
     @Override
     public ResponseEntity<SingleRecentPostWidgetResponse> getSingleRecentFamilyPostWidget(String date) {
         String myId = tokenAuthenticationHolder.getUserId();
-        List<String> familyIdsExceptMe = memberService.findFamilyMembersIdByMemberId(myId).stream().filter(id -> !id.equals(myId)).toList();
+        List<String> familyIds = memberService.findFamilyMembersIdByMemberId(myId);
 
         Optional<String> dateString = Optional.ofNullable(date);
         LocalDate startDate = dateString.map(LocalDate::parse).orElse(LocalDate.now());
         LocalDate endDate = startDate.plusDays(1);
 
 
-        List<MemberPost> latestPosts = memberPostService.findLatestPostOfEveryday(familyIdsExceptMe, startDate, endDate);
+        List<MemberPost> latestPosts = memberPostService.findLatestPostOfEveryday(familyIds, startDate, endDate);
         if (latestPosts.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
