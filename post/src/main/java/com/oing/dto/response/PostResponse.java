@@ -40,7 +40,7 @@ public record PostResponse(
                 post.getId(),
                 post.getMemberId(),
                 post.getCommentCnt(),
-                post.getReactionCnt(),
+                post.getReactionCnt() + post.getRealEmojiCnt(),
                 post.getPostImgUrl(),
                 post.getContent(),
                 post.getCreatedAt().atZone(ZoneId.systemDefault())
