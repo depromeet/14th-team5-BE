@@ -15,6 +15,9 @@ public record PostRealEmojiResponse(
         @Schema(description = "리얼 이모지 작성 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
         String memberId,
 
+        @Schema(description = "리얼 이모지 타입", example = "emoji_1")
+        String emojiType,
+
         @Schema(description = "리얼 이모지 ID", example = "01HGW2N7EHJVEFEFEEEEES2E97")
         String realEmojiId,
 
@@ -23,6 +26,7 @@ public record PostRealEmojiResponse(
 ) {
     public static PostRealEmojiResponse from(MemberPostRealEmoji postRealEmoji) {
         return new PostRealEmojiResponse(postRealEmoji.getId(), postRealEmoji.getPost().getId(), postRealEmoji.getMemberId(),
-                postRealEmoji.getRealEmoji().getId(), postRealEmoji.getRealEmoji().getRealEmojiImageUrl());
+                postRealEmoji.getRealEmoji().getType().getTypeKey(), postRealEmoji.getRealEmoji().getId(),
+                postRealEmoji.getRealEmoji().getRealEmojiImageUrl());
     }
 }
