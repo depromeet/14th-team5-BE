@@ -12,8 +12,6 @@ import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.dto.response.MemberResponse;
 import com.oing.exception.AlreadyInFamilyException;
-import com.oing.exception.DomainException;
-import com.oing.exception.ErrorCode;
 import com.oing.exception.FamilyNotFoundException;
 import com.oing.restapi.MeApi;
 import com.oing.service.FamilyInviteLinkService;

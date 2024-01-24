@@ -6,6 +6,7 @@ import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.util.security.FamilyId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -67,7 +68,10 @@ public interface MemberPostApi {
     PostResponse createPost(
             @Valid
             @RequestBody
-            CreatePostRequest request
+            CreatePostRequest request,
+
+            @FamilyId
+            String familyId
     );
 
     @Operation(summary = "단일 게시물 조회", description = "ID를 통해 게시물을 조회합니다.")

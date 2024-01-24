@@ -20,7 +20,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -116,7 +115,7 @@ class CalendarControllerTest {
         when(memberPostService.findPostDailyCalendarDTOs(familyIds, startDate, endDate)).thenReturn(calendarDTOs);
 
         // When
-        ArrayResponse<CalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth);
+        ArrayResponse<CalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, testMember1.getFamilyId());
 
         // Then
         assertThat(weeklyCalendar.results())
@@ -126,39 +125,6 @@ class CalendarControllerTest {
                         Tuple.tuple("2", false),
                         Tuple.tuple("3", true),
                         Tuple.tuple("4", false)
-                );
-    }
-
-    @Test
-    void 월별_캘린더_파라미터_없이_조회_테스트() {
-        // Given
-        LocalDate startDate = LocalDate.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM")) + "-01");
-        LocalDate endDate = startDate.plusMonths(1);
-        MemberPost testPost1 = new MemberPost(
-                "1",
-                testMember1.getId(),
-                "post.com/1",
-                "1",
-                "test1"
-        );
-        ReflectionTestUtils.setField(testPost1, "createdAt", LocalDateTime.now());
-        List<MemberPost> representativePosts = List.of(testPost1);
-        List<MemberPostDailyCalendarDTO> calendarDTOs = List.of(
-                new MemberPostDailyCalendarDTO(1L)
-        );
-        when(tokenAuthenticationHolder.getUserId()).thenReturn(testMember1.getId());
-        when(memberService.findFamilyMembersIdByMemberId(testMember1.getId())).thenReturn(familyIds);
-        when(memberPostService.findLatestPostOfEveryday(familyIds, startDate, endDate)).thenReturn(representativePosts);
-        when(memberPostService.findPostDailyCalendarDTOs(familyIds, startDate, endDate)).thenReturn(calendarDTOs);
-
-        // When
-        ArrayResponse<CalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(null);
-
-        // Then
-        assertThat(weeklyCalendar.results())
-                .extracting(CalendarResponse::representativePostId, CalendarResponse::allFamilyMembersUploaded)
-                .containsExactly(
-                        Tuple.tuple("1", false)
                 );
     }
 }

@@ -1,7 +1,8 @@
 package com.oing.restapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oing.domain.*;
+import com.oing.domain.CreateNewUserDTO;
+import com.oing.domain.SocialLoginProvider;
 import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DeepLinkResponse;
 import com.oing.dto.response.FamilyResponse;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,8 +26,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
@@ -51,6 +55,8 @@ class CalendarApiTest {
     private DeepLinkService deepLinkService;
     @Autowired
     private TokenGenerator tokenGenerator;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     private String TEST_MEMBER1_ID;
     private String TEST_MEMBER1_TOKEN;
@@ -151,6 +157,7 @@ class CalendarApiTest {
         mockMvc.perform(get("/v1/calendar")
                         .param("type", "MONTHLY")
                         .param("yearMonth", yearMonth)
+                        .param("familyId", familyId)
                         .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
                 )
                 .andExpect(status().isOk())
@@ -172,45 +179,6 @@ class CalendarApiTest {
                 .andExpect(jsonPath("$.results[3].allFamilyMembersUploaded").value(false));
 
     }
-
-    @Test
-    void 월별_캘린더_파라미터_없이_조회_테스트() throws Exception {
-        // Given
-        // posts
-        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('1', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/1', 0, 0, '" + now + "', '" + now + "', 'post1111', '1');");
-
-        // family
-        String familyId = objectMapper.readValue(
-                mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
-                        .andExpect(status().isOk())
-                        .andReturn().getResponse().getContentAsString(), FamilyResponse.class
-        ).familyId();
-        String inviteCode = objectMapper.readValue(
-                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
-                        .andExpect(status().isOk())
-                        .andReturn().getResponse().getContentAsString(), DeepLinkResponse.class
-        ).getLinkId();
-        mockMvc.perform(post("/v1/me/join-family")
-                .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new JoinFamilyRequest(inviteCode)))
-        ).andExpect(status().isOk());
-
-
-        // When & Then
-        mockMvc.perform(get("/v1/calendar")
-                        .param("type", "MONTHLY")
-                        .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.results[0].date").value(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
-                .andExpect(jsonPath("$.results[0].representativePostId").value("1"))
-                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/1" + thumbnailOptimizerQuery))
-                .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(false));
-    }
-
 
     @Test
     void 캘린더_배너_조회_태스트() throws Exception {

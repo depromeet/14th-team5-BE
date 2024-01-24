@@ -16,6 +16,10 @@ spring:
         format_sql: false
         dialect: org.hibernate.dialect.MySQL8Dialect
     database-platform: org.hibernate.dialect.MySQL8Dialect
+  data:
+    redis:
+      host: localhost
+      port: 16379
 app:
   external-urls:
     slack-webhook: https://www.naver.com # Must Be Replaced
