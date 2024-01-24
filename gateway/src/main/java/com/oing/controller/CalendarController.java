@@ -11,6 +11,7 @@ import com.oing.service.MemberPostService;
 import com.oing.service.MemberService;
 import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
@@ -67,7 +68,8 @@ public class CalendarController implements CalendarApi {
     }
 
     @Override
-    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth) {
+    @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
+    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
@@ -77,7 +79,6 @@ public class CalendarController implements CalendarApi {
         List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
         return new ArrayResponse<>(calendarResponses);
     }
-
 
     @Override
     public BannerResponse getBanner(String yearMonth) {
