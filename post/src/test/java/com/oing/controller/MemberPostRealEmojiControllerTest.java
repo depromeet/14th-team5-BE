@@ -150,7 +150,7 @@ public class MemberPostRealEmojiControllerTest {
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
-        when(memberPostRealEmojiService.getMemberPostRealEmojiByRealEmojiIdAndMemberId("1", memberId))
+        when(memberPostRealEmojiService.getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId("1", memberId, post.getId()))
                 .thenThrow(RegisteredRealEmojiNotFoundException.class);
 
         //then

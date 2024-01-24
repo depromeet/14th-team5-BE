@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface MemberPostRealEmojiRepository extends JpaRepository<MemberPostRealEmoji, String> {
     boolean existsByPostAndMemberIdAndRealEmoji(MemberPost post, String memberId, MemberRealEmoji emoji);
 
-    Optional<MemberPostRealEmoji> findByRealEmojiIdAndMemberId(String realEmojiId, String memberId);
+    Optional<MemberPostRealEmoji> findByRealEmojiIdAndMemberIdAndPostId(String realEmojiId, String memberId, String postId);
 }

@@ -79,7 +79,7 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
         String memberId = authenticationHolder.getUserId();
         MemberPost post = memberPostService.getMemberPostById(postId);
         MemberPostRealEmoji postRealEmoji = memberPostRealEmojiService
-                .getMemberPostRealEmojiByRealEmojiIdAndMemberId(realEmojiId, memberId);
+                .getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId(realEmojiId, memberId, postId);
 
         memberPostRealEmojiService.deletePostRealEmoji(postRealEmoji);
         post.removeRealEmoji(postRealEmoji);
