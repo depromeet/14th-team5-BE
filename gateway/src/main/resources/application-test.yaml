@@ -53,3 +53,4 @@ cloud:
       bucket: bucket
     image-optimizer-cdn: https://cdn.com
     thumbnail-optimizer-query: ?type=f&w=96&h=96&quality=70&align=4&faceopt=false&anilimit=1
+    kb-optimizer-query: ?type=f&w=480&h=480&faceopt=false&quality=50&autorotate=false
