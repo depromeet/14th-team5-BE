@@ -1,6 +1,7 @@
 package com.oing.controller;
 
 import com.oing.component.TokenAuthenticationHolder;
+import com.oing.domain.BannerImageType;
 import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.dto.response.ArrayResponse;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -84,7 +86,9 @@ public class CalendarController implements CalendarApi {
     public BannerResponse getBanner(String yearMonth) {
         return new BannerResponse(
                 new Random().nextInt(0, 101),
-                new Random().nextInt(0, 28)
+                new Random().nextInt(0, 28),
+                new Random().nextInt(1, 5),
+                BannerImageType.values()[new Random().nextInt(BannerImageType.values().length)]
         );
     }
 }
