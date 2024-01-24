@@ -106,7 +106,7 @@ public class MemberRealEmojiControllerTest {
         // when
         when(authenticationHolder.getUserId()).thenReturn(memberId);
         CreateMyRealEmojiRequest request = new CreateMyRealEmojiRequest(emoji.getTypeKey(), realEmojiImageUrl);
-        when(memberRealEmojiService.findRealEmojiByEmojiType(emoji)).thenReturn(true);
+        when(memberRealEmojiService.findRealEmojiByEmojiTypeAndMemberId(emoji, memberId)).thenReturn(true);
 
         // then
         assertThrows(DuplicateRealEmojiException.class,

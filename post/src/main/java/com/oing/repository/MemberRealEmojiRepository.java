@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface MemberRealEmojiRepository extends JpaRepository<MemberRealEmoji, String> {
 
-    Optional<MemberRealEmoji> findByType(Emoji emoji);
+    Optional<MemberRealEmoji> findByTypeAndMemberId(Emoji emoji, String memberId);
 
     List<MemberRealEmoji> findAllByMemberId(String memberId);
 }

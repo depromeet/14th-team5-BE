@@ -47,7 +47,7 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
         String emojiId = identityGenerator.generateIdentity();
         String emojiImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
         Emoji emoji = Emoji.fromString(request.type());
-        if (isExistsSameRealEmojiType(emoji)) {
+        if (isExistsSameRealEmojiType(emoji, memberId)) {
             throw new DuplicateRealEmojiException();
         }
 
@@ -56,8 +56,8 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
         return RealEmojiResponse.from(addedRealEmoji);
     }
 
-    private boolean isExistsSameRealEmojiType(Emoji emoji) {
-        return memberRealEmojiService.findRealEmojiByEmojiType(emoji);
+    private boolean isExistsSameRealEmojiType(Emoji emoji, String memberId) {
+        return memberRealEmojiService.findRealEmojiByEmojiTypeAndMemberId(emoji, memberId);
     }
 
     @Transactional

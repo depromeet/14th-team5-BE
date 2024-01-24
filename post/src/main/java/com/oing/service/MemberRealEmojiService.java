@@ -31,9 +31,9 @@ public class MemberRealEmojiService {
                 .orElseThrow(RealEmojiNotFoundException::new);
     }
 
-    public boolean findRealEmojiByEmojiType(Emoji emoji) {
+    public boolean findRealEmojiByEmojiTypeAndMemberId(Emoji emoji, String memberId) {
         return memberRealEmojiRepository
-                .findByType(emoji)
+                .findByTypeAndMemberId(emoji, memberId)
                 .isPresent();
     }
 
