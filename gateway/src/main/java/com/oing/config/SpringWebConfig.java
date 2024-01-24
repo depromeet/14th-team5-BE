@@ -5,6 +5,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.oing.config.filter.WebRequestInterceptor;
 import com.oing.config.support.AppKeyResolver;
+import com.oing.util.security.FamilyIdArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ import java.util.List;
 public class SpringWebConfig implements WebMvcConfigurer {
     final WebRequestInterceptor webRequestInterceptor;
     final AppKeyResolver appKeyResolver;
+    final FamilyIdArgumentResolver familyIdArgumentResolver;
 
     @Value("${app.oauth.google-client-id}")
     private String googleClientId;
@@ -46,5 +48,6 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(appKeyResolver);
+        resolvers.add(familyIdArgumentResolver);
     }
 }

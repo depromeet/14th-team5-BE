@@ -19,11 +19,13 @@ import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * no5ing-server
@@ -40,6 +42,8 @@ public class MemberPostController implements MemberPostApi {
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final MemberPostService memberPostService;
     private final MemberBridge memberBridge;
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
 
     @Transactional
     @Override
@@ -63,7 +67,9 @@ public class MemberPostController implements MemberPostApi {
 
     @Transactional
     @Override
-    public PostResponse createPost(CreatePostRequest request) {
+    @CacheEvict(value = "calendarCache",
+            key = "#familyId.concat(':').concat(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM').format(#request.uploadTime()))")
+    public PostResponse createPost(CreatePostRequest request, String familyId) {
         String memberId = authenticationHolder.getUserId();
         String postId = identityGenerator.generateIdentity();
         ZonedDateTime uploadTime = request.uploadTime();

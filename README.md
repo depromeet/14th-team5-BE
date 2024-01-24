@@ -64,4 +64,7 @@ In the precious time spent with family, everything feels more special with Pippy
 | OBJECT_STORAGE_ACCESS_KEY  | NCP 액세스 키 입니다.              |
 | OBJECT_STORAGE_SECRET_KEY  | NCP 시크릿 키 입니다.              |
 | OBJECT_STORAGE_BUCKET_NAME | NCP ObjectStroage 버킷명 입니다.  |
+| IMAGE_OPTIMIZER_CDN_URL | NCP ImageOptimizer CDN URL 입니다.  |
 | GOOGLE_CLIENT_ID           | 구글 로그인 클라이언트 ID 입니다.        |
+| REDIS_HOST           | Redis Host 입니다.        |
+| REDIS_PORT           | Redis Port 입니다.        |
