@@ -40,8 +40,9 @@ public class MemberPostRealEmojiService {
      * @return 게시물에 등록된 리얼 이모지
      * @throws RegisteredRealEmojiNotFoundException 등록된 리얼 이모지가 없는 경우
      */
-    public MemberPostRealEmoji getMemberPostRealEmojiByRealEmojiIdAndMemberId(String realEmojiId, String memberId) {
-        return memberPostRealEmojiRepository.findByRealEmojiIdAndMemberId(realEmojiId, memberId)
+    public MemberPostRealEmoji getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId(String realEmojiId, String memberId,
+                                                                                       String postId) {
+        return memberPostRealEmojiRepository.findByRealEmojiIdAndMemberIdAndPostId(realEmojiId, memberId, postId)
                 .orElseThrow(RegisteredRealEmojiNotFoundException::new);
     }
 
