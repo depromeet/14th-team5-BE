@@ -1,6 +1,7 @@
 package com.oing.restapi;
 
 import com.oing.dto.response.ArrayResponse;
+import com.oing.dto.response.BannerResponse;
 import com.oing.dto.response.CalendarResponse;
 import com.oing.util.security.FamilyId;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,19 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Valid
 @RequestMapping("/v1/calendar")
 public interface CalendarApi {
-    @Operation(summary = "주별 캘린더 조회", description = "주별 캘린더를 조회합니다.", parameters = {
-            @Parameter(name = "type", description = "캘린더 타입 (WEEKLY, MONTHLY)", example = "WEEKLY", required = true)
-    })
-    @GetMapping(params = {"type=WEEKLY"})
-    ArrayResponse<CalendarResponse> getWeeklyCalendar(
-            @RequestParam(required = false)
-            @Parameter(description = "조회할 년월", example = "2021-12")
-            String yearMonth,
-
-            @RequestParam(required = false)
-            @Parameter(description = "조회할 주차", example = "1")
-            Integer week
-    );
 
     @Operation(summary = "월별 캘린더 조회", description = "월별 캘린더를 조회합니다.")
     @GetMapping(params = {"type=MONTHLY"})
@@ -46,5 +34,13 @@ public interface CalendarApi {
 
             @FamilyId
             String familyId
+    );
+
+    @Operation(summary = "캘린더 베너 조회", description = "캘린더 상단의 베너를 조회합니다.")
+    @GetMapping("/banner")
+    BannerResponse getBanner(
+            @RequestParam(required = false)
+            @Parameter(description = "조회할 년월", example = "2021-12")
+            String yearMonth
     );
 }
