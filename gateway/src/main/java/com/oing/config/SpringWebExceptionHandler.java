@@ -1,5 +1,6 @@
 package com.oing.config;
 
+import com.google.common.io.CharStreams;
 import com.oing.domain.ErrorReportDTO;
 import com.oing.dto.response.ErrorResponse;
 import com.oing.exception.TokenNotValidException;
@@ -141,6 +142,13 @@ public class SpringWebExceptionHandler {
             while (headerValues.hasMoreElements()) {
                 dump.append(headerValues.nextElement());
             }
+        }
+
+        dump.append("\n  Body       : ");
+        try {
+            dump.append("\n    ").append(CharStreams.toString(request.getReader()));
+        }catch(Exception ex) {
+            dump.append("\n    ").append("NOT_READABLE");
         }
 
         return dump;
