@@ -21,10 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -80,7 +77,7 @@ class CalendarApiTest {
                         "testUser1",
                         "testUser1",
                         LocalDate.of(1999, 10, 18),
-                        "profile.com"
+                        "https://bucket.com/image.jpg"
                 )
         ).getId();
         TEST_MEMBER1_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER1_ID).accessToken();
@@ -91,7 +88,7 @@ class CalendarApiTest {
                         "testUser2",
                         "testUser2",
                         LocalDate.of(2000, 10, 18),
-                        "profile.com"
+                        "https://bucket.com/image.jpg"
                 )
         ).getId();
         TEST_MEMBER2_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER2_ID).accessToken();
@@ -102,7 +99,7 @@ class CalendarApiTest {
                         "testUser3",
                         "testUser3",
                         LocalDate.of(2001, 10, 18),
-                        "profile.com"
+                        "https://bucket.com/image.jpg"
                 )
         ).getId();
         TEST_MEMBER3_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER3_ID).accessToken();
