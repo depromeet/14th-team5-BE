@@ -11,6 +11,7 @@ import com.oing.exception.MemberNotFoundException;
 import com.oing.repository.MemberRepository;
 import com.oing.repository.SocialMemberRepository;
 import com.oing.util.IdentityGenerator;
+import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,7 @@ public class MemberService {
     private final SocialMemberRepository socialMemberRepository;
 
     private final IdentityGenerator identityGenerator;
+    private final PreSignedUrlGenerator preSignedUrlGenerator;
 
     public Member findMemberById(String memberId) {
         return memberRepository
@@ -70,6 +72,10 @@ public class MemberService {
                 createNewUserDTO.identifier(),
                 member);
         socialMemberRepository.save(socialMember);
+
+        if (createNewUserDTO.profileImgUrl() != null) {
+            member.setProfileImgKey(preSignedUrlGenerator.extractImageKey(createNewUserDTO.profileImgUrl()));
+        }
 
         return member;
     }
