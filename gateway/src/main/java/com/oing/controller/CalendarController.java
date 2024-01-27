@@ -84,6 +84,12 @@ public class CalendarController implements CalendarApi {
 
     @Override
     public BannerResponse getBanner(String yearMonth) {
+        int familyTopPercentage;
+        int allFamilyMembersUploadedStreaks;
+        int allFamilyMembersUploadedDays;
+        int familyPostsCount;
+        int familyReactionCount;
+
         return new BannerResponse(
                 new Random().nextInt(0, 101),
                 new Random().nextInt(0, 28),
