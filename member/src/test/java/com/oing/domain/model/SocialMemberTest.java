@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,7 +29,8 @@ public class SocialMemberTest {
 
         // When
         Member member = new Member("sampleId", "sampleFamilyId",
-                LocalDate.of(2023, 7, 8), "sampleName", null, null);
+                LocalDate.of(2023, 7, 8), "sampleName", null, null,
+                LocalDateTime.now());
 
         // When
         SocialMember socialMember = new SocialMember(provider, identifier, member);
@@ -47,7 +49,8 @@ public class SocialMemberTest {
         SocialLoginProvider provider = SocialLoginProvider.APPLE;
         String identifier = "user123";
         Member member = new Member("sampleId", "sampleFamilyId",
-                LocalDate.of(2023, 7, 8), "sampleName", null, null);
+                LocalDate.of(2023, 7, 8), "sampleName", null, null,
+                LocalDateTime.now());
 
         // When
         SocialMember socialMember1 = new SocialMember(provider, identifier, member);
