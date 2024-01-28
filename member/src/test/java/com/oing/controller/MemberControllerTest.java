@@ -24,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,7 +49,8 @@ public class MemberControllerTest {
     void 멤버_프로필_조회_테스트() {
         // given
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
-                "testMember1", "http://test.com/test-profile.jpg", null);
+                "testMember1", "http://test.com/test-profile.jpg", null,
+                LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
 
         // when
@@ -66,15 +68,17 @@ public class MemberControllerTest {
     void 가족_멤버_프로필_조회_테스트() {
         // given
         Member member1 = new Member("1", "1", LocalDate.of(2000, 7, 8),
-                "testMember1", "http://test.com/test-profile.jpg", null);
+                "testMember1", "http://test.com/test-profile.jpg", null,
+                LocalDateTime.now());
         Member member2 = new Member("2", "1", LocalDate.of(2003, 7, 26),
-                "testMember2", null, null);
+                "testMember2", null, null,
+                LocalDateTime.now());
         String familyId = "1";
         when(authenticationHolder.getUserId()).thenReturn("1");
         when(memberService.findFamilyIdByMemberId(anyString())).thenReturn(familyId);
         Page<FamilyMemberProfileResponse> profilePage = new PageImpl<>(Arrays.asList(
-                new FamilyMemberProfileResponse(member1.getId(), member1.getName(), member1.getProfileImgUrl(), member1.getDayOfBirth()),
-                new FamilyMemberProfileResponse(member2.getId(), member2.getName(), member2.getProfileImgUrl(), member2.getDayOfBirth())
+                new FamilyMemberProfileResponse(member1.getId(), member1.getName(), member1.getProfileImgUrl(), member1.getFamilyJoinAt().toLocalDate(), member1.getDayOfBirth()),
+                new FamilyMemberProfileResponse(member2.getId(), member2.getName(), member2.getProfileImgUrl(),member2.getFamilyJoinAt().toLocalDate(), member2.getDayOfBirth())
         ));
         when(memberService.findFamilyMembersProfilesByFamilyId(familyId, 1, 5))
                 .thenReturn(profilePage);
@@ -93,7 +97,8 @@ public class MemberControllerTest {
         // given
         String newName = "newName";
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
-                "testMember1", "http://test.com/test-profile.jpg", null);
+                "testMember1", "http://test.com/test-profile.jpg", null,
+                LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
 
@@ -110,7 +115,8 @@ public class MemberControllerTest {
         // given
         String newName = "wrong-length-nam";
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
-                "testMember1", "http://test.com/test-profile.jpg", null);
+                "testMember1", "http://test.com/test-profile.jpg", null,
+                LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
 
@@ -126,7 +132,8 @@ public class MemberControllerTest {
         // given
         String newName = "";
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
-                "testMember1", "http://test.com/test-profile.jpg", null);
+                "testMember1", "http://test.com/test-profile.jpg", null,
+                LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
 
@@ -157,7 +164,8 @@ public class MemberControllerTest {
         // given
         String newProfileImageUrl = "http://test.com/profile.jpg";
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
-                "testMember1", "http://test.com/test-profile.jpg", null);
+                "testMember1", "http://test.com/test-profile.jpg", null,
+                LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
         when(preSignedUrlGenerator.extractImageKey(any())).thenReturn("/profile.jpg");
@@ -174,7 +182,8 @@ public class MemberControllerTest {
     void 멤버_탈퇴_테스트() {
         // given
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
-                "testMember1", "http://test.com/test-profile.jpg", null);
+                "testMember1", "http://test.com/test-profile.jpg", null,
+                LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
         when(authenticationHolder.getUserId()).thenReturn("1");
 
@@ -190,7 +199,8 @@ public class MemberControllerTest {
     void 잘못된_요청의_멤버_탈퇴_예외_테스트() {
         // given
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
-                "testMember1", "http://test.com/test-profile.jpg", null);
+                "testMember1", "http://test.com/test-profile.jpg", null,
+                LocalDateTime.now());
         when(authenticationHolder.getUserId()).thenReturn("2");
 
         // then
