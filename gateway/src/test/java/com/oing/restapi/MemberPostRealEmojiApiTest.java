@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -55,7 +56,8 @@ public class MemberPostRealEmojiApiTest {
     @BeforeEach
     void setUp() {
         memberRepository.save(new Member(TEST_MEMBER_ID, "testUser1", LocalDate.now(), "",
-                "", ""));
+                "", "",
+                LocalDateTime.now()));
         TEST_MEMBER_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER_ID).accessToken();
 
         memberPostRepository.save(new MemberPost(TEST_POST_ID, TEST_MEMBER_ID, "img", "img",
