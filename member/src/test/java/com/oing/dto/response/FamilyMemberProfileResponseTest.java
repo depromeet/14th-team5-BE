@@ -16,14 +16,16 @@ public class FamilyMemberProfileResponseTest {
         String name = "디프만";
         String imageUrl = "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97";
         LocalDate dayOfBirth = LocalDate.of(2000, 7, 8);
+        LocalDate familyJoinAt = LocalDate.of(2000, 7, 8);
         // when
-        FamilyMemberProfileResponse response = new FamilyMemberProfileResponse(memberId, name, imageUrl, dayOfBirth);
+        FamilyMemberProfileResponse response = new FamilyMemberProfileResponse(memberId, name, imageUrl, dayOfBirth, familyJoinAt);
 
         // then
         assertEquals(response.memberId(), memberId);
         assertEquals(response.name(), name);
         assertEquals(response.imageUrl(), imageUrl);
         assertEquals(response.dayOfBirth(), dayOfBirth);
+        assertEquals(response.familyJoinAt(), familyJoinAt);
     }
 
 }

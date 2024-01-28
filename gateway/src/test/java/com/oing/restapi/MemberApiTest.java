@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -51,7 +52,8 @@ public class MemberApiTest {
                         TEST_MEMBER_ID,
                         "testUser1",
                         LocalDate.now(),
-                        "", "", ""
+                        "", "", "",
+                        LocalDateTime.now()
                 )
         );
         TEST_MEMBER_TOKEN = tokenGenerator

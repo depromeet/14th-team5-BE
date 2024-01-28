@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -58,7 +59,8 @@ public class MemberPostReactionApiTest {
                         TEST_MEMBER_ID,
                         "testUser1",
                         LocalDate.now(),
-                        "", "", ""
+                        "", "", "",
+                        LocalDateTime.now()
                 )
         );
         TEST_MEMBER_TOKEN = tokenGenerator

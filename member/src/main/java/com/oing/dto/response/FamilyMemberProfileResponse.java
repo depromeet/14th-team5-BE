@@ -22,11 +22,13 @@ public record FamilyMemberProfileResponse(
         @Schema(description = "구성원의 생일", example = "2021-12-05")
         LocalDate dayOfBirth
 ) {
-    public static FamilyMemberProfileResponse of(String memberId, String name, String imageUrl, LocalDate familyJoinAt, LocalDate dayOfBirth) {
+    public static FamilyMemberProfileResponse of
+            (String memberId, String name, String imageUrl, LocalDate familyJoinAt, LocalDate dayOfBirth) {
         return new FamilyMemberProfileResponse(memberId, name, imageUrl, familyJoinAt, dayOfBirth);
     }
 
     public static FamilyMemberProfileResponse of(Member member) {
-        return of(member.getId(), member.getName(), member.getProfileImgUrl(), member.getFamilyJoinAt().toLocalDate(), member.getDayOfBirth());
+        return of(member.getId(), member.getName(), member.getProfileImgUrl(),
+                member.getFamilyJoinAt() == null ? null : member.getFamilyJoinAt().toLocalDate(), member.getDayOfBirth());
     }
 }

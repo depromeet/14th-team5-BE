@@ -36,7 +36,7 @@ public record MemberResponse(
                 member.getName(),
                 member.getProfileImgUrl(),
                 member.getFamilyId(),
-                member.getFamilyJoinAt().toLocalDate(),
+                member.getFamilyJoinAt() == null ? null : member.getFamilyJoinAt().toLocalDate(),
                 member.getDayOfBirth()
         );
     }
