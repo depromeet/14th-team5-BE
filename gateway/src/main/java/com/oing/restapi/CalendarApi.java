@@ -32,6 +32,7 @@ public interface CalendarApi {
             @Parameter(description = "조회할 년월", example = "2021-12")
             String yearMonth,
 
+            @Parameter(hidden = true)
             @FamilyId
             String familyId
     );
