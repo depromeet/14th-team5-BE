@@ -25,15 +25,37 @@ public class Family extends BaseEntity {
         this.id = id;
     }
 
-    public void addAllFamilyMembersUploadedScore() {
-        this.score += 10;
-    }
+    private static final int NEW_POST_SCORE = 20;
+    private static final int ALL_FAMILY_MEMBERS_POSTS_UPLOADED_SCORE = 50;
+    private static final int NEW_COMMENT_SCORE = 5;
+    private static final int NEW_REACTION_SCORE = 1;
+    private static final int NEW_REAL_EMOJI_SCORE = 3;
 
     public void addNewPostScore() {
-        this.score += 5;
+        addScore(NEW_POST_SCORE);
+    }
+
+    public void addAllFamilyMembersPostsUploadedScore() {
+        addScore(ALL_FAMILY_MEMBERS_POSTS_UPLOADED_SCORE);
+    }
+
+    public void addNewCommentScore() {
+        addScore(NEW_COMMENT_SCORE);
     }
 
     public void addNewReactionScore() {
-        this.score += 1;
+        addScore(NEW_REACTION_SCORE);
+    }
+
+    public void addNewRealEmojiScore() {
+        addScore(NEW_REAL_EMOJI_SCORE);
+    }
+
+    private void addScore(int score) {
+        this.score += score;
+    }
+
+    private void subtractScore(int score) {
+        this.score -= score;
     }
 }

@@ -67,8 +67,8 @@ public class MemberPostController implements MemberPostApi {
 
     @Transactional
     @Override
-    @CacheEvict(value = "calendarCache",
-            key = "#familyId.concat(':').concat(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM').format(#request.uploadTime()))")
+//    @CacheEvict(value = "calendarCache",
+//            key = "#familyId.concat(':').concat(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM').format(#request.uploadTime()))")
     public PostResponse createPost(CreatePostRequest request, String familyId) {
         String memberId = authenticationHolder.getUserId();
         String postId = identityGenerator.generateIdentity();
