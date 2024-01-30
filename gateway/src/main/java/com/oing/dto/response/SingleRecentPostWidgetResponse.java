@@ -11,6 +11,9 @@ public record SingleRecentPostWidgetResponse(
         @Schema(description = "게시자 프로필 사진 주소", example = "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97")
         String authorProfileImageUrl,
 
+        @Schema(description = "피드 게시물 아이디", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+        String postId,
+
         @Schema(description = "피드 게시물 사진 주소", example = "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97")
         String postImageUrl,
 
