@@ -35,20 +35,40 @@ public class Family extends BaseEntity {
         addScore(NEW_POST_SCORE);
     }
 
+    public void subtractNewPostScore() {
+        subtractScore(NEW_POST_SCORE);
+    }
+
     public void addAllFamilyMembersPostsUploadedScore() {
         addScore(ALL_FAMILY_MEMBERS_POSTS_UPLOADED_SCORE);
+    }
+
+    public void subtractAllFamilyMembersPostsUploadedScore() {
+        subtractScore(ALL_FAMILY_MEMBERS_POSTS_UPLOADED_SCORE);
     }
 
     public void addNewCommentScore() {
         addScore(NEW_COMMENT_SCORE);
     }
 
+    public void subtractNewCommentScore() {
+        subtractScore(NEW_COMMENT_SCORE);
+    }
+
     public void addNewReactionScore() {
         addScore(NEW_REACTION_SCORE);
     }
 
+    public void subtractNewReactionScore() {
+        subtractScore(NEW_REACTION_SCORE);
+    }
+
     public void addNewRealEmojiScore() {
         addScore(NEW_REAL_EMOJI_SCORE);
+    }
+
+    public void subtractNewRealEmojiScore() {
+        subtractScore(NEW_REAL_EMOJI_SCORE);
     }
 
     private void addScore(int score) {
