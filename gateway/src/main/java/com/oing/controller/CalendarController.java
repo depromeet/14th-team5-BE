@@ -7,6 +7,7 @@ import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.BannerResponse;
 import com.oing.dto.response.CalendarResponse;
+import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.restapi.CalendarApi;
 import com.oing.service.MemberPostService;
 import com.oing.service.MemberService;
@@ -89,6 +90,20 @@ public class CalendarController implements CalendarApi {
                 new Random().nextInt(0, 28),
                 new Random().nextInt(1, 5),
                 BannerImageType.values()[new Random().nextInt(BannerImageType.values().length)]
+        );
+    }
+
+    @Override
+    public FamilyMonthlyStatisticsResponse getSummary(String yearMonth) {
+        String memberId = tokenAuthenticationHolder.getUserId();
+        String[] yearMonthArray = yearMonth.split("-");
+        int year = Integer.parseInt(yearMonthArray[0]);
+        int month = Integer.parseInt(yearMonthArray[1]);
+
+        String familyId = memberService.findFamilyIdByMemberId(memberId);
+        long monthlyPostCount = memberPostService.countMonthlyPostByFamilyId(year, month, familyId);
+        return new FamilyMonthlyStatisticsResponse(
+                (int) monthlyPostCount
         );
     }
 }

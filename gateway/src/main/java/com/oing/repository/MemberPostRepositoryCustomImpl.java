@@ -67,6 +67,18 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
                 .fetchResults();
     }
 
+    @Override
+    public long countMonthlyPostByFamilyId(int year, int month, String familyId) {
+        return queryFactory
+                .select(memberPost.count())
+                .from(memberPost)
+                .leftJoin(member).on(memberPost.memberId.eq(member.id))
+                .where(member.familyId.eq(familyId),
+                        memberPost.createdAt.year().eq(year),
+                        memberPost.createdAt.month().eq(month))
+                .fetchFirst();
+    }
+
     private BooleanExpression eqDate(LocalDate date) {
         DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
                 "DATE({0})", memberPost.createdAt);

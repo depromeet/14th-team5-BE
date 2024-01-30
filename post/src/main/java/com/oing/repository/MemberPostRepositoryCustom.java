@@ -16,5 +16,7 @@ public interface MemberPostRepositoryCustom {
 
     QueryResults<MemberPost> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId, String familyId, boolean asc);
 
+    long countMonthlyPostByFamilyId(int year, int month, String familyId);
+
     boolean existsByMemberIdAndCreatedAt(String memberId, LocalDate postDate);
 }
