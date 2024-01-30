@@ -46,8 +46,8 @@ public class WidgetController implements WidgetApi {
         Member author = memberService.findMemberById(latestPost.getMemberId());
         return ResponseEntity.ok(new SingleRecentPostWidgetResponse(
                 author.getName(),
-                latestPost.getId(),
                 optimizedImageUrlGenerator.getKBImageUrlGenerator(author.getProfileImgUrl()),
+                latestPost.getId(),
                 optimizedImageUrlGenerator.getKBImageUrlGenerator(latestPost.getPostImgUrl()),
                 latestPost.getContent()
         ));
