@@ -70,6 +70,7 @@ public interface MemberPostApi {
             @RequestBody
             CreatePostRequest request,
 
+            @Parameter(hidden = true)
             @FamilyId
             String familyId
     );
