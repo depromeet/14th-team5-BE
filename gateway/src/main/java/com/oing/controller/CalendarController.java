@@ -101,10 +101,9 @@ public class CalendarController implements CalendarApi {
         // 다이나믹 필드 계산
         int allFamilyMembersUploadedDays = 0;
         int allFamilyMembersUploadedStreaks = 0;
-        // 이번 달에 '가족이 전부 올린 날'과 '가족이 전부 올린 날의 연속'을 계산하기 위해, 1일부터 오늘(포함)까지 순회한다.
         boolean allFamilyMembersUploadedStreaked = true;
-        LocalDate inclusiveToday = LocalDate.now().plusDays(1);
-        while (startDate.isBefore(inclusiveToday)) {
+        // 한 달 동안 '가족이 전부 올린 날'과 '가족이 전부 올린 날의 연속'을 계산하기 위해, 1일부터 마지막 날까지 순회한다.
+        while (startDate.isBefore(endDate)) {
             long postsCount = memberPostService.countMemberPostsByMemberIdsBetween(familyMembersIds, startDate, startDate.plusDays(1));
             long familyMembersCount = memberService.countFamilyMembersByFamilyIdBefore(familyId, startDate.plusDays(1));
 
