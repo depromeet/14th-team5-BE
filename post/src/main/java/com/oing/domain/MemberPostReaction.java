@@ -13,6 +13,7 @@ import lombok.*;
         @Index(name = "member_post_reaction_idx2", columnList = "member_id")
 })
 @Entity(name = "member_post_reaction")
+@EntityListeners(MemberPostReactionEntityListener.class)
 public class MemberPostReaction extends BaseEntity {
     @Id
     @Column(name = "reaction_id", columnDefinition = "CHAR(26)", nullable = false)

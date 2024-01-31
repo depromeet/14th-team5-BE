@@ -12,6 +12,7 @@ import lombok.*;
         @Index(name = "member_post_real_emoji_idx2", columnList = "member_id")
 })
 @Entity(name = "member_post_real_emoji")
+@EntityListeners(MemberPostRealEmojiEntityListener.class)
 public class MemberPostRealEmoji extends BaseEntity {
 
     @Id

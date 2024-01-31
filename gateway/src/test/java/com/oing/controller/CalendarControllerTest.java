@@ -111,8 +111,7 @@ class CalendarControllerTest {
                 new MemberPostDailyCalendarDTO(2L),
                 new MemberPostDailyCalendarDTO(1L)
         );
-        when(tokenAuthenticationHolder.getUserId()).thenReturn(testMember1.getId());
-        when(memberService.findFamilyMembersIdByMemberId(testMember1.getId())).thenReturn(familyIds);
+        when(memberService.findFamilyMembersIdsByFamilyId("testFamily")).thenReturn(familyIds);
         when(memberPostService.findLatestPostOfEveryday(familyIds, startDate, endDate)).thenReturn(representativePosts);
         when(memberPostService.findPostDailyCalendarDTOs(familyIds, startDate, endDate)).thenReturn(calendarDTOs);
 
