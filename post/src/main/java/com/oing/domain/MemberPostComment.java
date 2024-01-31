@@ -13,6 +13,7 @@ import lombok.*;
         @Index(name = "member_post_comment_idx2", columnList = "member_id")
 })
 @Entity(name = "member_post_comment")
+@EntityListeners(MemberPostCommentEntityListener.class)
 public class MemberPostComment extends BaseAuditEntity {
     @Id
     @Column(name = "comment_id", columnDefinition = "CHAR(26)", nullable = false)

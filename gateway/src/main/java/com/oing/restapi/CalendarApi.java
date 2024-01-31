@@ -43,7 +43,11 @@ public interface CalendarApi {
     BannerResponse getBanner(
             @RequestParam(required = false)
             @Parameter(description = "조회할 년월", example = "2021-12")
-            String yearMonth
+            String yearMonth,
+
+            @FamilyId
+            @Parameter(hidden = true)
+            String familyId
     );
 
     @Operation(summary = "캘린더 통계 조회", description = "캘린더의 통계를 조회합니다.")

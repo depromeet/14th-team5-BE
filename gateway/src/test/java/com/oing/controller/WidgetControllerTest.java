@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,7 +46,8 @@ class WidgetControllerTest {
             LocalDate.of(1999, 10, 18),
             "testMember1",
             "profile.com/1",
-            "1"
+            "1",
+            LocalDateTime.now()
     );
 
     private final Member testMember2 = new Member(
@@ -54,7 +56,8 @@ class WidgetControllerTest {
             LocalDate.of(1999, 10, 18),
             "testMember2",
             "profile.com/2",
-            "2"
+            "2",
+            LocalDateTime.now()
     );
 
     private final MemberPost testPost1 = new MemberPost(

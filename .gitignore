@@ -38,6 +38,7 @@ out/
 
 application-local.yaml
 .env
+data.sql
 
 ### QueryDSL ###
 generated/
