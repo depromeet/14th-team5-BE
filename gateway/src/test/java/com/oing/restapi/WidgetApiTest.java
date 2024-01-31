@@ -1,6 +1,7 @@
 package com.oing.restapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oing.config.support.OptimizedImageUrlProvider;
 import com.oing.domain.CreateNewUserDTO;
 import com.oing.domain.Member;
 import com.oing.domain.MemberPost;
@@ -66,8 +67,6 @@ class WidgetApiTest {
 
     @Value("${cloud.ncp.image-optimizer-cdn}")
     private String imageOptimizerCdn;
-    @Value("${cloud.ncp.kb-optimizer-query}")
-    private String kbOptimizerQuery;
 
 
     @BeforeEach
@@ -161,8 +160,8 @@ class WidgetApiTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.authorName").value(TEST_MEMBER2.getName()))
-                .andExpect(jsonPath("$.authorProfileImageUrl").value(imageOptimizerCdn + "/images/2" + kbOptimizerQuery))
-                .andExpect(jsonPath("$.postImageUrl").value(imageOptimizerCdn + "/images/2" + kbOptimizerQuery))
+                .andExpect(jsonPath("$.authorProfileImageUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.KB_IMAGE_OPTIMIZER_QUERY_STRING))
+                .andExpect(jsonPath("$.postImageUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.KB_IMAGE_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.postContent").value(testPost2.getContent()));
 
     }
@@ -203,8 +202,8 @@ class WidgetApiTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.authorName").value(TEST_MEMBER2.getName()))
-                .andExpect(jsonPath("$.authorProfileImageUrl").value(imageOptimizerCdn + "/images/2" + kbOptimizerQuery))
-                .andExpect(jsonPath("$.postImageUrl").value(imageOptimizerCdn + "/images/2" + kbOptimizerQuery))
+                .andExpect(jsonPath("$.authorProfileImageUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.KB_IMAGE_OPTIMIZER_QUERY_STRING))
+                .andExpect(jsonPath("$.postImageUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.KB_IMAGE_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.postContent").value(testPost2.getContent()));
 
     }
