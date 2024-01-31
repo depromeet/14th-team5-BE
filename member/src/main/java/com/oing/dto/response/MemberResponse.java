@@ -24,6 +24,9 @@ public record MemberResponse(
         @Schema(description = "구성원 가족 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E")
         String familyId,
 
+        @Schema(description = "가족 가입 날짜", example = "2023-12-23")
+        LocalDate familyJoinAt,
+
         @Schema(description = "구성원 생일", example = "2023-12-23")
         LocalDate dayOfBirth
 ) {
@@ -33,6 +36,7 @@ public record MemberResponse(
                 member.getName(),
                 member.getProfileImgUrl(),
                 member.getFamilyId(),
+                member.getFamilyJoinAt() == null ? null : member.getFamilyJoinAt().toLocalDate(),
                 member.getDayOfBirth()
         );
     }

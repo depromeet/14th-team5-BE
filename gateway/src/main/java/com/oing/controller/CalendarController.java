@@ -1,11 +1,13 @@
 package com.oing.controller;
 
+import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.BannerImageType;
 import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.BannerResponse;
 import com.oing.dto.response.CalendarResponse;
+import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.restapi.CalendarApi;
 import com.oing.service.*;
 import com.oing.util.OptimizedImageUrlGenerator;
@@ -30,6 +32,7 @@ public class CalendarController implements CalendarApi {
     private final MemberPostReactionService memberPostReactionService;
     private final MemberPostRealEmojiService memberPostRealEmojiService;
 
+    private final TokenAuthenticationHolder tokenAuthenticationHolder;
     private final OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
 
@@ -104,7 +107,6 @@ public class CalendarController implements CalendarApi {
         while (startDate.isBefore(inclusiveToday)) {
             long postsCount = memberPostService.countMemberPostsByMemberIdsBetween(familyMembersIds, startDate, startDate.plusDays(1));
             long familyMembersCount = memberService.countFamilyMembersByFamilyIdBefore(familyId, startDate.plusDays(1));
-            System.out.println(startDate + " postsCount = " + postsCount + ", familyMembersCount = " + familyMembersCount);
 
             // 가족이 존재한 날만 계산한다.
             if (familyMembersCount != 0) {
@@ -148,6 +150,20 @@ public class CalendarController implements CalendarApi {
                 allFamilyMembersUploadedDays,
                 familyLevel,
                 bannerImageType
+        );
+    }
+
+    @Override
+    public FamilyMonthlyStatisticsResponse getSummary(String yearMonth) {
+        String memberId = tokenAuthenticationHolder.getUserId();
+        String[] yearMonthArray = yearMonth.split("-");
+        int year = Integer.parseInt(yearMonthArray[0]);
+        int month = Integer.parseInt(yearMonthArray[1]);
+
+        String familyId = memberService.findFamilyIdByMemberId(memberId);
+        long monthlyPostCount = memberPostService.countMonthlyPostByFamilyId(year, month, familyId);
+        return new FamilyMonthlyStatisticsResponse(
+                (int) monthlyPostCount
         );
     }
 }

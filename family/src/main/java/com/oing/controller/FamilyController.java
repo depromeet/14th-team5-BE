@@ -16,16 +16,6 @@ public class FamilyController implements FamilyApi {
     private final FamilyService familyService;
 
     @Override
-    public FamilyMonthlyStatisticsResponse getMonthlyFamilyStatistics(String familyId, String yearMonth) {
-        Random random = new Random();
-        return new FamilyMonthlyStatisticsResponse(
-                random.nextInt(3, 5),
-                random.nextInt(5, 10),
-                random.nextInt(0, 3)
-        );
-    }
-
-    @Override
     public FamilyResponse createFamily() {
         Family family = familyService.createFamily();
         return FamilyResponse.of(family);

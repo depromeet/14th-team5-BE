@@ -3,6 +3,7 @@ package com.oing.restapi;
 import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.BannerResponse;
 import com.oing.dto.response.CalendarResponse;
+import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.util.security.FamilyId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,6 +33,7 @@ public interface CalendarApi {
             @Parameter(description = "조회할 년월", example = "2021-12")
             String yearMonth,
 
+            @Parameter(hidden = true)
             @FamilyId
             String familyId
     );
@@ -46,5 +48,13 @@ public interface CalendarApi {
             @FamilyId
             @Parameter(hidden = true)
             String familyId
+    );
+
+    @Operation(summary = "캘린더 통계 조회", description = "캘린더의 통계를 조회합니다.")
+    @GetMapping("/summary")
+    FamilyMonthlyStatisticsResponse getSummary(
+            @RequestParam(required = false)
+            @Parameter(description = "조회할 년월", example = "2021-12")
+            String yearMonth
     );
 }

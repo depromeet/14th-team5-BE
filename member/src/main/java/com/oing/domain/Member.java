@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * no5ing-server
@@ -27,9 +28,6 @@ public class Member extends DeletableBaseAuditEntity {
     @Column(name = "family_id", length = 26, columnDefinition = "CHAR(26)")
     private String familyId;
 
-    @Column(name = "family_joined_at")
-    private LocalDate familyJoinedAt;
-
     @Column(name = "day_of_birth", nullable = false)
     private LocalDate dayOfBirth;
 
@@ -42,9 +40,14 @@ public class Member extends DeletableBaseAuditEntity {
     @Column(name = "profile_img_key")
     private String profileImgKey;
 
+    @Column(name = "family_join_at")
+    private LocalDateTime familyJoinAt;
+
+
     public void setProfileImgKey(String profileImgKey) {
         this.profileImgKey = profileImgKey;
     }
+
 
     public void updateProfileImg(String profileImgUrl, String profileImgKey) {
         this.profileImgUrl = profileImgUrl;
@@ -63,7 +66,12 @@ public class Member extends DeletableBaseAuditEntity {
 
     public void setFamilyId(String familyId) {
         this.familyId = familyId;
-        this.familyJoinedAt = LocalDate.now();
+
+        if(familyId == null) {
+            this.familyJoinAt = null;
+        } else {
+            this.familyJoinAt = LocalDateTime.now();
+        }
     }
 
     public boolean hasFamily() {
