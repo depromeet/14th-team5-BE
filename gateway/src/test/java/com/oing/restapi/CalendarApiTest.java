@@ -1,6 +1,7 @@
 package com.oing.restapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oing.config.support.OptimizedImageUrlProvider;
 import com.oing.domain.CreateNewUserDTO;
 import com.oing.domain.SocialLoginProvider;
 import com.oing.dto.request.JoinFamilyRequest;
@@ -65,8 +66,6 @@ class CalendarApiTest {
 
     @Value("${cloud.ncp.image-optimizer-cdn}")
     private String imageOptimizerCdn;
-    @Value("${cloud.ncp.thumbnail-optimizer-query}")
-    private String thumbnailOptimizerQuery;
 
 
     @BeforeEach
@@ -160,19 +159,19 @@ class CalendarApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].date").value("2023-11-01"))
                 .andExpect(jsonPath("$.results[0].representativePostId").value("2"))
-                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/2" + thumbnailOptimizerQuery))
+                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(true))
                 .andExpect(jsonPath("$.results[1].date").value("2023-11-02"))
                 .andExpect(jsonPath("$.results[1].representativePostId").value("4"))
-                .andExpect(jsonPath("$.results[1].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/4" + thumbnailOptimizerQuery))
+                .andExpect(jsonPath("$.results[1].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/4" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.results[1].allFamilyMembersUploaded").value(false))
                 .andExpect(jsonPath("$.results[2].date").value("2023-11-29"))
                 .andExpect(jsonPath("$.results[2].representativePostId").value("6"))
-                .andExpect(jsonPath("$.results[2].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/6" + thumbnailOptimizerQuery))
+                .andExpect(jsonPath("$.results[2].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/6" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.results[2].allFamilyMembersUploaded").value(true))
                 .andExpect(jsonPath("$.results[3].date").value("2023-11-30"))
                 .andExpect(jsonPath("$.results[3].representativePostId").value("8"))
-                .andExpect(jsonPath("$.results[3].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/8" + thumbnailOptimizerQuery))
+                .andExpect(jsonPath("$.results[3].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/8" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.results[3].allFamilyMembersUploaded").value(false));
 
     }

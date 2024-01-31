@@ -56,4 +56,3 @@ cloud:
     storage:
       bucket: bucket
     image-optimizer-cdn: https://cdn.com
-    thumbnail-optimizer-query: ?type=f&w=96&h=96&quality=70&align=4&faceopt=false&anilimit=1
