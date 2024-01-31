@@ -89,6 +89,13 @@ public class MemberService {
                 .toList();
     }
 
+    public List<String> findFamilyMembersIdsByFamilyId(String familyId) {
+        return memberRepository.findAllByFamilyId(familyId)
+                .stream()
+                .map(Member::getId)
+                .toList();
+    }
+
     @Transactional
     public Page<FamilyMemberProfileResponse> findFamilyMembersProfilesByFamilyId(
             String familyId, int page, int size

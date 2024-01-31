@@ -8,9 +8,7 @@ import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.BannerResponse;
 import com.oing.dto.response.CalendarResponse;
 import com.oing.restapi.CalendarApi;
-import com.oing.service.FamilyService;
-import com.oing.service.MemberPostService;
-import com.oing.service.MemberService;
+import com.oing.service.*;
 import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,14 +27,24 @@ public class CalendarController implements CalendarApi {
     private final MemberService memberService;
     private final MemberPostService memberPostService;
     private final FamilyService familyService;
+    private final MemberPostCommentService memberPostCommentService;
+    private final MemberPostReactionService memberPostReactionService;
+    private final MemberPostRealEmojiService memberPostRealEmojiService;
 
-    private final TokenAuthenticationHolder tokenAuthenticationHolder;
     private final OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
 
-    private List<String> getFamilyIds() {
-        String myId = tokenAuthenticationHolder.getUserId();
-        return memberService.findFamilyMembersIdByMemberId(myId);
+    @Override
+    @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
+    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
+        if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
+        LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
+        LocalDate endDate = startDate.plusMonths(1);
+        List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyId(familyId);
+
+        List<CalendarResponse> calendarResponses = getCalendarResponses(familyMembersIds, startDate, endDate);
+        return new ArrayResponse<>(calendarResponses);
     }
 
     private List<CalendarResponse> mapPostToCalendar(
@@ -70,26 +78,22 @@ public class CalendarController implements CalendarApi {
         return mapPostToCalendar(representativePosts, calendarDTOs, familyIds.size());
     }
 
+
     @Override
-    @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
-    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
+    public BannerResponse getBanner(String yearMonth, String familyId) {
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
-        List<String> familyIds = getFamilyIds();
+        List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyId(familyId);
 
-        List<CalendarResponse> calendarResponses = getCalendarResponses(familyIds, startDate, endDate);
-        return new ArrayResponse<>(calendarResponses);
-    }
-
-    @Override
-    public BannerResponse getBanner(String yearMonth, String familyId) {
         int familyTopPercentage = familyService.calculateFamilyTopPercentile(familyId);
         int allFamilyMembersUploadedStreaks;
         int allFamilyMembersUploadedDays;
-        int familyPostsCount;
-        int familyReactionCount;
+        int familyPostsCount = (int) memberPostService.countMemberPostsByMemberIds(familyMembersIds, startDate, endDate);
+        int familyInteractionCount = (int) memberPostCommentService.countMemberPostCommentsByMemberIds(familyMembersIds, startDate, endDate)
+                + (int) memberPostReactionService.countMemberPostReactionsByMemberIds(familyMembersIds, startDate, endDate)
+                + (int) memberPostRealEmojiService.countMemberPostRealEmojisByMemberIds(familyMembersIds, startDate, endDate);
 
         return new BannerResponse(
                 familyTopPercentage,
