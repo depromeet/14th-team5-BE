@@ -55,6 +55,11 @@ public class FamilyService {
         int familyScore = getFamilyById(familyId).getScore();
         long familyRank = familyRepository.countByScoreGreaterThanEqual(familyScore);
 
+        // handle divide by zero error
+        if (allFamiliesCount == 0) {
+            return 0;
+        }
+
         return (100 - (int) ((familyRank / (double) allFamiliesCount) * 100));
     }
 }
