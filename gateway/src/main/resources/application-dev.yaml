@@ -26,6 +26,7 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+    out-of-order: true
   h2:
     console:
       enabled: false
