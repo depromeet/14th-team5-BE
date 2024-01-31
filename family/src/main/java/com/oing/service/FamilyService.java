@@ -51,9 +51,10 @@ public class FamilyService {
     }
 
     public int calculateFamilyTopPercentile(String familyId) {
-        Family family = getFamilyById(familyId);
-        System.out.println("family = " + familyId);
-        System.out.println("family.getScore() = " + family.getScore());
-        return family.getScore();
+        long allFamiliesCount = familyRepository.count();
+        int familyScore = getFamilyById(familyId).getScore();
+        long familyRank = familyRepository.countByScoreGreaterThanEqual(familyScore);
+
+        return (100 - (int) ((familyRank / (double) allFamiliesCount) * 100));
     }
 }
