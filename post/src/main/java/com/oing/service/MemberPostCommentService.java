@@ -83,7 +83,7 @@ public class MemberPostCommentService {
      * @param exclusiveEndDate   조회 종료 날짜
      * @return 조회 대상인 댓글의 갯수
      */
-    public long countMemberPostCommentsByMemberIds(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
+    public long countMemberPostCommentsByMemberIdsBetween(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
         return memberPostCommentRepository.countByMemberIdInAndCreatedAtBetween(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
 

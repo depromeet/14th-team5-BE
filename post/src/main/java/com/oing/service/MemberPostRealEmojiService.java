@@ -57,7 +57,7 @@ public class MemberPostRealEmojiService {
      * @param exclusiveEndDate   조회 종료 날짜
      * @return 조회 대상인 리얼 이모지의 갯수
      */
-    public long countMemberPostRealEmojisByMemberIds(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
+    public long countMemberPostRealEmojisByMemberIdsBetween(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
         return memberPostRealEmojiRepository.countByMemberIdInAndCreatedAtBetween(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
 

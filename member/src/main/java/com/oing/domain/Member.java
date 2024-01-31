@@ -27,6 +27,9 @@ public class Member extends DeletableBaseAuditEntity {
     @Column(name = "family_id", length = 26, columnDefinition = "CHAR(26)")
     private String familyId;
 
+    @Column(name = "family_joined_at")
+    private LocalDate familyJoinedAt;
+
     @Column(name = "day_of_birth", nullable = false)
     private LocalDate dayOfBirth;
 
@@ -60,6 +63,7 @@ public class Member extends DeletableBaseAuditEntity {
 
     public void setFamilyId(String familyId) {
         this.familyId = familyId;
+        this.familyJoinedAt = LocalDate.now();
     }
 
     public boolean hasFamily() {

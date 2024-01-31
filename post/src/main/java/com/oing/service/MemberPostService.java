@@ -54,7 +54,6 @@ public class MemberPostService {
         return memberPostRepository.findPostDailyCalendarDTOs(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
 
-
     public MemberPost findMemberPostById(String postId) {
         return memberPostRepository
                 .findById(postId)
@@ -96,7 +95,7 @@ public class MemberPostService {
      * @param exclusiveEndDate   조회 종료 날짜
      * @return 조회 대상인 게시글의 갯수
      */
-    public long countMemberPostsByMemberIds(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
+    public long countMemberPostsByMemberIdsBetween(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
         return memberPostRepository.countByMemberIdInAndCreatedAtBetween(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
 

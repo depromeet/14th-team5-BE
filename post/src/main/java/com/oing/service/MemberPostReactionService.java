@@ -47,7 +47,7 @@ public class MemberPostReactionService {
      * @param exclusiveEndDate   조회 종료 날짜
      * @return 조회 대상인 반응의 갯수
      */
-    public long countMemberPostReactionsByMemberIds(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
+    public long countMemberPostReactionsByMemberIdsBetween(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
         return memberPostReactionRepository.countByMemberIdInAndCreatedAtBetween(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
 
