@@ -49,4 +49,11 @@ public class FamilyService {
                 .findById(familyId)
                 .orElseThrow(FamilyNotFoundException::new);
     }
+
+    public int calculateFamilyTopPercentile(String familyId) {
+        Family family = getFamilyById(familyId);
+        System.out.println("family = " + familyId);
+        System.out.println("family.getScore() = " + family.getScore());
+        return family.getScore();
+    }
 }

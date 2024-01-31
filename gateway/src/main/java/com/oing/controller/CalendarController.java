@@ -8,6 +8,7 @@ import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.BannerResponse;
 import com.oing.dto.response.CalendarResponse;
 import com.oing.restapi.CalendarApi;
+import com.oing.service.FamilyService;
 import com.oing.service.MemberPostService;
 import com.oing.service.MemberService;
 import com.oing.util.OptimizedImageUrlGenerator;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -28,6 +28,7 @@ public class CalendarController implements CalendarApi {
 
     private final MemberService memberService;
     private final MemberPostService memberPostService;
+    private final FamilyService familyService;
 
     private final TokenAuthenticationHolder tokenAuthenticationHolder;
     private final OptimizedImageUrlGenerator optimizedImageUrlGenerator;
@@ -83,15 +84,15 @@ public class CalendarController implements CalendarApi {
     }
 
     @Override
-    public BannerResponse getBanner(String yearMonth) {
-        int familyTopPercentage;
+    public BannerResponse getBanner(String yearMonth, String familyId) {
+        int familyTopPercentage = familyService.calculateFamilyTopPercentile(familyId);
         int allFamilyMembersUploadedStreaks;
         int allFamilyMembersUploadedDays;
         int familyPostsCount;
         int familyReactionCount;
 
         return new BannerResponse(
-                new Random().nextInt(0, 101),
+                familyTopPercentage,
                 new Random().nextInt(0, 28),
                 new Random().nextInt(1, 5),
                 BannerImageType.values()[new Random().nextInt(BannerImageType.values().length)]

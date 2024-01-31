@@ -41,6 +41,10 @@ public interface CalendarApi {
     BannerResponse getBanner(
             @RequestParam(required = false)
             @Parameter(description = "조회할 년월", example = "2021-12")
-            String yearMonth
+            String yearMonth,
+
+            @FamilyId
+            @Parameter(hidden = true)
+            String familyId
     );
 }
