@@ -97,4 +97,9 @@ public class MemberPostService {
         applicationEventPublisher.publishEvent(new DeleteMemberPostEvent(memberPost));
         memberPostRepository.delete(memberPost);
     }
+
+    @Transactional
+    public long countMonthlyPostByFamilyId(int year, int month, String familyId) {
+        return memberPostRepository.countMonthlyPostByFamilyId(year, month, familyId);
+    }
 }
