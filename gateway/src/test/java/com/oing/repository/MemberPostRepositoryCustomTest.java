@@ -45,7 +45,8 @@ class MemberPostRepositoryCustomTest {
             LocalDate.of(1999, 10, 18),
             "testMember1",
             "profile.com/1",
-            "1"
+            "1",
+            LocalDateTime.now()
     );
 
     private final Member testMember2 = new Member(
@@ -54,7 +55,8 @@ class MemberPostRepositoryCustomTest {
             LocalDate.of(1999, 10, 18),
             "testMember2",
             "profile.com/2",
-            "2"
+            "2",
+            LocalDateTime.now()
     );
 
     private final Member testMember3 = new Member(
@@ -63,7 +65,8 @@ class MemberPostRepositoryCustomTest {
             LocalDate.of(1999, 10, 18),
             "testMember3",
             "profile.com/3",
-            "2"
+            "2",
+            LocalDateTime.now()
     );
 
     private final List<String> familyIds = List.of(testMember1.getId(), testMember2.getId());

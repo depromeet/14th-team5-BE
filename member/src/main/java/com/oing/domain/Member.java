@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * no5ing-server
@@ -39,9 +40,14 @@ public class Member extends DeletableBaseAuditEntity {
     @Column(name = "profile_img_key")
     private String profileImgKey;
 
+    @Column(name = "family_join_at")
+    private LocalDateTime familyJoinAt;
+
+
     public void setProfileImgKey(String profileImgKey) {
         this.profileImgKey = profileImgKey;
     }
+
 
     public void updateProfileImg(String profileImgUrl, String profileImgKey) {
         this.profileImgUrl = profileImgUrl;
@@ -60,6 +66,12 @@ public class Member extends DeletableBaseAuditEntity {
 
     public void setFamilyId(String familyId) {
         this.familyId = familyId;
+
+        if(familyId == null) {
+            this.familyJoinAt = null;
+        } else {
+            this.familyJoinAt = LocalDateTime.now();
+        }
     }
 
     public boolean hasFamily() {

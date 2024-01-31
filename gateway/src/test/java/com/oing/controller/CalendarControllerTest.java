@@ -48,7 +48,8 @@ class CalendarControllerTest {
             LocalDate.of(1999, 10, 18),
             "testMember1",
             "profile.com/1",
-            "1"
+            "1",
+            LocalDateTime.now()
     );
 
     private final Member testMember2 = new Member(
@@ -57,7 +58,8 @@ class CalendarControllerTest {
             LocalDate.of(1999, 10, 18),
             "testMember2",
             "profile.com/2",
-            "2"
+            "2",
+            LocalDateTime.now()
     );
 
     private final List<String> familyIds = List.of(testMember1.getId(), testMember2.getId());
@@ -109,8 +111,7 @@ class CalendarControllerTest {
                 new MemberPostDailyCalendarDTO(2L),
                 new MemberPostDailyCalendarDTO(1L)
         );
-        when(tokenAuthenticationHolder.getUserId()).thenReturn(testMember1.getId());
-        when(memberService.findFamilyMembersIdByMemberId(testMember1.getId())).thenReturn(familyIds);
+        when(memberService.findFamilyMembersIdsByFamilyId("testFamily")).thenReturn(familyIds);
         when(memberPostService.findLatestPostOfEveryday(familyIds, startDate, endDate)).thenReturn(representativePosts);
         when(memberPostService.findPostDailyCalendarDTOs(familyIds, startDate, endDate)).thenReturn(calendarDTOs);
 

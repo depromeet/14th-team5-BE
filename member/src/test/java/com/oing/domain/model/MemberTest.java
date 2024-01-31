@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -27,7 +28,8 @@ public class MemberTest {
         String name = "sampleName";
 
         // When
-        Member member = new Member(memberId, familyId, dayofBirth, name, null, null);
+        Member member = new Member(memberId, familyId, dayofBirth, name, null, null,
+                LocalDateTime.now());
 
         // Then
         assertNotNull(member);
@@ -44,8 +46,10 @@ public class MemberTest {
         String name = "sampleName";
 
         // When
-        Member member1 = new Member(memberId, familyId, dayofBirth, name, null, null);
-        Member member2 = new Member(memberId, familyId, dayofBirth, name, null, null);
+        Member member1 = new Member(memberId, familyId, dayofBirth, name, null, null,
+                LocalDateTime.now());
+        Member member2 = new Member(memberId, familyId, dayofBirth, name, null, null,
+                LocalDateTime.now());
 
         // Then
         assertEquals(member1, member2);

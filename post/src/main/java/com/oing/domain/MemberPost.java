@@ -16,6 +16,7 @@ import java.util.List;
         @Index(name = "member_post_idx1", columnList = "member_id")
 })
 @Entity(name = "member_post")
+@EntityListeners(MemberPostEntityListener.class)
 public class MemberPost extends BaseAuditEntity {
     @Id
     @Column(name = "post_id", columnDefinition = "CHAR(26)", nullable = false)
