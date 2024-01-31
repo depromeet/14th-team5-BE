@@ -5,6 +5,7 @@ import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostReaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,4 +17,6 @@ public interface MemberPostReactionRepository extends JpaRepository<MemberPostRe
     List<MemberPostReaction> findAllByPostId(String postId);
 
     void deleteAllByPostId(String memberPostId);
+
+    long countByMemberIdInAndCreatedAtBetween(List<String> memberIds, LocalDateTime startDateTime, LocalDateTime endDateTime);
 }

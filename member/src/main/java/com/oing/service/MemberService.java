@@ -19,9 +19,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -89,6 +89,13 @@ public class MemberService {
                 .toList();
     }
 
+    public List<String> findFamilyMembersIdsByFamilyId(String familyId) {
+        return memberRepository.findAllByFamilyId(familyId)
+                .stream()
+                .map(Member::getId)
+                .toList();
+    }
+
     @Transactional
     public Page<FamilyMemberProfileResponse> findFamilyMembersProfilesByFamilyId(
             String familyId, int page, int size
@@ -101,10 +108,14 @@ public class MemberService {
         return new PageImpl<>(familyMemberProfiles, memberPage.getPageable(), memberPage.getTotalElements());
     }
 
+    public long countFamilyMembersByFamilyIdBefore(String familyId, LocalDate date) {
+        return memberRepository.countByFamilyIdAndFamilyJoinAtBefore(familyId, date.atStartOfDay());
+    }
+
     private List<FamilyMemberProfileResponse> createFamilyMemberProfiles(List<Member> members) {
         return members.stream()
                 .map(FamilyMemberProfileResponse::of)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void deleteAllSocialMembersByMember(String memberId) {

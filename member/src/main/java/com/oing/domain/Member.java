@@ -66,6 +66,7 @@ public class Member extends DeletableBaseAuditEntity {
 
     public void setFamilyId(String familyId) {
         this.familyId = familyId;
+
         if(familyId == null) {
             this.familyJoinAt = null;
         } else {

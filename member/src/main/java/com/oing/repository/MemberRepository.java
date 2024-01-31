@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,4 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     List<Member> findAllByFamilyId(String familyId);
 
     Page<Member> findAllByFamilyIdAndDeletedAtIsNull(String familyId, PageRequest pageRequest);
+
+    long countByFamilyIdAndFamilyJoinAtBefore(String familyId, LocalDateTime dateTime);
 }

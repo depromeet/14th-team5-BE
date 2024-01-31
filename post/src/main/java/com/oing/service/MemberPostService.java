@@ -22,6 +22,12 @@ public class MemberPostService {
     private final MemberPostRepository memberPostRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
+
+    public MemberPost save(MemberPost post) {
+        return memberPostRepository.save(post);
+    }
+
+
     /**
      * 멤버들이 범위 날짜 안에 올린 대표 게시물들을 가져온다.
      * (대표 게시글의 기준은 당일 가장 늦게 올라온 게시글)
@@ -48,7 +54,6 @@ public class MemberPostService {
         return memberPostRepository.findPostDailyCalendarDTOs(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
 
-
     public MemberPost findMemberPostById(String postId) {
         return memberPostRepository
                 .findById(postId)
@@ -67,15 +72,6 @@ public class MemberPostService {
         return memberPostRepository.existsByMemberIdAndCreatedAt(memberId, today);
     }
 
-    /**
-     * 멤버가 오늘 작성한 게시물을 저장한다.
-     *
-     * @param post 저장할 MemberPost 객체
-     */
-    public MemberPost save(MemberPost post) {
-        return memberPostRepository.save(post);
-    }
-
     @Transactional
     public MemberPost getMemberPostById(String postId) {
         return memberPostRepository.findById(postId).orElseThrow(PostNotFoundException::new);
@@ -89,6 +85,18 @@ public class MemberPostService {
                 totalPage,
                 results.getResults()
         );
+    }
+
+    /**
+     * 특정 기간 동안 특정 멤버가 올린 게시글의 갯수를 반환한다.
+     *
+     * @param memberIds          조회 대상 멤버들의 ID
+     * @param inclusiveStartDate 조회 시작 날짜
+     * @param exclusiveEndDate   조회 종료 날짜
+     * @return 조회 대상인 게시글의 갯수
+     */
+    public long countMemberPostsByMemberIdsBetween(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
+        return memberPostRepository.countByMemberIdInAndCreatedAtBetween(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
 
     @Transactional
