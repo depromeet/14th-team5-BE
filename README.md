@@ -27,44 +27,58 @@ In the precious time spent with family, everything feels more special with Pippy
 
 <br />
 
-### 🎇 Project Contributors
-
-<table>
-    <tbody>
-    <tr>
-         <td align="center" valign="top" width="22.28%"><a href="https://github.com/cchuyong"><img src="https://avatars.githubusercontent.com/u/67673493?v=4" width="140px;" alt="CChuYong"/><br /><sub><b>Yeongmin Song</b></sub></a><br /><span>백엔드 개발(파트장)</span></td>
-         <td align="center" valign="top" width="22.28%"><a href="https://github.com/Ji-soo708"><img src="https://avatars.githubusercontent.com/u/69844138?v=4" width="140px;" alt="CChuYong"/><br /><sub><b>Jisoo Lim</b></sub></a><br /><span>백엔드 개발</span></td>
-         <td align="center" valign="top" width="22.28%"><a href="https://github.com/Kwon770"><img src="https://avatars.githubusercontent.com/u/49567744?v=4" width="140px;" alt="CChuYong"/><br /><sub><b>Soonchan Kwon</b></sub></a><br /><span>백엔드 개발</span></td>
-    </tr>
-    </tbody>
-</table>
+## 1️⃣ Project Contributors
+| 👑 백엔드 개발(파트장) | 백엔드 개발 | 백엔드 개발 |
+|:--:|:--:|:--:|
+| <a href="https://github.com/cchuyong"><img src="https://avatars.githubusercontent.com/u/67673493?v=4" width="140px;" alt="CChuYong"/> | <a href="https://github.com/Ji-soo708"><img src="https://avatars.githubusercontent.com/u/69844138?v=4" width="140px;" alt="Ji-soo708"/>  | <a href="https://github.com/Kwon770"><img src="https://avatars.githubusercontent.com/u/49567744?v=4" width="140px;" alt="Kwon770"/> |
+| 송영민 | 임지수 | 권순찬 |
 
 <br/>
 
-### 🖥️ Project Tech Stacks
+## 2️⃣ Project Architecture
 
 - JVM Runtime Amazon Corretto 17
 - SpringBoot 3.1.5 (Servlet MVC)
 - Spring Data JPA with QueryDSL
 - Stateless Session Management with JWT + Spring Security
 - Module Architecture with Gradle Multi-Project
-<br/><br/>
+- Prometheus and Grafana for monitoring
+<br/>
 
-### 🛠 환경변수
+#### Module
+```
+## 14th-team5-BE
+- 🗂️ common
+- 🗂️ gateway
+- 🗂️ member
+- 🗂️ family
+- 🗂️ post
 
-| 이름                         | 설명                          |
-|----------------------------|-----------------------------|
-| MYSQL_URL                  | MYSQL 주소입니다 (JDBC 형태여야 합니다) |
-| MYSQL_USERNAME             | MYSQL 사용자 명 입니다.            |
-| MYSQL_PASSWORD             | MYSQL 비밀번호 입니다.             |
-| SLACK_WEBHOOK_URL          | 슬랙 웹훅 URL 입니다.              |
-| TOKEN_SECRET_KEY           | JWT 토큰용 시크릿 키 입니다.          |
-| OBJECT_STORAGE_REGION      | NCP Region 입니다.             |
-| OBJECT_STORAGE_END_POINT   | NCP 엔드포인트 입니다.              |
-| OBJECT_STORAGE_ACCESS_KEY  | NCP 액세스 키 입니다.              |
-| OBJECT_STORAGE_SECRET_KEY  | NCP 시크릿 키 입니다.              |
-| OBJECT_STORAGE_BUCKET_NAME | NCP ObjectStroage 버킷명 입니다.  |
-| IMAGE_OPTIMIZER_CDN_URL | NCP ImageOptimizer CDN URL 입니다.  |
-| GOOGLE_CLIENT_ID           | 구글 로그인 클라이언트 ID 입니다.        |
-| REDIS_HOST           | Redis Host 입니다.        |
-| REDIS_PORT           | Redis Port 입니다.        |
+```
+
+#### Github Actions CI/CD
+![image](https://github.com/depromeet/14th-team5-BE/assets/69844138/af905728-88cf-4e95-9d36-ef0812b7be6b)
+<br/>
+
+#### NCP Infrastructure
+![image](https://github.com/depromeet/14th-team5-BE/assets/69844138/84772f5d-5138-4882-999c-a0139055463f)
+<br /><br />
+
+
+## 3️⃣ Project Outline
+
+#### ⏰ Notification
+![image](https://github.com/depromeet/14th-team5-iOS/assets/62610032/4a2e0659-5fef-4383-8070-92430a7cf9f4)
+
+<br />
+
+#### 📱 Widget
+![image](https://github.com/depromeet/14th-team5-iOS/assets/62610032/031e0bf9-7a6d-4e7f-9893-71d0def1d2d9)
+
+
+<br />
+
+#### 🗓️ Calendar
+![image](https://github.com/depromeet/14th-team5-iOS/assets/62610032/d255500a-4289-43aa-aabc-79e8cdfc5cc4)
+
+<br />
