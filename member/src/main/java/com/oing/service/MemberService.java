@@ -123,6 +123,6 @@ public class MemberService {
     }
 
     public List<Member> findAllMember() {
-        return memberRepository.findAll();
+        return memberRepository.findAllByDeletedAtIsNull();
     }
 }
