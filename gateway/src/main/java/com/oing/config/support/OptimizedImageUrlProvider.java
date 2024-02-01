@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OptimizedImageUrlProvider implements OptimizedImageUrlGenerator {
 
-    public static final String THUMBNAIL_OPTIMIZER_QUERY_STRING = "type=f&w=96&h=96&quality=70&autorotate=false&faceopt=false";
+    public static final String THUMBNAIL_OPTIMIZER_QUERY_STRING = "?type=f&w=96&h=96&quality=70&autorotate=false&faceopt=false";
     public static final String KB_IMAGE_OPTIMIZER_QUERY_STRING = "?type=f&w=480&h=480&faceopt=false&quality=50&autorotate=false";
 
     @Value("${cloud.ncp.image-optimizer-cdn}")
