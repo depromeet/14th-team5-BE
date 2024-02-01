@@ -5,6 +5,7 @@ import com.google.firebase.messaging.ApnsConfig;
 import com.google.firebase.messaging.Aps;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
+import com.oing.domain.BulkNotificationCompletedEvent;
 import com.oing.domain.Member;
 import com.oing.service.FCMNotificationService;
 import com.oing.service.MemberDeviceService;
@@ -12,6 +13,7 @@ import com.oing.service.MemberPostService;
 import com.oing.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class DailyNotificationJob {
+    private final ApplicationEventPublisher eventPublisher;
     private final FCMNotificationService fcmNotificationService;
 
     private final MemberService memberService;
@@ -59,6 +62,13 @@ public class DailyNotificationJob {
                 members.size(),
                 targetFcmTokens.size(),
                 System.currentTimeMillis() - start);
+
+        eventPublisher.publishEvent(
+                new BulkNotificationCompletedEvent(
+                        "오늘 업로드 알림 전송 완료", targetFcmTokens.size(), members.size(),
+                        System.currentTimeMillis() - start
+                )
+        );
     }
 
     @Scheduled(cron = "0 30 23 * * *", zone = "Asia/Seoul") // 11:30 PM
@@ -87,6 +97,14 @@ public class DailyNotificationJob {
                 allMembers.size() - postedMemberIds.size(),
                 targetFcmTokens.size(),
                 System.currentTimeMillis() - start);
+
+        eventPublisher.publishEvent(
+                new BulkNotificationCompletedEvent(
+                        "오늘 미업로드자 업로드 알림 전송 완료", targetFcmTokens.size(),
+                        allMembers.size() - postedMemberIds.size(),
+                        System.currentTimeMillis() - start
+                )
+        );
     }
 
     private Notification buildNotification(String title, String body){
