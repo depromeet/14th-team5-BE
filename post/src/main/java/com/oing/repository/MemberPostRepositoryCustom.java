@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MemberPostRepositoryCustom {
+    List<String> getMemberIdsPostedToday(LocalDate date);
 
     List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate);
 

@@ -121,4 +121,8 @@ public class MemberService {
     public void deleteAllSocialMembersByMember(String memberId) {
         socialMemberRepository.deleteAllByMemberId(memberId);
     }
+
+    public List<Member> findAllMember() {
+        return memberRepository.findAll();
+    }
 }

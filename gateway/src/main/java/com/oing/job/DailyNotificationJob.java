@@ -1,0 +1,104 @@
+package com.oing.job;
+
+import com.google.common.collect.Lists;
+import com.google.firebase.messaging.ApnsConfig;
+import com.google.firebase.messaging.Aps;
+import com.google.firebase.messaging.MulticastMessage;
+import com.google.firebase.messaging.Notification;
+import com.oing.domain.Member;
+import com.oing.service.FCMNotificationService;
+import com.oing.service.MemberDeviceService;
+import com.oing.service.MemberPostService;
+import com.oing.service.MemberService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+
+/**
+ * no5ing-server
+ * User: CChuYong
+ * Date: 2/2/24
+ * Time: 4:16 AM
+ */
+@Slf4j
+@RequiredArgsConstructor
+@Component
+public class DailyNotificationJob {
+    private final FCMNotificationService fcmNotificationService;
+
+    private final MemberService memberService;
+    private final MemberDeviceService memberDeviceService;
+    private final MemberPostService memberPostService;
+
+    @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Seoul") // 12:00 PM
+    public void sendDailyUploadNotification() {
+        long start = System.currentTimeMillis();
+        log.info("[DailyNotificationJob] 오늘 업로드 알림 전송 시작");
+        HashSet<String> targetFcmTokens = new HashSet<>();
+        List<Member> members = memberService.findAllMember();
+        for (Member member : members) {
+            targetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(member.getId()));
+        }
+
+        Lists.partition(targetFcmTokens.stream().toList(), 500).forEach(partitionedList -> {
+            MulticastMessage multicastMessage = MulticastMessage.builder()
+                    .setNotification(
+                            buildNotification("삐삐", "지금 바로 가족에게 일상 공유를 해볼까요?")
+                    )
+                    .addAllTokens(partitionedList)
+                    .setApnsConfig(buildApnsConfig())
+                    .build();
+            fcmNotificationService.sendMulticastMessage(multicastMessage);
+        });
+        log.info("[DailyNotificationJob] 오늘 업로드 알림 전송 완료. (총 {}명, {}토큰) 소요시간 : {}ms",
+                members.size(),
+                targetFcmTokens.size(),
+                System.currentTimeMillis() - start);
+    }
+
+    @Scheduled(cron = "0 30 23 * * *", zone = "Asia/Seoul") // 11:30 PM
+    public void sendDailyRemainingNotification() {
+        long start = System.currentTimeMillis();
+        log.info("[DailyNotificationJob] 오늘 미 업로드 사용자 대상 알림 전송 시작");
+        LocalDate today = LocalDate.now();
+        List<Member> allMembers = memberService.findAllMember();
+        HashSet<String> targetFcmTokens = new HashSet<>();
+        HashSet<String> postedMemberIds = new HashSet<>(memberPostService.getMemberIdsPostedToday(today));
+        allMembers.stream()
+                .filter(member -> !postedMemberIds.contains(member.getId())) //오늘 업로드한 사람이 아닌 사람들은
+                .forEach(member -> targetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(member.getId())));
+
+        Lists.partition(targetFcmTokens.stream().toList(), 500).forEach(partitionedList -> {
+            MulticastMessage multicastMessage = MulticastMessage.builder()
+                    .setNotification(
+                         buildNotification("삐삐", "사진을 공유할 수 있는 시간이 얼마 남지 않았어요.")
+                    )
+                    .addAllTokens(partitionedList)
+                    .setApnsConfig(buildApnsConfig())
+                    .build();
+            fcmNotificationService.sendMulticastMessage(multicastMessage);
+        });
+        log.info("[DailyNotificationJob] 오늘 미 업로드 사용자 대상 알림 전송 완료. (총 {}명, {}토큰) 소요시간 : {}ms",
+                allMembers.size() - postedMemberIds.size(),
+                targetFcmTokens.size(),
+                System.currentTimeMillis() - start);
+    }
+
+    private Notification buildNotification(String title, String body){
+        return Notification.builder()
+                .setTitle(title)
+                .setBody(body)
+                .build();
+    }
+
+    private ApnsConfig buildApnsConfig(){
+        return ApnsConfig.builder()
+                .setAps(Aps.builder().setSound("default").build())
+                .build();
+    }
+}
