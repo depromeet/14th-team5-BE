@@ -88,6 +88,7 @@ logging:
     com.oing: DEBUG
 
 cloud:
+  firebase: ${FIREBASE_SECRET}
   ncp:
     region: ${OBJECT_STORAGE_REGION}
     end-point: ${OBJECT_STORAGE_END_POINT}
