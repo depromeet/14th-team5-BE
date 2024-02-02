@@ -43,6 +43,7 @@ In the precious time spent with family, everything feels more special with Pippy
 - Stateless Session Management with JWT + Spring Security
 - Module Architecture with Gradle Multi-Project
 - Prometheus and Grafana for monitoring
+- Redis for Caching 
 <br/>
 
 #### Module
