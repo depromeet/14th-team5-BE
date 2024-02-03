@@ -7,6 +7,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * no5ing-server
  * User: CChuYong
@@ -36,5 +39,13 @@ public class MemberDeviceService {
         }
         memberDeviceRepository.deleteById(new MemberDeviceKey(memberId, fcmToken));
         return true;
+    }
+
+    @Transactional
+    public List<String> getFcmTokensByMemberId(String memberId) {
+        return memberDeviceRepository.findAllByMemberId(memberId)
+                .stream()
+                .map(MemberDevice::getFcmToken)
+                .collect(Collectors.toList());
     }
 }

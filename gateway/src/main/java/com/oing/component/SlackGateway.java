@@ -48,7 +48,7 @@ public class SlackGateway {
         @JsonProperty("mrkdwn_in")
         final String mrkdwn_in = "[\"text\"]";
         @JsonProperty("color")
-        final String color = "#ff2400";
+        String color = "#ff2400";
         @JsonProperty("author_name")
         final String authorName;
         @JsonProperty("title")
