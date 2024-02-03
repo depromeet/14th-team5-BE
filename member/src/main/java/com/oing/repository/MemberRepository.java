@@ -21,4 +21,6 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     Page<Member> findAllByFamilyIdAndDeletedAtIsNull(String familyId, PageRequest pageRequest);
 
     long countByFamilyIdAndFamilyJoinAtBefore(String familyId, LocalDateTime dateTime);
+
+    List<Member> findAllByDeletedAtIsNull();
 }

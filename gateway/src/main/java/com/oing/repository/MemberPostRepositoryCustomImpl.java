@@ -25,6 +25,15 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
     private final JPAQueryFactory queryFactory;
 
     @Override
+    public List<String> getMemberIdsPostedToday(LocalDate date) {
+        return queryFactory
+                .select(memberPost.memberId)
+                .from(memberPost)
+                .where(memberPost.createdAt.between(date.atStartOfDay(), date.atTime(23, 59, 59)))
+                .fetch();
+    }
+
+    @Override
     public List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
         return queryFactory
                 .selectFrom(memberPost)
