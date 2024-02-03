@@ -1,5 +1,6 @@
 package com.oing.component;
 
+import com.oing.domain.BulkNotificationCompletedEvent;
 import com.oing.domain.ErrorReportDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -25,6 +26,46 @@ public class ApplicationListener {
     private boolean isProductionInstance() {
         String[] activeProfiles = environment.getActiveProfiles();
         return activeProfiles != null && (Arrays.asList(activeProfiles).contains("prod") || Arrays.asList(activeProfiles).contains("dev"));
+    }
+
+    @Async
+    @EventListener
+    public void onNotificationSent(BulkNotificationCompletedEvent event) {
+        if (!isProductionInstance()) return;
+        SlackGateway.SlackBotDto dto = SlackGateway.SlackBotDto.builder()
+                .attachments(List.of(
+                        SlackGateway.SlackBotAttachmentDto.builder()
+                                .authorName("no5ing-server")
+                                .title("알림 발송 리포트")
+                                .color("#abcdef")
+                                .text("백엔드 서버에서 FCM 벌크 알림이 발송되었습니다")
+                                .fields(List.of(
+                                        SlackGateway.SlackBotFieldDto.builder()
+                                                .title("알림 종류")
+                                                .value(event.reason())
+                                                .shortField(false)
+                                                .build(),
+                                        SlackGateway.SlackBotFieldDto.builder()
+                                                .title("알람 발송 대상 기기 수")
+                                                .value(String.valueOf(event.totalTargets()))
+                                                .shortField(true)
+                                                .build(),
+                                        SlackGateway.SlackBotFieldDto.builder()
+                                                .title("알람 발송 대상 사용자 수")
+                                                .value(String.valueOf(event.totalMembers()))
+                                                .shortField(true)
+                                                .build(),
+                                        SlackGateway.SlackBotFieldDto.builder()
+                                                .title("소요시간 (밀리초)")
+                                                .value(String.valueOf(event.elapsedMillis()))
+                                                .shortField(true)
+                                                .build()
+                                ))
+                                .build()
+                ))
+                .build();
+
+        slackGateway.sendSlackBotMessage(dto);
     }
 
     @Async

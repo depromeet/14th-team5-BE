@@ -110,4 +110,8 @@ public class MemberPostService {
     public long countMonthlyPostByFamilyId(int year, int month, String familyId) {
         return memberPostRepository.countMonthlyPostByFamilyId(year, month, familyId);
     }
+
+    public List<String> getMemberIdsPostedToday(LocalDate date) {
+        return memberPostRepository.getMemberIdsPostedToday(date);
+    }
 }
