@@ -4,6 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import java.util.Base64;
  * Time: 3:59 AM
  */
 @Profile({"prod", "dev"})
+@Slf4j
 @Configuration
 public class FirebaseConfig {
     @Value("${cloud.firebase}")
@@ -27,6 +29,7 @@ public class FirebaseConfig {
 
     @Bean
     public FirebaseMessaging firebaseMessaging() throws IOException {
+        log.info("Initializing FirebaseMessaging with FCM secret");
         ByteArrayInputStream credentials = new ByteArrayInputStream(Base64.getDecoder().decode(firebaseSecret));
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(credentials)).build();
