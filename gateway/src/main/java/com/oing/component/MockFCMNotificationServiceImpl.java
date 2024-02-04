@@ -3,6 +3,7 @@ package com.oing.component;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MulticastMessage;
+import com.oing.config.FirebaseConfig;
 import com.oing.service.FCMNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@ConditionalOnMissingBean(FirebaseMessaging.class)
+@ConditionalOnMissingBean(FirebaseConfig.class)
 public class MockFCMNotificationServiceImpl implements FCMNotificationService {
 
     @Override
