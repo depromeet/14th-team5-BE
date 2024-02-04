@@ -19,6 +19,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -56,6 +57,7 @@ public class SpringWebExceptionHandler {
             ServletRequestBindingException.class,
             MethodArgumentNotValidException.class,
             ConstraintViolationException.class,
+            MethodArgumentTypeMismatchException.class,
     })
     ResponseEntity<ErrorResponse> handleValidateException(Exception exception) {
         log.warn("[InvalidParameterException]", exception);
