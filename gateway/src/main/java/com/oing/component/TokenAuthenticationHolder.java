@@ -1,5 +1,6 @@
 package com.oing.component;
 
+import com.oing.exception.AuthorizationFailedException;
 import com.oing.util.AuthenticationHolder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +12,9 @@ import java.util.Collection;
 public class TokenAuthenticationHolder implements AuthenticationHolder {
     @Override
     public String getUserId() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (memberId == null) throw new AuthorizationFailedException();
+        return memberId;
     }
 
     @Override
