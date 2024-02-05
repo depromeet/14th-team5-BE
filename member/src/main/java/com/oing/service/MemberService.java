@@ -30,7 +30,6 @@ public class MemberService {
     private final SocialMemberRepository socialMemberRepository;
 
     private final IdentityGenerator identityGenerator;
-    private final PreSignedUrlGenerator preSignedUrlGenerator;
 
     public Member findMemberById(String memberId) {
         return memberRepository
@@ -72,10 +71,6 @@ public class MemberService {
                 createNewUserDTO.identifier(),
                 member);
         socialMemberRepository.save(socialMember);
-
-        if (createNewUserDTO.profileImgUrl() != null) {
-            member.setProfileImgKey(preSignedUrlGenerator.extractImageKey(createNewUserDTO.profileImgUrl()));
-        }
 
         return member;
     }
