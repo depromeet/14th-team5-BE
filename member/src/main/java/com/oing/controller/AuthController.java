@@ -12,7 +12,6 @@ import com.oing.restapi.AuthApi;
 import com.oing.service.AuthService;
 import com.oing.service.MemberService;
 import com.oing.service.TokenGenerator;
-import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -32,7 +31,6 @@ public class AuthController implements AuthApi {
     private final AuthService authService;
     private final MemberService memberService;
     private final TokenGenerator tokenGenerator;
-    private final PreSignedUrlGenerator preSignedUrlGenerator;
 
     @Transactional
     @Override
@@ -90,10 +88,6 @@ public class AuthController implements AuthApi {
                     request.profileImgUrl()
             );
             Member member = memberService.createNewMember(createNewUserDTO);
-
-            if (createNewUserDTO.profileImgUrl() != null) {
-                member.setProfileImgKey(preSignedUrlGenerator.extractImageKey(createNewUserDTO.profileImgUrl()));
-            }
 
             //새 토큰 생성
             TokenPair tokenPair = tokenGenerator.generateTokenPair(member.getId());

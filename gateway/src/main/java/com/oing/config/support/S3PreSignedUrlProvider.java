@@ -94,6 +94,9 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
     @Override
     public String extractImageKey(String imageUrl) {
+        if (imageUrl == null) {
+            return null;
+        }
         Pattern pattern1 = Pattern.compile("https://.+?/" + Pattern.quote(bucket) + "/(.+)");
         Pattern pattern2 = Pattern.compile("https://" + Pattern.quote(bucket) + ".+?/" + "(.+)");
 
