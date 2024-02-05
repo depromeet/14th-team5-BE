@@ -1,5 +1,6 @@
 package com.oing.config;
 
+import com.oing.config.filter.AppVersionFilter;
 import com.oing.config.filter.JwtAccessDeniedHandler;
 import com.oing.config.filter.JwtAuthenticationEntryPoint;
 import com.oing.config.filter.JwtAuthenticationHandler;
@@ -34,7 +35,7 @@ public class SpringSecurityConfig {
     /**
      * 앱 버전 관리 필터
      */
-    //private final AppVersionFilter appVersionFilter;
+    private final AppVersionFilter appVersionFilter;
 
     /**
      * 인증/인가 관련 실패 처리기
@@ -61,7 +62,7 @@ public class SpringSecurityConfig {
                             .anyRequest().authenticated();
                 })
                 .addFilterBefore(authenticationHandler, UsernamePasswordAuthenticationFilter.class)
-                //.addFilterBefore(appVersionFilter, JwtAuthenticationHandler.class)
+                .addFilterBefore(appVersionFilter, JwtAuthenticationHandler.class)
                 .exceptionHandling(exceptionHandlerManagement ->
                         exceptionHandlerManagement
                                 .authenticationEntryPoint(entryPoint)
