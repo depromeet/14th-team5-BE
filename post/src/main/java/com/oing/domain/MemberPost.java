@@ -25,6 +25,9 @@ public class MemberPost extends BaseAuditEntity {
     @Column(name = "member_id", columnDefinition = "CHAR(26)", nullable = false)
     private String memberId;
 
+    @Column(name = "family_id", columnDefinition = "CHAR(26)", nullable = false)
+    private String familyId;
+
     @Column(name = "post_img_url", nullable = false)
     private String postImgUrl;
 
@@ -52,10 +55,11 @@ public class MemberPost extends BaseAuditEntity {
     @OneToMany(mappedBy = "post")
     private List<MemberPostRealEmoji> realEmojis = new ArrayList<>();
 
-    public MemberPost(String id, String memberId, String postImgUrl, String postImgKey, String content) {
+    public MemberPost(String id, String memberId, String familyId, String postImgUrl, String postImgKey, String content) {
         validateContent(content);
         this.id = id;
         this.memberId = memberId;
+        this.familyId = familyId;
         this.postImgUrl = postImgUrl;
         this.postImgKey = postImgKey;
         this.content = content;

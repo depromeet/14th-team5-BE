@@ -1,0 +1,1 @@
+ALTER TABLE `member_post` ADD COLUMN (`family_id` CHAR(26) NOT NULL COMMENT 'ULID');
