@@ -8,6 +8,7 @@ import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DeepLinkResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.service.*;
+import com.oing.support.EmbeddedRedisConfig;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
+@Import(EmbeddedRedisConfig.class)
 @ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc

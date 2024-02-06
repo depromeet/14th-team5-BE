@@ -19,7 +19,9 @@ spring:
   data:
     redis:
       host: localhost
-      port: 6379
+      port: 16379
+      ssl:
+        enabled: true
 app:
   external-urls:
     slack-webhook: https://www.naver.com # Must Be Replaced
