@@ -42,7 +42,7 @@ public class MemberPostReactionControllerTest {
         //given
         String memberId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
-        MemberPost post = new MemberPost("1", memberId, "1", "1", "1");
+        MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
         MemberPostReaction reaction = new MemberPostReaction("1", post, memberId, Emoji.EMOJI_1);
         when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
         when(memberPostReactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(false);
@@ -62,7 +62,7 @@ public class MemberPostReactionControllerTest {
         //given
         String memberId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
-        MemberPost post = new MemberPost("1", memberId, "1", "1", "1");
+        MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
         when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
 
         //when
@@ -79,7 +79,7 @@ public class MemberPostReactionControllerTest {
         //given
         String memberId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
-        MemberPost post = new MemberPost("1", memberId, "1", "1", "1");
+        MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
         MemberPostReaction reaction = new MemberPostReaction("1", post, memberId, Emoji.EMOJI_1);
         when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
         when(memberPostReactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(true);
@@ -98,7 +98,7 @@ public class MemberPostReactionControllerTest {
         //given
         String memberId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
-        MemberPost post = new MemberPost("1", memberId, "1", "1", "1");
+        MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
         when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
 
         //when
@@ -114,7 +114,7 @@ public class MemberPostReactionControllerTest {
     void 리액션_남긴_멤버_조회_테스트() {
         //given
         String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "1", "1", "1");
+        MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
         List<MemberPostReaction> mockReactions = Arrays.asList(
                 new MemberPostReaction("1", post, memberId, Emoji.EMOJI_1),
                 new MemberPostReaction("2", post, memberId, Emoji.EMOJI_2)

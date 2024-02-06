@@ -81,14 +81,14 @@ class MemberPostRepositoryCustomTest {
         memberRepository.save(testMember3);
 
         // Posts
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('1', '" + testMember1.getId() + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('2', '" + testMember2.getId() + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('3', '" + testMember3.getId() + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('4', '" + testMember1.getId() + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('1', '" + testMember1.getId() + "', '" + testMember1.getFamilyId() + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('2', '" + testMember2.getId() + "', '" + testMember2.getFamilyId() + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('3', '" + testMember3.getId() + "', '" + testMember3.getFamilyId() + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('4', '" + testMember1.getId() + "', '" + testMember1.getFamilyId() + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
     }
 
 
@@ -120,7 +120,8 @@ class MemberPostRepositoryCustomTest {
         LocalDate postDate = LocalDate.of(2023, 11, 1);
 
         // when
-        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndCreatedAt(testMember1.getId(), postDate);
+        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndCreatedAt(testMember1.getId(),
+                testMember1.getFamilyId(), postDate);
 
         // then
         assertThat(exists).isTrue();
@@ -132,7 +133,8 @@ class MemberPostRepositoryCustomTest {
         LocalDate postDate = LocalDate.of(2023, 11, 8);
 
         // when
-        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndCreatedAt(testMember1.getId(), postDate);
+        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndCreatedAt(testMember1.getId(),
+                testMember1.getFamilyId(), postDate);
 
         // then
         assertThat(exists).isFalse();

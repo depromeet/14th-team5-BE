@@ -43,6 +43,7 @@ public class MemberPostApiTest {
 
     private String TEST_MEMBER_ID = "01HGW2N7EHJVJ4CJ999RRS2E97";
     private String TEST_POST_ID = "01HGW2N7EHJVJ4CJ999RRS2A97";
+    private String TEST_FAMILY_ID = "01HGW2N7EHJVJ4CJ999RRS2E44";
     private String TEST_MEMBER_TOKEN;
 
     @Autowired
@@ -110,7 +111,7 @@ public class MemberPostApiTest {
     @Test
     void 게시물_삭제_테스트() throws Exception {
         //given
-        memberPostRepository.save(new MemberPost(TEST_POST_ID, TEST_MEMBER_ID, "img", "img",
+        memberPostRepository.save(new MemberPost(TEST_POST_ID, TEST_MEMBER_ID, TEST_FAMILY_ID, "img", "img",
                 "content"));
 
         //when
