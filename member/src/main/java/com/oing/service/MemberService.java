@@ -28,9 +28,8 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final SocialMemberRepository socialMemberRepository;
-
-    private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
+    private final IdentityGenerator identityGenerator;
 
     public Member findMemberById(String memberId) {
         return memberRepository
@@ -62,6 +61,7 @@ public class MemberService {
                 .id(identityGenerator.generateIdentity())
                 .dayOfBirth(createNewUserDTO.dayOfBirth())
                 .profileImgUrl(createNewUserDTO.profileImgUrl())
+                .profileImgKey(preSignedUrlGenerator.extractImageKey(createNewUserDTO.profileImgUrl()))
                 .name(createNewUserDTO.memberName())
                 .build();
         memberRepository.save(member);
@@ -72,10 +72,6 @@ public class MemberService {
                 createNewUserDTO.identifier(),
                 member);
         socialMemberRepository.save(socialMember);
-
-        if (createNewUserDTO.profileImgUrl() != null) {
-            member.setProfileImgKey(preSignedUrlGenerator.extractImageKey(createNewUserDTO.profileImgUrl()));
-        }
 
         return member;
     }
