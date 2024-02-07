@@ -68,6 +68,16 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
+    public MemberResponse deleteMemberProfileImageUrl(String memberId) {
+        validateMemberId(memberId);
+        Member member = memberService.findMemberById(memberId);
+        member.deleteProfileImg();
+
+        return MemberResponse.of(member);
+    }
+
+    @Override
+    @Transactional
     public MemberResponse updateMemberName(String memberId, UpdateMemberNameRequest request) {
         validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
