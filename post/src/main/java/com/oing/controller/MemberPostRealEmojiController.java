@@ -47,11 +47,12 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
     @Override
     public PostRealEmojiResponse createPostRealEmoji(String postId, PostRealEmojiRequest request) {
         String memberId = authenticationHolder.getUserId();
+        String familyId = memberBridge.getFamilyIdByMemberId(memberId);
         MemberPost post = memberPostService.getMemberPostById(postId);
         if (!memberBridge.isInSameFamily(memberId, post.getMemberId()))
             throw new AuthorizationFailedException();
 
-        MemberRealEmoji realEmoji = memberRealEmojiService.getMemberRealEmojiById(request.realEmojiId());
+        MemberRealEmoji realEmoji = memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(request.realEmojiId(), familyId);
         validatePostRealEmojiForAddition(post, memberId, realEmoji);
         MemberPostRealEmoji postRealEmoji = new MemberPostRealEmoji(identityGenerator.generateIdentity(), realEmoji,
                 post, memberId);

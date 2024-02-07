@@ -12,6 +12,7 @@ import com.oing.dto.response.RealEmojisResponse;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.DuplicateRealEmojiException;
 import com.oing.restapi.MemberRealEmojiApi;
+import com.oing.service.MemberBridge;
 import com.oing.service.MemberRealEmojiService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
@@ -30,6 +31,7 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
     private final AuthenticationHolder authenticationHolder;
     private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
+    private final MemberBridge memberBridge;
     private final MemberRealEmojiService memberRealEmojiService;
 
     @Transactional
@@ -44,29 +46,31 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
     @Override
     public RealEmojiResponse createMemberRealEmoji(String memberId, CreateMyRealEmojiRequest request) {
         validateMemberId(memberId);
+        String familyId = memberBridge.getFamilyIdByMemberId(memberId);
         String emojiId = identityGenerator.generateIdentity();
         String emojiImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
         Emoji emoji = Emoji.fromString(request.type());
-        if (isExistsSameRealEmojiType(emoji, memberId)) {
+        if (isExistsSameRealEmojiType(emoji, memberId, familyId)) {
             throw new DuplicateRealEmojiException();
         }
 
-        MemberRealEmoji realEmoji = new MemberRealEmoji(emojiId, memberId, emoji, request.imageUrl(), emojiImgKey);
+        MemberRealEmoji realEmoji = new MemberRealEmoji(emojiId, memberId, familyId, emoji, request.imageUrl(), emojiImgKey);
         MemberRealEmoji addedRealEmoji = memberRealEmojiService.save(realEmoji);
         return RealEmojiResponse.from(addedRealEmoji);
     }
 
-    private boolean isExistsSameRealEmojiType(Emoji emoji, String memberId) {
-        return memberRealEmojiService.findRealEmojiByEmojiTypeAndMemberId(emoji, memberId);
+    private boolean isExistsSameRealEmojiType(Emoji emoji, String memberId, String familyId) {
+        return memberRealEmojiService.findRealEmojiByEmojiTypeAndMemberIdAndFamilyId(emoji, memberId, familyId);
     }
 
     @Transactional
     @Override
     public RealEmojiResponse changeMemberRealEmoji(String memberId, String realEmojiId, UpdateMyRealEmojiRequest request) {
         validateMemberId(memberId);
+        String familyId = memberBridge.getFamilyIdByMemberId(memberId);
         String emojiImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
 
-        MemberRealEmoji findEmoji = memberRealEmojiService.findRealEmojiById(realEmojiId);
+        MemberRealEmoji findEmoji = memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(realEmojiId, familyId);
         findEmoji.updateRealEmoji(request.imageUrl(), emojiImgKey);
         return RealEmojiResponse.from(findEmoji);
     }
@@ -74,8 +78,9 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
     @Override
     public RealEmojisResponse getMemberRealEmojis(String memberId) {
         validateMemberId(memberId);
+        String familyId = memberBridge.getFamilyIdByMemberId(memberId);
 
-        List<MemberRealEmoji> realEmojis = memberRealEmojiService.findRealEmojisByMemberId(memberId);
+        List<MemberRealEmoji> realEmojis = memberRealEmojiService.findRealEmojisByMemberIdAndFamilyId(memberId, familyId);
         List<RealEmojiResponse> emojiResponses = realEmojis.stream()
                 .map(RealEmojiResponse::from)
                 .collect(Collectors.toList());

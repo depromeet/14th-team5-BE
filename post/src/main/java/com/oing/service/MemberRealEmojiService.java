@@ -16,8 +16,9 @@ public class MemberRealEmojiService {
     private final MemberRealEmojiRepository memberRealEmojiRepository;
 
 
-    public MemberRealEmoji getMemberRealEmojiById(String realEmojiId) {
-        return memberRealEmojiRepository.findById(realEmojiId)
+    public MemberRealEmoji getMemberRealEmojiByIdAndFamilyId(String realEmojiId, String familyId) {
+        return memberRealEmojiRepository
+                .findByIdAndFamilyId(realEmojiId, familyId)
                 .orElseThrow(RealEmojiNotFoundException::new);
     }
 
@@ -25,20 +26,14 @@ public class MemberRealEmojiService {
         return memberRealEmojiRepository.save(emoji);
     }
 
-    public MemberRealEmoji findRealEmojiById(String realEmojiId) {
+    public boolean findRealEmojiByEmojiTypeAndMemberIdAndFamilyId(Emoji emoji, String memberId, String familyId) {
         return memberRealEmojiRepository
-                .findById(realEmojiId)
-                .orElseThrow(RealEmojiNotFoundException::new);
-    }
-
-    public boolean findRealEmojiByEmojiTypeAndMemberId(Emoji emoji, String memberId) {
-        return memberRealEmojiRepository
-                .findByTypeAndMemberId(emoji, memberId)
+                .findByTypeAndMemberIdAndFamilyId(emoji, memberId, familyId)
                 .isPresent();
     }
 
-    public List<MemberRealEmoji> findRealEmojisByMemberId(String memberId) {
-        return memberRealEmojiRepository.findAllByMemberId(memberId);
+    public List<MemberRealEmoji> findRealEmojisByMemberIdAndFamilyId(String memberId, String familyId) {
+        return memberRealEmojiRepository.findAllByMemberIdAndFamilyId(memberId, familyId);
     }
 
 }
