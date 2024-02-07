@@ -35,5 +35,4 @@ public class MemberRealEmojiService {
     public List<MemberRealEmoji> findRealEmojisByMemberIdAndFamilyId(String memberId, String familyId) {
         return memberRealEmojiRepository.findAllByMemberIdAndFamilyId(memberId, familyId);
     }
-
 }
