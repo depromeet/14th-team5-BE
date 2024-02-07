@@ -69,8 +69,6 @@ class MemberPostRepositoryCustomTest {
             LocalDateTime.now()
     );
 
-    private final List<String> familyIds = List.of(testMember1.getId(), testMember2.getId());
-
 
     @BeforeEach
     void setup() {
@@ -95,7 +93,8 @@ class MemberPostRepositoryCustomTest {
     @Test
     void 각_날짜에서_가장_마지막으로_업로드된_게시글을_조회한다() {
         // When
-        List<MemberPost> posts = memberPostRepositoryCustomImpl.findLatestPostOfEveryday(familyIds, LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0));
+        String familyId = testMember1.getFamilyId();
+        List<MemberPost> posts = memberPostRepositoryCustomImpl.findLatestPostOfEveryday(LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0), familyId);
 
         // Then
         assertThat(posts)
@@ -106,7 +105,8 @@ class MemberPostRepositoryCustomTest {
     @Test
     void 데일리_게시글_캘린더를_구성하기_위한_정보를_조회한다() {
         // when
-        List<MemberPostDailyCalendarDTO> postDailyCalendarDTOs = memberPostRepositoryCustomImpl.findPostDailyCalendarDTOs(familyIds, LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0));
+        String familyId = testMember1.getFamilyId();
+        List<MemberPostDailyCalendarDTO> postDailyCalendarDTOs = memberPostRepositoryCustomImpl.findPostDailyCalendarDTOs(LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0), familyId);
 
         // Then
         assertThat(postDailyCalendarDTOs)

@@ -62,13 +62,12 @@ class CalendarControllerTest {
             LocalDateTime.now()
     );
 
-    private final List<String> familyIds = List.of(testMember1.getId(), testMember2.getId());
-
 
     @Test
     void 월별_캘린더_조회_테스트() {
         // Given
         String yearMonth = "2023-11";
+        String familyId = testMember1.getFamilyId();
 
         LocalDate startDate = LocalDate.of(2023, 11, 1);
         LocalDate endDate = startDate.plusMonths(1);
@@ -115,12 +114,11 @@ class CalendarControllerTest {
                 new MemberPostDailyCalendarDTO(2L),
                 new MemberPostDailyCalendarDTO(1L)
         );
-        when(memberService.findFamilyMembersIdsByFamilyId("testFamily")).thenReturn(familyIds);
-        when(memberPostService.findLatestPostOfEveryday(familyIds, startDate, endDate)).thenReturn(representativePosts);
-        when(memberPostService.findPostDailyCalendarDTOs(familyIds, startDate, endDate)).thenReturn(calendarDTOs);
+        when(memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId)).thenReturn(representativePosts);
+        when(memberPostService.findPostDailyCalendarDTOs(startDate, endDate, familyId)).thenReturn(calendarDTOs);
 
         // When
-        ArrayResponse<CalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, testMember1.getFamilyId());
+        ArrayResponse<CalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, familyId);
 
         // Then
         assertThat(weeklyCalendar.results())
