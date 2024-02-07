@@ -53,6 +53,7 @@ public class MemberPostCommentServiceTest {
                 "1",
                 "1",
                 "1",
+                "1",
                 "1"
         );
         MemberPostComment memberPostComment = new MemberPostComment(
@@ -75,6 +76,7 @@ public class MemberPostCommentServiceTest {
     void 게시물_댓글_조회_게시물ID_댓글ID_불일치_테스트() {
         //given
         MemberPost memberPost = new MemberPost(
+                "1",
                 "1",
                 "1",
                 "1",
@@ -130,6 +132,7 @@ public class MemberPostCommentServiceTest {
     void 게시물_댓글_검색_테스트() {
         //given
         MemberPost memberPost = new MemberPost(
+                "1",
                 "1",
                 "1",
                 "1",

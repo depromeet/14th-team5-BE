@@ -117,22 +117,22 @@ class CalendarApiTest {
         String yearMonth = "2023-11";
 
         // posts
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('1', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('2', '" + TEST_MEMBER2_ID + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('3', '" + TEST_MEMBER3_ID + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('4', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('5', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/5', 0, 0, '2023-11-29 14:00:00', '2023-11-29 14:00:00', 'post5555', '5');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('6', '" + TEST_MEMBER2_ID + "', 'https://storage.com/images/6', 0, 0, '2023-11-29 15:00:00', '2023-11-29 15:00:00', 'post6666', '6');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('7', '" + TEST_MEMBER3_ID + "', 'https://storage.com/images/7', 0, 0, '2023-11-29 17:00:00', '2023-11-29 17:00:00', 'post7777', '7');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('8', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/8', 0, 0, '2023-11-30 14:00:00', '2023-11-30 14:00:00', 'post8888', '8');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('1', '" + TEST_MEMBER1_ID + "', '" + TEST_FAMILIES_IDS.get(0) + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('2', '" + TEST_MEMBER2_ID + "', '" + TEST_FAMILIES_IDS.get(1) + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('3', '" + TEST_MEMBER3_ID + "', '" + TEST_FAMILIES_IDS.get(1) + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('4', '" + TEST_MEMBER1_ID + "', '" + TEST_FAMILIES_IDS.get(0) + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('5', '" + TEST_MEMBER1_ID + "', '" + TEST_FAMILIES_IDS.get(0) + "', 'https://storage.com/images/5', 0, 0, '2023-11-29 14:00:00', '2023-11-29 14:00:00', 'post5555', '5');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('6', '" + TEST_MEMBER2_ID + "', '" + TEST_FAMILIES_IDS.get(1) + "', 'https://storage.com/images/6', 0, 0, '2023-11-29 15:00:00', '2023-11-29 15:00:00', 'post6666', '6');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('7', '" + TEST_MEMBER3_ID + "', '" + TEST_FAMILIES_IDS.get(1) + "', 'https://storage.com/images/7', 0, 0, '2023-11-29 17:00:00', '2023-11-29 17:00:00', 'post7777', '7');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('8', '" + TEST_MEMBER1_ID + "', '" + TEST_FAMILIES_IDS.get(0) + "', 'https://storage.com/images/8', 0, 0, '2023-11-30 14:00:00', '2023-11-30 14:00:00', 'post8888', '8');");
 
         // family
         String familyId = objectMapper.readValue(
@@ -185,22 +185,22 @@ class CalendarApiTest {
         String yearMonth = "2023-11";
 
         // posts
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('1', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('2', '" + TEST_MEMBER2_ID + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('3', '" + TEST_MEMBER3_ID + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('4', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('5', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/5', 0, 0, '2023-11-29 14:00:00', '2023-11-29 14:00:00', 'post5555', '5');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('6', '" + TEST_MEMBER2_ID + "', 'https://storage.com/images/6', 0, 0, '2023-11-29 15:00:00', '2023-11-29 15:00:00', 'post6666', '6');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('7', '" + TEST_MEMBER3_ID + "', 'https://storage.com/images/7', 0, 0, '2023-11-29 17:00:00', '2023-11-29 17:00:00', 'post7777', '7');");
-        jdbcTemplate.execute("insert into member_post (post_id, member_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
-                "values ('8', '" + TEST_MEMBER1_ID + "', 'https://storage.com/images/8', 0, 0, '2023-11-30 14:00:00', '2023-11-30 14:00:00', 'post8888', '8');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('1', '" + TEST_MEMBER1_ID + "', '" + TEST_FAMILIES_IDS.get(0) + "', 'https://storage.com/images/1', 0, 0, '2023-11-01 14:00:00', '2023-11-01 14:00:00', 'post1111', '1');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('2', '" + TEST_MEMBER2_ID + "', '" + TEST_FAMILIES_IDS.get(1) + "', 'https://storage.com/images/2', 0, 0, '2023-11-01 15:00:00', '2023-11-01 15:00:00', 'post2222', '2');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('3', '" + TEST_MEMBER3_ID + "', '" + TEST_FAMILIES_IDS.get(1) + "', 'https://storage.com/images/3', 0, 0, '2023-11-01 17:00:00', '2023-11-01 17:00:00', 'post3333', '3');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('4', '" + TEST_MEMBER1_ID + "', '" + TEST_FAMILIES_IDS.get(0) + "', 'https://storage.com/images/4', 0, 0, '2023-11-02 14:00:00', '2023-11-02 14:00:00', 'post4444', '4');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('5', '" + TEST_MEMBER1_ID + "', '" + TEST_FAMILIES_IDS.get(0) + "', 'https://storage.com/images/5', 0, 0, '2023-11-29 14:00:00', '2023-11-29 14:00:00', 'post5555', '5');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('6', '" + TEST_MEMBER2_ID + "', '" + TEST_FAMILIES_IDS.get(1) + "', 'https://storage.com/images/6', 0, 0, '2023-11-29 15:00:00', '2023-11-29 15:00:00', 'post6666', '6');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('7', '" + TEST_MEMBER3_ID + "', '" + TEST_FAMILIES_IDS.get(1) + "', 'https://storage.com/images/7', 0, 0, '2023-11-29 17:00:00', '2023-11-29 17:00:00', 'post7777', '7');");
+        jdbcTemplate.execute("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) " +
+                "values ('8', '" + TEST_MEMBER1_ID + "', '" + TEST_FAMILIES_IDS.get(0) + "', 'https://storage.com/images/8', 0, 0, '2023-11-30 14:00:00', '2023-11-30 14:00:00', 'post8888', '8');");
 
         // family
         String familyId = objectMapper.readValue(

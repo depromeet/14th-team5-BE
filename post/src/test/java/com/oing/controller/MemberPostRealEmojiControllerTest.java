@@ -59,7 +59,7 @@ public class MemberPostRealEmojiControllerTest {
         String memberId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
         when(memberBridge.isInSameFamily(memberId, memberId)).thenReturn(true);
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
@@ -84,7 +84,7 @@ public class MemberPostRealEmojiControllerTest {
         // given
         String memberId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
@@ -105,7 +105,7 @@ public class MemberPostRealEmojiControllerTest {
         String memberId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
         when(memberBridge.isInSameFamily(memberId, memberId)).thenReturn(true);
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji realEmoji = new MemberRealEmoji("1",  memberId, Emoji.EMOJI_1,
                 "https://oing.com/emoji.jpg", "emoji.jpg");
@@ -125,7 +125,7 @@ public class MemberPostRealEmojiControllerTest {
     void 게시물_리얼이모지_삭제_테스트() {
         //given
         String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
@@ -143,7 +143,7 @@ public class MemberPostRealEmojiControllerTest {
         //given
         String memberId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1","https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
@@ -162,7 +162,7 @@ public class MemberPostRealEmojiControllerTest {
     void 게시물_리얼이모지_요약_조회_테스트() {
         //given
         String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
 
@@ -177,7 +177,7 @@ public class MemberPostRealEmojiControllerTest {
     void 게시물_리얼이모지_목록_조회_테스트() {
         //given
         String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 
@@ -193,7 +193,7 @@ public class MemberPostRealEmojiControllerTest {
     void 게시물_리얼이모지_멤버_조회_테스트() {
         //given
         String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 
