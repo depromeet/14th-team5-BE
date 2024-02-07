@@ -34,14 +34,14 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
     }
 
     @Override
-    public List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<MemberPost> findLatestPostOfEveryday(LocalDateTime startDate, LocalDateTime endDate, String familyId) {
         return queryFactory
                 .selectFrom(memberPost)
                 .where(memberPost.id.in(
                         JPAExpressions
                                 .select(memberPost.id.max())
                                 .from(memberPost)
-                                .where(memberPost.memberId.in(memberIds)
+                                .where(memberPost.familyId.eq(familyId)
                                         .and(memberPost.createdAt.between(startDate, endDate)))
                                 .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, memberPost.createdAt))
                 ))
@@ -52,11 +52,11 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
 
 
     @Override
-    public List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(LocalDateTime startDate, LocalDateTime endDate, String familyId) {
         return queryFactory
                 .select(Projections.constructor(MemberPostDailyCalendarDTO.class, memberPost.id.count()))
                 .from(memberPost)
-                .where(memberPost.memberId.in(memberIds)
+                .where(memberPost.familyId.eq(familyId)
                         .and(memberPost.createdAt.between(startDate, endDate)))
                 .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, memberPost.createdAt))
                 .fetch();

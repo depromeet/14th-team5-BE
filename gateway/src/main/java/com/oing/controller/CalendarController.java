@@ -43,16 +43,22 @@ public class CalendarController implements CalendarApi {
 
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
-        List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyId(familyId);
 
-        List<CalendarResponse> calendarResponses = getCalendarResponses(familyMembersIds, startDate, endDate);
+        List<CalendarResponse> calendarResponses = getCalendarResponses(startDate, endDate, familyId);
         return new ArrayResponse<>(calendarResponses);
+    }
+
+    private List<CalendarResponse> getCalendarResponses(LocalDate startDate, LocalDate endDate, String familyId) {
+        List<MemberPost> representativePosts = memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId);
+        List<MemberPostDailyCalendarDTO> calendarDTOs = memberPostService.findPostDailyCalendarDTOs(startDate, endDate, familyId);
+
+        return mapPostToCalendar(representativePosts, calendarDTOs, familyId);
     }
 
     private List<CalendarResponse> mapPostToCalendar(
             List<MemberPost> representativePosts,
             List<MemberPostDailyCalendarDTO> calendarDTOs,
-            int familySize
+            String familyId
     ) {
         return IntStream.range(0, representativePosts.size())
                 .mapToObj(index -> {
@@ -62,7 +68,7 @@ public class CalendarController implements CalendarApi {
                     LocalDate date = post.getCreatedAt().toLocalDate();
                     String postId = post.getId();
                     String thumbnailUrl = optimizedImageUrlGenerator.getThumbnailUrlGenerator(post.getPostImgUrl());
-                    boolean allFamilyMembersUploaded = calendarDTO.dailyPostCount() == familySize;
+//                    boolean allFamilyMembersUploaded = calendarDTO.dailyPostCount() == familySize;
 
                     return new CalendarResponse(
                             date,
@@ -71,13 +77,6 @@ public class CalendarController implements CalendarApi {
                             allFamilyMembersUploaded
                     );
                 }).toList();
-    }
-
-    private List<CalendarResponse> getCalendarResponses(List<String> familyIds, LocalDate startDate, LocalDate endDate) {
-        List<MemberPost> representativePosts = memberPostService.findLatestPostOfEveryday(familyIds, startDate, endDate);
-        List<MemberPostDailyCalendarDTO> calendarDTOs = memberPostService.findPostDailyCalendarDTOs(familyIds, startDate, endDate);
-
-        return mapPostToCalendar(representativePosts, calendarDTOs, familyIds.size());
     }
 
 

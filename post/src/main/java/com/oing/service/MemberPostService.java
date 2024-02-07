@@ -37,8 +37,8 @@ public class MemberPostService {
      * @param exclusiveEndDate   조회 종료 날짜
      * @return 데일리 대표 게시물들
      */
-    public List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
-        return memberPostRepository.findLatestPostOfEveryday(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
+    public List<MemberPost> findLatestPostOfEveryday(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, String familyId) {
+        return memberPostRepository.findLatestPostOfEveryday(inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay(), familyId);
     }
 
 
@@ -50,8 +50,8 @@ public class MemberPostService {
      * @param exclusiveEndDate   조회 종료 날짜
      * @return 데일리 캘린더용 DTO
      */
-    public List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
-        return memberPostRepository.findPostDailyCalendarDTOs(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
+    public List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, String familyId) {
+        return memberPostRepository.findPostDailyCalendarDTOs(inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay(), familyId);
     }
 
     public MemberPost findMemberPostById(String postId) {

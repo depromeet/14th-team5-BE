@@ -11,9 +11,9 @@ import java.util.List;
 public interface MemberPostRepositoryCustom {
     List<String> getMemberIdsPostedToday(LocalDate date);
 
-    List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate);
+    List<MemberPost> findLatestPostOfEveryday(LocalDateTime startDate, LocalDateTime endDate, String familyId);
 
-    List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate);
+    List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(LocalDateTime startDate, LocalDateTime endDate, String familyId);
 
     QueryResults<MemberPost> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId, String familyId, boolean asc);
 
