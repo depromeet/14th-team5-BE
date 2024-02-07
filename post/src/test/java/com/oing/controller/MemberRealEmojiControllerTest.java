@@ -170,4 +170,25 @@ public class MemberRealEmojiControllerTest {
         assertEquals(request1.imageUrl(), response.myRealEmojiList().get(0).imageUrl());
         assertEquals(request2.imageUrl(), response.myRealEmojiList().get(1).imageUrl());
     }
+
+    @Test
+    void 다른_가족에서_생성된_회원_리얼이모지_조회_테스트() {
+        // given
+        String memberId = "1";
+        String otherFamilyId = "1";
+        String familyId = "2";
+        String realEmojiImageUrl = "https://test.com/realEmoji1.jpg";
+        Emoji emoji = Emoji.EMOJI_1;
+        when(authenticationHolder.getUserId()).thenReturn(memberId);
+        CreateMyRealEmojiRequest request = new CreateMyRealEmojiRequest(emoji.getTypeKey(), realEmojiImageUrl);
+        when(memberRealEmojiService.save(any())).thenReturn(new MemberRealEmoji("1", memberId, otherFamilyId, emoji,
+                realEmojiImageUrl, "realEmoji.jpg"));
+        memberRealEmojiController.createMemberRealEmoji(memberId, otherFamilyId, request);
+
+        // when
+        RealEmojisResponse response = memberRealEmojiController.getMemberRealEmojis(memberId, familyId);
+
+        // then
+        assertEquals(0, response.myRealEmojiList().size());
+    }
 }
