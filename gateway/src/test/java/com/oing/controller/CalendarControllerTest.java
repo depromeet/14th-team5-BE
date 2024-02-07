@@ -75,6 +75,7 @@ class CalendarControllerTest {
         MemberPost testPost1 = new MemberPost(
                 "1",
                 testMember1.getId(),
+                "1",
                 "post.com/1",
                 "1",
                 "test1"
@@ -83,6 +84,7 @@ class CalendarControllerTest {
         MemberPost testPost2 = new MemberPost(
                 "2",
                 testMember2.getId(),
+                "1",
                 "post.com/2",
                 "2",
                 "test2"
@@ -91,6 +93,7 @@ class CalendarControllerTest {
         MemberPost testPost3 = new MemberPost(
                 "3",
                 testMember1.getId(),
+                "1",
                 "post.com/3",
                 "3",
                 "test3"
@@ -99,6 +102,7 @@ class CalendarControllerTest {
         MemberPost testPost4 = new MemberPost(
                 "4",
                 testMember2.getId(),
+                "1",
                 "post.com/4",
                 "4",
                 "test4"

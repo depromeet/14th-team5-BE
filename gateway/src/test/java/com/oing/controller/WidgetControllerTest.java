@@ -63,6 +63,7 @@ class WidgetControllerTest {
     private final MemberPost testPost1 = new MemberPost(
             "testPost1",
             testMember1.getId(),
+            "1",
             "post.com/1",
             "1",
             "testPost"
