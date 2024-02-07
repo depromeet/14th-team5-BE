@@ -69,7 +69,7 @@ public class MemberPostService {
      * @return 오늘 회원이 작성한 글이 있는지 반환
      */
     public boolean hasUserCreatedPostToday(String memberId, String familyId, LocalDate today) {
-        return memberPostRepository.existsByMemberIdAndCreatedAt(memberId, familyId, today);
+        return memberPostRepository.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, today);
     }
 
     @Transactional

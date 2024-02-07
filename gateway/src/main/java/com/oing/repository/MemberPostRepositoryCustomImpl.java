@@ -100,7 +100,7 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
     }
 
     @Override
-    public boolean existsByMemberIdAndCreatedAt(String memberId, String familyId, LocalDate postDate) {
+    public boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate) {
         DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
                 "DATE({0})", memberPost.createdAt);
 

@@ -120,7 +120,7 @@ class MemberPostRepositoryCustomTest {
         LocalDate postDate = LocalDate.of(2023, 11, 1);
 
         // when
-        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndCreatedAt(testMember1.getId(),
+        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndCreatedAt(testMember1.getId(),
                 testMember1.getFamilyId(), postDate);
 
         // then
@@ -133,7 +133,7 @@ class MemberPostRepositoryCustomTest {
         LocalDate postDate = LocalDate.of(2023, 11, 8);
 
         // when
-        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndCreatedAt(testMember1.getId(),
+        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndCreatedAt(testMember1.getId(),
                 testMember1.getFamilyId(), postDate);
 
         // then
