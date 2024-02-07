@@ -69,7 +69,7 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
                 .select(memberPost)
                 .from(memberPost)
                 .leftJoin(member).on(memberPost.memberId.eq(member.id))
-                .where(member.familyId.eq(familyId), eqDate(date), eqMemberId(memberId))
+                .where(memberPost.familyId.eq(familyId), eqDate(date), eqMemberId(memberId))
                 .orderBy(asc ? memberPost.id.asc() : memberPost.id.desc())
                 .offset((long) (page - 1) * size)
                 .limit(size)
@@ -100,7 +100,7 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
     }
 
     @Override
-    public boolean existsByMemberIdAndCreatedAt(String memberId, LocalDate postDate) {
+    public boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate) {
         DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
                 "DATE({0})", memberPost.createdAt);
 
@@ -108,6 +108,7 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
                 .select(memberPost.id)
                 .from(memberPost)
                 .where(memberPost.memberId.eq(memberId)
+                        .and(memberPost.familyId.eq(familyId))
                         .and(createdAtDate.eq(postDate)))
                 .fetchFirst() != null;
     }
