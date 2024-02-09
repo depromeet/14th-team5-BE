@@ -61,6 +61,14 @@ public interface MemberApi {
             UpdateMemberProfileImageUrlRequest request
     );
 
+    @Operation(summary = "회원 프로필 이미지 삭제", description = "회원 프로필 이미지를 삭제합니다.")
+    @DeleteMapping("/profile-image-url/{memberId}")
+    MemberResponse deleteMemberProfileImageUrl(
+            @Parameter(description = "프로필 이미지를 삭제할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String memberId
+    );
+
     @Operation(summary = "회원 이름 수정", description = "회원 이름을 수정합니다.")
     @PutMapping("/name/{memberId}")
     MemberResponse updateMemberName(
