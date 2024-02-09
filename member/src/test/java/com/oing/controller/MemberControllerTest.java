@@ -179,6 +179,23 @@ public class MemberControllerTest {
     }
 
     @Test
+    void 멤버_프로필이미지_삭제_테스트() {
+        // given
+        Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
+                "testMember1", "http://test.com/test-profile.jpg", null,
+                LocalDateTime.now());
+        when(memberService.findMemberById(any())).thenReturn(member);
+        when(authenticationHolder.getUserId()).thenReturn("1");
+
+        // when
+        memberController.deleteMemberProfileImageUrl(member.getId());
+
+        // then
+        assertEquals(null, member.getProfileImgUrl());
+        assertEquals(null, member.getProfileImgKey());
+    }
+
+    @Test
     void 멤버_탈퇴_테스트() {
         // given
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
