@@ -60,6 +60,7 @@ public class DailyNotificationJob {
                         )
                         .addAllTokens(partitionedList)
                         .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                        .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
                         .build();
                 fcmNotificationService.sendMulticastMessage(multicastMessage);
             });
@@ -99,6 +100,7 @@ public class DailyNotificationJob {
                         )
                         .addAllTokens(partitionedList)
                         .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                        .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
                         .build();
                 fcmNotificationService.sendMulticastMessage(multicastMessage);
             });
