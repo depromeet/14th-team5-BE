@@ -12,6 +12,7 @@ import com.oing.service.FCMNotificationService;
 import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberPostService;
 import com.oing.service.MemberService;
+import com.oing.util.FCMNotificationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -55,10 +56,10 @@ public class DailyNotificationJob {
             Lists.partition(targetFcmTokens.stream().toList(), 500).forEach(partitionedList -> {
                 MulticastMessage multicastMessage = MulticastMessage.builder()
                         .setNotification(
-                                buildNotification("삐삐", "지금 바로 가족에게 일상 공유를 해볼까요?")
+                                FCMNotificationUtil.buildNotification("삐삐", "지금 바로 가족에게 일상 공유를 해볼까요?")
                         )
                         .addAllTokens(partitionedList)
-                        .setApnsConfig(buildApnsConfig())
+                        .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                         .build();
                 fcmNotificationService.sendMulticastMessage(multicastMessage);
             });
@@ -94,10 +95,10 @@ public class DailyNotificationJob {
             Lists.partition(targetFcmTokens.stream().toList(), 500).forEach(partitionedList -> {
                 MulticastMessage multicastMessage = MulticastMessage.builder()
                         .setNotification(
-                                buildNotification("삐삐", "사진을 공유할 수 있는 시간이 얼마 남지 않았어요.")
+                                FCMNotificationUtil.buildNotification("삐삐", "사진을 공유할 수 있는 시간이 얼마 남지 않았어요.")
                         )
                         .addAllTokens(partitionedList)
-                        .setApnsConfig(buildApnsConfig())
+                        .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                         .build();
                 fcmNotificationService.sendMulticastMessage(multicastMessage);
             });
@@ -116,19 +117,6 @@ public class DailyNotificationJob {
         } catch(Exception exception) {
             eventPublisher.publishEvent(new ErrorReportDTO(exception.getMessage(), getStackTraceAsString(exception)));
         }
-    }
-
-    private Notification buildNotification(String title, String body){
-        return Notification.builder()
-                .setTitle(title)
-                .setBody(body)
-                .build();
-    }
-
-    private ApnsConfig buildApnsConfig(){
-        return ApnsConfig.builder()
-                .setAps(Aps.builder().setSound("default").build())
-                .build();
     }
 
     private String getStackTraceAsString(Throwable throwable) {
