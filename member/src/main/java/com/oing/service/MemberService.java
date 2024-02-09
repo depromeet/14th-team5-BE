@@ -76,17 +76,15 @@ public class MemberService {
         return member;
     }
 
-    public List<String> findFamilyMembersIdByMemberId(String memberId) {
-        Member member = findMemberById(memberId);
-        List<Member> family = memberRepository.findAllByFamilyId(member.getFamilyId());
-
-        return family.stream()
+    public List<String> findFamilyMembersIdsByFamilyId(String familyId) {
+        return memberRepository.findAllByFamilyId(familyId)
+                .stream()
                 .map(Member::getId)
                 .toList();
     }
 
-    public List<String> findFamilyMembersIdsByFamilyId(String familyId) {
-        return memberRepository.findAllByFamilyId(familyId)
+    public List<String> findFamilyMembersIdsByFamilyJoinAtBefore(String familyId, LocalDate date) {
+        return memberRepository.findAllByFamilyIdAndFamilyJoinAtBefore(familyId, date.atStartOfDay())
                 .stream()
                 .map(Member::getId)
                 .toList();

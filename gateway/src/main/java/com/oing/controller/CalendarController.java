@@ -2,11 +2,7 @@ package com.oing.controller;
 
 import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.BannerImageType;
-import com.oing.domain.MemberPost;
-import com.oing.dto.response.ArrayResponse;
-import com.oing.dto.response.BannerResponse;
-import com.oing.dto.response.CalendarResponse;
-import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
+import com.oing.dto.response.*;
 import com.oing.restapi.CalendarApi;
 import com.oing.service.*;
 import com.oing.util.OptimizedImageUrlGenerator;
@@ -15,8 +11,8 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -41,41 +37,43 @@ public class CalendarController implements CalendarApi {
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
 
-        List<CalendarResponse> calendarResponses = memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId)
-                .stream().map(
-                        memberPost -> new CalendarResponse(
-                                memberPost.getCreatedAt().toLocalDate(),
-                                memberPost.getId(),
-                                optimizedImageUrlGenerator.getThumbnailUrlGenerator(memberPost.getPostImgUrl())
-                        )).toList();
+        List<CalendarResponse> calendarResponses = memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId).stream().map(memberPost -> new CalendarResponse(memberPost.getCreatedAt().toLocalDate(), memberPost.getId(), optimizedImageUrlGenerator.getThumbnailUrlGenerator(memberPost.getPostImgUrl()))).toList();
         return new ArrayResponse<>(calendarResponses);
     }
 
-//    private List<CalendarResponse> mapPostToCalendar(
-//            List<MemberPost> representativePosts,
-//            List<MemberPostDailyCalendarDTO> calendarDTOs,
-//            String familyId
-//    ) {
-//        return IntStream.range(0, representativePosts.size())
-//                .mapToObj(index -> {
-//                    MemberPost post = representativePosts.get(index);
-//                    MemberPostDailyCalendarDTO calendarDTO = calendarDTOs.get(index);
-//
-//                    LocalDate date = post.getCreatedAt().toLocalDate();
-//                    String postId = post.getId();
-//                    String thumbnailUrl = optimizedImageUrlGenerator.getThumbnailUrlGenerator(post.getPostImgUrl());
-//                    long familyMembersCount = memberService.countFamilyMembersByFamilyIdBefore(familyId, date.plusDays(1));
-//                    boolean allFamilyMembersUploaded = calendarDTO.dailyPostCount() == familyMembersCount;
-//
-//                    return new CalendarResponse(
-//                            date,
-//                            postId,
-//                            thumbnailUrl,
-//                            allFamilyMembersUploaded
-//                    );
-//                }).toList();
-//    }
+    @Override
+    public ArrayResponse<DayEventResponse> getMonthlyEvents(String yearMonth, String familyId) {
+        if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
+        LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
+        LocalDate endDate = startDate.plusMonths(1);
+
+        // startDate ~ endDate 동안 순회하면서 각 날짜에 대한 이벤트 여부를 판단한다.
+        List<DayEventResponse> dayEventResponses = new ArrayList<>();
+        while (startDate.isBefore(endDate)) {
+            List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, startDate.plusDays(1));
+            if (familyMembersIds.isEmpty()) {
+                startDate = startDate.plusDays(1);
+                continue;
+            }
+
+            boolean allFamilyMembersUploaded = true;
+            for (String memberId : familyMembersIds) {
+                if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, startDate)) {
+                    allFamilyMembersUploaded = false;
+                    break;
+                }
+            }
+
+            // 이벤트가 있는 날만 response에 추가
+            if (allFamilyMembersUploaded)
+                dayEventResponses.add(new DayEventResponse(startDate, allFamilyMembersUploaded));
+
+            startDate = startDate.plusDays(1);
+        }
+
+        return new ArrayResponse<>(dayEventResponses);
+    }
 
     @Override
     public BannerResponse getBanner(String yearMonth, String familyId) {
@@ -90,9 +88,7 @@ public class CalendarController implements CalendarApi {
         // 정적 필드 조회
         int familyTopPercentage = familyService.calculateFamilyTopPercentile(familyId);
         int familyPostsCount = (int) memberPostService.countMemberPostsByMemberIdsBetween(familyMembersIds, startDate, endDate);
-        int familyInteractionCount = (int) memberPostCommentService.countMemberPostCommentsByMemberIdsBetween(familyMembersIds, startDate, endDate)
-                + (int) memberPostReactionService.countMemberPostReactionsByMemberIdsBetween(familyMembersIds, startDate, endDate)
-                + (int) memberPostRealEmojiService.countMemberPostRealEmojisByMemberIdsBetween(familyMembersIds, startDate, endDate);
+        int familyInteractionCount = (int) memberPostCommentService.countMemberPostCommentsByMemberIdsBetween(familyMembersIds, startDate, endDate) + (int) memberPostReactionService.countMemberPostReactionsByMemberIdsBetween(familyMembersIds, startDate, endDate) + (int) memberPostRealEmojiService.countMemberPostRealEmojisByMemberIdsBetween(familyMembersIds, startDate, endDate);
 
         // 다이나믹 필드 계산
         int allFamilyMembersUploadedDays = 0;
@@ -143,12 +139,7 @@ public class CalendarController implements CalendarApi {
         else bannerImageType = BannerImageType.SKULL_FLAG; // 예외 처리
 
 
-        return new BannerResponse(
-                familyTopPercentage,
-                allFamilyMembersUploadedDays,
-                familyLevel,
-                bannerImageType
-        );
+        return new BannerResponse(familyTopPercentage, allFamilyMembersUploadedDays, familyLevel, bannerImageType);
     }
 
     @Override
@@ -160,8 +151,6 @@ public class CalendarController implements CalendarApi {
 
         String familyId = memberService.findFamilyIdByMemberId(memberId);
         long monthlyPostCount = memberPostService.countMonthlyPostByFamilyId(year, month, familyId);
-        return new FamilyMonthlyStatisticsResponse(
-                (int) monthlyPostCount
-        );
+        return new FamilyMonthlyStatisticsResponse((int) monthlyPostCount);
     }
 }

@@ -166,6 +166,111 @@ class CalendarApiTest {
 
     }
 
+
+    @Test
+    void 캘린더_이벤트_조회_테스트() throws Exception {
+        // parameters
+        String yearMonth = "2023-11";
+
+        // posts
+        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                "1", TEST_MEMBER1_ID, TEST_FAMILY_ID, "https://storage.com/images/1", 0, 0, "2023-11-02 14:00:00", "2023-11-02 14:00:00", "post1111", "1");
+        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                "2", TEST_MEMBER2_ID, TEST_FAMILY_ID, "https://storage.com/images/2", 0, 0, "2023-11-02 15:00:00", "2023-11-02 15:00:00", "post2222", "2");
+        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                "3", TEST_MEMBER3_ID, "something_other", "https://storage.com/images/3", 0, 0, "2023-11-02 17:00:00", "2023-11-02 17:00:00", "post3333", "3");
+
+        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                "4", TEST_MEMBER1_ID, TEST_FAMILY_ID, "https://storage.com/images/4", 0, 0, "2023-11-03 14:00:00", "2023-11-03 14:00:00", "post4444", "4");
+
+
+        // When & Then
+        mockMvc.perform(get("/v1/calendar/events")
+                        .param("type", "MONTHLY")
+                        .param("yearMonth", yearMonth)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.results[0].date").value("2023-11-02"))
+                .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(true));
+    }
+
+    @Test
+    void 캘린더_이벤트_뒤늦게_가족에_가입한_멤버를_고려한_조회_테스트() throws Exception {
+        // parameters
+        String yearMonth = "2023-11";
+
+        // posts
+        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                "0", TEST_MEMBER1_ID, TEST_FAMILY_ID, "https://storage.com/images/0", 0, 0, "2023-11-01 14:00:00", "2023-11-01 14:00:00", "post0000", "0");
+
+        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                "1", TEST_MEMBER1_ID, TEST_FAMILY_ID, "https://storage.com/images/1", 0, 0, "2023-11-02 14:00:00", "2023-11-02 14:00:00", "post1111", "1");
+        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                "2", TEST_MEMBER2_ID, TEST_FAMILY_ID, "https://storage.com/images/2", 0, 0, "2023-11-02 15:00:00", "2023-11-02 15:00:00", "post2222", "2");
+
+        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                "3", TEST_MEMBER1_ID, TEST_FAMILY_ID, "https://storage.com/images/3", 0, 0, "2023-11-03 13:00:00", "2023-11-03 13:00:00", "post3333", "3");
+
+
+        // When & Then
+        mockMvc.perform(get("/v1/calendar/events")
+                        .param("type", "MONTHLY")
+                        .param("yearMonth", yearMonth)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.results[0].date").value("2023-11-01"))
+                .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(true))
+                .andExpect(jsonPath("$.results[1].date").value("2023-11-02"))
+                .andExpect(jsonPath("$.results[1].allFamilyMembersUploaded").value(true))
+                .andExpect(jsonPath("$.results[2]").doesNotExist());
+    }
+
+    @Test
+    void 캘린더_이벤트_가족을_탈퇴한_멤버를_고려한_조회_테스트() throws Exception {
+        // Given
+        // parameters
+        String yearMonth = "2023-11";
+
+        // posts
+        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                "1", TEST_MEMBER1_ID, TEST_FAMILY_ID, "https://storage.com/images/1", 0, 0, "2023-11-02 14:00:00", "2023-11-02 14:00:00", "post1111", "1");
+        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                "2", TEST_MEMBER2_ID, TEST_FAMILY_ID, "https://storage.com/images/2", 0, 0, "2023-11-02 15:00:00", "2023-11-02 15:00:00", "post2222", "2");
+
+        // Member2 가족 탈퇴
+        mockMvc.perform(post("/v1/me/quit-family")
+                .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+
+        // Member3 가족 가입
+        String inviteCode = objectMapper.readValue(
+                mockMvc.perform(post("/v1/links/family/{familyId}", TEST_FAMILY_ID).header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
+                        .andExpect(status().isOk())
+                        .andReturn().getResponse().getContentAsString(), DeepLinkResponse.class
+        ).getLinkId();
+        mockMvc.perform(post("/v1/me/join-family")
+                .header("X-AUTH-TOKEN", TEST_MEMBER3_TOKEN)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new JoinFamilyRequest(inviteCode)))
+        ).andExpect(status().isOk());
+        entityManager.flush();
+        jdbcTemplate.update("update member set family_join_at = ? where member_id = ?;", "2023-11-02 14:00:00", TEST_MEMBER3_ID);
+
+
+        // When & Then
+        mockMvc.perform(get("/v1/calendar/events")
+                        .param("type", "MONTHLY")
+                        .param("yearMonth", yearMonth)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.results").isEmpty());
+    }
+
+
     @Test
     void 캘린더_배너_조회_태스트() throws Exception {
         // parameters
