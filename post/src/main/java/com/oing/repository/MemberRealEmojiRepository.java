@@ -9,7 +9,9 @@ import java.util.Optional;
 
 public interface MemberRealEmojiRepository extends JpaRepository<MemberRealEmoji, String> {
 
-    Optional<MemberRealEmoji> findByTypeAndMemberId(Emoji emoji, String memberId);
+    Optional<MemberRealEmoji> findByIdAndFamilyId(String realEmojiId, String familyId);
 
-    List<MemberRealEmoji> findAllByMemberId(String memberId);
+    Optional<MemberRealEmoji> findByTypeAndMemberIdAndFamilyId(Emoji emoji, String memberId, String familyId);
+
+    List<MemberRealEmoji> findAllByMemberIdAndFamilyId(String memberId, String familyId);
 }
