@@ -45,6 +45,7 @@ public class FamilyNotificationEventListener {
                     )
                     .addAllTokens(targetFcmTokens)
                     .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                    .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
                     .build();
             fcmNotificationService.sendMulticastMessage(multicastMessage);
         }
@@ -66,22 +67,29 @@ public class FamilyNotificationEventListener {
                         )
                         .addAllTokens(memberDeviceService.getFcmTokensByMemberId(postAuthorId))
                         .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                        .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
                         .build();
                 fcmNotificationService.sendMulticastMessage(multicastMessage);
             }
 
             Set<String> relatedMemberIds =
                     sourcePost.getComments().stream().map(MemberPostComment::getMemberId).collect(Collectors.toSet());
-
             relatedMemberIds.remove(memberPostComment.getMemberId()); // 댓글 단 사람은 제외
             relatedMemberIds.remove(postAuthorId); // 게시물 작성자도 제외
+
+            HashSet<String> targetFcmTokens = new HashSet<>();
+            for (String relatedMemberId : relatedMemberIds) {
+                targetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(relatedMemberId));
+            }
+
             MulticastMessage multicastMessage = MulticastMessage.builder()
                     .setNotification(
                             FCMNotificationUtil.buildNotification(author.getName(),
                                     String.format("내가 공감한 게시물에 새 댓글: %s", memberPostComment.getComment()))
                     )
-                    .addAllTokens(memberDeviceService.getFcmTokensByMemberId(postAuthorId))
+                    .addAllTokens(targetFcmTokens)
                     .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                    .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
                     .build();
             fcmNotificationService.sendMulticastMessage(multicastMessage);
         }
