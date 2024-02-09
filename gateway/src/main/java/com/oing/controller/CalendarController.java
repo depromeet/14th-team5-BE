@@ -3,7 +3,6 @@ package com.oing.controller;
 import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.BannerImageType;
 import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.BannerResponse;
 import com.oing.dto.response.CalendarResponse;
@@ -12,13 +11,11 @@ import com.oing.restapi.CalendarApi;
 import com.oing.service.*;
 import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 @Controller
@@ -37,47 +34,47 @@ public class CalendarController implements CalendarApi {
 
 
     @Override
-    @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
+//    @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
     public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
 
-        List<CalendarResponse> calendarResponses = getCalendarResponses(startDate, endDate, familyId);
+        List<CalendarResponse> calendarResponses = memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId)
+                .stream().map(
+                        memberPost -> new CalendarResponse(
+                                memberPost.getCreatedAt().toLocalDate(),
+                                memberPost.getId(),
+                                optimizedImageUrlGenerator.getThumbnailUrlGenerator(memberPost.getPostImgUrl())
+                        )).toList();
         return new ArrayResponse<>(calendarResponses);
     }
 
-    private List<CalendarResponse> getCalendarResponses(LocalDate startDate, LocalDate endDate, String familyId) {
-        List<MemberPost> representativePosts = memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId);
-        List<MemberPostDailyCalendarDTO> calendarDTOs = memberPostService.findPostDailyCalendarDTOs(startDate, endDate, familyId);
-
-        return mapPostToCalendar(representativePosts, calendarDTOs, familyId);
-    }
-
-    private List<CalendarResponse> mapPostToCalendar(
-            List<MemberPost> representativePosts,
-            List<MemberPostDailyCalendarDTO> calendarDTOs,
-            String familyId
-    ) {
-        return IntStream.range(0, representativePosts.size())
-                .mapToObj(index -> {
-                    MemberPost post = representativePosts.get(index);
-                    MemberPostDailyCalendarDTO calendarDTO = calendarDTOs.get(index);
-
-                    LocalDate date = post.getCreatedAt().toLocalDate();
-                    String postId = post.getId();
-                    String thumbnailUrl = optimizedImageUrlGenerator.getThumbnailUrlGenerator(post.getPostImgUrl());
-//                    boolean allFamilyMembersUploaded = calendarDTO.dailyPostCount() == familySize;
-
-                    return new CalendarResponse(
-                            date,
-                            postId,
-                            thumbnailUrl,
-                            allFamilyMembersUploaded
-                    );
-                }).toList();
-    }
+//    private List<CalendarResponse> mapPostToCalendar(
+//            List<MemberPost> representativePosts,
+//            List<MemberPostDailyCalendarDTO> calendarDTOs,
+//            String familyId
+//    ) {
+//        return IntStream.range(0, representativePosts.size())
+//                .mapToObj(index -> {
+//                    MemberPost post = representativePosts.get(index);
+//                    MemberPostDailyCalendarDTO calendarDTO = calendarDTOs.get(index);
+//
+//                    LocalDate date = post.getCreatedAt().toLocalDate();
+//                    String postId = post.getId();
+//                    String thumbnailUrl = optimizedImageUrlGenerator.getThumbnailUrlGenerator(post.getPostImgUrl());
+//                    long familyMembersCount = memberService.countFamilyMembersByFamilyIdBefore(familyId, date.plusDays(1));
+//                    boolean allFamilyMembersUploaded = calendarDTO.dailyPostCount() == familyMembersCount;
+//
+//                    return new CalendarResponse(
+//                            date,
+//                            postId,
+//                            thumbnailUrl,
+//                            allFamilyMembersUploaded
+//                    );
+//                }).toList();
+//    }
 
 
     @Override
@@ -111,7 +108,8 @@ public class CalendarController implements CalendarApi {
                 if (postsCount == familyMembersCount) { // 가족 전체가 업로드했다면
                     allFamilyMembersUploadedDays++;
 
-                    if (allFamilyMembersUploadedStreaked) allFamilyMembersUploadedStreaks++; // 가족 전체 업로드가 연속되면, Streak + 1
+                    if (allFamilyMembersUploadedStreaked)
+                        allFamilyMembersUploadedStreaks++; // 가족 전체 업로드가 연속되면, Streak + 1
                 } else { // 가족 전체 업로드가 연속되지 못하면, Streak false
                     allFamilyMembersUploadedStreaked = false;
                 }
@@ -126,11 +124,13 @@ public class CalendarController implements CalendarApi {
         int familyLevel = 1;
         // [ Level 1 기저 조건 ]  업로드 된 글이 없으면, 무조건 Level 1
         if (familyPostsCount == 0) familyLevel = 1;
-        // [ Level 4 ]  모두 업로드 20일 이상 or (업로드 사진 60개 이상 and 리액션 120개 이상)
-        else if (allFamilyMembersUploadedDays >= 20 || (familyPostsCount >= 60 && familyInteractionCount >= 120)) familyLevel = 4;
-        // [ Level 3 ]  이때까지 모두 업로드가 연속되면 OR (업로드 사진 10개이상 and 리액션 10개 이상)
-        else if (allFamilyMembersUploadedStreaked || (familyPostsCount >= 10 && familyInteractionCount >= 10)) familyLevel = 3;
-        // [ Level 2 ]  모두 업로드 한 날이 1일 이상 OR 업로드된 사진 2개 이상
+            // [ Level 4 ]  모두 업로드 20일 이상 or (업로드 사진 60개 이상 and 리액션 120개 이상)
+        else if (allFamilyMembersUploadedDays >= 20 || (familyPostsCount >= 60 && familyInteractionCount >= 120))
+            familyLevel = 4;
+            // [ Level 3 ]  이때까지 모두 업로드가 연속되면 OR (업로드 사진 10개이상 and 리액션 10개 이상)
+        else if (allFamilyMembersUploadedStreaked || (familyPostsCount >= 10 && familyInteractionCount >= 10))
+            familyLevel = 3;
+            // [ Level 2 ]  모두 업로드 한 날이 1일 이상 OR 업로드된 사진 2개 이상
         else if (allFamilyMembersUploadedDays >= 1 || familyPostsCount >= 2) familyLevel = 2;
 
 

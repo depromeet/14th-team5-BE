@@ -1,7 +1,6 @@
 package com.oing.repository;
 
 import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
@@ -46,19 +45,6 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
                                 .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, memberPost.createdAt))
                 ))
                 .orderBy(memberPost.createdAt.asc())
-                .fetch();
-
-    }
-
-
-    @Override
-    public List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(LocalDateTime startDate, LocalDateTime endDate, String familyId) {
-        return queryFactory
-                .select(Projections.constructor(MemberPostDailyCalendarDTO.class, memberPost.id.count()))
-                .from(memberPost)
-                .where(memberPost.familyId.eq(familyId)
-                        .and(memberPost.createdAt.between(startDate, endDate)))
-                .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, memberPost.createdAt))
                 .fetch();
 
     }

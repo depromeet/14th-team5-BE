@@ -1,7 +1,6 @@
 package com.oing.service;
 
 import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.domain.PaginationDTO;
 import com.oing.exception.PostNotFoundException;
 import com.oing.repository.MemberPostRepository;
@@ -41,18 +40,6 @@ public class MemberPostService {
         return memberPostRepository.findLatestPostOfEveryday(inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay(), familyId);
     }
 
-
-    /**
-     * 캘린더를 구성하기 위해 !게시글을 제외하고! 필요한 정보를 조회한다.
-     *
-     * @param memberIds          조회 대상 멤버들의 ID
-     * @param inclusiveStartDate 조회 시작 날짜
-     * @param exclusiveEndDate   조회 종료 날짜
-     * @return 데일리 캘린더용 DTO
-     */
-    public List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, String familyId) {
-        return memberPostRepository.findPostDailyCalendarDTOs(inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay(), familyId);
-    }
 
     public MemberPost findMemberPostById(String postId) {
         return memberPostRepository

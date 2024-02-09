@@ -4,7 +4,6 @@ import com.oing.config.QuerydslConfig;
 import com.oing.domain.Family;
 import com.oing.domain.Member;
 import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostDailyCalendarDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,18 +99,6 @@ class MemberPostRepositoryCustomTest {
         assertThat(posts)
                 .extracting(MemberPost::getId)
                 .containsExactly("2", "4");
-    }
-
-    @Test
-    void 데일리_게시글_캘린더를_구성하기_위한_정보를_조회한다() {
-        // when
-        String familyId = testMember1.getFamilyId();
-        List<MemberPostDailyCalendarDTO> postDailyCalendarDTOs = memberPostRepositoryCustomImpl.findPostDailyCalendarDTOs(LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0), familyId);
-
-        // Then
-        assertThat(postDailyCalendarDTOs)
-                .extracting(MemberPostDailyCalendarDTO::dailyPostCount)
-                .containsExactly(2L, 1L);
     }
 
     @Test
