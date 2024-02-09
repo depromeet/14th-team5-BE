@@ -52,13 +52,29 @@ public class MemberApiTest {
                         TEST_MEMBER_ID,
                         "testUser1",
                         LocalDate.now(),
-                        "", "", "",
+                        "", "http://test.com/test-profile.jpg", "/test-profile.jpg",
                         LocalDateTime.now()
                 )
         );
         TEST_MEMBER_TOKEN = tokenGenerator
                 .generateTokenPair(TEST_MEMBER_ID)
                 .accessToken();
+    }
+
+    @Test
+    void 회원_프로필이미지_삭제_테스트() throws Exception {
+        // given
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/v1/members/profile-image-url/{memberId}", TEST_MEMBER_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isOk());
     }
 
     @Test

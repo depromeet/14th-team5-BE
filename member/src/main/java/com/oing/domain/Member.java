@@ -50,6 +50,11 @@ public class Member extends DeletableBaseAuditEntity {
         this.profileImgKey = profileImgKey;
     }
 
+    public void deleteProfileImg() {
+        this.profileImgUrl = null;
+        this.profileImgKey = null;
+    }
+
     public void updateName(String name) {
         this.name = name;
     }
