@@ -20,6 +20,9 @@ public class MemberRealEmoji extends BaseAuditEntity {
     @Column(name = "member_id", columnDefinition = "CHAR(26)", nullable = false)
     private String memberId;
 
+    @Column(name = "family_id", columnDefinition = "CHAR(26)", nullable = false)
+    private String familyId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private Emoji type;
