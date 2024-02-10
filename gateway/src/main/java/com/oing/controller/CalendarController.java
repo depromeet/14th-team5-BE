@@ -7,6 +7,7 @@ import com.oing.restapi.CalendarApi;
 import com.oing.service.*;
 import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
@@ -30,7 +31,7 @@ public class CalendarController implements CalendarApi {
 
 
     @Override
-//    @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
+    @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
     public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 

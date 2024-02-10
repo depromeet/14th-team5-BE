@@ -151,7 +151,7 @@ class CalendarApiTest {
 
 
         // When & Then
-        mockMvc.perform(get("/v1/calendar")
+        mockMvc.perform(get("/v1/calendar/thumbnails")
                         .param("type", "MONTHLY")
                         .param("yearMonth", yearMonth)
                         .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
