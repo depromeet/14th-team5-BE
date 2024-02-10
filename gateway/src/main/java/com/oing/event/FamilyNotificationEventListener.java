@@ -38,6 +38,8 @@ public class FamilyNotificationEventListener {
             for (String familyMemberId : familyMemberIds) {
                 targetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(familyMemberId));
             }
+
+            if(targetFcmTokens.isEmpty()) return;
             MulticastMessage multicastMessage = MulticastMessage.builder()
                     .setNotification(
                             FCMNotificationUtil.buildNotification("삐삐",
@@ -61,17 +63,20 @@ public class FamilyNotificationEventListener {
             Member author = memberService.findMemberById(memberPostComment.getMemberId());
 
             if (!postAuthorId.equals(memberPostComment.getMemberId())) { //내가 내 게시물에 단 댓글이 아니라면
-                MulticastMessage multicastMessage = MulticastMessage.builder()
-                        .setNotification(
-                                FCMNotificationUtil.buildNotification(author.getName(),
-                                        String.format("내 일상에 새 댓글: %s", memberPostComment.getComment()))
-                        )
-                        .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
-                        .addAllTokens(memberDeviceService.getFcmTokensByMemberId(postAuthorId))
-                        .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
-                        .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
-                        .build();
-                fcmNotificationService.sendMulticastMessage(multicastMessage);
+                List<String> targetFcmTokens = memberDeviceService.getFcmTokensByMemberId(postAuthorId);
+                if(!targetFcmTokens.isEmpty()) {
+                    MulticastMessage multicastMessage = MulticastMessage.builder()
+                            .setNotification(
+                                    FCMNotificationUtil.buildNotification(author.getName(),
+                                            String.format("내 일상에 새 댓글: %s", memberPostComment.getComment()))
+                            )
+                            .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
+                            .addAllTokens(targetFcmTokens)
+                            .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                            .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
+                            .build();
+                    fcmNotificationService.sendMulticastMessage(multicastMessage);
+                }
             }
 
             Set<String> relatedMemberIds =
@@ -84,6 +89,7 @@ public class FamilyNotificationEventListener {
                 targetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(relatedMemberId));
             }
 
+            if (targetFcmTokens.isEmpty()) return;
             MulticastMessage multicastMessage = MulticastMessage.builder()
                     .setNotification(
                             FCMNotificationUtil.buildNotification(author.getName(),
