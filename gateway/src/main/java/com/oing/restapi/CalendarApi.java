@@ -23,21 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/calendar")
 public interface CalendarApi {
 
-    @Operation(summary = "월별 썸네일 조회", description = "월별로 캘린더의 대표 게시물 썸네일을 조회합니다. 각 날짜의 대표 게시글 정보가 조회되며, 해당 날짜에 게시글이 있는 경우만 response 에 포함됩니다.\n\n ⚠️ 더 이상 type=MONTHLY 를 사용하지 않습니다.")
-    @GetMapping("/thumbnails")
+    @Operation(summary = "월별 캘린더 조회", description = "월별로 캘린더를 조회합니다. 각 날짜의 대표 게시글 정보와 가족 구성원 전부의 업로드 여부가가 조회되며, 해당 날짜에 게시글이 있는 경우만 response 에 포함됩니다.")
+    @GetMapping(params = {"type=MONTHLY"})
     ArrayResponse<CalendarResponse> getMonthlyCalendar(
-            @RequestParam
-            @Parameter(description = "조회할 년월", example = "2021-12")
-            String yearMonth,
-
-            @Parameter(hidden = true)
-            @FamilyId
-            String familyId
-    );
-
-    @Operation(summary = "월별 이벤트 조회", description = "월별로 존재하는 캘린더의 이벤트들을 조회합니다. 모든 가족 구성원이 업로드한 여부 등이 이벤트에 속하며, 해당 날짜에 게시글이 있는 경우만 response 에 포함됩니다.\n\n ⚠️ 월별 캘린더 조회 API와 반환되는 날짜가 다를 수 있습니다.\n\n ⚠️ 더 이상 type=MONTHLY 를 사용하지 않습니다.")
-    @GetMapping(value = "/events", params = {"type=MONTHLY"})
-    ArrayResponse<DayEventResponse> getMonthlyEvents(
             @RequestParam
             @Parameter(description = "조회할 년월", example = "2021-12")
             String yearMonth,

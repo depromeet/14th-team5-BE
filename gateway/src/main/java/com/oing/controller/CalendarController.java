@@ -2,6 +2,7 @@ package com.oing.controller;
 
 import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.BannerImageType;
+import com.oing.domain.MemberPost;
 import com.oing.dto.response.*;
 import com.oing.restapi.CalendarApi;
 import com.oing.service.*;
@@ -31,50 +32,45 @@ public class CalendarController implements CalendarApi {
 
 
     @Override
-    @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
+//    @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
     public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
 
-        List<CalendarResponse> calendarResponses = memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId).stream().map(memberPost -> new CalendarResponse(memberPost.getCreatedAt().toLocalDate(), memberPost.getId(), optimizedImageUrlGenerator.getThumbnailUrlGenerator(memberPost.getPostImgUrl()))).toList();
+        List<MemberPost> daysLatestPosts = memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId);
+        List<CalendarResponse> calendarResponses = convertToCalendarResponse(daysLatestPosts, familyId);
         return new ArrayResponse<>(calendarResponses);
     }
 
-    @Override
-    public ArrayResponse<DayEventResponse> getMonthlyEvents(String yearMonth, String familyId) {
-        if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+    private List<CalendarResponse> convertToCalendarResponse(List<MemberPost> daysLatestPosts, String familyId) {
+        List<CalendarResponse> calendarResponses = new ArrayList<>();
 
-        LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
-        LocalDate endDate = startDate.plusMonths(1);
+        for (MemberPost dayLatestPost : daysLatestPosts) {
+            LocalDate postDate = dayLatestPost.getCreatedAt().toLocalDate();
 
-        // startDate ~ endDate 동안 순회하면서 각 날짜에 대한 이벤트 여부를 판단한다.
-        List<DayEventResponse> dayEventResponses = new ArrayList<>();
-        while (startDate.isBefore(endDate)) {
-            List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, startDate.plusDays(1));
-            if (familyMembersIds.isEmpty()) {
-                startDate = startDate.plusDays(1);
-                continue;
-            }
-
+            // 탈퇴한 회원을 제외하고 allFamilyMembersUploaded 기본값이 true이므로, 탈퇴한 회원이 allFamilyMembersUploaded 계산에 영향을 미치지 않음
+            // edge case: 글을 업로드하지 않은 회원이 탈퇴하면, 과거 날짜들의 allFamilyMembersUploaded이 true로 변함 -> 핸들링할 수 없는 케이스
+            List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, postDate.plusDays(1));
             boolean allFamilyMembersUploaded = true;
             for (String memberId : familyMembersIds) {
-                if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, startDate)) {
+                if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, postDate)) {
                     allFamilyMembersUploaded = false;
                     break;
                 }
             }
 
-            // 이벤트가 있는 날만 response에 추가
-            if (allFamilyMembersUploaded)
-                dayEventResponses.add(new DayEventResponse(startDate, allFamilyMembersUploaded));
-
-            startDate = startDate.plusDays(1);
+            calendarResponses.add(new CalendarResponse(
+                    dayLatestPost.getCreatedAt().toLocalDate(),
+                    dayLatestPost.getId(),
+                    optimizedImageUrlGenerator.getThumbnailUrlGenerator(dayLatestPost.getPostImgUrl()),
+                    allFamilyMembersUploaded
+            ));
         }
-
-        return new ArrayResponse<>(dayEventResponses);
+        return calendarResponses;
     }
+
 
     @Override
     public BannerResponse getBanner(String yearMonth, String familyId) {

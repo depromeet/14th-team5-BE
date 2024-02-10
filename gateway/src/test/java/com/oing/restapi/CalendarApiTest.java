@@ -151,7 +151,7 @@ class CalendarApiTest {
 
 
         // When & Then
-        mockMvc.perform(get("/v1/calendar/thumbnails")
+        mockMvc.perform(get("/v1/calendar")
                         .param("type", "MONTHLY")
                         .param("yearMonth", yearMonth)
                         .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
@@ -160,43 +160,17 @@ class CalendarApiTest {
                 .andExpect(jsonPath("$.results[0].date").value("2023-11-02"))
                 .andExpect(jsonPath("$.results[0].representativePostId").value("2"))
                 .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
+                .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(true))
                 .andExpect(jsonPath("$.results[1].date").value("2023-11-03"))
                 .andExpect(jsonPath("$.results[1].representativePostId").value("4"))
-                .andExpect(jsonPath("$.results[1].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/4" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING));
+                .andExpect(jsonPath("$.results[1].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/4" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
+                .andExpect(jsonPath("$.results[1].allFamilyMembersUploaded").value(false));
 
     }
 
 
     @Test
-    void 캘린더_이벤트_조회_테스트() throws Exception {
-        // parameters
-        String yearMonth = "2023-11";
-
-        // posts
-        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                "1", TEST_MEMBER1_ID, TEST_FAMILY_ID, "https://storage.com/images/1", 0, 0, "2023-11-02 14:00:00", "2023-11-02 14:00:00", "post1111", "1");
-        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                "2", TEST_MEMBER2_ID, TEST_FAMILY_ID, "https://storage.com/images/2", 0, 0, "2023-11-02 15:00:00", "2023-11-02 15:00:00", "post2222", "2");
-        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                "3", TEST_MEMBER3_ID, "something_other", "https://storage.com/images/3", 0, 0, "2023-11-02 17:00:00", "2023-11-02 17:00:00", "post3333", "3");
-
-        jdbcTemplate.update("insert into member_post (post_id, member_id, family_id, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
-                "4", TEST_MEMBER1_ID, TEST_FAMILY_ID, "https://storage.com/images/4", 0, 0, "2023-11-03 14:00:00", "2023-11-03 14:00:00", "post4444", "4");
-
-
-        // When & Then
-        mockMvc.perform(get("/v1/calendar/events")
-                        .param("type", "MONTHLY")
-                        .param("yearMonth", yearMonth)
-                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.results[0].date").value("2023-11-02"))
-                .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(true));
-    }
-
-    @Test
-    void 캘린더_이벤트_뒤늦게_가족에_가입한_멤버를_고려한_조회_테스트() throws Exception {
+    void 월별_캘린더_뒤늦게_가족에_가입한_멤버를_고려한_조회_테스트() throws Exception {
         // parameters
         String yearMonth = "2023-11";
 
@@ -214,21 +188,28 @@ class CalendarApiTest {
 
 
         // When & Then
-        mockMvc.perform(get("/v1/calendar/events")
+        mockMvc.perform(get("/v1/calendar")
                         .param("type", "MONTHLY")
                         .param("yearMonth", yearMonth)
                         .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].date").value("2023-11-01"))
+                .andExpect(jsonPath("$.results[0].representativePostId").value("0"))
+                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/0" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(true))
                 .andExpect(jsonPath("$.results[1].date").value("2023-11-02"))
+                .andExpect(jsonPath("$.results[1].representativePostId").value("2"))
+                .andExpect(jsonPath("$.results[1].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.results[1].allFamilyMembersUploaded").value(true))
-                .andExpect(jsonPath("$.results[2]").doesNotExist());
+                .andExpect(jsonPath("$.results[2].date").value("2023-11-03"))
+                .andExpect(jsonPath("$.results[2].representativePostId").value("3"))
+                .andExpect(jsonPath("$.results[2].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/3" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
+                .andExpect(jsonPath("$.results[2].allFamilyMembersUploaded").value(false));
     }
 
     @Test
-    void 캘린더_이벤트_가족을_탈퇴한_멤버를_고려한_조회_테스트() throws Exception {
+    void 월별_캘린더_가족을_탈퇴한_멤버를_고려한_조회_테스트() throws Exception {
         // Given
         // parameters
         String yearMonth = "2023-11";
@@ -261,13 +242,16 @@ class CalendarApiTest {
 
 
         // When & Then
-        mockMvc.perform(get("/v1/calendar/events")
+        mockMvc.perform(get("/v1/calendar")
                         .param("type", "MONTHLY")
                         .param("yearMonth", yearMonth)
                         .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.results").isEmpty());
+                .andExpect(jsonPath("$.results[0].date").value("2023-11-02"))
+                .andExpect(jsonPath("$.results[0].representativePostId").value("2"))
+                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
+                .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(false));
     }
 
 
