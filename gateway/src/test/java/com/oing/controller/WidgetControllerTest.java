@@ -69,23 +69,20 @@ class WidgetControllerTest {
             "testPost"
     );
 
-    private final List<String> familyIds = List.of(testMember1.getId(), testMember2.getId());
-
 
     @Test
     void 최근_게시글_싱글_위젯_정상_조회_테스트() {
         // given
         String date = "2024-10-18";
+        String familyId = testMember1.getFamilyId();
 
-        when(tokenAuthenticationHolder.getUserId()).thenReturn(testMember1.getId());
-        when(memberService.findFamilyMembersIdByMemberId(testMember1.getId())).thenReturn(familyIds);
-        when(memberPostService.findLatestPostOfEveryday(familyIds, LocalDate.parse(date), LocalDate.parse(date).plusDays(1))).thenReturn(List.of(testPost1));
+        when(memberPostService.findLatestPostOfEveryday(LocalDate.parse(date), LocalDate.parse(date).plusDays(1), familyId)).thenReturn(List.of(testPost1));
         when(memberService.findMemberById(testPost1.getMemberId())).thenReturn(testMember1);
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testMember1.getProfileImgUrl())).thenReturn(testMember1.getProfileImgUrl());
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testPost1.getPostImgUrl())).thenReturn(testPost1.getPostImgUrl());
 
         // when
-        ResponseEntity<SingleRecentPostWidgetResponse> response = widgetController.getSingleRecentFamilyPostWidget(date);
+        ResponseEntity<SingleRecentPostWidgetResponse> response = widgetController.getSingleRecentFamilyPostWidget(date, familyId);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -108,16 +105,15 @@ class WidgetControllerTest {
     void 최근_게시글_싱글_위젯_null_파라미터_조회_테스트() {
         // given
         String date = null;
+        String familyId = testMember1.getFamilyId();
 
-        when(tokenAuthenticationHolder.getUserId()).thenReturn(testMember1.getId());
-        when(memberService.findFamilyMembersIdByMemberId(testMember1.getId())).thenReturn(familyIds);
-        when(memberPostService.findLatestPostOfEveryday(familyIds, LocalDate.now(), LocalDate.now().plusDays(1))).thenReturn(List.of(testPost1));
+        when(memberPostService.findLatestPostOfEveryday(LocalDate.now(), LocalDate.now().plusDays(1), familyId)).thenReturn(List.of(testPost1));
         when(memberService.findMemberById(testPost1.getMemberId())).thenReturn(testMember1);
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testMember1.getProfileImgUrl())).thenReturn(testMember1.getProfileImgUrl());
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testPost1.getPostImgUrl())).thenReturn(testPost1.getPostImgUrl());
 
         // when
-        ResponseEntity<SingleRecentPostWidgetResponse> response = widgetController.getSingleRecentFamilyPostWidget(date);
+        ResponseEntity<SingleRecentPostWidgetResponse> response = widgetController.getSingleRecentFamilyPostWidget(date, familyId);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -140,13 +136,12 @@ class WidgetControllerTest {
     void 최근_게시글_싱글_위젯_빈_게시글_조회_테스트() {
         // given
         String date = "2024-10-18";
+        String familyId = testMember1.getFamilyId();
 
-        when(tokenAuthenticationHolder.getUserId()).thenReturn(testMember1.getId());
-        when(memberService.findFamilyMembersIdByMemberId(testMember1.getId())).thenReturn(familyIds);
-        when(memberPostService.findLatestPostOfEveryday(familyIds, LocalDate.parse(date), LocalDate.parse(date).plusDays(1))).thenReturn(List.of());
+        when(memberPostService.findLatestPostOfEveryday(LocalDate.parse(date), LocalDate.parse(date).plusDays(1), familyId)).thenReturn(List.of());
 
         // when
-        ResponseEntity<SingleRecentPostWidgetResponse> response = widgetController.getSingleRecentFamilyPostWidget(date);
+        ResponseEntity<SingleRecentPostWidgetResponse> response = widgetController.getSingleRecentFamilyPostWidget(date, familyId);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);

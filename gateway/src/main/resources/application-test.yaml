@@ -22,6 +22,7 @@ spring:
       port: 16379
       ssl:
         enabled: true
+
 app:
   external-urls:
     slack-webhook: https://www.naver.com # Must Be Replaced
@@ -48,6 +49,13 @@ app:
 logging:
   level:
     com.oing: DEBUG
+#    org:
+#      springframework:
+#        jdbc: debug
+#      hibernate:
+#        orm:
+#          jdbc:
+#            bind: trace
 
 cloud:
   ncp:

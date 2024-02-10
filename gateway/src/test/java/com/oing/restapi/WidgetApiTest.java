@@ -60,9 +60,9 @@ class WidgetApiTest {
     private String TEST_MEMBER1_TOKEN;
     private Member TEST_MEMBER2;
     private String TEST_MEMBER2_TOKEN;
+    private String TEST_FAMILY_ID;
     private Member TEST_MEMBER3;
     private String TEST_MEMBER3_TOKEN;
-    private List<String> TEST_FAMILIES_IDS;
 
 
     @Value("${cloud.ncp.image-optimizer-cdn}")
@@ -93,13 +93,13 @@ class WidgetApiTest {
         );
         TEST_MEMBER2_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER2.getId()).accessToken();
 
-        String familyId = objectMapper.readValue(
+        TEST_FAMILY_ID = objectMapper.readValue(
                 mockMvc.perform(post("/v1/me/create-family").header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), FamilyResponse.class
         ).familyId();
         String inviteCode = objectMapper.readValue(
-                mockMvc.perform(post("/v1/links/family/{familyId}", familyId).header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
+                mockMvc.perform(post("/v1/links/family/{familyId}", TEST_FAMILY_ID).header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN))
                         .andExpect(status().isOk())
                         .andReturn().getResponse().getContentAsString(), DeepLinkResponse.class
         ).getLinkId();
@@ -119,8 +119,6 @@ class WidgetApiTest {
                 )
         );
         TEST_MEMBER3_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER3.getId()).accessToken();
-
-        TEST_FAMILIES_IDS = List.of(TEST_MEMBER1.getId(), TEST_MEMBER2.getId());
     }
 
 
@@ -130,7 +128,7 @@ class WidgetApiTest {
         MemberPost testPost1 = new MemberPost(
                 "testPost1",
                 TEST_MEMBER1.getId(),
-                "1",
+                TEST_FAMILY_ID,
                 "https://storage.com/bucket/images/1",
                 "1",
                 "testPos1"
@@ -138,7 +136,7 @@ class WidgetApiTest {
         MemberPost testPost2 = new MemberPost(
                 "testPost2",
                 TEST_MEMBER2.getId(),
-                "1",
+                TEST_FAMILY_ID,
                 "https://storage.com/bucket/images/2",
                 "2",
                 "testPos2"
@@ -146,7 +144,7 @@ class WidgetApiTest {
         MemberPost testPost3 = new MemberPost(
                 "testPost3",
                 TEST_MEMBER3.getId(),
-                "1",
+                "something_other",
                 "https://storage.com/bucket/images/3",
                 "3",
                 "testPos3"
@@ -176,7 +174,7 @@ class WidgetApiTest {
         MemberPost testPost1 = new MemberPost(
                 "testPost1",
                 TEST_MEMBER1.getId(),
-                "1",
+                TEST_FAMILY_ID,
                 "https://storage.com/bucket/images/1",
                 "1",
                 "testPos1"
@@ -184,7 +182,7 @@ class WidgetApiTest {
         MemberPost testPost2 = new MemberPost(
                 "testPost2",
                 TEST_MEMBER2.getId(),
-                "1",
+                TEST_FAMILY_ID,
                 "https://storage.com/bucket/images/2",
                 "2",
                 "testPos2"
@@ -192,7 +190,7 @@ class WidgetApiTest {
         MemberPost testPost3 = new MemberPost(
                 "testPost3",
                 TEST_MEMBER3.getId(),
-                "1",
+                "something_other",
                 "https://storage.com/bucket/images/3",
                 "3",
                 "testPos3"
