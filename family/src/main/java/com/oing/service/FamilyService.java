@@ -47,16 +47,33 @@ public class FamilyService {
                 .orElseThrow(FamilyNotFoundException::new);
     }
 
-    public int calculateFamilyTopPercentile(String familyId) {
+    public int getFamilyTopPercentage(String familyId, LocalDate date) {
+        // 이번 달의 캘린더를 조회 시, 실시간으로 topPercentage를 계산
+        if (date.getYear() == LocalDate.now().getYear() && date.getMonth() == LocalDate.now().getMonth()) {
+            return calculateLiveFamilyTopPercentage(familyId);
+
+        // 과거의 캘린더를 조회 시, 해당 날짜의 topPercentage를 조회
+        } else {
+            return getFamilyTopPercentageHistory(familyId, date);
+        }
+    }
+
+    private int calculateLiveFamilyTopPercentage(String familyId) {
         long allFamiliesCount = familyRepository.count();
         int familyScore = getFamilyById(familyId).getScore();
         long familyRank = familyRepository.countByScoreGreaterThanEqual(familyScore);
 
-        // handle divide by zero error
+        // divide by zero error 핸들링
         if (allFamiliesCount == 0) {
             return 0;
         }
 
-        return (100 - (int) ((familyRank / (double) allFamiliesCount) * 100));
+        // score 를 통한 순위를 통해 전체 가족들 중 상위 백분율 계산 (0%에 가까울수록 고순위)
+        return (int) ((familyRank / (double) allFamiliesCount) * 100);
+    }
+
+    private int getFamilyTopPercentageHistory(String familyId, LocalDate date) {
+//        return familyTopPercentageHistoryService.getTopPercentageByFamilyIdAndDate(familyId, date);
+        return 0;
     }
 }

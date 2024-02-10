@@ -83,7 +83,7 @@ public class CalendarController implements CalendarApi {
 
         /*    배너를 위한 필드 조회    */
         // 정적 필드 조회
-        int familyTopPercentage = familyService.calculateFamilyTopPercentile(familyId);
+        int familyTopPercentage = familyService.getFamilyTopPercentage(familyId, startDate);
         int familyPostsCount = (int) memberPostService.countMemberPostsByMemberIdsBetween(familyMembersIds, startDate, endDate);
         int familyInteractionCount = (int) memberPostCommentService.countMemberPostCommentsByMemberIdsBetween(familyMembersIds, startDate, endDate) + (int) memberPostReactionService.countMemberPostReactionsByMemberIdsBetween(familyMembersIds, startDate, endDate) + (int) memberPostRealEmojiService.countMemberPostRealEmojisByMemberIdsBetween(familyMembersIds, startDate, endDate);
 
