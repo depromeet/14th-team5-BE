@@ -24,7 +24,7 @@ public record CalendarResponse(
         @Schema(description = "대표 썸네일 URL", example = "https://j1ansx15683.edge.naverncp.com/image/absc45j/image.jpg?type=f&w=96&h=96")
         String representativeThumbnailUrl,
 
-        @Schema(description = "가족 모두 업로드했는지 여부", example = "true")
+        @Schema(description = "모든 가족 구성원이 업로드 했는지 여부", example = "true")
         boolean allFamilyMembersUploaded
 ) {
 }

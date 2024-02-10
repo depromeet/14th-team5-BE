@@ -4,7 +4,6 @@ import com.oing.config.QuerydslConfig;
 import com.oing.domain.Family;
 import com.oing.domain.Member;
 import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostDailyCalendarDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,8 +68,6 @@ class MemberPostRepositoryCustomTest {
             LocalDateTime.now()
     );
 
-    private final List<String> familyIds = List.of(testMember1.getId(), testMember2.getId());
-
 
     @BeforeEach
     void setup() {
@@ -95,23 +92,13 @@ class MemberPostRepositoryCustomTest {
     @Test
     void 각_날짜에서_가장_마지막으로_업로드된_게시글을_조회한다() {
         // When
-        List<MemberPost> posts = memberPostRepositoryCustomImpl.findLatestPostOfEveryday(familyIds, LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0));
+        String familyId = testMember1.getFamilyId();
+        List<MemberPost> posts = memberPostRepositoryCustomImpl.findLatestPostOfEveryday(LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0), familyId);
 
         // Then
         assertThat(posts)
                 .extracting(MemberPost::getId)
                 .containsExactly("2", "4");
-    }
-
-    @Test
-    void 데일리_게시글_캘린더를_구성하기_위한_정보를_조회한다() {
-        // when
-        List<MemberPostDailyCalendarDTO> postDailyCalendarDTOs = memberPostRepositoryCustomImpl.findPostDailyCalendarDTOs(familyIds, LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0));
-
-        // Then
-        assertThat(postDailyCalendarDTOs)
-                .extracting(MemberPostDailyCalendarDTO::dailyPostCount)
-                .containsExactly(2L, 1L);
     }
 
     @Test
