@@ -1,9 +1,6 @@
 package com.oing.restapi;
 
-import com.oing.dto.response.ArrayResponse;
-import com.oing.dto.response.BannerResponse;
-import com.oing.dto.response.CalendarResponse;
-import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
+import com.oing.dto.response.*;
 import com.oing.util.security.FamilyId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/calendar")
 public interface CalendarApi {
 
-    @Operation(summary = "월별 캘린더 조회", description = "월별 캘린더를 조회합니다.")
+    @Operation(summary = "월별 캘린더 조회", description = "월별로 캘린더를 조회합니다. 각 날짜의 대표 게시글 정보와 가족 구성원 전부의 업로드 여부가가 조회되며, 해당 날짜에 게시글이 있는 경우만 response 에 포함됩니다.")
     @GetMapping(params = {"type=MONTHLY"})
     ArrayResponse<CalendarResponse> getMonthlyCalendar(
             @RequestParam

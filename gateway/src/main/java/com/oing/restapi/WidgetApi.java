@@ -1,6 +1,7 @@
 package com.oing.restapi;
 
 import com.oing.dto.response.SingleRecentPostWidgetResponse;
+import com.oing.util.security.FamilyId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,6 +26,10 @@ public interface WidgetApi {
     ResponseEntity<SingleRecentPostWidgetResponse> getSingleRecentFamilyPostWidget(
             @RequestParam(required = false)
             @Parameter(description = "조회할 년월일 (default = today)", example = "2023-10-18")
-            String date
+            String date,
+
+            @Parameter(hidden = true)
+            @FamilyId
+            String familyId
     );
 }
