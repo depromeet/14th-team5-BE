@@ -111,32 +111,39 @@ public class CalendarController implements CalendarApi {
             startDate = startDate.plusDays(1);
         }
 
+        int familyLevel = getFamilyLevel(familyPostsCount, allFamilyMembersUploadedDays, familyInteractionCount, allFamilyMembersUploadedStreaked);
+        BannerImageType bannerImageType = getBannerImageType(familyLevel);
 
-        /*    가족의 활성화 레벨을 계산    */
-        // [ Level 1 ]  디폴트
+
+        return new BannerResponse(familyTopPercentage, allFamilyMembersUploadedDays, familyLevel, bannerImageType);
+    }
+
+    private int getFamilyLevel(int familyPostsCount, int allFamilyMembersUploadedDays, int familyInteractionCount, boolean allFamilyMembersUploadedStreaked) {
         int familyLevel = 1;
+
         // [ Level 1 기저 조건 ]  업로드 된 글이 없으면, 무조건 Level 1
         if (familyPostsCount == 0) familyLevel = 1;
-            // [ Level 4 ]  모두 업로드 20일 이상 or (업로드 사진 60개 이상 and 리액션 120개 이상)
-        else if (allFamilyMembersUploadedDays >= 20 || (familyPostsCount >= 60 && familyInteractionCount >= 120))
-            familyLevel = 4;
-            // [ Level 3 ]  이때까지 모두 업로드가 연속되면 OR (업로드 사진 10개이상 and 리액션 10개 이상)
-        else if (allFamilyMembersUploadedStreaked || (familyPostsCount >= 10 && familyInteractionCount >= 10))
-            familyLevel = 3;
-            // [ Level 2 ]  모두 업로드 한 날이 1일 이상 OR 업로드된 사진 2개 이상
+
+        // [ Level 4 ]  모두 업로드 20일 이상 or (업로드 사진 60개 이상 and 리액션 120개 이상)
+        else if (allFamilyMembersUploadedDays >= 20 || (familyPostsCount >= 60 && familyInteractionCount >= 120)) familyLevel = 4;
+
+        // [ Level 3 ]  이때까지 모두 업로드가 연속되면 OR (업로드 사진 10개이상 and 리액션 10개 이상)
+        else if (allFamilyMembersUploadedStreaked || (familyPostsCount >= 10 && familyInteractionCount >= 10)) familyLevel = 3;
+
+        // [ Level 2 ]  모두 업로드 한 날이 1일 이상 OR 업로드된 사진 2개 이상
         else if (allFamilyMembersUploadedDays >= 1 || familyPostsCount >= 2) familyLevel = 2;
 
+        return familyLevel;
+    }
 
-        /*    배너 이미지 결정    */
+    private BannerImageType getBannerImageType(int familyLevel) {
         BannerImageType bannerImageType;
         if (familyLevel == 1) bannerImageType = BannerImageType.SKULL_FLAG;
         else if (familyLevel == 2) bannerImageType = BannerImageType.ALONE_WALKING;
         else if (familyLevel == 3) bannerImageType = BannerImageType.WE_ARE_FRIENDS;
         else if (familyLevel == 4) bannerImageType = BannerImageType.JEWELRY_TREASURE;
         else bannerImageType = BannerImageType.SKULL_FLAG; // 예외 처리
-
-
-        return new BannerResponse(familyTopPercentage, allFamilyMembersUploadedDays, familyLevel, bannerImageType);
+        return bannerImageType;
     }
 
     @Override

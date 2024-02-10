@@ -69,8 +69,8 @@ public class FamilyService {
             return 0;
         }
 
-        // score 를 통한 순위를 통해 전체 가족들 중 상위 백분율 계산 (0%에 가까울수록 고순위)
-        return (int) ((familyRank / (double) allFamiliesCount) * 100);
+        // score 를 통한 순위를 통해 전체 가족들 중 상위 백분율 계산 (1%에 가까울수록 고순위)
+        return (int) Math.ceil((familyRank / (double) allFamiliesCount) * 100);
     }
 
     private int getFamilyTopPercentageHistory(String familyId, LocalDate calendarDate) {
