@@ -9,5 +9,5 @@ import java.util.List;
 public interface MemberPostCommentRepository extends JpaRepository<MemberPostComment, String>, MemberPostCommentRepositoryCustom {
     void deleteAllByPostId(String memberPostId);
 
-    long countByMemberIdInAndCreatedAtBetween(List<String> memberIds, LocalDateTime startDateTime, LocalDateTime endDateTime);
+    long countByFamilyIdAndCreatedAtBetween(String familyId, LocalDateTime startDateTime, LocalDateTime endDateTime);
 }

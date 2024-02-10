@@ -1,5 +1,6 @@
 package com.oing.service;
 
+import com.oing.domain.CreateNewFamilyTopPercentageHistoryDTO;
 import com.oing.domain.FamilyTopPercentageHistory;
 import com.oing.domain.FamilyTopPercentageHistoryId;
 import com.oing.repository.FamilyTopPercentageHistoryRepository;
@@ -14,6 +15,12 @@ import java.util.Optional;
 public class FamilyTopPercentageHistoryService {
 
     private final FamilyTopPercentageHistoryRepository familyTopPercentageHistoryRepository;
+
+
+    public void create(CreateNewFamilyTopPercentageHistoryDTO createNewFamilyTopPercentageHistoryDTO) {
+        FamilyTopPercentageHistory familyTopPercentageHistory = new FamilyTopPercentageHistory(createNewFamilyTopPercentageHistoryDTO);
+        familyTopPercentageHistoryRepository.save(familyTopPercentageHistory);
+    }
 
     public int getTopPercentageByFamilyIdAndDate(String familyId, LocalDate historyDate) {
         LocalDate firstDayOfMonth = historyDate.withDayOfMonth(1);

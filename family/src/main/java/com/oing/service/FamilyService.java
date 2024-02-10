@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,14 @@ public class FamilyService {
         return familyRepository
                 .findById(familyId)
                 .orElseThrow(FamilyNotFoundException::new);
+    }
+
+    public List<Family> findAll() {
+        return familyRepository.findAll();
+    }
+
+    public List<Family> findAllOrderByScoreDesc() {
+        return familyRepository.findAllByOrderByScoreDesc();
     }
 
     public int getFamilyTopPercentage(String familyId, LocalDate calendarDate) {

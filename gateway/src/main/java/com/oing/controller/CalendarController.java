@@ -23,9 +23,6 @@ public class CalendarController implements CalendarApi {
     private final MemberService memberService;
     private final MemberPostService memberPostService;
     private final FamilyService familyService;
-    private final MemberPostCommentService memberPostCommentService;
-    private final MemberPostReactionService memberPostReactionService;
-    private final MemberPostRealEmojiService memberPostRealEmojiService;
 
     private final TokenAuthenticationHolder tokenAuthenticationHolder;
     private final OptimizedImageUrlGenerator optimizedImageUrlGenerator;
@@ -78,14 +75,14 @@ public class CalendarController implements CalendarApi {
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
-        List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyId(familyId);
 
 
         /*    배너를 위한 필드 조회    */
         // 정적 필드 조회
         int familyTopPercentage = familyService.getFamilyTopPercentage(familyId, startDate);
-        int familyPostsCount = (int) memberPostService.countMemberPostsByMemberIdsBetween(familyMembersIds, startDate, endDate);
-        int familyInteractionCount = (int) memberPostCommentService.countMemberPostCommentsByMemberIdsBetween(familyMembersIds, startDate, endDate) + (int) memberPostReactionService.countMemberPostReactionsByMemberIdsBetween(familyMembersIds, startDate, endDate) + (int) memberPostRealEmojiService.countMemberPostRealEmojisByMemberIdsBetween(familyMembersIds, startDate, endDate);
+        List<MemberPost> familyPosts = memberPostService.findAllByFamilyIdAndCreatedAtBetween(familyId, startDate, endDate);
+        int familyPostsCount = familyPosts.size();
+        int familyInteractionCount = familyPosts.stream().mapToInt((memberPost -> memberPost.getCommentCnt() + memberPost.getReactionCnt() + memberPost.getRealEmojiCnt())).sum();
 
         // 다이나믹 필드 계산
         int allFamilyMembersUploadedDays = 0;
@@ -93,27 +90,32 @@ public class CalendarController implements CalendarApi {
         boolean allFamilyMembersUploadedStreaked = true;
         // 한 달 동안 '가족이 전부 올린 날'과 '가족이 전부 올린 날의 연속'을 계산하기 위해, 1일부터 마지막 날까지 순회한다.
         while (startDate.isBefore(endDate)) {
-            long postsCount = memberPostService.countMemberPostsByMemberIdsBetween(familyMembersIds, startDate, startDate.plusDays(1));
-            long familyMembersCount = memberService.countFamilyMembersByFamilyIdBefore(familyId, startDate.plusDays(1));
+            List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, startDate.plusDays(1));
+            if (familyMembersIds.isEmpty()) {
+                startDate = startDate.plusDays(1);
+                continue;
+            }
 
-            // 가족이 존재한 날만 계산한다.
-            if (familyMembersCount != 0) {
-                if (postsCount == familyMembersCount) { // 가족 전체가 업로드했다면
-                    allFamilyMembersUploadedDays++;
-
-                    if (allFamilyMembersUploadedStreaked)
-                        allFamilyMembersUploadedStreaks++; // 가족 전체 업로드가 연속되면, Streak + 1
-                } else { // 가족 전체 업로드가 연속되지 못하면, Streak false
-                    allFamilyMembersUploadedStreaked = false;
+            boolean allFamilyMembersUploaded = true;
+            for (String memberId : familyMembersIds) {
+                if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, startDate)) {
+                    allFamilyMembersUploaded = false;
+                    break;
                 }
             }
 
-            startDate = startDate.plusDays(1);
+            if (allFamilyMembersUploaded) {
+                allFamilyMembersUploadedDays++;
+
+                if (allFamilyMembersUploadedStreaked)
+                    allFamilyMembersUploadedStreaks++; // 가족 전체 업로드가 연속되면, Streak + 1
+            } else {
+                allFamilyMembersUploadedStreaked = false;  // 가족 전체 업로드가 연속되지 못하면, Streak false
+            }
         }
 
         int familyLevel = getFamilyLevel(familyPostsCount, allFamilyMembersUploadedDays, familyInteractionCount, allFamilyMembersUploadedStreaked);
         BannerImageType bannerImageType = getBannerImageType(familyLevel);
-
 
         return new BannerResponse(familyTopPercentage, allFamilyMembersUploadedDays, familyLevel, bannerImageType);
     }
@@ -124,13 +126,15 @@ public class CalendarController implements CalendarApi {
         // [ Level 1 기저 조건 ]  업로드 된 글이 없으면, 무조건 Level 1
         if (familyPostsCount == 0) familyLevel = 1;
 
-        // [ Level 4 ]  모두 업로드 20일 이상 or (업로드 사진 60개 이상 and 리액션 120개 이상)
-        else if (allFamilyMembersUploadedDays >= 20 || (familyPostsCount >= 60 && familyInteractionCount >= 120)) familyLevel = 4;
+            // [ Level 4 ]  모두 업로드 20일 이상 or (업로드 사진 60개 이상 and 리액션 120개 이상)
+        else if (allFamilyMembersUploadedDays >= 20 || (familyPostsCount >= 60 && familyInteractionCount >= 120))
+            familyLevel = 4;
 
-        // [ Level 3 ]  이때까지 모두 업로드가 연속되면 OR (업로드 사진 10개이상 and 리액션 10개 이상)
-        else if (allFamilyMembersUploadedStreaked || (familyPostsCount >= 10 && familyInteractionCount >= 10)) familyLevel = 3;
+            // [ Level 3 ]  이때까지 모두 업로드가 연속되면 OR (업로드 사진 10개이상 and 리액션 10개 이상)
+        else if (allFamilyMembersUploadedStreaked || (familyPostsCount >= 10 && familyInteractionCount >= 10))
+            familyLevel = 3;
 
-        // [ Level 2 ]  모두 업로드 한 날이 1일 이상 OR 업로드된 사진 2개 이상
+            // [ Level 2 ]  모두 업로드 한 날이 1일 이상 OR 업로드된 사진 2개 이상
         else if (allFamilyMembersUploadedDays >= 1 || familyPostsCount >= 2) familyLevel = 2;
 
         return familyLevel;
