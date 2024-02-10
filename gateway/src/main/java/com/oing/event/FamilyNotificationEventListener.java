@@ -43,6 +43,7 @@ public class FamilyNotificationEventListener {
                             FCMNotificationUtil.buildNotification("삐삐",
                                     String.format("%s님이 새로운 일상을 공유했어요!", author.getName()))
                     )
+                    .putData("aosDeepLink", "post/view/" + memberPost.getId())
                     .addAllTokens(targetFcmTokens)
                     .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                     .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
@@ -65,6 +66,7 @@ public class FamilyNotificationEventListener {
                                 FCMNotificationUtil.buildNotification(author.getName(),
                                         String.format("내 일상에 새 댓글: %s", memberPostComment.getComment()))
                         )
+                        .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
                         .addAllTokens(memberDeviceService.getFcmTokensByMemberId(postAuthorId))
                         .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                         .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
@@ -87,6 +89,7 @@ public class FamilyNotificationEventListener {
                             FCMNotificationUtil.buildNotification(author.getName(),
                                     String.format("내가 공감한 게시물에 새 댓글: %s", memberPostComment.getComment()))
                     )
+                    .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
                     .addAllTokens(targetFcmTokens)
                     .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                     .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
