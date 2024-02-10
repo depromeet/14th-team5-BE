@@ -1,9 +1,6 @@
 package com.oing.util;
 
-import com.google.firebase.messaging.AndroidConfig;
-import com.google.firebase.messaging.ApnsConfig;
-import com.google.firebase.messaging.Aps;
-import com.google.firebase.messaging.Notification;
+import com.google.firebase.messaging.*;
 
 public class FCMNotificationUtil {
     public static Notification buildNotification(String title, String body){
