@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class FamilyTopPercentageHistory {
 
     @EmbeddedId
-    private FamilyTopPercentageHistoryId id;
+    private FamilyTopPercentageHistoryId familyTopPercentageHistoryId;
 
     @MapsId("familyId")
     @ManyToOne(fetch = FetchType.LAZY)

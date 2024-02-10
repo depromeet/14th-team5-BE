@@ -15,6 +15,7 @@ import java.time.*;
 public class FamilyService {
 
     private final FamilyRepository familyRepository;
+    private final FamilyTopPercentageHistoryService familyTopPercentageHistoryService;
     private final IdentityGenerator identityGenerator;
 
     public ZonedDateTime findFamilyCreatedAt(String familyId) {
@@ -47,14 +48,14 @@ public class FamilyService {
                 .orElseThrow(FamilyNotFoundException::new);
     }
 
-    public int getFamilyTopPercentage(String familyId, LocalDate date) {
+    public int getFamilyTopPercentage(String familyId, LocalDate calendarDate) {
         // 이번 달의 캘린더를 조회 시, 실시간으로 topPercentage를 계산
-        if (date.getYear() == LocalDate.now().getYear() && date.getMonth() == LocalDate.now().getMonth()) {
+        if (calendarDate.getYear() == LocalDate.now().getYear() && calendarDate.getMonth() == LocalDate.now().getMonth()) {
             return calculateLiveFamilyTopPercentage(familyId);
 
         // 과거의 캘린더를 조회 시, 해당 날짜의 topPercentage를 조회
         } else {
-            return getFamilyTopPercentageHistory(familyId, date);
+            return getFamilyTopPercentageHistory(familyId, calendarDate);
         }
     }
 
@@ -72,8 +73,7 @@ public class FamilyService {
         return (int) ((familyRank / (double) allFamiliesCount) * 100);
     }
 
-    private int getFamilyTopPercentageHistory(String familyId, LocalDate date) {
-//        return familyTopPercentageHistoryService.getTopPercentageByFamilyIdAndDate(familyId, date);
-        return 0;
+    private int getFamilyTopPercentageHistory(String familyId, LocalDate calendarDate) {
+        return familyTopPercentageHistoryService.getTopPercentageByFamilyIdAndDate(familyId, calendarDate);
     }
 }
