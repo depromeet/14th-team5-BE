@@ -17,3 +17,10 @@ jobs:
             ---
             https://no5ing.atlassian.net/browse/%headbranch%
           body-update-action: 'suffix'
+
+      - uses: tzkhan/pr-update-action@v2 # https://github.com/tzkhan/pr-update-action
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          base-branch-regex: 'main'
+          head-branch-regex: '(release|hotfix)\/\d+.\d+.\d+' # release 또는 hotfix 브랜치 reges (ex: release/1.0.0)
+          title-template: '[%headbranch%] ' # PR Title Prefix 템플릿 (배포 속성) (ex: [RELEASE/1.0.0])
