@@ -2,7 +2,10 @@ package com.oing.service;
 
 import com.oing.domain.CreateNewFamilyTopPercentageHistoryDTO;
 import com.oing.domain.Family;
+import com.oing.domain.FamilyTopPercentageHistory;
 import com.oing.domain.MemberPost;
+import com.oing.repository.FamilyRepository;
+import com.oing.repository.FamilyTopPercentageHistoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,14 +19,14 @@ import static com.oing.domain.Family.*;
 @RequiredArgsConstructor
 public class FamilyScoreBridgeImpl implements FamilyScoreBridge {
 
-    private final FamilyService familyService;
-    private final FamilyTopPercentageHistoryService familyTopPercentageHistoryService;
+    private final FamilyRepository familyRepository;
+    private final FamilyTopPercentageHistoryRepository familyTopPercentageHistoryRepository;
     private final MemberPostService memberPostService;
 
     @Override
     @Transactional
     public void setAllFamilyScoresByPostDateBetween(LocalDate startDate, LocalDate endDate) {
-        List<Family> families = familyService.findAll();
+        List<Family> families = familyRepository.findAll();
         for (Family family : families) {
             family.resetScore();
             family.addScore(calculateFamilyScoreByPostDateBetween(family.getId(), startDate, endDate));
@@ -45,11 +48,11 @@ public class FamilyScoreBridgeImpl implements FamilyScoreBridge {
     @Override
     @Transactional
     public void updateAllFamilyTopPercentageHistories(LocalDate historyDate) {
-        List<Family> families = familyService.findAll();
-        int familiesCount = familyService.getFamiliesScoreDistinctCount();
+        List<Family> families = familyRepository.findAll();
+        int familiesCount = familyRepository.countByScoreDistinct();
 
         for (Family family : families) {
-            int rank = familyService.getFamiliesScoreDistinctCountByScoreGoe(family.getScore());
+            int rank = familyRepository.countByScoreGreaterThanEqualScoreDistinct(family.getScore());
             int topPercentage = calculateFamilyTopPercentage(rank, familiesCount);
 
             CreateNewFamilyTopPercentageHistoryDTO dto = new CreateNewFamilyTopPercentageHistoryDTO(
@@ -58,7 +61,8 @@ public class FamilyScoreBridgeImpl implements FamilyScoreBridge {
                     family,
                     topPercentage
             );
-            familyTopPercentageHistoryService.create(dto);
+            FamilyTopPercentageHistory familyTopPercentageHistory = new FamilyTopPercentageHistory(dto);
+            familyTopPercentageHistoryRepository.save(familyTopPercentageHistory);
 
             family.resetScore();
         }

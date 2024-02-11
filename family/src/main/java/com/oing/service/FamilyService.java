@@ -67,20 +67,12 @@ public class FamilyService {
     }
 
     private int calculateLiveFamilyTopPercentage(String familyId) {
-        int familiesCount = getFamiliesScoreDistinctCount();
+        int familiesCount = familyRepository.countByScoreDistinct();
         int score = getFamilyById(familyId).getScore();
-        int rank = getFamiliesScoreDistinctCountByScoreGoe(score);
+        int rank = familyRepository.countByScoreGreaterThanEqualScoreDistinct(score);
 
         // score 를 통한 순위를 통해 전체 가족들 중 상위 백분율 계산 (1%에 가까울수록 고순위)
         return familyScoreBridge.calculateFamilyTopPercentage(rank, familiesCount);
-    }
-
-    public int getFamiliesScoreDistinctCount() {
-        return familyRepository.countByScoreDistinct();
-    }
-
-    public int getFamiliesScoreDistinctCountByScoreGoe(int familyScore) {
-        return familyRepository.countByScoreGreaterThanEqualScoreDistinct(familyScore);
     }
 
     private int getFamilyTopPercentageHistory(String familyId, LocalDate calendarDate) {
