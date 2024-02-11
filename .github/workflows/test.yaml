@@ -2,9 +2,10 @@ name: 테스트 커버리지 워크플로우
 on:
   pull_request:
     branches:
-      - master
+      - main
       - dev
       - 'release/**'
+      - 'hotfix/**'
 
 env:
   COVERAGE_PERCENT: 30
