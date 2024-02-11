@@ -49,4 +49,9 @@ public class MemberDeviceService {
                 .map(MemberDevice::getFcmToken)
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void removeAllDevicesByMemberId(String memberId) {
+        memberDeviceRepository.deleteAllByMemberId(memberId);
+    }
 }
