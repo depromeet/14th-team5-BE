@@ -16,4 +16,8 @@ public record DefaultResponse(
     public static DefaultResponse ok() {
         return new DefaultResponse(true);
     }
+
+    public static DefaultResponse fail() {
+        return new DefaultResponse(false);
+    }
 }

@@ -4,6 +4,7 @@ import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.BannerImageType;
 import com.oing.domain.MemberPost;
 import com.oing.dto.response.*;
+import com.oing.exception.TokenNotValidException;
 import com.oing.restapi.CalendarApi;
 import com.oing.service.*;
 import com.oing.util.OptimizedImageUrlGenerator;
@@ -113,6 +114,8 @@ public class CalendarController implements CalendarApi {
             } else {
                 allFamilyMembersUploadedStreaked = false;  // 가족 전체 업로드가 연속되지 못하면, Streak false
             }
+
+            startDate = startDate.plusDays(1);
         }
 
         int familyLevel = getFamilyLevel(familyPostsCount, allFamilyMembersUploadedDays, familyInteractionCount, allFamilyMembersUploadedStreaked);
@@ -166,6 +169,8 @@ public class CalendarController implements CalendarApi {
 
     @Override
     public DefaultResponse recalculateFamiliesScores(String yearMonth) {
+        validateTemporaryAdmin();
+
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
         familyScoreBridge.setAllFamilyScoresByPostDateBetween(startDate, endDate);
@@ -176,9 +181,17 @@ public class CalendarController implements CalendarApi {
 
     @Override
     public DefaultResponse updateFamiliesTopPercentageHistories(String yearMonth) {
+        validateTemporaryAdmin();
+
         LocalDate historyDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         familyScoreBridge.updateAllFamilyTopPercentageHistories(historyDate);
 
         return DefaultResponse.ok();
+    }
+
+    private DefaultResponse validateTemporaryAdmin() {
+        if (!tokenAuthenticationHolder.getUserId().equals("ADMINADMINADMINADMINADMINA")) {
+            throw new TokenNotValidException();
+        }
     }
 }
