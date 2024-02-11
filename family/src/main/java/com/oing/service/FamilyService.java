@@ -8,16 +8,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FamilyService {
 
     private final FamilyRepository familyRepository;
+    private final FamilyTopPercentageHistoryService familyTopPercentageHistoryService;
     private final IdentityGenerator identityGenerator;
 
     public ZonedDateTime findFamilyCreatedAt(String familyId) {
@@ -50,16 +49,40 @@ public class FamilyService {
                 .orElseThrow(FamilyNotFoundException::new);
     }
 
-    public int calculateFamilyTopPercentile(String familyId) {
+    public List<Family> findAll() {
+        return familyRepository.findAll();
+    }
+
+    public List<Family> findAllOrderByScoreDesc() {
+        return familyRepository.findAllByOrderByScoreDesc();
+    }
+
+    public int getFamilyTopPercentage(String familyId, LocalDate calendarDate) {
+        // 이번 달의 캘린더를 조회 시, 실시간으로 topPercentage를 계산
+        if (calendarDate.getYear() == LocalDate.now().getYear() && calendarDate.getMonth() == LocalDate.now().getMonth()) {
+            return calculateLiveFamilyTopPercentage(familyId);
+
+        // 과거의 캘린더를 조회 시, 해당 날짜의 topPercentage를 조회
+        } else {
+            return getFamilyTopPercentageHistory(familyId, calendarDate);
+        }
+    }
+
+    private int calculateLiveFamilyTopPercentage(String familyId) {
         long allFamiliesCount = familyRepository.count();
         int familyScore = getFamilyById(familyId).getScore();
         long familyRank = familyRepository.countByScoreGreaterThanEqual(familyScore);
 
-        // handle divide by zero error
+        // divide by zero error 핸들링
         if (allFamiliesCount == 0) {
             return 0;
         }
 
-        return (100 - (int) ((familyRank / (double) allFamiliesCount) * 100));
+        // score 를 통한 순위를 통해 전체 가족들 중 상위 백분율 계산 (1%에 가까울수록 고순위)
+        return (int) Math.ceil((familyRank / (double) allFamiliesCount) * 100);
+    }
+
+    private int getFamilyTopPercentageHistory(String familyId, LocalDate calendarDate) {
+        return familyTopPercentageHistoryService.getTopPercentageByFamilyIdAndDate(familyId, calendarDate);
     }
 }
