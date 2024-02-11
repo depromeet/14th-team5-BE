@@ -23,6 +23,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
+import java.security.InvalidParameterException;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -48,6 +49,7 @@ public class MeController implements MeApi {
     ) {
         String memberId = authenticationHolder.getUserId();
         String token = request.fcmToken();
+        if(memberId == null || memberId.length() != 26) throw new InvalidParameterException();
 
         boolean result = memberDeviceService.addDevice(memberId, token);
         return new DefaultResponse(result);
