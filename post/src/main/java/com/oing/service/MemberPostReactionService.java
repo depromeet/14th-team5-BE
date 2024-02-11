@@ -39,18 +39,6 @@ public class MemberPostReactionService {
         return memberPostReactionRepository.findAllByPostId(postId);
     }
 
-    /**
-     * 특정 기간 동안 특정 멤버가 올린 반응의 갯수를 반환한다.
-     *
-     * @param memberIds          조회 대상 멤버들의 ID
-     * @param inclusiveStartDate 조회 시작 날짜
-     * @param exclusiveEndDate   조회 종료 날짜
-     * @return 조회 대상인 반응의 갯수
-     */
-    public long countMemberPostReactionsByMemberIdsBetween(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
-        return memberPostReactionRepository.countByMemberIdInAndCreatedAtBetween(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
-    }
-
     public void deletePostReaction(MemberPostReaction reaction) {
         memberPostReactionRepository.deleteById(reaction.getId());
     }

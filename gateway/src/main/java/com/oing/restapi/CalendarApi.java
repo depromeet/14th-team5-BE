@@ -6,10 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * no5ing-server
@@ -52,6 +49,22 @@ public interface CalendarApi {
     FamilyMonthlyStatisticsResponse getSummary(
             @RequestParam(required = false)
             @Parameter(description = "조회할 년월", example = "2021-12")
+            String yearMonth
+    );
+
+    @Operation(summary = "[어드민] 모든 가족의 점수 재산정", description = "️⚠️ 어드민 용 ⚠️\n\n ⚠️ 모든 가족의 점수를 초기화 후, 특정 기간 동안의 점수를 재계산 후 저장한다. ")
+    @PostMapping("/recalculate-families-scores")
+    DefaultResponse recalculateFamiliesScores(
+            @RequestParam
+            @Parameter(description = "재산정할 년월", example = "2021-12")
+            String yearMonth
+    );
+
+    @Operation(summary = "[어드민] 모든 가족의 상위백분율 이력 데이터 저장", description = "️⚠️ 어드민 용 ⚠️\n\n ⚠️ 모든 가족의 상위백분율 이력데이터를 저장한 후, 가족 점수를 초기화한다.. ")
+    @PostMapping("/update-families-top-percentage-histories")
+    DefaultResponse updateFamiliesTopPercentageHistories(
+            @RequestParam
+            @Parameter(description = "저장할 년월", example = "2021-12")
             String yearMonth
     );
 }

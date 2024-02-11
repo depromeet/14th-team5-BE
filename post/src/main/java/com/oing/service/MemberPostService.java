@@ -74,16 +74,8 @@ public class MemberPostService {
         );
     }
 
-    /**
-     * 특정 기간 동안 특정 멤버가 올린 게시글의 갯수를 반환한다.
-     *
-     * @param memberIds          조회 대상 멤버들의 ID
-     * @param inclusiveStartDate 조회 시작 날짜
-     * @param exclusiveEndDate   조회 종료 날짜
-     * @return 조회 대상인 게시글의 갯수
-     */
-    public long countMemberPostsByMemberIdsBetween(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
-        return memberPostRepository.countByMemberIdInAndCreatedAtBetween(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
+    public List<MemberPost> findAllByFamilyIdAndCreatedAtBetween(String familyId, LocalDate startDate, LocalDate endDate) {
+        return memberPostRepository.findAllByFamilyIdAndCreatedAtBetween(familyId, startDate.atStartOfDay(), endDate.atStartOfDay());
     }
 
     @Transactional
