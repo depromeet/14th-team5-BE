@@ -26,6 +26,7 @@ public class MemberDeviceService {
         if (memberDeviceRepository.existsById(new MemberDeviceKey(memberId, fcmToken))) {
             return false;
         }
+        memberDeviceRepository.deleteAllByFcmToken(fcmToken);
         memberDeviceRepository.save(
                 new MemberDevice(memberId, fcmToken)
         );

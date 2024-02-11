@@ -2,6 +2,7 @@ package com.oing.restapi;
 
 import com.oing.dto.request.PostRealEmojiRequest;
 import com.oing.dto.response.*;
+import com.oing.util.security.FamilyId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +21,10 @@ public interface MemberPostRealEmojiApi {
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String postId,
+
+            @Parameter(hidden = true)
+            @FamilyId
+            String familyId,
 
             @Valid
             @RequestBody

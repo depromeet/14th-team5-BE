@@ -151,6 +151,7 @@ public class CalendarController implements CalendarApi {
         else if (familyLevel == 3) bannerImageType = BannerImageType.WE_ARE_FRIENDS;
         else if (familyLevel == 4) bannerImageType = BannerImageType.JEWELRY_TREASURE;
         else bannerImageType = BannerImageType.SKULL_FLAG; // 예외 처리
+
         return bannerImageType;
     }
 
@@ -189,7 +190,7 @@ public class CalendarController implements CalendarApi {
         return DefaultResponse.ok();
     }
 
-    private DefaultResponse validateTemporaryAdmin() {
+    private void validateTemporaryAdmin() {
         if (!tokenAuthenticationHolder.getUserId().equals("ADMINADMINADMINADMINADMINA")) {
             throw new TokenNotValidException();
         }
