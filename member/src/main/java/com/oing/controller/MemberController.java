@@ -9,6 +9,7 @@ import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.MemberApi;
+import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberQuitReasonService;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
@@ -27,6 +28,7 @@ public class MemberController implements MemberApi {
     private final AuthenticationHolder authenticationHolder;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final MemberService memberService;
+    private final MemberDeviceService memberDeviceService;
     private final MemberQuitReasonService memberQuitReasonService;
 
     @Override
@@ -68,6 +70,16 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
+    public MemberResponse deleteMemberProfileImageUrl(String memberId) {
+        validateMemberId(memberId);
+        Member member = memberService.findMemberById(memberId);
+        member.deleteProfileImg();
+
+        return MemberResponse.of(member);
+    }
+
+    @Override
+    @Transactional
     public MemberResponse updateMemberName(String memberId, UpdateMemberNameRequest request) {
         validateMemberId(memberId);
         Member member = memberService.findMemberById(memberId);
@@ -95,6 +107,8 @@ public class MemberController implements MemberApi {
         if (request != null) { //For Api Version Compatibility
             memberQuitReasonService.recordMemberQuitReason(memberId, request.reasonIds());
         }
+
+        memberDeviceService.removeAllDevicesByMemberId(memberId);
 
         return DefaultResponse.ok();
     }

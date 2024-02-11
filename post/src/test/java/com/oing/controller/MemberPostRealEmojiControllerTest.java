@@ -57,14 +57,15 @@ public class MemberPostRealEmojiControllerTest {
     void 게시물_리얼이모지_등록_테스트() {
         //given
         String memberId = "1";
+        String familyId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
         when(memberBridge.isInSameFamily(memberId, memberId)).thenReturn(true);
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
-        MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId,
+        MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
-        when(memberRealEmojiService.getMemberRealEmojiById(realEmoji.getId())).thenReturn(realEmoji);
+        when(memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(realEmoji.getId(), familyId)).thenReturn(realEmoji);
 
         MemberPostRealEmoji postRealEmoji = new MemberPostRealEmoji("1", realEmoji, post, memberId);
         when(memberPostRealEmojiService.savePostRealEmoji(any(MemberPostRealEmoji.class))).thenReturn(postRealEmoji);
@@ -72,7 +73,7 @@ public class MemberPostRealEmojiControllerTest {
         PostRealEmojiRequest request = new PostRealEmojiRequest(realEmoji.getId());
 
         //when
-        PostRealEmojiResponse response = memberPostRealEmojiController.createPostRealEmoji(post.getId(), request);
+        PostRealEmojiResponse response = memberPostRealEmojiController.createPostRealEmoji(post.getId(), familyId, request);
 
         //then
         assertEquals(post.getId(), response.postId());
@@ -83,10 +84,11 @@ public class MemberPostRealEmojiControllerTest {
     void 권한없는_memberId로_게시물_리얼이모지_등록_예외_테스트() {
         // given
         String memberId = "1";
+        String familyId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
-        MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId,
+        MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 
@@ -96,21 +98,22 @@ public class MemberPostRealEmojiControllerTest {
 
         // then
         assertThrows(AuthorizationFailedException.class,
-                () -> memberPostRealEmojiController.createPostRealEmoji(post.getId(), request));
+                () -> memberPostRealEmojiController.createPostRealEmoji(post.getId(), familyId, request));
     }
 
     @Test
     void 게시물_중복된_리얼이모지_등록_예외_테스트() {
         //given
         String memberId = "1";
+        String familyId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
         when(memberBridge.isInSameFamily(memberId, memberId)).thenReturn(true);
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
-        MemberRealEmoji realEmoji = new MemberRealEmoji("1",  memberId, Emoji.EMOJI_1,
+        MemberRealEmoji realEmoji = new MemberRealEmoji("1",  memberId, familyId, Emoji.EMOJI_1,
                 "https://oing.com/emoji.jpg", "emoji.jpg");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
-        when(memberRealEmojiService.getMemberRealEmojiById(realEmoji.getId())).thenReturn(realEmoji);
+        when(memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(realEmoji.getId(), familyId)).thenReturn(realEmoji);
 
         //when
         when(memberPostRealEmojiService.isMemberPostRealEmojiExists(post, memberId, realEmoji)).thenReturn(true);
@@ -118,16 +121,17 @@ public class MemberPostRealEmojiControllerTest {
 
         //then
         assertThrows(RealEmojiAlreadyExistsException.class,
-                () -> memberPostRealEmojiController.createPostRealEmoji(post.getId(), request));
+                () -> memberPostRealEmojiController.createPostRealEmoji(post.getId(), familyId, request));
     }
 
     @Test
     void 게시물_리얼이모지_삭제_테스트() {
         //given
         String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        String familyId = "1";
+        MemberPost post = new MemberPost("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
-        MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId,
+        MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 
@@ -142,10 +146,11 @@ public class MemberPostRealEmojiControllerTest {
     void 게시물_등록되지_않은_리얼이모지_삭제_예외_테스트() {
         //given
         String memberId = "1";
+        String familyId = "1";
         when(authenticationHolder.getUserId()).thenReturn(memberId);
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, familyId,"https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
-        MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId,
+        MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 
@@ -162,7 +167,7 @@ public class MemberPostRealEmojiControllerTest {
     void 게시물_리얼이모지_요약_조회_테스트() {
         //given
         String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
 
@@ -177,7 +182,7 @@ public class MemberPostRealEmojiControllerTest {
     void 게시물_리얼이모지_목록_조회_테스트() {
         //given
         String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 
@@ -193,7 +198,7 @@ public class MemberPostRealEmojiControllerTest {
     void 게시물_리얼이모지_멤버_조회_테스트() {
         //given
         String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "https://oing.com/post.jpg", "post.jpg",
+        MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 

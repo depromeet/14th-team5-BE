@@ -25,7 +25,6 @@ import org.springframework.stereotype.Controller;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * no5ing-server
@@ -42,8 +41,6 @@ public class MemberPostController implements MemberPostApi {
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final MemberPostService memberPostService;
     private final MemberBridge memberBridge;
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
 
     @Transactional
     @Override
@@ -74,20 +71,20 @@ public class MemberPostController implements MemberPostApi {
         String postId = identityGenerator.generateIdentity();
         ZonedDateTime uploadTime = request.uploadTime();
 
-        validateUserHasNotCreatedPostToday(memberId, uploadTime);
+        validateUserHasNotCreatedPostToday(memberId, familyId, uploadTime);
         validateUploadTime(uploadTime);
 
         String postImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
-        MemberPost post = new MemberPost(postId, memberId, request.imageUrl(),
+        MemberPost post = new MemberPost(postId, memberId, familyId, request.imageUrl(),
                 postImgKey, request.content());
         MemberPost savedPost = memberPostService.save(post);
 
         return PostResponse.from(savedPost);
     }
 
-    private void validateUserHasNotCreatedPostToday(String memberId, ZonedDateTime uploadTime) {
+    private void validateUserHasNotCreatedPostToday(String memberId, String familyId, ZonedDateTime uploadTime) {
         LocalDate today = uploadTime.toLocalDate();
-        if (memberPostService.hasUserCreatedPostToday(memberId, today)) {
+        if (memberPostService.hasUserCreatedPostToday(memberId, familyId, today)) {
             throw new DuplicatePostUploadException();
         }
     }

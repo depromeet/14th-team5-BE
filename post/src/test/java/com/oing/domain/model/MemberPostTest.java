@@ -4,8 +4,6 @@ import com.oing.domain.MemberPost;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -17,12 +15,13 @@ public class MemberPostTest {
         // Given
         String postId = "samplePostId";
         String memberId = "sampleMemberId";
+        String familyId = "sampleFamilyId";
         String imageUrl = "https://picsum.photos/200/300?random=1";
         String imageKey = "/200/300?random=1";
         String content = "밥 맛있다!";
 
         // When
-        MemberPost post = new MemberPost(postId, memberId, imageUrl, imageKey, content, 0,
+        MemberPost post = new MemberPost(postId, memberId, familyId, imageUrl, imageKey, content, 0,
                 0, 0, null, null, null);
 
         // Then

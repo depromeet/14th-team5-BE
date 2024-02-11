@@ -42,6 +42,7 @@ public class MemberRealEmojiApiTest {
     private ObjectMapper objectMapper;
 
     private String TEST_MEMBER_ID = "01HGW2N7EHJVJ4CJ999RRS2E97";
+    private String TEST_FAMILY_ID = "01HGW2N7EHJVJ4CJ999RRS2E44";
     private String TEST_MEMBER_REAL_EMOJI_ID = "01HGW2N7EHJVJ4CJ999RRS2A97";
     private String TEST_MEMBER_TOKEN;
 
@@ -55,7 +56,7 @@ public class MemberRealEmojiApiTest {
         memberRepository.save(
                 new Member(
                         TEST_MEMBER_ID,
-                        "testUser1",
+                        TEST_FAMILY_ID,
                         LocalDate.now(),
                         "", "", "",
                         LocalDateTime.now()
@@ -116,6 +117,7 @@ public class MemberRealEmojiApiTest {
                 new MemberRealEmoji(
                         TEST_MEMBER_REAL_EMOJI_ID,
                         TEST_MEMBER_ID,
+                        TEST_FAMILY_ID,
                         Emoji.EMOJI_1,
                         "https://test.com/bucket/images/defaultEmoji.jpg",
                         "images/defaultEmoji.jpg"
@@ -144,6 +146,7 @@ public class MemberRealEmojiApiTest {
                 new MemberRealEmoji(
                         TEST_MEMBER_REAL_EMOJI_ID,
                         TEST_MEMBER_ID,
+                        TEST_FAMILY_ID,
                         Emoji.EMOJI_1,
                         realEmojiImageUrl,
                         "images/defaultEmoji.jpg"

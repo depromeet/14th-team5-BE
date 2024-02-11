@@ -53,6 +53,7 @@ public class MemberPostCommentControllerTest {
                 "1",
                 "1",
                 "1",
+                "1",
                 "1"
         );
         MemberPostComment memberPostComment = spy(new MemberPostComment(
@@ -82,6 +83,7 @@ public class MemberPostCommentControllerTest {
     void 게시물_댓글_생성_내_가족이_아닌_경우_테스트() {
         //given
         MemberPost memberPost = new MemberPost(
+                "1",
                 "1",
                 "1",
                 "1",
@@ -117,6 +119,7 @@ public class MemberPostCommentControllerTest {
                 "1",
                 "1",
                 "1",
+                "1",
                 "1"
         ));
         MemberPostComment memberPostComment = spy(new MemberPostComment(
@@ -148,6 +151,7 @@ public class MemberPostCommentControllerTest {
                 "1",
                 "1",
                 "1",
+                "1",
                 "1"
         );
         MemberPostComment othersMemberPostComment = new MemberPostComment(
@@ -174,6 +178,7 @@ public class MemberPostCommentControllerTest {
     void 게시물_댓글_수정_테스트() {
         //given
         MemberPost memberPost = new MemberPost(
+                "1",
                 "1",
                 "1",
                 "1",
@@ -212,6 +217,7 @@ public class MemberPostCommentControllerTest {
                 "1",
                 "1",
                 "1",
+                "1",
                 "1"
         );
         MemberPostComment othersMemberPostComment = new MemberPostComment(
@@ -240,6 +246,7 @@ public class MemberPostCommentControllerTest {
     void 게시물_댓글_목록_조회_테스트() {
         //given
         MemberPost memberPost = new MemberPost(
+                "1",
                 "1",
                 "1",
                 "1",

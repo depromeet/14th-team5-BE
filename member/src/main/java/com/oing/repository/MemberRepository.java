@@ -16,9 +16,13 @@ import java.util.List;
  * Time: 11:52 AM
  */
 public interface MemberRepository extends JpaRepository<Member, String> {
-    List<Member> findAllByFamilyId(String familyId);
+    List<Member> findAllByFamilyIdAndDeletedAtIsNull(String familyId);
 
     Page<Member> findAllByFamilyIdAndDeletedAtIsNull(String familyId, PageRequest pageRequest);
 
+    List<Member> findAllByFamilyIdAndFamilyJoinAtBefore(String familyId, LocalDateTime dateTime);
+
     long countByFamilyIdAndFamilyJoinAtBefore(String familyId, LocalDateTime dateTime);
+
+    List<Member> findAllByDeletedAtIsNull();
 }

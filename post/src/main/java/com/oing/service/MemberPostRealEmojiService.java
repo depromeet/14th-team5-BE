@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,18 +46,6 @@ public class MemberPostRealEmojiService {
                                                                                        String postId) {
         return memberPostRealEmojiRepository.findByRealEmojiIdAndMemberIdAndPostId(realEmojiId, memberId, postId)
                 .orElseThrow(RegisteredRealEmojiNotFoundException::new);
-    }
-
-    /**
-     * 특정 기간 동안 특정 멤버가 올린 리얼 이모지의 갯수를 반환한다.
-     *
-     * @param memberIds          조회 대상 멤버들의 ID
-     * @param inclusiveStartDate 조회 시작 날짜
-     * @param exclusiveEndDate   조회 종료 날짜
-     * @return 조회 대상인 리얼 이모지의 갯수
-     */
-    public long countMemberPostRealEmojisByMemberIdsBetween(List<String> memberIds, LocalDate inclusiveStartDate, LocalDate exclusiveEndDate) {
-        return memberPostRealEmojiRepository.countByMemberIdInAndCreatedAtBetween(memberIds, inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay());
     }
 
     /**

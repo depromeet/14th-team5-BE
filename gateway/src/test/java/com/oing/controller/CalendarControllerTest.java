@@ -3,13 +3,11 @@ package com.oing.controller;
 import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.Member;
 import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.CalendarResponse;
 import com.oing.service.MemberPostService;
 import com.oing.service.MemberService;
 import com.oing.util.OptimizedImageUrlGenerator;
-import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,7 +47,7 @@ class CalendarControllerTest {
             "testMember1",
             "profile.com/1",
             "1",
-            LocalDateTime.now()
+            LocalDateTime.of(2023, 11, 1, 13, 0)
     );
 
     private final Member testMember2 = new Member(
@@ -59,22 +57,22 @@ class CalendarControllerTest {
             "testMember2",
             "profile.com/2",
             "2",
-            LocalDateTime.now()
+            LocalDateTime.of(2023, 11, 2, 13, 0)
     );
-
-    private final List<String> familyIds = List.of(testMember1.getId(), testMember2.getId());
 
 
     @Test
     void 월별_캘린더_조회_테스트() {
         // Given
         String yearMonth = "2023-11";
+        String familyId = testMember1.getFamilyId();
 
         LocalDate startDate = LocalDate.of(2023, 11, 1);
         LocalDate endDate = startDate.plusMonths(1);
         MemberPost testPost1 = new MemberPost(
                 "1",
                 testMember1.getId(),
+                familyId,
                 "post.com/1",
                 "1",
                 "test1"
@@ -83,6 +81,7 @@ class CalendarControllerTest {
         MemberPost testPost2 = new MemberPost(
                 "2",
                 testMember2.getId(),
+                familyId,
                 "post.com/2",
                 "2",
                 "test2"
@@ -91,6 +90,7 @@ class CalendarControllerTest {
         MemberPost testPost3 = new MemberPost(
                 "3",
                 testMember1.getId(),
+                familyId,
                 "post.com/3",
                 "3",
                 "test3"
@@ -99,33 +99,21 @@ class CalendarControllerTest {
         MemberPost testPost4 = new MemberPost(
                 "4",
                 testMember2.getId(),
+                familyId,
                 "post.com/4",
                 "4",
                 "test4"
         );
         ReflectionTestUtils.setField(testPost4, "createdAt", LocalDateTime.of(2023, 11, 9, 13, 0));
         List<MemberPost> representativePosts = List.of(testPost1, testPost2, testPost3, testPost4);
-        List<MemberPostDailyCalendarDTO> calendarDTOs = List.of(
-                new MemberPostDailyCalendarDTO(2L),
-                new MemberPostDailyCalendarDTO(1L),
-                new MemberPostDailyCalendarDTO(2L),
-                new MemberPostDailyCalendarDTO(1L)
-        );
-        when(memberService.findFamilyMembersIdsByFamilyId("testFamily")).thenReturn(familyIds);
-        when(memberPostService.findLatestPostOfEveryday(familyIds, startDate, endDate)).thenReturn(representativePosts);
-        when(memberPostService.findPostDailyCalendarDTOs(familyIds, startDate, endDate)).thenReturn(calendarDTOs);
+        when(memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId)).thenReturn(representativePosts);
 
         // When
-        ArrayResponse<CalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, testMember1.getFamilyId());
+        ArrayResponse<CalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, familyId);
 
         // Then
         assertThat(weeklyCalendar.results())
-                .extracting(CalendarResponse::representativePostId, CalendarResponse::allFamilyMembersUploaded)
-                .containsExactly(
-                        Tuple.tuple("1", true),
-                        Tuple.tuple("2", false),
-                        Tuple.tuple("3", true),
-                        Tuple.tuple("4", false)
-                );
+                .extracting(CalendarResponse::representativePostId)
+                .containsExactly("1", "2", "3", "4");
     }
 }

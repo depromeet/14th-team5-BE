@@ -17,6 +17,4 @@ public interface MemberPostReactionRepository extends JpaRepository<MemberPostRe
     List<MemberPostReaction> findAllByPostId(String postId);
 
     void deleteAllByPostId(String memberPostId);
-
-    long countByMemberIdInAndCreatedAtBetween(List<String> memberIds, LocalDateTime startDateTime, LocalDateTime endDateTime);
 }

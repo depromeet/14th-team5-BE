@@ -28,9 +28,8 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final SocialMemberRepository socialMemberRepository;
-
-    private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
+    private final IdentityGenerator identityGenerator;
 
     public Member findMemberById(String memberId) {
         return memberRepository
@@ -62,6 +61,7 @@ public class MemberService {
                 .id(identityGenerator.generateIdentity())
                 .dayOfBirth(createNewUserDTO.dayOfBirth())
                 .profileImgUrl(createNewUserDTO.profileImgUrl())
+                .profileImgKey(preSignedUrlGenerator.extractImageKey(createNewUserDTO.profileImgUrl()))
                 .name(createNewUserDTO.memberName())
                 .build();
         memberRepository.save(member);
@@ -73,24 +73,19 @@ public class MemberService {
                 member);
         socialMemberRepository.save(socialMember);
 
-        if (createNewUserDTO.profileImgUrl() != null) {
-            member.setProfileImgKey(preSignedUrlGenerator.extractImageKey(createNewUserDTO.profileImgUrl()));
-        }
-
         return member;
     }
 
-    public List<String> findFamilyMembersIdByMemberId(String memberId) {
-        Member member = findMemberById(memberId);
-        List<Member> family = memberRepository.findAllByFamilyId(member.getFamilyId());
-
-        return family.stream()
+    public List<String> findFamilyMembersIdsByFamilyId(String familyId) {
+        return memberRepository
+                .findAllByFamilyIdAndDeletedAtIsNull(familyId)
+                .stream()
                 .map(Member::getId)
                 .toList();
     }
 
-    public List<String> findFamilyMembersIdsByFamilyId(String familyId) {
-        return memberRepository.findAllByFamilyId(familyId)
+    public List<String> findFamilyMembersIdsByFamilyJoinAtBefore(String familyId, LocalDate date) {
+        return memberRepository.findAllByFamilyIdAndFamilyJoinAtBefore(familyId, date.atStartOfDay())
                 .stream()
                 .map(Member::getId)
                 .toList();
@@ -120,5 +115,9 @@ public class MemberService {
 
     public void deleteAllSocialMembersByMember(String memberId) {
         socialMemberRepository.deleteAllByMemberId(memberId);
+    }
+
+    public List<Member> findAllMember() {
+        return memberRepository.findAllByDeletedAtIsNull();
     }
 }

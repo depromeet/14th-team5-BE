@@ -41,6 +41,7 @@ public class MemberPostRealEmojiApiTest {
 
     private String TEST_MEMBER_ID = "01HGW2N7EHJVJ4CJ999RRS2E97";
     private String TEST_POST_ID = "01HGW2N7EHJVJ4CJ999RRS2A97";
+    private String TEST_FAMILY_ID = "01HGW2N7EHJVJ4CJ999RRS2F97";
     private String TEST_REAL_EMOJI_ID = "01HGW2N7EHJVJ4CJ999RRS2A97";
     private String TEST_MEMBER_TOKEN;
 
@@ -55,15 +56,15 @@ public class MemberPostRealEmojiApiTest {
 
     @BeforeEach
     void setUp() {
-        memberRepository.save(new Member(TEST_MEMBER_ID, "testUser1", LocalDate.now(), "",
+        memberRepository.save(new Member(TEST_MEMBER_ID, TEST_FAMILY_ID, LocalDate.now(), "",
                 "", "",
                 LocalDateTime.now()));
         TEST_MEMBER_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER_ID).accessToken();
 
-        memberPostRepository.save(new MemberPost(TEST_POST_ID, TEST_MEMBER_ID, "img", "img",
+        memberPostRepository.save(new MemberPost(TEST_POST_ID, TEST_MEMBER_ID, TEST_FAMILY_ID, "img", "img",
                 "content"));
 
-        memberRealEmojiRepository.save(new MemberRealEmoji(TEST_REAL_EMOJI_ID, TEST_MEMBER_ID, Emoji.EMOJI_1,
+        memberRealEmojiRepository.save(new MemberRealEmoji(TEST_REAL_EMOJI_ID, TEST_MEMBER_ID, TEST_FAMILY_ID, Emoji.EMOJI_1,
                 "https://test.com/bucket/real-emoji.jpg", "bucket/real-emoji.jpg"));
 
     }

@@ -44,14 +44,15 @@ public class Member extends DeletableBaseAuditEntity {
     private LocalDateTime familyJoinAt;
 
 
-    public void setProfileImgKey(String profileImgKey) {
-        this.profileImgKey = profileImgKey;
-    }
-
 
     public void updateProfileImg(String profileImgUrl, String profileImgKey) {
         this.profileImgUrl = profileImgUrl;
         this.profileImgKey = profileImgKey;
+    }
+
+    public void deleteProfileImg() {
+        this.profileImgUrl = null;
+        this.profileImgKey = null;
     }
 
     public void updateName(String name) {

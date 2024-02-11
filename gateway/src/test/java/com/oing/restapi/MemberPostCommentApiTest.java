@@ -1,13 +1,14 @@
 package com.oing.restapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oing.domain.*;
+import com.oing.domain.Member;
+import com.oing.domain.MemberPost;
+import com.oing.domain.MemberPostComment;
 import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.dto.request.UpdatePostCommentRequest;
 import com.oing.repository.MemberPostCommentRepository;
 import com.oing.repository.MemberPostRepository;
 import com.oing.repository.MemberRepository;
-import com.oing.service.MemberService;
 import com.oing.service.TokenGenerator;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +44,7 @@ public class MemberPostCommentApiTest {
 
     private String TEST_MEMBER_ID = "01HGW2N7EHJVJ4CJ999RRS2E97";
     private String TEST_POST_ID = "01HGW2N7EHJVJ4CJ999RRS2A97";
+    private String TEST_FAMILY_ID = "01HGW2N7EHJVJ4CJ999RRS2E44";
     private String TEST_MEMBER_TOKEN;
 
     @Autowired
@@ -71,6 +73,7 @@ public class MemberPostCommentApiTest {
                 new MemberPost(
                         TEST_POST_ID,
                         TEST_MEMBER_ID,
+                        TEST_FAMILY_ID,
                         "img",
                         "img",
                         "content"

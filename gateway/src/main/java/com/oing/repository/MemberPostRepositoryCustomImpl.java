@@ -1,11 +1,11 @@
 package com.oing.repository;
 
 import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostDailyCalendarDTO;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.core.types.dsl.DateTimeTemplate;
@@ -25,31 +25,27 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<MemberPost> findLatestPostOfEveryday(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<String> getMemberIdsPostedToday(LocalDate date) {
+        return queryFactory
+                .select(memberPost.memberId)
+                .from(memberPost)
+                .where(memberPost.createdAt.between(date.atStartOfDay(), date.atTime(23, 59, 59)))
+                .fetch();
+    }
+
+    @Override
+    public List<MemberPost> findLatestPostOfEveryday(LocalDateTime startDate, LocalDateTime endDate, String familyId) {
         return queryFactory
                 .selectFrom(memberPost)
                 .where(memberPost.id.in(
                         JPAExpressions
                                 .select(memberPost.id.max())
                                 .from(memberPost)
-                                .where(memberPost.memberId.in(memberIds)
+                                .where(memberPost.familyId.eq(familyId)
                                         .and(memberPost.createdAt.between(startDate, endDate)))
                                 .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, memberPost.createdAt))
                 ))
                 .orderBy(memberPost.createdAt.asc())
-                .fetch();
-
-    }
-
-
-    @Override
-    public List<MemberPostDailyCalendarDTO> findPostDailyCalendarDTOs(List<String> memberIds, LocalDateTime startDate, LocalDateTime endDate) {
-        return queryFactory
-                .select(Projections.constructor(MemberPostDailyCalendarDTO.class, memberPost.id.count()))
-                .from(memberPost)
-                .where(memberPost.memberId.in(memberIds)
-                        .and(memberPost.createdAt.between(startDate, endDate)))
-                .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, memberPost.createdAt))
                 .fetch();
 
     }
@@ -60,7 +56,7 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
                 .select(memberPost)
                 .from(memberPost)
                 .leftJoin(member).on(memberPost.memberId.eq(member.id))
-                .where(member.familyId.eq(familyId), eqDate(date), eqMemberId(memberId))
+                .where(memberPost.familyId.eq(familyId), eqDate(date), eqMemberId(memberId))
                 .orderBy(asc ? memberPost.id.asc() : memberPost.id.desc())
                 .offset((long) (page - 1) * size)
                 .limit(size)
@@ -91,15 +87,31 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
     }
 
     @Override
-    public boolean existsByMemberIdAndCreatedAt(String memberId, LocalDate postDate) {
-        DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
-                "DATE({0})", memberPost.createdAt);
-
+    public boolean existsByFamilyIdAndCreatedAt(String familyId, LocalDate postDate) {
         return queryFactory
                 .select(memberPost.id)
                 .from(memberPost)
-                .where(memberPost.memberId.eq(memberId)
-                        .and(createdAtDate.eq(postDate)))
+                .where(
+                        memberPost.familyId.eq(familyId),
+                        dateExpr(memberPost.createdAt).eq(postDate)
+                )
                 .fetchFirst() != null;
+    }
+
+    @Override
+    public boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate) {
+        return queryFactory
+                .select(memberPost.id)
+                .from(memberPost)
+                .where(
+                        memberPost.memberId.eq(memberId),
+                        memberPost.familyId.eq(familyId),
+                        dateExpr(memberPost.createdAt).eq(postDate)
+                )
+                .fetchFirst() != null;
+    }
+
+    private DateTimeTemplate<LocalDate> dateExpr(DateTimePath<LocalDateTime> localDateTime) {
+        return Expressions.dateTimeTemplate(LocalDate.class, "DATE({0})", localDateTime);
     }
 }
