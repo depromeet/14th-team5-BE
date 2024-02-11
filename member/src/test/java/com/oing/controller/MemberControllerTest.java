@@ -9,6 +9,7 @@ import com.oing.dto.response.MemberResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.AuthorizationFailedException;
+import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
 import com.oing.util.PreSignedUrlGenerator;
@@ -44,6 +45,8 @@ public class MemberControllerTest {
     private AuthenticationHolder authenticationHolder;
     @Mock
     private PreSignedUrlGenerator preSignedUrlGenerator;
+    @Mock
+    private MemberDeviceService memberDeviceService;
 
     @Test
     void 멤버_프로필_조회_테스트() {
