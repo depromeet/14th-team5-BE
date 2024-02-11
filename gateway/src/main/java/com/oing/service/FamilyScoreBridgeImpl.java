@@ -45,16 +45,15 @@ public class FamilyScoreBridgeImpl implements FamilyScoreBridge {
     @Override
     @Transactional
     public void updateAllFamilyTopPercentageHistories(LocalDate historyDate) {
-        List<Family> families = familyService.findAllOrderByScoreDesc();
-        int familiesCount = families.size();
+        List<Family> families = familyService.findAll();
+        int familiesCount = familyService.getFamiliesScoreDistinctCount();
 
-        for (int rank = 1; rank <= familiesCount; rank++) {
-            String familyId = families.get(rank - 1).getId();
-            Family family = families.get(rank - 1);
-            int topPercentage = (int) Math.ceil((double) rank / familiesCount * 100);
+        for (Family family : families) {
+            int rank = familyService.getFamiliesScoreDistinctCountByScoreGoe(family.getScore());
+            int topPercentage = calculateFamilyTopPercentage(rank, familiesCount);
 
             CreateNewFamilyTopPercentageHistoryDTO dto = new CreateNewFamilyTopPercentageHistoryDTO(
-                    familyId,
+                    family.getId(),
                     historyDate,
                     family,
                     topPercentage
@@ -63,5 +62,15 @@ public class FamilyScoreBridgeImpl implements FamilyScoreBridge {
 
             family.resetScore();
         }
+    }
+
+    @Override
+    public int calculateFamilyTopPercentage(int rank, int familiesCount) {
+        // divide by zero error 핸들링
+        if (familiesCount == 0) {
+            return 0;
+        }
+
+        return (int) Math.ceil((double) rank / familiesCount * 100);
     }
 }
