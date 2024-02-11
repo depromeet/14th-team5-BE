@@ -43,7 +43,7 @@ public class FamilyNotificationEventListener {
             MulticastMessage multicastMessage = MulticastMessage.builder()
                     .setNotification(
                             FCMNotificationUtil.buildNotification("삐삐",
-                                    String.format("%s님이 새로운 일상을 공유했어요!", author.getName()))
+                                    String.format("%s님이 생존신고를 완료했어요.", author.getName()))
                     )
                     .putData("aosDeepLink", "post/view/" + memberPost.getId())
                     .addAllTokens(targetFcmTokens)
@@ -67,8 +67,9 @@ public class FamilyNotificationEventListener {
                 if(!targetFcmTokens.isEmpty()) {
                     MulticastMessage multicastMessage = MulticastMessage.builder()
                             .setNotification(
-                                    FCMNotificationUtil.buildNotification(author.getName(),
-                                            String.format("내 일상에 새 댓글: %s", memberPostComment.getComment()))
+                                    FCMNotificationUtil.buildNotification(
+                                            String.format("%s님이 내 피드에 남긴 댓글", author.getName()),
+                                            String.format("\"%s\"", memberPostComment.getComment()))
                             )
                             .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
                             .addAllTokens(targetFcmTokens)
@@ -92,8 +93,9 @@ public class FamilyNotificationEventListener {
             if (targetFcmTokens.isEmpty()) return;
             MulticastMessage multicastMessage = MulticastMessage.builder()
                     .setNotification(
-                            FCMNotificationUtil.buildNotification(author.getName(),
-                                    String.format("내가 공감한 게시물에 새 댓글: %s", memberPostComment.getComment()))
+                            FCMNotificationUtil.buildNotification(
+                                    String.format("%s님의 댓글", author.getName()),
+                                    String.format("\"%s\"", memberPostComment.getComment()))
                     )
                     .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
                     .addAllTokens(targetFcmTokens)
