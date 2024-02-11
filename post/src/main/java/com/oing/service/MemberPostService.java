@@ -94,6 +94,10 @@ public class MemberPostService {
         return memberPostRepository.getMemberIdsPostedToday(date);
     }
 
+    public boolean existsByFamilyIdAndCreatedAt(String familyId, LocalDate postDate) {
+        return memberPostRepository.existsByFamilyIdAndCreatedAt(familyId, postDate);
+    }
+
     public boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate) {
         return memberPostRepository.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, postDate);
     }

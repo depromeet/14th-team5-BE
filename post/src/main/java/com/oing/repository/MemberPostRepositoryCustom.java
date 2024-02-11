@@ -16,5 +16,8 @@ public interface MemberPostRepositoryCustom {
 
     long countMonthlyPostByFamilyId(int year, int month, String familyId);
 
+    boolean existsByFamilyIdAndCreatedAt(String familyId, LocalDate postDate);
+
     boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate);
+
 }
