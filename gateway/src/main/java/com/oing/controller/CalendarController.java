@@ -105,7 +105,8 @@ public class CalendarController implements CalendarApi {
                 }
 
             // 게시글이 없다면, 계산에서 제외
-            // 해당 날짜에 가족이 없을 경우, allFamilyMembersUploaded = true 가 되는 것을 방지
+            // 해당 날짜에 가족과 게시물이 없는 경우, allFamilyMembersUploaded = true 가 되는 것을 방지
+            // edge case: 게시물을 하나라도 없로드 하고 글을 업로드하지 않은 회원이 탈퇴하면, allFamilyMembersUploaded이 true로 변함 -> 핸들링할 수 없는 케이스
             } else {
                 allFamilyMembersUploaded = false;
             }
