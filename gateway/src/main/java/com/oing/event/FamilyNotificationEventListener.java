@@ -60,7 +60,7 @@ public class FamilyNotificationEventListener {
         if (memberPostCommentCreatedEvent.getSource() instanceof MemberPostComment memberPostComment) {
             MemberPost sourcePost = memberPostComment.getPost();
             String postAuthorId = sourcePost.getMemberId(); //게시물 작성자 ID
-            Member author = memberService.findMemberById(memberPostComment.getMemberId());
+            Member author = memberService.findMemberById(memberPostComment.getMemberId()); //댓글 작성자
 
             if (!postAuthorId.equals(memberPostComment.getMemberId())) { //내가 내 게시물에 단 댓글이 아니라면
                 List<String> targetFcmTokens = memberDeviceService.getFcmTokensByMemberId(postAuthorId);
