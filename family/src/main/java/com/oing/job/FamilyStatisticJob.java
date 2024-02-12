@@ -13,7 +13,7 @@ public class FamilyStatisticJob {
 
     private final FamilyScoreBridge familyScoreBridge;
 
-    @Scheduled(cron = "0 1 1 * * *")
+    @Scheduled(cron = "0 0 1 1 * *") // 매월 1일 01시
     public void recordAllFamilyTopPercentageHistoriesMonthly() {
         LocalDate historyDate = LocalDate.now().minusMonths(1);
         familyScoreBridge.updateAllFamilyTopPercentageHistories(historyDate);
