@@ -17,11 +17,6 @@ public class FamilyTopPercentageHistoryService {
     private final FamilyTopPercentageHistoryRepository familyTopPercentageHistoryRepository;
 
 
-    public void create(CreateNewFamilyTopPercentageHistoryDTO createNewFamilyTopPercentageHistoryDTO) {
-        FamilyTopPercentageHistory familyTopPercentageHistory = new FamilyTopPercentageHistory(createNewFamilyTopPercentageHistoryDTO);
-        familyTopPercentageHistoryRepository.save(familyTopPercentageHistory);
-    }
-
     public int getTopPercentageByFamilyIdAndDate(String familyId, LocalDate historyDate) {
         LocalDate firstDayOfMonth = historyDate.withDayOfMonth(1);
         FamilyTopPercentageHistoryId familyTopPercentageHistoryId = new FamilyTopPercentageHistoryId(familyId, firstDayOfMonth);

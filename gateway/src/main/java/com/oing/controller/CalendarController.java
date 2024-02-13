@@ -80,39 +80,46 @@ public class CalendarController implements CalendarApi {
 
 
         /*    배너를 위한 필드 조회    */
-        // 정적 필드 조회
+        /*  정적 필드 조회 */
         int familyTopPercentage = familyService.getFamilyTopPercentage(familyId, startDate);
         List<MemberPost> familyPosts = memberPostService.findAllByFamilyIdAndCreatedAtBetween(familyId, startDate, endDate);
         int familyPostsCount = familyPosts.size();
         int familyInteractionCount = familyPosts.stream().mapToInt((memberPost -> memberPost.getCommentCnt() + memberPost.getReactionCnt() + memberPost.getRealEmojiCnt())).sum();
 
-        // 다이나믹 필드 계산
+        /* 다이나믹 필드 계산 */
         int allFamilyMembersUploadedDays = 0;
         int allFamilyMembersUploadedStreaks = 0;
         boolean allFamilyMembersUploadedStreaked = true;
-        // 한 달 동안 '가족이 전부 올린 날'과 '가족이 전부 올린 날의 연속'을 계산하기 위해, 1일부터 마지막 날까지 순회한다.
+
+        // 한 달 동안 '가족이 전부 업로드한 날'과 '전부 업로드한 날의 연속'을 계산하기 위해, 1일부터 마지막 날까지 순회한다.
         while (startDate.isBefore(endDate)) {
-            List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, startDate.plusDays(1));
-            if (familyMembersIds.isEmpty()) {
-                startDate = startDate.plusDays(1);
-                continue;
-            }
-
             boolean allFamilyMembersUploaded = true;
-            for (String memberId : familyMembersIds) {
-                if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, startDate)) {
-                    allFamilyMembersUploaded = false;
-                    break;
+
+            if (memberPostService.existsByFamilyIdAndCreatedAt(familyId, startDate)) {
+                List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, startDate.plusDays(1));
+                for (String memberId : familyMembersIds) {
+                    if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, startDate)) {
+                        allFamilyMembersUploaded = false;
+                        break;
+                    }
                 }
+
+            } else {
+                // 게시글이 없다면, 계산에서 제외
+                // 해당 날짜에 가족과 게시물이 없는 경우, allFamilyMembersUploaded = true 가 되는 것을 방지
+                // edge case: 게시물을 하나라도 없로드 하고 글을 업로드하지 않은 회원이 탈퇴하면, allFamilyMembersUploaded이 true로 변함 -> 핸들링할 수 없는 케이스
+                allFamilyMembersUploaded = false;
             }
 
+
+            // (가족 전부 업로드한 날의 수, 연속해서 업로드한 여부, 연속해서 업로드한 날의 수) 계산
             if (allFamilyMembersUploaded) {
                 allFamilyMembersUploadedDays++;
 
                 if (allFamilyMembersUploadedStreaked)
-                    allFamilyMembersUploadedStreaks++; // 가족 전체 업로드가 연속되면, Streak + 1
+                    allFamilyMembersUploadedStreaks++;
             } else {
-                allFamilyMembersUploadedStreaked = false;  // 가족 전체 업로드가 연속되지 못하면, Streak false
+                allFamilyMembersUploadedStreaked = false;
             }
 
             startDate = startDate.plusDays(1);

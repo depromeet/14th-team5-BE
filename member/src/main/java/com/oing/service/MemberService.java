@@ -77,7 +77,8 @@ public class MemberService {
     }
 
     public List<String> findFamilyMembersIdsByFamilyId(String familyId) {
-        return memberRepository.findAllByFamilyId(familyId)
+        return memberRepository
+                .findAllByFamilyIdAndDeletedAtIsNull(familyId)
                 .stream()
                 .map(Member::getId)
                 .toList();

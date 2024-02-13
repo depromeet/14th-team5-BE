@@ -17,6 +17,8 @@ public class FamilyService {
 
     private final FamilyRepository familyRepository;
     private final FamilyTopPercentageHistoryService familyTopPercentageHistoryService;
+
+    private final FamilyScoreBridge familyScoreBridge;
     private final IdentityGenerator identityGenerator;
 
     public ZonedDateTime findFamilyCreatedAt(String familyId) {
@@ -53,10 +55,6 @@ public class FamilyService {
         return familyRepository.findAll();
     }
 
-    public List<Family> findAllOrderByScoreDesc() {
-        return familyRepository.findAllByOrderByScoreDesc();
-    }
-
     public int getFamilyTopPercentage(String familyId, LocalDate calendarDate) {
         // 이번 달의 캘린더를 조회 시, 실시간으로 topPercentage를 계산
         if (calendarDate.getYear() == LocalDate.now().getYear() && calendarDate.getMonth() == LocalDate.now().getMonth()) {
@@ -69,17 +67,12 @@ public class FamilyService {
     }
 
     private int calculateLiveFamilyTopPercentage(String familyId) {
-        long allFamiliesCount = familyRepository.count();
-        int familyScore = getFamilyById(familyId).getScore();
-        long familyRank = familyRepository.countByScoreGreaterThanEqual(familyScore);
-
-        // divide by zero error 핸들링
-        if (allFamiliesCount == 0) {
-            return 0;
-        }
+        int familiesCount = familyRepository.countByScoreDistinct();
+        int score = getFamilyById(familyId).getScore();
+        int rank = familyRepository.countByScoreGreaterThanEqualScoreDistinct(score);
 
         // score 를 통한 순위를 통해 전체 가족들 중 상위 백분율 계산 (1%에 가까울수록 고순위)
-        return (int) Math.ceil((familyRank / (double) allFamiliesCount) * 100);
+        return familyScoreBridge.calculateFamilyTopPercentage(rank, familiesCount);
     }
 
     private int getFamilyTopPercentageHistory(String familyId, LocalDate calendarDate) {

@@ -5,6 +5,7 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.core.types.dsl.DateTimeTemplate;
@@ -86,16 +87,31 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
     }
 
     @Override
-    public boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate) {
-        DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
-                "DATE({0})", memberPost.createdAt);
-
+    public boolean existsByFamilyIdAndCreatedAt(String familyId, LocalDate postDate) {
         return queryFactory
                 .select(memberPost.id)
                 .from(memberPost)
-                .where(memberPost.memberId.eq(memberId)
-                        .and(memberPost.familyId.eq(familyId))
-                        .and(createdAtDate.eq(postDate)))
+                .where(
+                        memberPost.familyId.eq(familyId),
+                        dateExpr(memberPost.createdAt).eq(postDate)
+                )
                 .fetchFirst() != null;
+    }
+
+    @Override
+    public boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate) {
+        return queryFactory
+                .select(memberPost.id)
+                .from(memberPost)
+                .where(
+                        memberPost.memberId.eq(memberId),
+                        memberPost.familyId.eq(familyId),
+                        dateExpr(memberPost.createdAt).eq(postDate)
+                )
+                .fetchFirst() != null;
+    }
+
+    private DateTimeTemplate<LocalDate> dateExpr(DateTimePath<LocalDateTime> localDateTime) {
+        return Expressions.dateTimeTemplate(LocalDate.class, "DATE({0})", localDateTime);
     }
 }
