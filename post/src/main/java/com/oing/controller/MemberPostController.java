@@ -112,10 +112,4 @@ public class MemberPostController implements MemberPostApi {
         MemberPost memberPostProjection = memberPostService.getMemberPostById(postId);
         return PostResponse.from(memberPostProjection);
     }
-
-    @Override
-    public DefaultResponse deletePost(String postId) {
-        memberPostService.deleteMemberPostById(postId);
-        return DefaultResponse.ok();
-    }
 }

@@ -82,13 +82,4 @@ public interface MemberPostApi {
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             String postId
     );
-
-    //* 테스트용 API
-    @Operation(summary = "게시물 삭제", description = "ID를 통해 게시물을 삭제합니다.")
-    @DeleteMapping("/{postId}")
-    DefaultResponse deletePost(
-            @PathVariable
-            @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
-            String postId
-    );
 }
