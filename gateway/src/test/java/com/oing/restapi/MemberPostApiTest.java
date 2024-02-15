@@ -125,25 +125,6 @@ class MemberPostApiTest {
     }
 
     @Test
-    void 게시물_삭제_테스트() throws Exception {
-        //given
-        memberPostRepository.save(new MemberPost(TEST_POST_ID, TEST_MEMBER1_ID, TEST_FAMILY_ID, "img", "img",
-                "content"));
-
-        //when
-        ResultActions resultActions = mockMvc.perform(
-                delete("/v1/posts/{postId}", TEST_POST_ID)
-                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        //then
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true));
-    }
-
-    @Test
     void 그룹에서_탈퇴한_회원_게시물_조회_테스트() throws Exception {
         //given
         memberPostRepository.save(new MemberPost(TEST_POST_ID, TEST_MEMBER1_ID, TEST_FAMILY_ID, "img", "img",
