@@ -41,9 +41,9 @@ subprojects {
             html.required.set(true)
             xml.required.set(true)
             csv.required.set(true)
-            html.destination file("$buildDir/reports/jacoco/index.html")
-            xml.destination file("$buildDir/reports/jacoco/index.xml")
-            csv.destination file("$buildDir/reports/jacoco/index.csv")
+            html.destination file(layout.buildDirectory.dir("reports/jacoco/index.html"))
+            xml.destination file(layout.buildDirectory.dir("reports/jacoco/index.xml"))
+            csv.destination file(layout.buildDirectory.dir("reports/jacoco/index.csv"))
         }
 
         def Qdomains = []
@@ -56,11 +56,16 @@ subprojects {
                     files(classDirectories.files.collect {
                         fileTree(dir: it, excludes: [
                                 // 측정 안하고 싶은 패턴
-                                "**/*Application*",
-                                "**/*Config*",
-                                "**/config/*",
+                                "**/domain/*",
                                 "**/dto/*",
-                                "**/*Dto*"
+                                "**/event/*",
+                                "**/exception/*",
+                                "**/util/*",
+                                "**/component/*",
+                                "**/config/*",
+                                "**/job/*",
+                                "**/service/*",
+                                "**/*Application*",
                                 // Querydsl 관련 제거
                         ] + Qdomains)
                     })
@@ -96,12 +101,16 @@ subprojects {
                 }
 
                 excludes = [
-                        "**.*Application*",
-                        "**.*Config*",
-                        "**.config.*",
+                        "**.domain.*",
                         "**.dto.*",
-                        "**.*Dto*",
-                        "**.*DTO*"
+                        "**.event.*",
+                        "**.exception.*",
+                        "**.util.*",
+                        "**.component.*",
+                        "**.config.*",
+                        "**.job.*",
+                        "**.service.*",
+                        "**.*Application*",
                 ] + Qdomains
             }
         }
