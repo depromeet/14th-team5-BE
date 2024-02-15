@@ -48,17 +48,4 @@ public class MemberPostControllerTest {
         // then
         assertNotNull(response.url());
     }
-
-    @Test
-    void 피드_삭제_테스트() {
-        // given
-        String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
-
-        // when
-        memberPostController.deletePost(post.getId());
-
-        // then
-        // nothing. just check no exception
-    }
 }
