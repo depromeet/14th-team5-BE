@@ -3,13 +3,14 @@ package com.oing.repository;
 import com.oing.domain.MemberPost;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Ops;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.DateTimePath;
+import com.querydsl.core.types.dsl.DateTimeTemplate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.core.types.dsl.DateTimeTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.LockModeType;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -99,6 +100,7 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
     }
 
     @Override
+    @Transactional
     public boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate) {
         return queryFactory
                 .select(memberPost.id)
@@ -108,6 +110,7 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
                         memberPost.familyId.eq(familyId),
                         dateExpr(memberPost.createdAt).eq(postDate)
                 )
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .fetchFirst() != null;
     }
 
