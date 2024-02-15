@@ -91,9 +91,13 @@ In the precious time spent with family, everything feels more special with Pippy
 
 <br />
 
+#### 😀 Selfi Emoji
+![10_셀피이모지](https://github.com/depromeet/14th-team5-BE/assets/69844138/738bad41-92b3-4603-8d94-2acf27d7c3d4)
+
+<br />
+
 #### 📱 Widget
 ![8_위젯](https://github.com/depromeet/14th-team5-BE/assets/69844138/a9b888ff-4a1a-4090-8839-1c338dfb2ec5)
-
 
 <br />
 
