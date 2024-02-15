@@ -73,7 +73,8 @@ public class MeController implements MeApi {
         Family targetFamily = familyService.getFamilyById(link.getFamilyId());
 
         Member member = memberService.findMemberById(memberId);
-        if (member.getFamilyId() != null) throw new AlreadyInFamilyException();
+        // TODO: iOS 업데이트 이슈로 온보딩 플로우에 갖힌 유저를 위해 일시적으로 예외 핸들링 주석 처리 !!!
+        //        if (member.hasFamily()) throw new AlreadyInFamilyException();
         member.setFamilyId(targetFamily.getId());
 
         return FamilyResponse.of(targetFamily);
@@ -84,7 +85,8 @@ public class MeController implements MeApi {
     public FamilyResponse createFamilyAndJoin() {
         String memberId = authenticationHolder.getUserId();
         Member member = memberService.findMemberById(memberId);
-        if (member.hasFamily()) throw new AlreadyInFamilyException();
+        // TODO: iOS 업데이트 이슈로 온보딩 플로우에 갖힌 유저를 위해 일시적으로 예외 핸들링 주석 처리 !!!
+        //        if (member.hasFamily()) throw new AlreadyInFamilyException();
 
         Family family = familyService.createFamily();
         member.setFamilyId(family.getId());
