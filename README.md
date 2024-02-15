@@ -5,7 +5,7 @@
 일상을 공유하게 유도한다 `
 
 
-<img src = "https://github.com/depromeet/14th-team5-iOS/assets/62610032/ef7d1e84-93b8-4def-b12a-85dd95c22bce" width = "800" />
+<img src = "https://github.com/depromeet/14th-team5-BE/assets/69844138/6e9f141e-7f41-4f4f-b2dd-4ce040ef351d" width = "800" />
 
 <br />
 
@@ -33,9 +33,16 @@ In the precious time spent with family, everything feels more special with Pippy
 | <a href="https://github.com/cchuyong"><img src="https://avatars.githubusercontent.com/u/67673493?v=4" width="140px;" alt="CChuYong"/> | <a href="https://github.com/Ji-soo708"><img src="https://avatars.githubusercontent.com/u/69844138?v=4" width="140px;" alt="Ji-soo708"/>  | <a href="https://github.com/Kwon770"><img src="https://avatars.githubusercontent.com/u/49567744?v=4" width="140px;" alt="Kwon770"/> |
 | 송영민 | 임지수 | 권순찬 |
 
-<br/>
+<br/><br/>
 
-## 2️⃣ Project Architecture
+## 2️⃣ Project Introduction
+![2_기타 리서치 관련 리소스_컨셉 설명](https://github.com/depromeet/14th-team5-BE/assets/69844138/15b4e672-7c0b-443f-8225-02f75977aea3)
+![3_기타 리서치 관련 리소스_서비스 목표](https://github.com/depromeet/14th-team5-BE/assets/69844138/9e779894-8ce1-45ea-9630-e7137153179c)
+
+<br/><br/>
+
+
+## 3️⃣ Project Architecture
 
 - JVM Runtime Amazon Corretto 17
 - SpringBoot 3.1.5 (Servlet MVC)
@@ -63,23 +70,43 @@ In the precious time spent with family, everything feels more special with Pippy
 
 #### NCP Infrastructure
 ![bibbi-infra](https://github.com/depromeet/14th-team5-BE/assets/49567744/4d99254b-02ba-4ceb-9d24-853881b1b282)
+
 <br /><br />
 
 
-## 3️⃣ Project Outline
+## 4️⃣ Project Outline
 
-#### ⏰ Notification
-![image](https://github.com/depromeet/14th-team5-iOS/assets/62610032/4a2e0659-5fef-4383-8070-92430a7cf9f4)
+#### 🏠 Home
+![5_홈](https://github.com/depromeet/14th-team5-BE/assets/69844138/60d61db6-ddff-4798-997c-e2c2a3e2745a)
+
+<br />
+
+#### 🕛 Notification
+![6_알림](https://github.com/depromeet/14th-team5-BE/assets/69844138/323588d0-c121-4e31-9ddb-f873ee562750)
+
+<br />
+
+#### 📷 Feed
+![9_피드](https://github.com/depromeet/14th-team5-BE/assets/69844138/03ff3a85-1e6a-4111-b56f-228455a9481b)
+
+<br />
+
+#### 😀 Selfi Emoji
+![10_셀피이모지](https://github.com/depromeet/14th-team5-BE/assets/69844138/738bad41-92b3-4603-8d94-2acf27d7c3d4)
 
 <br />
 
 #### 📱 Widget
-![image](https://github.com/depromeet/14th-team5-iOS/assets/62610032/031e0bf9-7a6d-4e7f-9893-71d0def1d2d9)
-
+![8_위젯](https://github.com/depromeet/14th-team5-BE/assets/69844138/a9b888ff-4a1a-4090-8839-1c338dfb2ec5)
 
 <br />
 
 #### 🗓️ Calendar
-![image](https://github.com/depromeet/14th-team5-iOS/assets/62610032/d255500a-4289-43aa-aabc-79e8cdfc5cc4)
+![11_캘린더01](https://github.com/depromeet/14th-team5-BE/assets/69844138/758d55c1-c3df-40ed-9a64-6b687471e1ef)
+![12_캘린더02](https://github.com/depromeet/14th-team5-BE/assets/69844138/df03db42-f9cc-4443-98a2-2936be947003)
 
-<br />
+<br/>
+
+![13_스토어링크](https://github.com/depromeet/14th-team5-BE/assets/69844138/bbb592ac-2d1a-48dc-9945-707464ddd95f)
+
+
