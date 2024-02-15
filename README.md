@@ -58,12 +58,11 @@ In the precious time spent with family, everything feels more special with Pippy
 ```
 
 #### Github Actions CI/CD
-![image](https://github.com/depromeet/14th-team5-BE/assets/69844138/af905728-88cf-4e95-9d36-ef0812b7be6b)
+![bibbi-cicd](https://github.com/depromeet/14th-team5-BE/assets/49567744/3e6241fb-64c6-4fa2-9b17-e5eeda12be04)
 <br/>
 
 #### NCP Infrastructure
-![image](https://github.com/depromeet/14th-team5-BE/assets/69844138/1a97d209-b2c9-4f2b-858c-3e13c5df8b3b)
-
+![bibbi-infra](https://github.com/depromeet/14th-team5-BE/assets/49567744/4d99254b-02ba-4ceb-9d24-853881b1b282)
 <br /><br />
 
 
