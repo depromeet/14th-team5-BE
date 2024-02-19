@@ -34,7 +34,7 @@ app:
     secret-key: ${TOKEN_SECRET_KEY}
     expiration:
       access-token: 86400000
-      refresh-token: 384000000
+      refresh-token: 604800000
   web:
     versionFilterEnabled: true
     url-whitelists:
