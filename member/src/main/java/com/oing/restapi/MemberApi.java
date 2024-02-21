@@ -5,6 +5,8 @@ import com.oing.dto.request.QuitMemberRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.*;
+import com.oing.util.security.FamilyId;
+import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,7 +33,11 @@ public interface MemberApi {
             @RequestParam(required = false, defaultValue = "10")
             @Parameter(description = "가져올 페이지당 크기", example = "10")
             @Min(value = 1)
-            Integer size
+            Integer size,
+
+            @Parameter(hidden = true)
+            @FamilyId
+            String familyId
     );
 
     @Operation(summary = "회원 조회", description = "회원을 조회합니다.")
@@ -57,6 +63,10 @@ public interface MemberApi {
             @PathVariable
             String memberId,
 
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
             @Valid
             @RequestBody
             UpdateMemberProfileImageUrlRequest request
@@ -67,7 +77,11 @@ public interface MemberApi {
     MemberResponse deleteMemberProfileImageUrl(
             @Parameter(description = "프로필 이미지를 삭제할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
-            String memberId
+            String memberId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
     @Operation(summary = "회원 이름 수정", description = "회원 이름을 수정합니다.")
@@ -76,6 +90,10 @@ public interface MemberApi {
             @Parameter(description = "수정할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String memberId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
 
             @Valid
             @RequestBody
@@ -88,6 +106,10 @@ public interface MemberApi {
             @Parameter(description = "탈퇴할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String memberId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
 
             @RequestBody(required = false) //for api version compatibility
             QuitMemberRequest request
