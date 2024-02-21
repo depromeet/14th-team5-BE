@@ -1,7 +1,6 @@
 package com.oing.controller;
 
 
-import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.Member;
 import com.oing.domain.MemberPost;
 import com.oing.dto.response.SingleRecentPostWidgetResponse;
