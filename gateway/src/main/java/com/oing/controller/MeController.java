@@ -11,14 +11,12 @@ import com.oing.dto.response.AppVersionResponse;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.dto.response.MemberResponse;
-import com.oing.exception.AlreadyInFamilyException;
 import com.oing.exception.FamilyNotFoundException;
 import com.oing.restapi.MeApi;
 import com.oing.service.FamilyInviteLinkService;
 import com.oing.service.FamilyService;
 import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberService;
-import com.oing.util.AuthenticationHolder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -29,7 +27,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Controller
 public class MeController implements MeApi {
-    private final AuthenticationHolder authenticationHolder;
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final FamilyService familyService;
@@ -37,17 +34,15 @@ public class MeController implements MeApi {
     private final AppVersionCache appVersionCache;
 
     @Override
-    public MemberResponse getMe() {
-        String memberId = authenticationHolder.getUserId();
+    public MemberResponse getMe(String memberId) {
         Member member = memberService.findMemberById(memberId);
         return MemberResponse.of(member);
     }
 
     @Override
     public DefaultResponse registerFcmToken(
-            AddFcmTokenRequest request
+            AddFcmTokenRequest request, String memberId
     ) {
-        String memberId = authenticationHolder.getUserId();
         String token = request.fcmToken();
         if(memberId == null || memberId.length() != 26) throw new InvalidParameterException();
 
@@ -57,9 +52,8 @@ public class MeController implements MeApi {
 
     @Override
     public DefaultResponse deleteFcmToken(
-            String fcmToken
+            String fcmToken, String memberId
     ) {
-        String memberId = authenticationHolder.getUserId();
         boolean result = memberDeviceService.removeDevice(memberId, fcmToken);
         return new DefaultResponse(result);
     }
@@ -67,8 +61,7 @@ public class MeController implements MeApi {
 
     @Transactional
     @Override
-    public FamilyResponse joinFamily(JoinFamilyRequest request) {
-        String memberId = authenticationHolder.getUserId();
+    public FamilyResponse joinFamily(JoinFamilyRequest request, String memberId) {
         FamilyInviteLink link = familyInviteLinkService.retrieveDeepLinkDetails(request.inviteCode());
         Family targetFamily = familyService.getFamilyById(link.getFamilyId());
 
@@ -82,8 +75,7 @@ public class MeController implements MeApi {
 
     @Transactional
     @Override
-    public FamilyResponse createFamilyAndJoin() {
-        String memberId = authenticationHolder.getUserId();
+    public FamilyResponse createFamilyAndJoin(String memberId) {
         Member member = memberService.findMemberById(memberId);
         // TODO: iOS 업데이트 이슈로 온보딩 플로우에 갖힌 유저를 위해 일시적으로 예외 핸들링 주석 처리 !!!
         //        if (member.hasFamily()) throw new AlreadyInFamilyException();
@@ -102,8 +94,7 @@ public class MeController implements MeApi {
 
     @Transactional
     @Override
-    public DefaultResponse quitFamily() {
-        String memberId = authenticationHolder.getUserId();
+    public DefaultResponse quitFamily(String memberId) {
         Member member = memberService.findMemberById(memberId);
         if (!member.hasFamily()) throw new FamilyNotFoundException();
         member.setFamilyId(null);

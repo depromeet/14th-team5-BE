@@ -43,4 +43,9 @@ public class MemberBridgeImpl implements MemberBridge {
         return firstMember.hasFamily() && secondMember.hasFamily() &&
                 firstMember.getFamilyId().equals(secondMember.getFamilyId());
     }
+
+    @Override
+    public boolean isDeletedMember(String memberId) {
+        return memberRepository.existsByIdAndDeletedAtNotNull(memberId);
+    }
 }
