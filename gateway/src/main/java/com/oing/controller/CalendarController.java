@@ -1,6 +1,5 @@
 package com.oing.controller;
 
-import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.BannerImageType;
 import com.oing.domain.MemberPost;
 import com.oing.dto.response.*;
@@ -26,7 +25,6 @@ public class CalendarController implements CalendarApi {
     private final FamilyService familyService;
     private final FamilyScoreBridge familyScoreBridge;
 
-    private final TokenAuthenticationHolder tokenAuthenticationHolder;
     private final OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
 
@@ -163,8 +161,7 @@ public class CalendarController implements CalendarApi {
     }
 
     @Override
-    public FamilyMonthlyStatisticsResponse getSummary(String yearMonth) {
-        String memberId = tokenAuthenticationHolder.getUserId();
+    public FamilyMonthlyStatisticsResponse getSummary(String yearMonth, String memberId) {
         String[] yearMonthArray = yearMonth.split("-");
         int year = Integer.parseInt(yearMonthArray[0]);
         int month = Integer.parseInt(yearMonthArray[1]);
@@ -176,8 +173,8 @@ public class CalendarController implements CalendarApi {
 
 
     @Override
-    public DefaultResponse recalculateFamiliesScores(String yearMonth) {
-        validateTemporaryAdmin();
+    public DefaultResponse recalculateFamiliesScores(String yearMonth, String memberId) {
+        validateTemporaryAdmin(memberId);
 
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
@@ -188,8 +185,8 @@ public class CalendarController implements CalendarApi {
 
 
     @Override
-    public DefaultResponse updateFamiliesTopPercentageHistories(String yearMonth) {
-        validateTemporaryAdmin();
+    public DefaultResponse updateFamiliesTopPercentageHistories(String yearMonth, String memberId) {
+        validateTemporaryAdmin(memberId);
 
         LocalDate historyDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         familyScoreBridge.updateAllFamilyTopPercentageHistories(historyDate);
@@ -197,8 +194,8 @@ public class CalendarController implements CalendarApi {
         return DefaultResponse.ok();
     }
 
-    private void validateTemporaryAdmin() {
-        if (!tokenAuthenticationHolder.getUserId().equals("ADMINADMINADMINADMINADMINA")) {
+    private void validateTemporaryAdmin(String memberId) {
+        if (!memberId.equals("ADMINADMINADMINADMINADMINA")) {
             throw new TokenNotValidException();
         }
     }

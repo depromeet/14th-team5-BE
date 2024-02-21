@@ -1,6 +1,5 @@
 package com.oing.controller;
 
-import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.Member;
 import com.oing.domain.MemberPost;
 import com.oing.dto.response.ArrayResponse;
@@ -34,8 +33,6 @@ class CalendarControllerTest {
     private MemberService memberService;
     @Mock
     private MemberPostService memberPostService;
-    @Mock
-    private TokenAuthenticationHolder tokenAuthenticationHolder;
     @Mock
     private OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
