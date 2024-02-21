@@ -3,6 +3,7 @@ package com.oing.restapi;
 import com.oing.dto.request.PostRealEmojiRequest;
 import com.oing.dto.response.*;
 import com.oing.util.security.LoginFamilyId;
+import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +27,10 @@ public interface MemberPostRealEmojiApi {
             @LoginFamilyId
             String familyId,
 
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String memberId,
+
             @Valid
             @RequestBody
             PostRealEmojiRequest request
@@ -40,7 +45,11 @@ public interface MemberPostRealEmojiApi {
 
             @Parameter(description = "리얼 이모지 ID", example = "01HEFDFADFDFDAFDFDARS2E97")
             @PathVariable
-            String realEmojiId
+            String realEmojiId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String memberId
     );
 
     @Operation(summary = "게시물의 리얼 이모지 요약 조회", description = "게시물에 달린 리얼 이모지 요약을 조회합니다.")
@@ -48,7 +57,11 @@ public interface MemberPostRealEmojiApi {
     PostRealEmojiSummaryResponse getPostRealEmojiSummary(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
-            String postId
+            String postId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String memberId
     );
 
     @Operation(summary = "게시물의 리얼 이모지 전체 조회", description = "게시물에 달린 모든 리얼 이모지 목록을 조회합니다.")
@@ -56,7 +69,11 @@ public interface MemberPostRealEmojiApi {
     ArrayResponse<PostRealEmojiResponse> getPostRealEmojis(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
-            String postId
+            String postId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String memberId
     );
 
     @Operation(summary = "게시물의 리얼 이모지를 남긴 전체 멤버 조회", description = "게시물에 리얼 이모지를 남긴 모든 멤버 목록을 조회합니다.")
@@ -64,6 +81,10 @@ public interface MemberPostRealEmojiApi {
     PostRealEmojiMemberResponse getPostRealEmojiMembers(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
-            String postId
+            String postId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String memberId
     );
 }

@@ -16,7 +16,6 @@ import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostRealEmojiService;
 import com.oing.service.MemberPostService;
 import com.oing.service.MemberRealEmojiService;
-import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -41,8 +40,6 @@ public class MemberPostRealEmojiControllerTest {
     private MemberPostRealEmojiController memberPostRealEmojiController;
 
     @Mock
-    private AuthenticationHolder authenticationHolder;
-    @Mock
     private IdentityGenerator identityGenerator;
     @Mock
     private MemberPostService memberPostService;
@@ -58,7 +55,6 @@ public class MemberPostRealEmojiControllerTest {
         //given
         String memberId = "1";
         String familyId = "1";
-        when(authenticationHolder.getUserId()).thenReturn(memberId);
         when(memberBridge.isInSameFamily(memberId, memberId)).thenReturn(true);
         MemberPost post = new MemberPost("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
@@ -73,7 +69,7 @@ public class MemberPostRealEmojiControllerTest {
         PostRealEmojiRequest request = new PostRealEmojiRequest(realEmoji.getId());
 
         //when
-        PostRealEmojiResponse response = memberPostRealEmojiController.createPostRealEmoji(post.getId(), familyId, request);
+        PostRealEmojiResponse response = memberPostRealEmojiController.createPostRealEmoji(post.getId(), familyId, memberId, request);
 
         //then
         assertEquals(post.getId(), response.postId());
@@ -85,7 +81,6 @@ public class MemberPostRealEmojiControllerTest {
         // given
         String memberId = "1";
         String familyId = "1";
-        when(authenticationHolder.getUserId()).thenReturn(memberId);
         MemberPost post = new MemberPost("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
@@ -98,7 +93,7 @@ public class MemberPostRealEmojiControllerTest {
 
         // then
         assertThrows(AuthorizationFailedException.class,
-                () -> memberPostRealEmojiController.createPostRealEmoji(post.getId(), familyId, request));
+                () -> memberPostRealEmojiController.createPostRealEmoji(post.getId(), familyId, memberId, request));
     }
 
     @Test
@@ -106,7 +101,6 @@ public class MemberPostRealEmojiControllerTest {
         //given
         String memberId = "1";
         String familyId = "1";
-        when(authenticationHolder.getUserId()).thenReturn(memberId);
         when(memberBridge.isInSameFamily(memberId, memberId)).thenReturn(true);
         MemberPost post = new MemberPost("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
@@ -121,7 +115,7 @@ public class MemberPostRealEmojiControllerTest {
 
         //then
         assertThrows(RealEmojiAlreadyExistsException.class,
-                () -> memberPostRealEmojiController.createPostRealEmoji(post.getId(), familyId, request));
+                () -> memberPostRealEmojiController.createPostRealEmoji(post.getId(), familyId, memberId, request));
     }
 
     @Test
@@ -136,7 +130,7 @@ public class MemberPostRealEmojiControllerTest {
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
-        memberPostRealEmojiController.deletePostRealEmoji(post.getId(), realEmoji.getId());
+        memberPostRealEmojiController.deletePostRealEmoji(post.getId(), realEmoji.getId(), memberId);
 
         //then
         //nothing. just check no exception
@@ -147,7 +141,6 @@ public class MemberPostRealEmojiControllerTest {
         //given
         String memberId = "1";
         String familyId = "1";
-        when(authenticationHolder.getUserId()).thenReturn(memberId);
         MemberPost post = new MemberPost("1", memberId, familyId,"https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
@@ -160,7 +153,7 @@ public class MemberPostRealEmojiControllerTest {
 
         //then
         assertThrows(RegisteredRealEmojiNotFoundException.class,
-                () -> memberPostRealEmojiController.deletePostRealEmoji(post.getId(), realEmoji.getId()));
+                () -> memberPostRealEmojiController.deletePostRealEmoji(post.getId(), realEmoji.getId(), memberId));
     }
 
     @Test
@@ -170,9 +163,10 @@ public class MemberPostRealEmojiControllerTest {
         MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
+        when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
 
         //when
-        PostRealEmojiSummaryResponse summary = memberPostRealEmojiController.getPostRealEmojiSummary(post.getId());
+        PostRealEmojiSummaryResponse summary = memberPostRealEmojiController.getPostRealEmojiSummary(post.getId(), memberId);
 
         //then
         assertEquals(0, summary.results().size());
@@ -185,9 +179,10 @@ public class MemberPostRealEmojiControllerTest {
         MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
+        when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
 
         //when
-        ArrayResponse<PostRealEmojiResponse> response = memberPostRealEmojiController.getPostRealEmojis(post.getId());
+        ArrayResponse<PostRealEmojiResponse> response = memberPostRealEmojiController.getPostRealEmojis(post.getId(), memberId);
 
         //then
         assertEquals(0, response.results().size());
@@ -201,9 +196,10 @@ public class MemberPostRealEmojiControllerTest {
         MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
+        when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
 
         //when
-        PostRealEmojiMemberResponse response = memberPostRealEmojiController.getPostRealEmojiMembers(post.getId());
+        PostRealEmojiMemberResponse response = memberPostRealEmojiController.getPostRealEmojiMembers(post.getId(), memberId);
 
         //then
         assertEquals(0, response.emojiMemberIdsList().size());

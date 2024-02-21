@@ -13,7 +13,6 @@ import com.oing.restapi.MemberPostCommentApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostCommentService;
 import com.oing.service.MemberPostService;
-import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 @Controller
 public class MemberPostCommentController implements MemberPostCommentApi {
-    private final AuthenticationHolder authenticationHolder;
     private final IdentityGenerator identityGenerator;
     private final MemberPostService memberPostService;
     private final MemberPostCommentService memberPostCommentService;
@@ -37,8 +35,7 @@ public class MemberPostCommentController implements MemberPostCommentApi {
      */
     @Transactional
     @Override
-    public PostCommentResponse createPostComment(String postId, CreatePostCommentRequest request) {
-        String memberId = authenticationHolder.getUserId();
+    public PostCommentResponse createPostComment(String postId, CreatePostCommentRequest request, String memberId) {
         MemberPost memberPost = memberPostService.getMemberPostById(postId);
 
         // 내 가족의 게시물인지 검증
@@ -66,8 +63,7 @@ public class MemberPostCommentController implements MemberPostCommentApi {
      */
     @Transactional
     @Override
-    public DefaultResponse deletePostComment(String postId, String commentId) {
-        String memberId = authenticationHolder.getUserId();
+    public DefaultResponse deletePostComment(String postId, String commentId, String memberId) {
         MemberPost memberPost = memberPostService.getMemberPostById(postId);
         MemberPostComment memberPostComment = memberPostCommentService.getMemberPostComment(postId, commentId);
 
@@ -92,8 +88,8 @@ public class MemberPostCommentController implements MemberPostCommentApi {
      */
     @Transactional
     @Override
-    public PostCommentResponse updatePostComment(String postId, String commentId, UpdatePostCommentRequest request) {
-        String memberId = authenticationHolder.getUserId();
+    public PostCommentResponse updatePostComment(String postId, String commentId, UpdatePostCommentRequest request,
+                                                 String memberId) {
         MemberPostComment memberPostComment = memberPostCommentService.getMemberPostComment(postId, commentId);
 
         //내가 작성한 댓글인지 권한 검증
@@ -117,7 +113,12 @@ public class MemberPostCommentController implements MemberPostCommentApi {
      */
     @Transactional
     @Override
-    public PaginationResponse<PostCommentResponse> getPostComments(String postId, Integer page, Integer size, String sort) {
+    public PaginationResponse<PostCommentResponse> getPostComments(String postId, Integer page, Integer size, String sort,
+                                                                   String memberId) {
+        MemberPost memberPost = memberPostService.getMemberPostById(postId);
+        if (!memberBridge.isInSameFamily(memberId, memberPost.getMemberId()))
+            throw new AuthorizationFailedException();
+
         PaginationDTO<MemberPostComment> fetchResult = memberPostCommentService.searchPostComments(
                 page, size, postId, sort == null || sort.equalsIgnoreCase("ASC")
         );

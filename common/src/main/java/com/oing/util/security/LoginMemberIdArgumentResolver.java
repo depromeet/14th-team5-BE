@@ -1,5 +1,8 @@
 package com.oing.util.security;
 
+import com.oing.exception.AuthorizationFailedException;
+import com.oing.service.MemberBridge;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -11,6 +14,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class LoginMemberIdArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private final MemberBridge memberBridge;
+
+    @Autowired
+    public LoginMemberIdArgumentResolver(MemberBridge memberBridge) {
+        this.memberBridge = memberBridge;
+    }
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(LoginMemberId.class);
@@ -18,7 +28,11 @@ public class LoginMemberIdArgumentResolver implements HandlerMethodArgumentResol
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+        String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (memberBridge.isDeletedMember(memberId)) {
+            throw new AuthorizationFailedException();
+        }
+        return memberId;
     }
 }

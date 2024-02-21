@@ -13,7 +13,6 @@ import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.DuplicateRealEmojiException;
 import com.oing.restapi.MemberRealEmojiApi;
 import com.oing.service.MemberRealEmojiService;
-import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
@@ -27,23 +26,23 @@ import java.util.stream.Collectors;
 @Controller
 public class MemberRealEmojiController implements MemberRealEmojiApi {
 
-    private final AuthenticationHolder authenticationHolder;
     private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final MemberRealEmojiService memberRealEmojiService;
 
     @Transactional
     @Override
-    public PreSignedUrlResponse requestPresignedUrl(String memberId, PreSignedUrlRequest request) {
-        validateMemberId(memberId);
+    public PreSignedUrlResponse requestPresignedUrl(String memberId, String loginMemberId, PreSignedUrlRequest request) {
+        validateMemberId(loginMemberId, memberId);
         String imageName = request.imageName();
         return preSignedUrlGenerator.getRealEmojiPreSignedUrl(imageName);
     }
 
     @Transactional
     @Override
-    public RealEmojiResponse createMemberRealEmoji(String memberId, String familyId, CreateMyRealEmojiRequest request) {
-        validateMemberId(memberId);
+    public RealEmojiResponse createMemberRealEmoji(String memberId, String loginMemberId, String familyId,
+                                                   CreateMyRealEmojiRequest request) {
+        validateMemberId(loginMemberId, memberId);
         String emojiId = identityGenerator.generateIdentity();
         String emojiImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
         Emoji emoji = Emoji.fromString(request.type());
@@ -62,8 +61,8 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
 
     @Transactional
     @Override
-    public RealEmojiResponse changeMemberRealEmoji(String memberId, String familyId, String realEmojiId, UpdateMyRealEmojiRequest request) {
-        validateMemberId(memberId);
+    public RealEmojiResponse changeMemberRealEmoji(String memberId, String loginMemberId, String familyId, String realEmojiId, UpdateMyRealEmojiRequest request) {
+        validateMemberId(loginMemberId, memberId);
         String emojiImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
 
         MemberRealEmoji findEmoji = memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(realEmojiId, familyId);
@@ -72,8 +71,8 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
     }
 
     @Override
-    public RealEmojisResponse getMemberRealEmojis(String memberId, String familyId) {
-        validateMemberId(memberId);
+    public RealEmojisResponse getMemberRealEmojis(String memberId, String loginMemberId, String familyId) {
+        validateMemberId(loginMemberId, memberId);
 
         List<MemberRealEmoji> realEmojis = memberRealEmojiService.findRealEmojisByMemberIdAndFamilyId(memberId, familyId);
         List<RealEmojiResponse> emojiResponses = realEmojis.stream()
@@ -82,9 +81,8 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
         return new RealEmojisResponse(emojiResponses);
     }
 
-    private void validateMemberId(String memberId) {
-        String loginId = authenticationHolder.getUserId();
-        if (!loginId.equals(memberId)) {
+    private void validateMemberId(String loginMemberId, String memberId) {
+        if (!loginMemberId.equals(memberId)) {
             throw new AuthorizationFailedException();
         }
     }
