@@ -2,7 +2,7 @@ package com.oing.restapi;
 
 import com.oing.dto.request.PostRealEmojiRequest;
 import com.oing.dto.response.*;
-import com.oing.util.security.FamilyId;
+import com.oing.util.security.LoginFamilyId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,7 +23,7 @@ public interface MemberPostRealEmojiApi {
             String postId,
 
             @Parameter(hidden = true)
-            @FamilyId
+            @LoginFamilyId
             String familyId,
 
             @Valid

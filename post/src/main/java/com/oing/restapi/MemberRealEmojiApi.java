@@ -6,7 +6,7 @@ import com.oing.dto.request.UpdateMyRealEmojiRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.dto.response.RealEmojiResponse;
 import com.oing.dto.response.RealEmojisResponse;
-import com.oing.util.security.FamilyId;
+import com.oing.util.security.LoginFamilyId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,7 +39,7 @@ public interface MemberRealEmojiApi {
             String memberId,
 
             @Parameter(hidden = true)
-            @FamilyId
+            @LoginFamilyId
             String familyId,
 
             @Valid
@@ -55,7 +55,7 @@ public interface MemberRealEmojiApi {
             String memberId,
 
             @Parameter(hidden = true)
-            @FamilyId
+            @LoginFamilyId
             String familyId,
 
             @Parameter(description = "리얼 이모지 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
@@ -75,7 +75,7 @@ public interface MemberRealEmojiApi {
             String memberId,
 
             @Parameter(hidden = true)
-            @FamilyId
+            @LoginFamilyId
             String familyId
     );
 }

@@ -12,18 +12,18 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
-public class FamilyIdArgumentResolver implements HandlerMethodArgumentResolver {
+public class LoginFamilyIdArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final MemberBridge memberBridge;
 
     @Autowired
-    public FamilyIdArgumentResolver(MemberBridge memberBridge) {
+    public LoginFamilyIdArgumentResolver(MemberBridge memberBridge) {
         this.memberBridge = memberBridge;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(FamilyId.class);
+        return parameter.hasParameterAnnotation(LoginFamilyId.class);
     }
 
     @Override

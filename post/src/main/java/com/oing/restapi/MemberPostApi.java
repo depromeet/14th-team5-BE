@@ -2,11 +2,10 @@ package com.oing.restapi;
 
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
-import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
-import com.oing.util.security.FamilyId;
+import com.oing.util.security.LoginFamilyId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -71,7 +70,7 @@ public interface MemberPostApi {
             CreatePostRequest request,
 
             @Parameter(hidden = true)
-            @FamilyId
+            @LoginFamilyId
             String familyId
     );
 

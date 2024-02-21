@@ -5,7 +5,7 @@ import com.oing.dto.request.QuitMemberRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.*;
-import com.oing.util.security.FamilyId;
+import com.oing.util.security.LoginFamilyId;
 import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,7 +36,7 @@ public interface MemberApi {
             Integer size,
 
             @Parameter(hidden = true)
-            @FamilyId
+            @LoginFamilyId
             String familyId
     );
 
