@@ -51,10 +51,6 @@ public class FamilyService {
                 .orElseThrow(FamilyNotFoundException::new);
     }
 
-    public List<Family> findAll() {
-        return familyRepository.findAll();
-    }
-
     public int getFamilyTopPercentage(String familyId, LocalDate calendarDate) {
         // 이번 달의 캘린더를 조회 시, 실시간으로 topPercentage를 계산
         if (calendarDate.getYear() == LocalDate.now().getYear() && calendarDate.getMonth() == LocalDate.now().getMonth()) {

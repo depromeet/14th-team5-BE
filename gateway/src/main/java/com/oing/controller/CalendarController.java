@@ -173,33 +173,4 @@ public class CalendarController implements CalendarApi {
         long monthlyPostCount = memberPostService.countMonthlyPostByFamilyId(year, month, familyId);
         return new FamilyMonthlyStatisticsResponse((int) monthlyPostCount);
     }
-
-
-    @Override
-    public DefaultResponse recalculateFamiliesScores(String yearMonth) {
-        validateTemporaryAdmin();
-
-        LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
-        LocalDate endDate = startDate.plusMonths(1);
-        familyScoreBridge.setAllFamilyScoresByPostDateBetween(startDate, endDate);
-
-        return DefaultResponse.ok();
-    }
-
-
-    @Override
-    public DefaultResponse updateFamiliesTopPercentageHistories(String yearMonth) {
-        validateTemporaryAdmin();
-
-        LocalDate historyDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
-        familyScoreBridge.updateAllFamilyTopPercentageHistories(historyDate);
-
-        return DefaultResponse.ok();
-    }
-
-    private void validateTemporaryAdmin() {
-        if (!tokenAuthenticationHolder.getUserId().equals("ADMINADMINADMINADMINADMINA")) {
-            throw new TokenNotValidException();
-        }
-    }
 }
