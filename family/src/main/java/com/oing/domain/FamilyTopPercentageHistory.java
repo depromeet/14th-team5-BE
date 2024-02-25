@@ -25,9 +25,9 @@ public class FamilyTopPercentageHistory {
     @Column(nullable = false)
     private Integer topPercentage;
 
-    public FamilyTopPercentageHistory(CreateNewFamilyTopPercentageHistoryDTO createNewFamilyTopPercentageHistoryDTO) {
-        this.familyTopPercentageHistoryId = new FamilyTopPercentageHistoryId(createNewFamilyTopPercentageHistoryDTO.familyId(), createNewFamilyTopPercentageHistoryDTO.date().withDayOfMonth(1));
-        this.family = createNewFamilyTopPercentageHistoryDTO.family();
-        this.topPercentage = createNewFamilyTopPercentageHistoryDTO.topPercentage();
+    public FamilyTopPercentageHistory(CreateNewFamilyTopPercentageHistoryDTO dto) {
+        this.familyTopPercentageHistoryId = new FamilyTopPercentageHistoryId(dto.familyId(), dto.year(), dto.month());
+        this.family = dto.family();
+        this.topPercentage = dto.topPercentage();
     }
 }

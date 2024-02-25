@@ -15,7 +15,8 @@ public class FamilyStatisticJob {
 
     @Scheduled(cron = "0 0 1 1 * *") // 매월 1일 01시
     public void recordAllFamilyTopPercentageHistoriesMonthly() {
+        // 방금 막 지나간 지난 달의 데이터를 기록한다.
         LocalDate historyDate = LocalDate.now().minusMonths(1);
-        familyScoreBridge.updateAllFamilyTopPercentageHistories(historyDate);
+        familyScoreBridge.updateAllFamilyTopPercentageHistories(historyDate.getYear(), historyDate.getMonthValue());
     }
 }

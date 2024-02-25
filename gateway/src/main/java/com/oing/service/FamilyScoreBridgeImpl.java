@@ -25,7 +25,7 @@ public class FamilyScoreBridgeImpl implements FamilyScoreBridge {
 
     @Override
     @Transactional
-    public void updateAllFamilyTopPercentageHistories(LocalDate historyDate) {
+    public void updateAllFamilyTopPercentageHistories(int year, int month) {
         List<Family> families = familyRepository.findAll();
         int familiesCount = familyRepository.countByScoreDistinct();
 
@@ -35,7 +35,8 @@ public class FamilyScoreBridgeImpl implements FamilyScoreBridge {
 
             CreateNewFamilyTopPercentageHistoryDTO dto = new CreateNewFamilyTopPercentageHistoryDTO(
                     family.getId(),
-                    historyDate,
+                    year,
+                    month,
                     family,
                     topPercentage
             );
