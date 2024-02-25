@@ -17,6 +17,9 @@ public class FamilyTopPercentageHistoryId implements Serializable {
     @Column(name = "family_id", columnDefinition = "CHAR(26)", nullable = false)
     private String familyId;
 
-    @Column(nullable = false)
-    private LocalDate date;
+    @Column(name = "history_year", nullable = false)
+    private Integer year;
+
+    @Column(name = "history_month", nullable = false)
+    private Integer month;
 }
