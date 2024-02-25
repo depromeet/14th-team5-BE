@@ -1,10 +1,12 @@
 package com.oing.config.filter;
 
 import com.oing.config.properties.WebProperties;
+import com.oing.util.RandomStringGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -27,6 +29,7 @@ public class WebRequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler
     ) throws Exception {
+        MDC.put("requestId", RandomStringGenerator.generateAlphanumericString(8));
         long startTime = System.currentTimeMillis();
         request.setAttribute(START_TIME_ATTR_NAME, startTime);
         return true;
@@ -57,6 +60,7 @@ public class WebRequestInterceptor implements HandlerInterceptor {
         String forwardedIp = request.getHeader(webProperties.headerNames().proxyForwardHeader());
         String originIp = forwardedIp != null ? forwardedIp : request.getRemoteAddr();
         log.info("{} {} {} {} {} {} {} {}ms", appVersion, platform, userId, request.getMethod(), request.getRequestURI(), originIp, response.getStatus(), executionTime);
+        MDC.clear();
     }
 
     private boolean isPreflight(HttpServletRequest request) {
