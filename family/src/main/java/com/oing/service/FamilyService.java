@@ -3,6 +3,7 @@ package com.oing.service;
 import com.oing.domain.Family;
 import com.oing.exception.FamilyNotFoundException;
 import com.oing.repository.FamilyRepository;
+import com.oing.util.DateUtils;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -52,13 +53,10 @@ public class FamilyService {
     }
 
     public int getFamilyTopPercentage(String familyId, LocalDate calendarDate) {
-        // 이번 달의 캘린더를 조회 시, 실시간으로 topPercentage를 계산
-        if (calendarDate.getYear() == LocalDate.now().getYear() && calendarDate.getMonth() == LocalDate.now().getMonth()) {
+        if (DateUtils.isCurrentMonth(calendarDate)) {
             return calculateLiveFamilyTopPercentage(familyId);
-
-        // 과거의 캘린더를 조회 시, 해당 날짜의 topPercentage를 조회
         } else {
-            return getFamilyTopPercentageHistory(familyId, calendarDate);
+            return familyTopPercentageHistoryService.getTopPercentage(familyId, calendarDate.getYear(), calendarDate.getMonthValue());
         }
     }
 
@@ -69,9 +67,5 @@ public class FamilyService {
 
         // score 를 통한 순위를 통해 전체 가족들 중 상위 백분율 계산 (1%에 가까울수록 고순위)
         return familyScoreBridge.calculateFamilyTopPercentage(rank, familiesCount);
-    }
-
-    private int getFamilyTopPercentageHistory(String familyId, LocalDate calendarDate) {
-        return familyTopPercentageHistoryService.getTopPercentageByFamilyIdAndDate(familyId, calendarDate);
     }
 }
