@@ -21,11 +21,13 @@ import com.oing.service.MemberService;
 import com.oing.util.AuthenticationHolder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.security.InvalidParameterException;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class MeController implements MeApi {
@@ -69,6 +71,7 @@ public class MeController implements MeApi {
     @Override
     public FamilyResponse joinFamily(JoinFamilyRequest request) {
         String memberId = authenticationHolder.getUserId();
+        log.info("Member {} is trying to join to family", memberId);
         FamilyInviteLink link = familyInviteLinkService.retrieveDeepLinkDetails(request.inviteCode());
         Family targetFamily = familyService.getFamilyById(link.getFamilyId());
 
@@ -76,6 +79,7 @@ public class MeController implements MeApi {
         // TODO: iOS 업데이트 이슈로 온보딩 플로우에 갖힌 유저를 위해 일시적으로 예외 핸들링 주석 처리 !!!
         //        if (member.hasFamily()) throw new AlreadyInFamilyException();
         member.setFamilyId(targetFamily.getId());
+        log.info("Member {} has joined to family {}", memberId, targetFamily.getId());
 
         return FamilyResponse.of(targetFamily);
     }
@@ -84,12 +88,14 @@ public class MeController implements MeApi {
     @Override
     public FamilyResponse createFamilyAndJoin() {
         String memberId = authenticationHolder.getUserId();
+        log.info("Member {} is trying to create a family", memberId);
         Member member = memberService.findMemberById(memberId);
         // TODO: iOS 업데이트 이슈로 온보딩 플로우에 갖힌 유저를 위해 일시적으로 예외 핸들링 주석 처리 !!!
         //        if (member.hasFamily()) throw new AlreadyInFamilyException();
 
         Family family = familyService.createFamily();
         member.setFamilyId(family.getId());
+        log.info("Member {} has created and joined to a family", memberId);
         return FamilyResponse.of(family);
     }
 
@@ -104,10 +110,14 @@ public class MeController implements MeApi {
     @Override
     public DefaultResponse quitFamily() {
         String memberId = authenticationHolder.getUserId();
+        log.info("Member {} is trying to quit from family", memberId);
         Member member = memberService.findMemberById(memberId);
-        if (!member.hasFamily()) throw new FamilyNotFoundException();
+        if (!member.hasFamily()) {
+            log.warn("Member {} is not in any family", memberId);
+            throw new FamilyNotFoundException();
+        }
         member.setFamilyId(null);
-
+        log.info("Member {} has quit from family", memberId);
         return DefaultResponse.ok();
     }
 }
