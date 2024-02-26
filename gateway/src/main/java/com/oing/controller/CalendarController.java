@@ -23,25 +23,24 @@ public class CalendarController implements CalendarApi {
     private final MemberService memberService;
     private final MemberPostService memberPostService;
     private final FamilyService familyService;
-    private final FamilyScoreBridge familyScoreBridge;
 
     private final OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
 
     @Override
     @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
-    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
+    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String loginFamilyId) {
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
 
-        List<MemberPost> daysLatestPosts = memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId);
-        List<CalendarResponse> calendarResponses = convertToCalendarResponse(daysLatestPosts, familyId);
+        List<MemberPost> daysLatestPosts = memberPostService.findLatestPostOfEveryday(startDate, endDate, loginFamilyId);
+        List<CalendarResponse> calendarResponses = convertToCalendarResponse(daysLatestPosts, loginFamilyId);
         return new ArrayResponse<>(calendarResponses);
     }
 
-    private List<CalendarResponse> convertToCalendarResponse(List<MemberPost> daysLatestPosts, String familyId) {
+    private List<CalendarResponse> convertToCalendarResponse(List<MemberPost> daysLatestPosts, String loginFamilyId) {
         List<CalendarResponse> calendarResponses = new ArrayList<>();
 
         for (MemberPost dayLatestPost : daysLatestPosts) {
@@ -49,10 +48,10 @@ public class CalendarController implements CalendarApi {
 
             // 탈퇴한 회원을 제외하고 allFamilyMembersUploaded 기본값이 true이므로, 탈퇴한 회원이 allFamilyMembersUploaded 계산에 영향을 미치지 않음
             // edge case: 글을 업로드하지 않은 회원이 탈퇴하면, 과거 날짜들의 allFamilyMembersUploaded이 true로 변함 -> 핸들링할 수 없는 케이스
-            List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, postDate.plusDays(1));
+            List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(loginFamilyId, postDate.plusDays(1));
             boolean allFamilyMembersUploaded = true;
             for (String memberId : familyMembersIds) {
-                if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, postDate)) {
+                if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, loginFamilyId, postDate)) {
                     allFamilyMembersUploaded = false;
                     break;
                 }
@@ -70,7 +69,7 @@ public class CalendarController implements CalendarApi {
 
 
     @Override
-    public BannerResponse getBanner(String yearMonth, String familyId) {
+    public BannerResponse getBanner(String yearMonth, String loginFamilyId) {
         /*    파라미터 정리    */
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
@@ -79,8 +78,8 @@ public class CalendarController implements CalendarApi {
 
         /*    배너를 위한 필드 조회    */
         /*  정적 필드 조회 */
-        int familyTopPercentage = familyService.getFamilyTopPercentage(familyId, startDate);
-        List<MemberPost> familyPosts = memberPostService.findAllByFamilyIdAndCreatedAtBetween(familyId, startDate, endDate);
+        int familyTopPercentage = familyService.getFamilyTopPercentage(loginFamilyId, startDate);
+        List<MemberPost> familyPosts = memberPostService.findAllByFamilyIdAndCreatedAtBetween(loginFamilyId, startDate, endDate);
         int familyPostsCount = familyPosts.size();
         int familyInteractionCount = familyPosts.stream().mapToInt((memberPost -> memberPost.getCommentCnt() + memberPost.getReactionCnt() + memberPost.getRealEmojiCnt())).sum();
 
@@ -93,10 +92,10 @@ public class CalendarController implements CalendarApi {
         while (startDate.isBefore(endDate)) {
             boolean allFamilyMembersUploaded = true;
 
-            if (memberPostService.existsByFamilyIdAndCreatedAt(familyId, startDate)) {
-                List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, startDate.plusDays(1));
+            if (memberPostService.existsByFamilyIdAndCreatedAt(loginFamilyId, startDate)) {
+                List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(loginFamilyId, startDate.plusDays(1));
                 for (String memberId : familyMembersIds) {
-                    if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, startDate)) {
+                    if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, loginFamilyId, startDate)) {
                         allFamilyMembersUploaded = false;
                         break;
                     }
@@ -161,42 +160,13 @@ public class CalendarController implements CalendarApi {
     }
 
     @Override
-    public FamilyMonthlyStatisticsResponse getSummary(String yearMonth, String memberId) {
+    public FamilyMonthlyStatisticsResponse getSummary(String yearMonth, String loginMemberId) {
         String[] yearMonthArray = yearMonth.split("-");
         int year = Integer.parseInt(yearMonthArray[0]);
         int month = Integer.parseInt(yearMonthArray[1]);
 
-        String familyId = memberService.findFamilyIdByMemberId(memberId);
+        String familyId = memberService.findFamilyIdByMemberId(loginMemberId);
         long monthlyPostCount = memberPostService.countMonthlyPostByFamilyId(year, month, familyId);
         return new FamilyMonthlyStatisticsResponse((int) monthlyPostCount);
-    }
-
-
-    @Override
-    public DefaultResponse recalculateFamiliesScores(String yearMonth, String memberId) {
-        validateTemporaryAdmin(memberId);
-
-        LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
-        LocalDate endDate = startDate.plusMonths(1);
-        familyScoreBridge.setAllFamilyScoresByPostDateBetween(startDate, endDate);
-
-        return DefaultResponse.ok();
-    }
-
-
-    @Override
-    public DefaultResponse updateFamiliesTopPercentageHistories(String yearMonth, String memberId) {
-        validateTemporaryAdmin(memberId);
-
-        LocalDate historyDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
-        familyScoreBridge.updateAllFamilyTopPercentageHistories(historyDate);
-
-        return DefaultResponse.ok();
-    }
-
-    private void validateTemporaryAdmin(String memberId) {
-        if (!memberId.equals("ADMINADMINADMINADMINADMINA")) {
-            throw new TokenNotValidException();
-        }
     }
 }

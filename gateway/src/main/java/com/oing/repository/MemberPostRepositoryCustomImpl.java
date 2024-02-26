@@ -69,8 +69,7 @@ public class MemberPostRepositoryCustomImpl implements MemberPostRepositoryCusto
         return queryFactory
                 .select(memberPost.count())
                 .from(memberPost)
-                .leftJoin(member).on(memberPost.memberId.eq(member.id))
-                .where(member.familyId.eq(familyId),
+                .where(memberPost.familyId.eq(familyId),
                         memberPost.createdAt.year().eq(year),
                         memberPost.createdAt.month().eq(month))
                 .fetchFirst();

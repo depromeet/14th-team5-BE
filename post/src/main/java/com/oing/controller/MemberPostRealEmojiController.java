@@ -43,15 +43,15 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
      */
     @Transactional
     @Override
-    public PostRealEmojiResponse createPostRealEmoji(String postId, String familyId, String memberId, PostRealEmojiRequest request) {
+    public PostRealEmojiResponse createPostRealEmoji(String postId, String loginFamilyId, String loginMemberId, PostRealEmojiRequest request) {
         MemberPost post = memberPostService.getMemberPostById(postId);
-        if (!memberBridge.isInSameFamily(memberId, post.getMemberId()))
+        if (!memberBridge.isInSameFamily(loginMemberId, post.getMemberId()))
             throw new AuthorizationFailedException();
 
-        MemberRealEmoji realEmoji = memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(request.realEmojiId(), familyId);
-        validatePostRealEmojiForAddition(post, memberId, realEmoji);
+        MemberRealEmoji realEmoji = memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(request.realEmojiId(), loginFamilyId);
+        validatePostRealEmojiForAddition(post, loginMemberId, realEmoji);
         MemberPostRealEmoji postRealEmoji = new MemberPostRealEmoji(identityGenerator.generateIdentity(), realEmoji,
-                post, memberId);
+                post, loginMemberId);
         MemberPostRealEmoji addedPostRealEmoji = memberPostRealEmojiService.savePostRealEmoji(postRealEmoji);
         post.addRealEmoji(postRealEmoji);
         return PostRealEmojiResponse.from(addedPostRealEmoji);
@@ -72,10 +72,10 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
      */
     @Transactional
     @Override
-    public DefaultResponse deletePostRealEmoji(String postId, String realEmojiId, String memberId) {
+    public DefaultResponse deletePostRealEmoji(String postId, String realEmojiId, String loginMemberId) {
         MemberPost post = memberPostService.getMemberPostById(postId);
         MemberPostRealEmoji postRealEmoji = memberPostRealEmojiService
-                .getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId(realEmojiId, memberId, postId);
+                .getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId(realEmojiId, loginMemberId, postId);
 
         memberPostRealEmojiService.deletePostRealEmoji(postRealEmoji);
         post.removeRealEmoji(postRealEmoji);
@@ -89,9 +89,9 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
      */
     @Override
     @Transactional
-    public PostRealEmojiSummaryResponse getPostRealEmojiSummary(String postId, String memberId) {
+    public PostRealEmojiSummaryResponse getPostRealEmojiSummary(String postId, String loginMemberId) {
         MemberPost post = memberPostService.findMemberPostById(postId);
-        validateFamilyMember(memberId, post);
+        validateFamilyMember(loginMemberId, post);
         List<PostRealEmojiSummaryResponse.PostRealEmojiSummaryResponseElement> results = post.getRealEmojis()
                 .stream()
                 .collect(Collectors.groupingBy(MemberPostRealEmoji::getRealEmoji))
@@ -116,9 +116,9 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
      */
     @Transactional
     @Override
-    public ArrayResponse<PostRealEmojiResponse> getPostRealEmojis(String postId, String memberId) {
+    public ArrayResponse<PostRealEmojiResponse> getPostRealEmojis(String postId, String loginMemberId) {
         MemberPost post = memberPostService.getMemberPostById(postId);
-        validateFamilyMember(memberId, post);
+        validateFamilyMember(loginMemberId, post);
         return ArrayResponse.of(post.getRealEmojis().stream()
                 .map(PostRealEmojiResponse::from)
                 .toList()
@@ -132,9 +132,9 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
      */
     @Transactional
     @Override
-    public PostRealEmojiMemberResponse getPostRealEmojiMembers(String postId, String memberId) {
+    public PostRealEmojiMemberResponse getPostRealEmojiMembers(String postId, String loginMemberId) {
         MemberPost post = memberPostService.getMemberPostById(postId);
-        validateFamilyMember(memberId, post);
+        validateFamilyMember(loginMemberId, post);
 
         Map<MemberRealEmoji, List<String>> realEmojiMemberMap = groupByRealEmoji(post.getRealEmojis());
         Map<String, List<String>> result = realEmojiMemberMap.entrySet()

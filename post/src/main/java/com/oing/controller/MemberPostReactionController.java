@@ -33,32 +33,32 @@ public class MemberPostReactionController implements MemberPostReactionApi {
 
     @Override
     @Transactional
-    public DefaultResponse createPostReaction(String postId, String memberId, PostReactionRequest request) {
+    public DefaultResponse createPostReaction(String postId, String loginMemberId, PostReactionRequest request) {
         Emoji emoji = Emoji.fromString(request.content());
         MemberPost post = memberPostService.findMemberPostById(postId);
 
-        validatePostReactionForAddition(post, memberId, emoji);
+        validatePostReactionForAddition(post, loginMemberId, emoji);
         String reactionId = identityGenerator.generateIdentity();
-        MemberPostReaction reaction = memberPostReactionService.createPostReaction(reactionId, post, memberId, emoji);
+        MemberPostReaction reaction = memberPostReactionService.createPostReaction(reactionId, post, loginMemberId, emoji);
         post.addReaction(reaction);
 
         return DefaultResponse.ok();
     }
 
-    private void validatePostReactionForAddition(MemberPost post, String memberId, Emoji emoji) {
-        if (memberPostReactionService.isMemberPostReactionExists(post, memberId, emoji)) {
+    private void validatePostReactionForAddition(MemberPost post, String loginMemberId, Emoji emoji) {
+        if (memberPostReactionService.isMemberPostReactionExists(post, loginMemberId, emoji)) {
             throw new EmojiAlreadyExistsException();
         }
     }
 
     @Override
     @Transactional
-    public DefaultResponse deletePostReaction(String postId, String memberId, PostReactionRequest request) {
+    public DefaultResponse deletePostReaction(String postId, String loginMemberId, PostReactionRequest request) {
         Emoji emoji = Emoji.fromString(request.content());
         MemberPost post = memberPostService.findMemberPostById(postId);
 
-        validatePostReactionForDeletion(post, memberId, emoji);
-        MemberPostReaction reaction = memberPostReactionService.findReaction(post, memberId, emoji);
+        validatePostReactionForDeletion(post, loginMemberId, emoji);
+        MemberPostReaction reaction = memberPostReactionService.findReaction(post, loginMemberId, emoji);
         post.removeReaction(reaction);
         memberPostReactionService.deletePostReaction(reaction);
 
@@ -73,9 +73,9 @@ public class MemberPostReactionController implements MemberPostReactionApi {
 
     @Override
     @Transactional
-    public PostReactionSummaryResponse getPostReactionSummary(String postId, String memberId) {
+    public PostReactionSummaryResponse getPostReactionSummary(String postId, String loginMemberId) {
         MemberPost post = memberPostService.findMemberPostById(postId);
-        validateFamilyMember(memberId, post);
+        validateFamilyMember(loginMemberId, post);
 
         List<PostReactionSummaryResponse.PostReactionSummaryResponseElement> results = post.getReactions()
                 .stream()
@@ -96,9 +96,9 @@ public class MemberPostReactionController implements MemberPostReactionApi {
 
     @Override
     @Transactional
-    public ArrayResponse<PostReactionResponse> getPostReactions(String postId, String memberId) {
+    public ArrayResponse<PostReactionResponse> getPostReactions(String postId, String loginMemberId) {
         MemberPost post = memberPostService.findMemberPostById(postId);
-        validateFamilyMember(memberId, post);
+        validateFamilyMember(loginMemberId, post);
         return ArrayResponse.of(
                 post.getReactions().stream()
                         .map(PostReactionResponse::from)
@@ -108,9 +108,9 @@ public class MemberPostReactionController implements MemberPostReactionApi {
 
     @Override
     @Transactional
-    public PostReactionMemberResponse getPostReactionMembers(String postId, String memberId) {
+    public PostReactionMemberResponse getPostReactionMembers(String postId, String loginMemberId) {
         MemberPost post = memberPostService.findMemberPostById(postId);
-        validateFamilyMember(memberId, post);
+        validateFamilyMember(loginMemberId, post);
         List<MemberPostReaction> reactions = memberPostReactionService.getMemberPostReactionsByPostId(postId);
         List<Emoji> emojiList = Emoji.getEmojiList();
 

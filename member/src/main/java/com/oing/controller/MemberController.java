@@ -30,9 +30,11 @@ public class MemberController implements MemberApi {
     private final MemberQuitReasonService memberQuitReasonService;
 
     @Override
-    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(Integer page, Integer size, String familyId) {
+    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(
+            Integer page, Integer size, String loginFamilyId, String loginMemberId
+    ) {
         Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyMembersProfilesByFamilyId(
-                familyId, page, size
+                loginFamilyId, page, size
         );
 
         PaginationDTO<FamilyMemberProfileResponse> paginationDTO = PaginationDTO.of(profilePage);
@@ -41,15 +43,15 @@ public class MemberController implements MemberApi {
     }
 
     @Override
-    public MemberResponse getMember(String memberId, String familyId) {
-        validateFamilyMember(memberId, familyId);
+    public MemberResponse getMember(String memberId, String loginFamilyId, String loginMemberId) {
+        validateFamilyMember(memberId, loginFamilyId);
         Member member = memberService.findMemberById(memberId);
 
         return MemberResponse.of(member);
     }
 
-    private void validateFamilyMember(String memberId, String familyId) {
-        if (!memberService.findFamilyIdByMemberId(memberId).equals(familyId)) {
+    private void validateFamilyMember(String memberId, String loginFamilyId) {
+        if (!memberService.findFamilyIdByMemberId(memberId).equals(loginFamilyId)) {
             throw new AuthorizationFailedException();
         }
     }

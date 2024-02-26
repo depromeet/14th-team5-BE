@@ -64,15 +64,15 @@ public class MemberPostController implements MemberPostApi {
     @Override
     @CacheEvict(value = "calendarCache",
             key = "#familyId.concat(':').concat(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM').format(#request.uploadTime()))")
-    public PostResponse createPost(CreatePostRequest request, String familyId, String memberId) {
+    public PostResponse createPost(CreatePostRequest request, String loginFamilyId, String loginMemberId) {
         String postId = identityGenerator.generateIdentity();
         ZonedDateTime uploadTime = request.uploadTime();
 
-        validateUserHasNotCreatedPostToday(memberId, familyId, uploadTime);
+        validateUserHasNotCreatedPostToday(loginMemberId, loginFamilyId, uploadTime);
         validateUploadTime(uploadTime);
 
         String postImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
-        MemberPost post = new MemberPost(postId, memberId, familyId, request.imageUrl(),
+        MemberPost post = new MemberPost(postId, loginMemberId, loginFamilyId, request.imageUrl(),
                 postImgKey, request.content());
         MemberPost savedPost = memberPostService.save(post);
 

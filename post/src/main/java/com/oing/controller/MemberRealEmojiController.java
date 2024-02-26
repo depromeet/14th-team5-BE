@@ -40,17 +40,17 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
 
     @Transactional
     @Override
-    public RealEmojiResponse createMemberRealEmoji(String memberId, String loginMemberId, String familyId,
+    public RealEmojiResponse createMemberRealEmoji(String memberId, String loginMemberId, String loginFamilyId,
                                                    CreateMyRealEmojiRequest request) {
         validateMemberId(loginMemberId, memberId);
         String emojiId = identityGenerator.generateIdentity();
         String emojiImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
         Emoji emoji = Emoji.fromString(request.type());
-        if (isExistsSameRealEmojiType(emoji, memberId, familyId)) {
+        if (isExistsSameRealEmojiType(emoji, memberId, loginFamilyId)) {
             throw new DuplicateRealEmojiException();
         }
 
-        MemberRealEmoji realEmoji = new MemberRealEmoji(emojiId, memberId, familyId, emoji, request.imageUrl(), emojiImgKey);
+        MemberRealEmoji realEmoji = new MemberRealEmoji(emojiId, memberId, loginFamilyId, emoji, request.imageUrl(), emojiImgKey);
         MemberRealEmoji addedRealEmoji = memberRealEmojiService.save(realEmoji);
         return RealEmojiResponse.from(addedRealEmoji);
     }
@@ -61,20 +61,20 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
 
     @Transactional
     @Override
-    public RealEmojiResponse changeMemberRealEmoji(String memberId, String loginMemberId, String familyId, String realEmojiId, UpdateMyRealEmojiRequest request) {
+    public RealEmojiResponse changeMemberRealEmoji(String memberId, String loginMemberId, String loginFamilyId, String realEmojiId, UpdateMyRealEmojiRequest request) {
         validateMemberId(loginMemberId, memberId);
         String emojiImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
 
-        MemberRealEmoji findEmoji = memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(realEmojiId, familyId);
+        MemberRealEmoji findEmoji = memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(realEmojiId, loginFamilyId);
         findEmoji.updateRealEmoji(request.imageUrl(), emojiImgKey);
         return RealEmojiResponse.from(findEmoji);
     }
 
     @Override
-    public RealEmojisResponse getMemberRealEmojis(String memberId, String loginMemberId, String familyId) {
+    public RealEmojisResponse getMemberRealEmojis(String memberId, String loginMemberId, String loginFamilyId) {
         validateMemberId(loginMemberId, memberId);
 
-        List<MemberRealEmoji> realEmojis = memberRealEmojiService.findRealEmojisByMemberIdAndFamilyId(memberId, familyId);
+        List<MemberRealEmoji> realEmojis = memberRealEmojiService.findRealEmojisByMemberIdAndFamilyId(memberId, loginFamilyId);
         List<RealEmojiResponse> emojiResponses = realEmojis.stream()
                 .map(RealEmojiResponse::from)
                 .collect(Collectors.toList());

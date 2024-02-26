@@ -55,7 +55,7 @@ public class MemberControllerTest {
         when(memberService.findFamilyIdByMemberId(any())).thenReturn(member.getFamilyId());
 
         // when
-        MemberResponse response = memberController.getMember(member.getId(), member.getFamilyId());
+        MemberResponse response = memberController.getMember(member.getId(), member.getFamilyId(), member.getId());
 
         // then
         assertEquals(member.getId(), response.memberId());
@@ -84,7 +84,7 @@ public class MemberControllerTest {
 
         // when
         PaginationResponse<FamilyMemberProfileResponse> response = memberController.
-                getFamilyMembersProfiles(1, 5, familyId);
+                getFamilyMembersProfiles(1, 5, familyId, member1.getId());
 
         // then
         assertFalse(response.hasNext());

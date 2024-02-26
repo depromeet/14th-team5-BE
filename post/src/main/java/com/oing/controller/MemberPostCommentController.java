@@ -35,17 +35,17 @@ public class MemberPostCommentController implements MemberPostCommentApi {
      */
     @Transactional
     @Override
-    public PostCommentResponse createPostComment(String postId, CreatePostCommentRequest request, String memberId) {
+    public PostCommentResponse createPostComment(String postId, CreatePostCommentRequest request, String loginMemberId) {
         MemberPost memberPost = memberPostService.getMemberPostById(postId);
 
         // 내 가족의 게시물인지 검증
-        if (!memberBridge.isInSameFamily(memberId, memberPost.getMemberId()))
+        if (!memberBridge.isInSameFamily(loginMemberId, memberPost.getMemberId()))
             throw new AuthorizationFailedException();
 
         MemberPostComment memberPostComment = new MemberPostComment(
                 identityGenerator.generateIdentity(),
                 memberPost,
-                memberId,
+                loginMemberId,
                 request.content()
         );
         MemberPostComment savedComment = memberPostCommentService.savePostComment(memberPostComment);
@@ -63,12 +63,12 @@ public class MemberPostCommentController implements MemberPostCommentApi {
      */
     @Transactional
     @Override
-    public DefaultResponse deletePostComment(String postId, String commentId, String memberId) {
+    public DefaultResponse deletePostComment(String postId, String commentId, String loginMemberId) {
         MemberPost memberPost = memberPostService.getMemberPostById(postId);
         MemberPostComment memberPostComment = memberPostCommentService.getMemberPostComment(postId, commentId);
 
         //내가 작성한 댓글인지 권한 검증
-        if (!memberPostComment.getMemberId().equals(memberId)) {
+        if (!memberPostComment.getMemberId().equals(loginMemberId)) {
             throw new AuthorizationFailedException();
         }
 
@@ -89,11 +89,11 @@ public class MemberPostCommentController implements MemberPostCommentApi {
     @Transactional
     @Override
     public PostCommentResponse updatePostComment(String postId, String commentId, UpdatePostCommentRequest request,
-                                                 String memberId) {
+                                                 String loginMemberId) {
         MemberPostComment memberPostComment = memberPostCommentService.getMemberPostComment(postId, commentId);
 
         //내가 작성한 댓글인지 권한 검증
-        if (!memberPostComment.getMemberId().equals(memberId)) {
+        if (!memberPostComment.getMemberId().equals(loginMemberId)) {
             throw new AuthorizationFailedException();
         }
 
@@ -114,9 +114,9 @@ public class MemberPostCommentController implements MemberPostCommentApi {
     @Transactional
     @Override
     public PaginationResponse<PostCommentResponse> getPostComments(String postId, Integer page, Integer size, String sort,
-                                                                   String memberId) {
+                                                                   String loginMemberId) {
         MemberPost memberPost = memberPostService.getMemberPostById(postId);
-        if (!memberBridge.isInSameFamily(memberId, memberPost.getMemberId()))
+        if (!memberBridge.isInSameFamily(loginMemberId, memberPost.getMemberId()))
             throw new AuthorizationFailedException();
 
         PaginationDTO<MemberPostComment> fetchResult = memberPostCommentService.searchPostComments(

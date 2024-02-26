@@ -49,7 +49,7 @@ public interface MemberRealEmojiApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String familyId,
+            String loginFamilyId,
 
             @Valid
             @RequestBody
@@ -69,7 +69,7 @@ public interface MemberRealEmojiApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String familyId,
+            String loginFamilyId,
 
             @Parameter(description = "리얼 이모지 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
@@ -93,6 +93,6 @@ public interface MemberRealEmojiApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String familyId
+            String loginFamilyId
     );
 }
