@@ -41,10 +41,17 @@ public class MemberController implements MemberApi {
     }
 
     @Override
-    public MemberResponse getMember(String memberId) {
+    public MemberResponse getMember(String memberId, String familyId) {
+        validateFamilyMember(memberId, familyId);
         Member member = memberService.findMemberById(memberId);
 
         return MemberResponse.of(member);
+    }
+
+    private void validateFamilyMember(String memberId, String familyId) {
+        if (!memberService.findFamilyIdByMemberId(memberId).equals(familyId)) {
+            throw new AuthorizationFailedException();
+        }
     }
 
     @Override

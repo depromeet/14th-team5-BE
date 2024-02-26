@@ -45,7 +45,11 @@ public interface MemberApi {
     MemberResponse getMember(
             @Parameter(description = "조회할 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
-            String memberId
+            String memberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String familyId
     );
 
     @Operation(summary = "회원 프로필 사진 S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")

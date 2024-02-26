@@ -52,9 +52,10 @@ public class MemberControllerTest {
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.findFamilyIdByMemberId(any())).thenReturn(member.getFamilyId());
 
         // when
-        MemberResponse response = memberController.getMember(member.getId());
+        MemberResponse response = memberController.getMember(member.getId(), member.getFamilyId());
 
         // then
         assertEquals(member.getId(), response.memberId());
