@@ -6,6 +6,7 @@ import com.oing.dto.response.ErrorResponse;
 import com.oing.exception.TokenNotValidException;
 import com.oing.exception.DomainException;
 import com.oing.exception.ErrorCode;
+import io.sentry.Sentry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(DomainException.class)
     ResponseEntity<ErrorResponse> handleDomainException(HttpServletRequest request, DomainException exception) {
+        Sentry.captureException(exception);
         log.debug("[DomainException]", exception);
         if (exception.getErrorCode() == ErrorCode.UNKNOWN_SERVER_ERROR) {
             return handleUnhandledException(request, exception);
@@ -60,6 +62,7 @@ public class SpringWebExceptionHandler {
             MethodArgumentTypeMismatchException.class,
     })
     ResponseEntity<ErrorResponse> handleValidateException(Exception exception) {
+        Sentry.captureException(exception);
         log.warn("[InvalidParameterException]", exception);
 
         return ResponseEntity
@@ -71,6 +74,7 @@ public class SpringWebExceptionHandler {
             HttpRequestMethodNotSupportedException.class,
     })
     ResponseEntity<ErrorResponse> handleMethodNotAllowedException(HttpRequestMethodNotSupportedException exception) {
+        Sentry.captureException(exception);
         log.warn("[HttpRequestMethodNotSupportedException]", exception);
 
         return ResponseEntity
@@ -80,6 +84,7 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(TokenNotValidException.class)
     ResponseEntity<ErrorResponse> handleAuthenticationFailedException(TokenNotValidException exception) {
+        Sentry.captureException(exception);
         log.warn("[AuthenticationFailedException]", exception);
 
         return ResponseEntity
@@ -89,11 +94,13 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
+        Sentry.captureException(exception);
         if (exception.getMessage().contains("Broken pipe")) {
             log.warn("[IOException] Broken Pipe");
         } else {
             log.error("[IOException]", exception);
         }
+
         return ResponseEntity
                 .badRequest()
                 .body(ErrorResponse.of(ErrorCode.UNKNOWN_SERVER_ERROR));
@@ -102,8 +109,10 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     ResponseEntity<ErrorResponse> handleUnhandledException(HttpServletRequest request, Throwable exception) {
+        Sentry.captureException(exception);
         StringBuilder dump = dumpRequest(request).append("\n ").append(getStackTraceAsString(exception));
         log.error("[UnhandledException] {} \n", dump);
+
         eventPublisher.publishEvent(new ErrorReportDTO(exception.getMessage(), dump.toString()));
         return ResponseEntity
                 .badRequest()
