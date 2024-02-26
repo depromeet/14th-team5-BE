@@ -5,16 +5,15 @@ import com.oing.domain.MemberPost;
 import com.oing.domain.PaginationDTO;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
-import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.DuplicatePostUploadException;
 import com.oing.exception.InvalidUploadTimeException;
 import com.oing.restapi.MemberPostApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostService;
-import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
@@ -36,7 +35,6 @@ import java.time.ZonedDateTime;
 @Controller
 public class MemberPostController implements MemberPostApi {
 
-    private final AuthenticationHolder authenticationHolder;
     private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final MemberPostService memberPostService;
@@ -50,11 +48,11 @@ public class MemberPostController implements MemberPostApi {
     }
 
     @Override
-    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId, String sort) {
-        String requesterMemberId = authenticationHolder.getUserId();
-        String familyId = memberBridge.getFamilyIdByMemberId(requesterMemberId);
+    public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId,
+                                                            String sort, String loginMemberId) {
+        String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
         PaginationDTO<MemberPost> fetchResult = memberPostService.searchMemberPost(
-                page, size, date, memberId, requesterMemberId, familyId, sort == null || sort.equalsIgnoreCase("ASC")
+                page, size, date, memberId, loginMemberId, familyId, sort == null || sort.equalsIgnoreCase("ASC")
         );
 
         return PaginationResponse
@@ -65,17 +63,16 @@ public class MemberPostController implements MemberPostApi {
     @Transactional
     @Override
     @CacheEvict(value = "calendarCache",
-            key = "#familyId.concat(':').concat(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM').format(#request.uploadTime()))")
-    public PostResponse createPost(CreatePostRequest request, String familyId) {
-        String memberId = authenticationHolder.getUserId();
+            key = "#loginFamilyId.concat(':').concat(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM').format(#request.uploadTime()))")
+    public PostResponse createPost(CreatePostRequest request, String loginFamilyId, String loginMemberId) {
         String postId = identityGenerator.generateIdentity();
         ZonedDateTime uploadTime = request.uploadTime();
 
-        validateUserHasNotCreatedPostToday(memberId, familyId, uploadTime);
+        validateUserHasNotCreatedPostToday(loginMemberId, loginFamilyId, uploadTime);
         validateUploadTime(uploadTime);
 
         String postImgKey = preSignedUrlGenerator.extractImageKey(request.imageUrl());
-        MemberPost post = new MemberPost(postId, memberId, familyId, request.imageUrl(),
+        MemberPost post = new MemberPost(postId, loginMemberId, loginFamilyId, request.imageUrl(),
                 postImgKey, request.content());
         MemberPost savedPost = memberPostService.save(post);
 
@@ -108,7 +105,13 @@ public class MemberPostController implements MemberPostApi {
     }
 
     @Override
-    public PostResponse getPost(String postId) {
+    public PostResponse getPost(String postId, String loginMemberId) {
+        String postFamilyId = memberPostService.getMemberPostById(postId).getFamilyId();
+        String loginFamilyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
+        if (!postFamilyId.equals(loginFamilyId)) {
+            throw new AuthorizationFailedException();
+        }
+
         MemberPost memberPostProjection = memberPostService.getMemberPostById(postId);
         return PostResponse.from(memberPostProjection);
     }

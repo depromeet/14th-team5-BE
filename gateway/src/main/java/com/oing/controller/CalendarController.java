@@ -1,12 +1,15 @@
 package com.oing.controller;
 
-import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.BannerImageType;
 import com.oing.domain.MemberPost;
-import com.oing.dto.response.*;
-import com.oing.exception.TokenNotValidException;
+import com.oing.dto.response.ArrayResponse;
+import com.oing.dto.response.BannerResponse;
+import com.oing.dto.response.CalendarResponse;
+import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.restapi.CalendarApi;
-import com.oing.service.*;
+import com.oing.service.FamilyService;
+import com.oing.service.MemberPostService;
+import com.oing.service.MemberService;
 import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,9 +27,7 @@ public class CalendarController implements CalendarApi {
     private final MemberService memberService;
     private final MemberPostService memberPostService;
     private final FamilyService familyService;
-    private final FamilyScoreBridge familyScoreBridge;
 
-    private final TokenAuthenticationHolder tokenAuthenticationHolder;
     private final OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
 
@@ -163,13 +164,12 @@ public class CalendarController implements CalendarApi {
     }
 
     @Override
-    public FamilyMonthlyStatisticsResponse getSummary(String yearMonth) {
-        String memberId = tokenAuthenticationHolder.getUserId();
+    public FamilyMonthlyStatisticsResponse getSummary(String yearMonth, String loginMemberId) {
         String[] yearMonthArray = yearMonth.split("-");
         int year = Integer.parseInt(yearMonthArray[0]);
         int month = Integer.parseInt(yearMonthArray[1]);
 
-        String familyId = memberService.findFamilyIdByMemberId(memberId);
+        String familyId = memberService.findFamilyIdByMemberId(loginMemberId);
         long monthlyPostCount = memberPostService.countMonthlyPostByFamilyId(year, month, familyId);
         return new FamilyMonthlyStatisticsResponse((int) monthlyPostCount);
     }

@@ -1,6 +1,6 @@
 package com.oing.util.security;
 
-import com.oing.exception.FamilyIdNotFoundException;
+import com.oing.exception.AuthorizationFailedException;
 import com.oing.service.MemberBridge;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -12,28 +12,27 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
-public class FamilyIdArgumentResolver implements HandlerMethodArgumentResolver {
+public class LoginMemberIdArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final MemberBridge memberBridge;
 
     @Autowired
-    public FamilyIdArgumentResolver(MemberBridge memberBridge) {
+    public LoginMemberIdArgumentResolver(MemberBridge memberBridge) {
         this.memberBridge = memberBridge;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(FamilyId.class);
+        return parameter.hasParameterAnnotation(LoginMemberId.class);
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         String memberId = SecurityContextHolder.getContext().getAuthentication().getName();
-        String familyId = memberBridge.getFamilyIdByMemberId(memberId);
-        if (familyId == null) {
-            throw new FamilyIdNotFoundException();
+        if (memberBridge.isDeletedMember(memberId)) {
+            throw new AuthorizationFailedException();
         }
-        return familyId;
+        return memberId;
     }
 }

@@ -24,4 +24,11 @@ public interface MemberBridge {
      * @throws com.oing.exception.MemberNotFoundException 사용자가 존재하지 않을 경우
      */
     boolean isInSameFamily(String memberIdFirst, String memberIdSecond);
+
+    /**
+     * 사용자가 삭제된 사용자인지 확인합니다
+     * @param memberId 사용자 아이디
+     * @return 삭제된 사용자인지 여부
+     */
+    boolean isDeletedMember(String memberId);
 }

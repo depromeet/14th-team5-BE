@@ -1,7 +1,6 @@
 package com.oing.controller;
 
 
-import com.oing.component.TokenAuthenticationHolder;
 import com.oing.domain.Member;
 import com.oing.domain.MemberPost;
 import com.oing.dto.response.SingleRecentPostWidgetResponse;
@@ -27,13 +26,13 @@ public class WidgetController implements WidgetApi {
     private final OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
     @Override
-    public ResponseEntity<SingleRecentPostWidgetResponse> getSingleRecentFamilyPostWidget(String date, String familyId) {
+    public ResponseEntity<SingleRecentPostWidgetResponse> getSingleRecentFamilyPostWidget(String date, String loginFamilyId) {
         Optional<String> dateString = Optional.ofNullable(date);
         LocalDate startDate = dateString.map(LocalDate::parse).orElse(LocalDate.now());
         LocalDate endDate = startDate.plusDays(1);
 
 
-        List<MemberPost> latestPosts = memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId);
+        List<MemberPost> latestPosts = memberPostService.findLatestPostOfEveryday(startDate, endDate, loginFamilyId);
         if (latestPosts.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

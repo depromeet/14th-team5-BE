@@ -1,6 +1,7 @@
 package com.oing.restapi;
 
 import com.oing.dto.response.DeepLinkResponse;
+import com.oing.util.security.LoginFamilyId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +32,10 @@ public interface DeepLinkApi {
     DeepLinkResponse createFamilyDeepLink(
             @PathVariable
             @Parameter(description = "가족 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
-            String familyId
+            String familyId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
     );
 }

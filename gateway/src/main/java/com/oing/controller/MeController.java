@@ -11,14 +11,12 @@ import com.oing.dto.response.AppVersionResponse;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.dto.response.MemberResponse;
-import com.oing.exception.AlreadyInFamilyException;
 import com.oing.exception.FamilyNotFoundException;
 import com.oing.restapi.MeApi;
 import com.oing.service.FamilyInviteLinkService;
 import com.oing.service.FamilyService;
 import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberService;
-import com.oing.util.AuthenticationHolder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +29,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Controller
 public class MeController implements MeApi {
-    private final AuthenticationHolder authenticationHolder;
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final FamilyService familyService;
@@ -39,63 +36,58 @@ public class MeController implements MeApi {
     private final AppVersionCache appVersionCache;
 
     @Override
-    public MemberResponse getMe() {
-        String memberId = authenticationHolder.getUserId();
-        Member member = memberService.findMemberById(memberId);
+    public MemberResponse getMe(String loginMemberId) {
+        Member member = memberService.findMemberById(loginMemberId);
         return MemberResponse.of(member);
     }
 
     @Override
     public DefaultResponse registerFcmToken(
-            AddFcmTokenRequest request
+            AddFcmTokenRequest request, String loginMemberId
     ) {
-        String memberId = authenticationHolder.getUserId();
         String token = request.fcmToken();
-        if(memberId == null || memberId.length() != 26) throw new InvalidParameterException();
+        if(loginMemberId == null || loginMemberId.length() != 26) throw new InvalidParameterException();
 
-        boolean result = memberDeviceService.addDevice(memberId, token);
+        boolean result = memberDeviceService.addDevice(loginMemberId, token);
         return new DefaultResponse(result);
     }
 
     @Override
     public DefaultResponse deleteFcmToken(
-            String fcmToken
+            String fcmToken, String loginMemberId
     ) {
-        String memberId = authenticationHolder.getUserId();
-        boolean result = memberDeviceService.removeDevice(memberId, fcmToken);
+        boolean result = memberDeviceService.removeDevice(loginMemberId, fcmToken);
         return new DefaultResponse(result);
     }
 
 
     @Transactional
     @Override
-    public FamilyResponse joinFamily(JoinFamilyRequest request) {
-        String memberId = authenticationHolder.getUserId();
-        log.info("Member {} is trying to join to family", memberId);
+    public FamilyResponse joinFamily(JoinFamilyRequest request, String loginMemberId) {
+        log.info("Member {} is trying to join to family", loginMemberId);
         FamilyInviteLink link = familyInviteLinkService.retrieveDeepLinkDetails(request.inviteCode());
         Family targetFamily = familyService.getFamilyById(link.getFamilyId());
 
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.findMemberById(loginMemberId);
         // TODO: iOS 업데이트 이슈로 온보딩 플로우에 갖힌 유저를 위해 일시적으로 예외 핸들링 주석 처리 !!!
         //        if (member.hasFamily()) throw new AlreadyInFamilyException();
         member.setFamilyId(targetFamily.getId());
-        log.info("Member {} has joined to family {}", memberId, targetFamily.getId());
+        log.info("Member {} has joined to family {}", loginMemberId, targetFamily.getId());
 
         return FamilyResponse.of(targetFamily);
     }
 
     @Transactional
     @Override
-    public FamilyResponse createFamilyAndJoin() {
-        String memberId = authenticationHolder.getUserId();
-        log.info("Member {} is trying to create a family", memberId);
-        Member member = memberService.findMemberById(memberId);
+    public FamilyResponse createFamilyAndJoin(String loginMemberId) {
+        log.info("Member {} is trying to create a family", loginMemberId);
+        Member member = memberService.findMemberById(loginMemberId);
         // TODO: iOS 업데이트 이슈로 온보딩 플로우에 갖힌 유저를 위해 일시적으로 예외 핸들링 주석 처리 !!!
         //        if (member.hasFamily()) throw new AlreadyInFamilyException();
 
         Family family = familyService.createFamily();
         member.setFamilyId(family.getId());
-        log.info("Member {} has created and joined to a family", memberId);
+        log.info("Member {} has created and joined to a family", loginMemberId);
         return FamilyResponse.of(family);
     }
 
@@ -108,16 +100,15 @@ public class MeController implements MeApi {
 
     @Transactional
     @Override
-    public DefaultResponse quitFamily() {
-        String memberId = authenticationHolder.getUserId();
-        log.info("Member {} is trying to quit from family", memberId);
-        Member member = memberService.findMemberById(memberId);
+    public DefaultResponse quitFamily(String loginMemberId) {
+        log.info("Member {} is trying to quit from family", loginMemberId);
+        Member member = memberService.findMemberById(loginMemberId);
         if (!member.hasFamily()) {
-            log.warn("Member {} is not in any family", memberId);
+            log.warn("Member {} is not in any family", loginMemberId);
             throw new FamilyNotFoundException();
         }
         member.setFamilyId(null);
-        log.info("Member {} has quit from family", memberId);
+        log.info("Member {} has quit from family", loginMemberId);
         return DefaultResponse.ok();
     }
 }
