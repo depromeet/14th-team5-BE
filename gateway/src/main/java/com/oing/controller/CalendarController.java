@@ -2,10 +2,14 @@ package com.oing.controller;
 
 import com.oing.domain.BannerImageType;
 import com.oing.domain.MemberPost;
-import com.oing.dto.response.*;
-import com.oing.exception.TokenNotValidException;
+import com.oing.dto.response.ArrayResponse;
+import com.oing.dto.response.BannerResponse;
+import com.oing.dto.response.CalendarResponse;
+import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.restapi.CalendarApi;
-import com.oing.service.*;
+import com.oing.service.FamilyService;
+import com.oing.service.MemberPostService;
+import com.oing.service.MemberService;
 import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,18 +33,18 @@ public class CalendarController implements CalendarApi {
 
     @Override
     @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
-    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String loginFamilyId) {
+    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
 
-        List<MemberPost> daysLatestPosts = memberPostService.findLatestPostOfEveryday(startDate, endDate, loginFamilyId);
-        List<CalendarResponse> calendarResponses = convertToCalendarResponse(daysLatestPosts, loginFamilyId);
+        List<MemberPost> daysLatestPosts = memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId);
+        List<CalendarResponse> calendarResponses = convertToCalendarResponse(daysLatestPosts, familyId);
         return new ArrayResponse<>(calendarResponses);
     }
 
-    private List<CalendarResponse> convertToCalendarResponse(List<MemberPost> daysLatestPosts, String loginFamilyId) {
+    private List<CalendarResponse> convertToCalendarResponse(List<MemberPost> daysLatestPosts, String familyId) {
         List<CalendarResponse> calendarResponses = new ArrayList<>();
 
         for (MemberPost dayLatestPost : daysLatestPosts) {
@@ -48,10 +52,10 @@ public class CalendarController implements CalendarApi {
 
             // 탈퇴한 회원을 제외하고 allFamilyMembersUploaded 기본값이 true이므로, 탈퇴한 회원이 allFamilyMembersUploaded 계산에 영향을 미치지 않음
             // edge case: 글을 업로드하지 않은 회원이 탈퇴하면, 과거 날짜들의 allFamilyMembersUploaded이 true로 변함 -> 핸들링할 수 없는 케이스
-            List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(loginFamilyId, postDate.plusDays(1));
+            List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, postDate.plusDays(1));
             boolean allFamilyMembersUploaded = true;
             for (String memberId : familyMembersIds) {
-                if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, loginFamilyId, postDate)) {
+                if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, postDate)) {
                     allFamilyMembersUploaded = false;
                     break;
                 }
@@ -69,7 +73,7 @@ public class CalendarController implements CalendarApi {
 
 
     @Override
-    public BannerResponse getBanner(String yearMonth, String loginFamilyId) {
+    public BannerResponse getBanner(String yearMonth, String familyId) {
         /*    파라미터 정리    */
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
@@ -78,8 +82,8 @@ public class CalendarController implements CalendarApi {
 
         /*    배너를 위한 필드 조회    */
         /*  정적 필드 조회 */
-        int familyTopPercentage = familyService.getFamilyTopPercentage(loginFamilyId, startDate);
-        List<MemberPost> familyPosts = memberPostService.findAllByFamilyIdAndCreatedAtBetween(loginFamilyId, startDate, endDate);
+        int familyTopPercentage = familyService.getFamilyTopPercentage(familyId, startDate);
+        List<MemberPost> familyPosts = memberPostService.findAllByFamilyIdAndCreatedAtBetween(familyId, startDate, endDate);
         int familyPostsCount = familyPosts.size();
         int familyInteractionCount = familyPosts.stream().mapToInt((memberPost -> memberPost.getCommentCnt() + memberPost.getReactionCnt() + memberPost.getRealEmojiCnt())).sum();
 
@@ -92,10 +96,10 @@ public class CalendarController implements CalendarApi {
         while (startDate.isBefore(endDate)) {
             boolean allFamilyMembersUploaded = true;
 
-            if (memberPostService.existsByFamilyIdAndCreatedAt(loginFamilyId, startDate)) {
-                List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(loginFamilyId, startDate.plusDays(1));
+            if (memberPostService.existsByFamilyIdAndCreatedAt(familyId, startDate)) {
+                List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, startDate.plusDays(1));
                 for (String memberId : familyMembersIds) {
-                    if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, loginFamilyId, startDate)) {
+                    if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, startDate)) {
                         allFamilyMembersUploaded = false;
                         break;
                     }
