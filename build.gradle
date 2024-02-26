@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.1.5'
     id 'io.spring.dependency-management' version '1.1.3'
     id 'jacoco-report-aggregation'
+    id "io.sentry.jvm.gradle" version "3.12.0"
 }
 
 repositories {
@@ -19,6 +20,7 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'jacoco'
     apply plugin: 'jacoco-report-aggregation'
+    apply plugin: 'io.sentry.jvm.gradle'
 
     configurations {
         compileOnly {
@@ -114,6 +116,14 @@ subprojects {
                 ] + Qdomains
             }
         }
+    }
+
+    sentry {
+        includeSourceContext = true
+
+        org = "sentry"
+        projectName = "bibbi-prod"
+        authToken = System.getenv("SENTRY_AUTH_TOKEN")
     }
 
     dependencies {
