@@ -30,6 +30,6 @@ public interface WidgetApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String familyId
+            String loginFamilyId
     );
 }

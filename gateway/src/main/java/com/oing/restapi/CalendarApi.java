@@ -30,7 +30,7 @@ public interface CalendarApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String familyId
+            String loginFamilyId
     );
 
     @Operation(summary = "캘린더 베너 조회", description = "캘린더 상단의 베너를 조회합니다.")
@@ -42,7 +42,7 @@ public interface CalendarApi {
 
             @LoginFamilyId
             @Parameter(hidden = true)
-            String familyId
+            String loginFamilyId
     );
 
     @Operation(summary = "캘린더 통계 조회", description = "캘린더의 통계를 조회합니다.")

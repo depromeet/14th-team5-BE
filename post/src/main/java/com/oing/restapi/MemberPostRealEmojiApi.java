@@ -25,11 +25,11 @@ public interface MemberPostRealEmojiApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String familyId,
+            String loginFamilyId,
 
             @Parameter(hidden = true)
             @LoginMemberId
-            String memberId,
+            String loginMemberId,
 
             @Valid
             @RequestBody
@@ -49,7 +49,7 @@ public interface MemberPostRealEmojiApi {
 
             @Parameter(hidden = true)
             @LoginMemberId
-            String memberId
+            String loginMemberId
     );
 
     @Operation(summary = "게시물의 리얼 이모지 요약 조회", description = "게시물에 달린 리얼 이모지 요약을 조회합니다.")
@@ -61,7 +61,7 @@ public interface MemberPostRealEmojiApi {
 
             @Parameter(hidden = true)
             @LoginMemberId
-            String memberId
+            String loginMemberId
     );
 
     @Operation(summary = "게시물의 리얼 이모지 전체 조회", description = "게시물에 달린 모든 리얼 이모지 목록을 조회합니다.")
@@ -73,7 +73,7 @@ public interface MemberPostRealEmojiApi {
 
             @Parameter(hidden = true)
             @LoginMemberId
-            String memberId
+            String loginMemberId
     );
 
     @Operation(summary = "게시물의 리얼 이모지를 남긴 전체 멤버 조회", description = "게시물에 리얼 이모지를 남긴 모든 멤버 목록을 조회합니다.")
@@ -85,6 +85,6 @@ public interface MemberPostRealEmojiApi {
 
             @Parameter(hidden = true)
             @LoginMemberId
-            String memberId
+            String loginMemberId
     );
 }

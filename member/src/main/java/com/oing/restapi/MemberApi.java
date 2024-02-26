@@ -37,7 +37,7 @@ public interface MemberApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String familyId
+            String loginFamilyId
     );
 
     @Operation(summary = "회원 조회", description = "회원을 조회합니다.")
@@ -49,7 +49,7 @@ public interface MemberApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String familyId
+            String loginFamilyId
     );
 
     @Operation(summary = "회원 프로필 사진 S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
