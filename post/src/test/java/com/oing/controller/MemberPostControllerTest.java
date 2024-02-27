@@ -37,9 +37,9 @@ public class MemberPostControllerTest {
 
         // when
         PreSignedUrlRequest request = new PreSignedUrlRequest(newFeedImage);
-        PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("https://test.com/presigend-request-url");
+        PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("https://test.com/presigend-request-url.jpg");
         when(preSignedUrlGenerator.getFeedPreSignedUrl(any())).thenReturn(dummyResponse);
-        PreSignedUrlResponse response = memberPostController.requestPresignedUrl(request);
+        PreSignedUrlResponse response = memberPostController.requestPresignedUrl(request, "1");
 
         // then
         assertNotNull(response.url());
