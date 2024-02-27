@@ -1,6 +1,7 @@
 package com.oing.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oing.component.SentryGateway;
 import com.oing.dto.response.ErrorResponse;
 import com.oing.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             HttpServletRequest request, HttpServletResponse response, AuthenticationException authException
     ) throws IOException {
         writeErrorResponse(response, authException);
+        SentryGateway.captureException(request, authException);
     }
 
     private void writeErrorResponse(
