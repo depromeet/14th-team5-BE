@@ -16,8 +16,10 @@ import com.oing.service.MemberPostService;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class MemberPostCommentController implements MemberPostCommentApi {
@@ -36,11 +38,15 @@ public class MemberPostCommentController implements MemberPostCommentApi {
     @Transactional
     @Override
     public PostCommentResponse createPostComment(String postId, CreatePostCommentRequest request, String loginMemberId) {
+        log.info("Member {} is trying to create post comment", loginMemberId);
         MemberPost memberPost = memberPostService.getMemberPostById(postId);
 
         // 내 가족의 게시물인지 검증
-        if (!memberBridge.isInSameFamily(loginMemberId, memberPost.getMemberId()))
+        if (!memberBridge.isInSameFamily(loginMemberId, memberPost.getMemberId())) {
+            log.warn("Unauthorized access attempt: Member {} is attempting comment operation on post {}",
+                    loginMemberId, postId);
             throw new AuthorizationFailedException();
+        }
 
         MemberPostComment memberPostComment = new MemberPostComment(
                 identityGenerator.generateIdentity(),
@@ -50,6 +56,8 @@ public class MemberPostCommentController implements MemberPostCommentApi {
         );
         MemberPostComment savedComment = memberPostCommentService.savePostComment(memberPostComment);
         MemberPostComment addedComment = memberPost.addComment(savedComment);
+        log.info("Member {} has created post comment {}", loginMemberId, savedComment.getId());
+
         return PostCommentResponse.from(addedComment);
     }
 
@@ -64,16 +72,20 @@ public class MemberPostCommentController implements MemberPostCommentApi {
     @Transactional
     @Override
     public DefaultResponse deletePostComment(String postId, String commentId, String loginMemberId) {
+        log.info("Member {} is trying to delete post comment {}", loginMemberId, commentId);
         MemberPost memberPost = memberPostService.getMemberPostById(postId);
         MemberPostComment memberPostComment = memberPostCommentService.getMemberPostComment(postId, commentId);
 
         //내가 작성한 댓글인지 권한 검증
         if (!memberPostComment.getMemberId().equals(loginMemberId)) {
+            log.warn("Unauthorized access attempt: Member {} is attempting comment operation on post {}", loginMemberId, postId);
             throw new AuthorizationFailedException();
         }
 
         memberPostCommentService.deletePostComment(memberPostComment);
         memberPost.removeComment(memberPostComment);
+        log.info("Member {} has deleted post comment {}", loginMemberId, commentId);
+
         return DefaultResponse.ok();
     }
 
@@ -90,16 +102,20 @@ public class MemberPostCommentController implements MemberPostCommentApi {
     @Override
     public PostCommentResponse updatePostComment(String postId, String commentId, UpdatePostCommentRequest request,
                                                  String loginMemberId) {
+        log.info("Member {} is trying to update post comment {}", loginMemberId, commentId);
         MemberPostComment memberPostComment = memberPostCommentService.getMemberPostComment(postId, commentId);
 
         //내가 작성한 댓글인지 권한 검증
         if (!memberPostComment.getMemberId().equals(loginMemberId)) {
+            log.warn("Unauthorized access attempt: Member {} is attempting comment operation on post {}", loginMemberId, postId);
             throw new AuthorizationFailedException();
         }
 
         memberPostComment.setContent(request.content());
         MemberPostComment savedMemberPostComment = memberPostCommentService
                 .savePostComment(memberPostComment);
+        log.info("Member {} has updated post comment {}", loginMemberId, commentId);
+
         return PostCommentResponse.from(savedMemberPostComment);
     }
 
@@ -116,8 +132,10 @@ public class MemberPostCommentController implements MemberPostCommentApi {
     public PaginationResponse<PostCommentResponse> getPostComments(String postId, Integer page, Integer size, String sort,
                                                                    String loginMemberId) {
         MemberPost memberPost = memberPostService.getMemberPostById(postId);
-        if (!memberBridge.isInSameFamily(loginMemberId, memberPost.getMemberId()))
+        if (!memberBridge.isInSameFamily(loginMemberId, memberPost.getMemberId())) {
+            log.warn("Unauthorized access attempt: Member {} is attempting comment operation on post {}", loginMemberId, postId);
             throw new AuthorizationFailedException();
+        }
 
         PaginationDTO<MemberPostComment> fetchResult = memberPostCommentService.searchPostComments(
                 page, size, postId, sort == null || sort.equalsIgnoreCase("ASC")

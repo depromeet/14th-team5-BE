@@ -15,6 +15,7 @@ import com.oing.service.MemberPostService;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.util.Collections;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class MemberPostReactionController implements MemberPostReactionApi {
@@ -34,6 +36,7 @@ public class MemberPostReactionController implements MemberPostReactionApi {
     @Override
     @Transactional
     public DefaultResponse createPostReaction(String postId, String loginMemberId, PostReactionRequest request) {
+        log.info("Member {} is trying to create post reaction", loginMemberId);
         Emoji emoji = Emoji.fromString(request.content());
         MemberPost post = memberPostService.findMemberPostById(postId);
 
@@ -41,6 +44,7 @@ public class MemberPostReactionController implements MemberPostReactionApi {
         String reactionId = identityGenerator.generateIdentity();
         MemberPostReaction reaction = memberPostReactionService.createPostReaction(reactionId, post, loginMemberId, emoji);
         post.addReaction(reaction);
+        log.info("Member {} has created post reaction {}", loginMemberId, reactionId);
 
         return DefaultResponse.ok();
     }
@@ -54,6 +58,7 @@ public class MemberPostReactionController implements MemberPostReactionApi {
     @Override
     @Transactional
     public DefaultResponse deletePostReaction(String postId, String loginMemberId, PostReactionRequest request) {
+        log.info("Member {} is trying to delete post reaction {}", loginMemberId, request.content());
         Emoji emoji = Emoji.fromString(request.content());
         MemberPost post = memberPostService.findMemberPostById(postId);
 
@@ -62,6 +67,7 @@ public class MemberPostReactionController implements MemberPostReactionApi {
         post.removeReaction(reaction);
         memberPostReactionService.deletePostReaction(reaction);
 
+        log.info("Member {} has deleted post reaction {}", loginMemberId, reaction.getId());
         return DefaultResponse.ok();
     }
 
@@ -125,7 +131,9 @@ public class MemberPostReactionController implements MemberPostReactionApi {
     }
 
     private void validateFamilyMember(String memberId, MemberPost post) {
-        if (!memberBridge.isInSameFamily(memberId, post.getMemberId()))
+        if (!memberBridge.isInSameFamily(memberId, post.getMemberId())) {
+            log.warn("Unauthorized access attempt: Member {} is attempting reaction operation on post {}", memberId, post.getId());
             throw new AuthorizationFailedException();
+        }
     }
 }
