@@ -1,12 +1,12 @@
 package com.oing.config;
 
 import com.google.common.io.CharStreams;
+import com.oing.component.SentryGateway;
 import com.oing.domain.ErrorReportDTO;
 import com.oing.dto.response.ErrorResponse;
 import com.oing.exception.TokenNotValidException;
 import com.oing.exception.DomainException;
 import com.oing.exception.ErrorCode;
-import io.sentry.Sentry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +28,6 @@ import java.io.StringWriter;
 import java.security.InvalidParameterException;
 import java.util.Enumeration;
 
-/**
- * server
- * User: CChuYong
- * Date: 2023/11/22
- * Time: 4:32 PM
- */
 @RequiredArgsConstructor
 @Slf4j
 @RestControllerAdvice
@@ -42,7 +36,7 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(DomainException.class)
     ResponseEntity<ErrorResponse> handleDomainException(HttpServletRequest request, DomainException exception) {
-        Sentry.captureException(exception);
+        SentryGateway.captureException(request, exception);
         log.debug("[DomainException]", exception);
         if (exception.getErrorCode() == ErrorCode.UNKNOWN_SERVER_ERROR) {
             return handleUnhandledException(request, exception);
@@ -61,8 +55,8 @@ public class SpringWebExceptionHandler {
             ConstraintViolationException.class,
             MethodArgumentTypeMismatchException.class,
     })
-    ResponseEntity<ErrorResponse> handleValidateException(Exception exception) {
-        Sentry.captureException(exception);
+    ResponseEntity<ErrorResponse> handleValidateException(HttpServletRequest request, Exception exception) {
+        SentryGateway.captureException(request, exception);
         log.warn("[InvalidParameterException]", exception);
 
         return ResponseEntity
@@ -73,8 +67,8 @@ public class SpringWebExceptionHandler {
     @ExceptionHandler(value = {
             HttpRequestMethodNotSupportedException.class,
     })
-    ResponseEntity<ErrorResponse> handleMethodNotAllowedException(HttpRequestMethodNotSupportedException exception) {
-        Sentry.captureException(exception);
+    ResponseEntity<ErrorResponse> handleMethodNotAllowedException(HttpServletRequest request, HttpRequestMethodNotSupportedException exception) {
+        SentryGateway.captureException(request, exception);
         log.warn("[HttpRequestMethodNotSupportedException]", exception);
 
         return ResponseEntity
@@ -83,8 +77,8 @@ public class SpringWebExceptionHandler {
     }
 
     @ExceptionHandler(TokenNotValidException.class)
-    ResponseEntity<ErrorResponse> handleAuthenticationFailedException(TokenNotValidException exception) {
-        Sentry.captureException(exception);
+    ResponseEntity<ErrorResponse> handleAuthenticationFailedException(HttpServletRequest request, TokenNotValidException exception) {
+        SentryGateway.captureException(request, exception);
         log.warn("[AuthenticationFailedException]", exception);
 
         return ResponseEntity
@@ -94,7 +88,7 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
-        Sentry.captureException(exception);
+        SentryGateway.captureException(request, exception);
         if (exception.getMessage().contains("Broken pipe")) {
             log.warn("[IOException] Broken Pipe");
         } else {
@@ -109,7 +103,7 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     ResponseEntity<ErrorResponse> handleUnhandledException(HttpServletRequest request, Throwable exception) {
-        Sentry.captureException(exception);
+        SentryGateway.captureException(request, exception);
         StringBuilder dump = dumpRequest(request).append("\n ").append(getStackTraceAsString(exception));
         log.error("[UnhandledException] {} \n", dump);
 
@@ -118,6 +112,7 @@ public class SpringWebExceptionHandler {
                 .badRequest()
                 .body(ErrorResponse.of(ErrorCode.UNKNOWN_SERVER_ERROR));
     }
+
 
     private String getStackTraceAsString(Throwable throwable) {
         StringWriter stringWriter = new StringWriter();
