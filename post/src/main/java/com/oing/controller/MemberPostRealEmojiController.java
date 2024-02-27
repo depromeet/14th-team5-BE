@@ -17,12 +17,14 @@ import com.oing.service.MemberRealEmojiService;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
@@ -44,9 +46,12 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
     @Transactional
     @Override
     public PostRealEmojiResponse createPostRealEmoji(String postId, String loginFamilyId, String loginMemberId, PostRealEmojiRequest request) {
+        log.info("Member {} is trying to create post real emoji", loginMemberId);
         MemberPost post = memberPostService.getMemberPostById(postId);
-        if (!memberBridge.isInSameFamily(loginMemberId, post.getMemberId()))
+        if (!memberBridge.isInSameFamily(loginMemberId, post.getMemberId())) {
+            log.warn("Unauthorized access attempt: Member {} is attempting to access post real emoji", loginMemberId);
             throw new AuthorizationFailedException();
+        }
 
         MemberRealEmoji realEmoji = memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(request.realEmojiId(), loginFamilyId);
         validatePostRealEmojiForAddition(post, loginMemberId, realEmoji);
@@ -54,6 +59,8 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
                 post, loginMemberId);
         MemberPostRealEmoji addedPostRealEmoji = memberPostRealEmojiService.savePostRealEmoji(postRealEmoji);
         post.addRealEmoji(postRealEmoji);
+        log.info("Member {} has created post real emoji {}", loginMemberId, realEmoji.getId());
+
         return PostRealEmojiResponse.from(addedPostRealEmoji);
     }
 
@@ -73,12 +80,15 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
     @Transactional
     @Override
     public DefaultResponse deletePostRealEmoji(String postId, String realEmojiId, String loginMemberId) {
+        log.info("Member {} is trying to delete post real emoji {}", loginMemberId, realEmojiId);
         MemberPost post = memberPostService.getMemberPostById(postId);
         MemberPostRealEmoji postRealEmoji = memberPostRealEmojiService
                 .getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId(realEmojiId, loginMemberId, postId);
 
         memberPostRealEmojiService.deletePostRealEmoji(postRealEmoji);
         post.removeRealEmoji(postRealEmoji);
+        log.info("Member {} has deleted post real emoji {}", loginMemberId, realEmojiId);
+
         return DefaultResponse.ok();
     }
 
@@ -160,7 +170,9 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
     }
 
     private void validateFamilyMember(String memberId, MemberPost post) {
-        if (!memberBridge.isInSameFamily(memberId, post.getMemberId()))
+        if (!memberBridge.isInSameFamily(memberId, post.getMemberId())) {
+            log.warn("Unauthorized access attempt: Member {} is attempting real emoji operation on post {}", memberId, post.getId());
             throw new AuthorizationFailedException();
+        }
     }
 }
