@@ -1,10 +1,7 @@
 package com.oing.job;
 
 import com.google.common.collect.Lists;
-import com.google.firebase.messaging.ApnsConfig;
-import com.google.firebase.messaging.Aps;
 import com.google.firebase.messaging.MulticastMessage;
-import com.google.firebase.messaging.Notification;
 import com.oing.domain.BulkNotificationCompletedEvent;
 import com.oing.domain.ErrorReportDTO;
 import com.oing.domain.Member;
@@ -13,9 +10,10 @@ import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberPostService;
 import com.oing.service.MemberService;
 import com.oing.util.FCMNotificationUtil;
+import io.sentry.Sentry;
+import io.sentry.SentryLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -44,10 +42,10 @@ public class DailyNotificationJob {
     private final MemberPostService memberPostService;
 
     @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Seoul") // 12:00 PM
-    @SchedulerLock(name = "DailyPreUploadNotificationSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void sendDailyUploadNotification() {
         long start = System.currentTimeMillis();
-        log.info("[DailyNotificationJob] 오늘 업로드 알림 전송 시작");
+        log.info("⏰ [DailyNotificationJob] 오늘 업로드 알림 전송 시작");
+        Sentry.captureMessage("[DailyNotificationJob] 오늘 업로드 알림 전송 시작", SentryLevel.INFO);
         try {
             HashSet<String> targetFcmTokens = new HashSet<>();
             List<Member> members = memberService.findAllMember();
@@ -70,6 +68,7 @@ public class DailyNotificationJob {
                     members.size(),
                     targetFcmTokens.size(),
                     System.currentTimeMillis() - start);
+            Sentry.captureMessage("⏰ [DailyNotificationJob] 오늘 업로드 알림 전송 완료. (총 {"+members.size()+"}명, {"+targetFcmTokens.size()+"}토큰) 소요시간 : {"+(System.currentTimeMillis() - start)+"}ms", SentryLevel.INFO);
 
             eventPublisher.publishEvent(
                     new BulkNotificationCompletedEvent(
@@ -83,10 +82,10 @@ public class DailyNotificationJob {
     }
 
     @Scheduled(cron = "0 30 23 * * *", zone = "Asia/Seoul") // 11:30 PM
-    @SchedulerLock(name = "DailyPostUploadNotificationSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void sendDailyRemainingNotification() {
         long start = System.currentTimeMillis();
         log.info("[DailyNotificationJob] 오늘 미 업로드 사용자 대상 알림 전송 시작");
+        Sentry.captureMessage("⏰ [DailyNotificationJob] 오늘 미 업로드 사용자 대상 알림 전송 시작", SentryLevel.INFO);
         try {
             LocalDate today = LocalDate.now();
             List<Member> allMembers = memberService.findAllMember();
@@ -111,6 +110,7 @@ public class DailyNotificationJob {
                     allMembers.size() - postedMemberIds.size(),
                     targetFcmTokens.size(),
                     System.currentTimeMillis() - start);
+            Sentry.captureMessage("⏰ [DailyNotificationJob] 오늘 미 업로드 사용자 대상 알림 전송 완료. (총 {"+(allMembers.size() - postedMemberIds.size())+"}명, {"+targetFcmTokens.size()+"}토큰) 소요시간 : {"+(System.currentTimeMillis() - start)+"}ms", SentryLevel.INFO);
 
             eventPublisher.publishEvent(
                     new BulkNotificationCompletedEvent(

@@ -1,6 +1,8 @@
 package com.oing.job;
 
 import com.oing.service.FamilyScoreBridge;
+import io.sentry.Sentry;
+import io.sentry.SentryLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -23,7 +25,9 @@ public class FamilyStatisticJob {
         LocalDate historyDate = LocalDate.now().minusMonths(1);
         int historyYear = historyDate.getYear();
         int historyMonth = historyDate.getMonthValue();
+
         log.info("[MonthlyFamilyTopPercentageHistoryRecordingSchedule: {}-{}] scheduled and locked for 30s", historyYear, historyMonth);
+        Sentry.captureMessage("⏰ [MonthlyFamilyTopPercentageHistoryRecordingSchedule: {"+historyYear+"}-{"+historyMonth+"}] scheduled and locked for 30s", SentryLevel.INFO);
 
         familyScoreBridge.updateAllFamilyTopPercentageHistories(historyYear, historyMonth);
     }
