@@ -1,12 +1,8 @@
 package com.oing.service;
 
-import java.time.LocalDate;
 
 public interface FamilyScoreBridge {
-
-    void setAllFamilyScoresByPostDateBetween(LocalDate startDate, LocalDate endDate);
-
-    void updateAllFamilyTopPercentageHistories(LocalDate historyDate);
+    void updateAllFamilyTopPercentageHistories(int year, int month);
 
     int calculateFamilyTopPercentage(int rank, int familiesCount);
 }

@@ -7,6 +7,7 @@ import com.oing.dto.response.AppVersionResponse;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.dto.response.MemberResponse;
+import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,14 +29,22 @@ import java.util.UUID;
 public interface MeApi {
     @Operation(summary = "내 정보 조회", description = "내 정보를 조회합니다.")
     @GetMapping("/member-info")
-    MemberResponse getMe();
+    MemberResponse getMe(
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
+    );
 
     @Operation(summary = "FCM 토큰 등록", description = "FCM 토큰을 등록합니다.")
     @PostMapping("/fcm")
     DefaultResponse registerFcmToken(
             @Valid
             @RequestBody
-            AddFcmTokenRequest request
+            AddFcmTokenRequest request,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
     @Operation(summary = "FCM 토큰 삭제", description = "FCM 토큰을 삭제합니다.")
@@ -43,7 +52,11 @@ public interface MeApi {
     DefaultResponse deleteFcmToken(
             @PathVariable
             @Parameter(description = "삭제하고자 하는 fcmToken", example = "fcmToken")
-            String fcmToken
+            String fcmToken,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
 
@@ -52,12 +65,20 @@ public interface MeApi {
     FamilyResponse joinFamily(
             @Valid
             @RequestBody
-            JoinFamilyRequest request
+            JoinFamilyRequest request,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
     @Operation(summary = "가족 생성 및 가입", description = "가족을 생성하고 가입합니다.")
     @PostMapping("/create-family")
-    FamilyResponse createFamilyAndJoin();
+    FamilyResponse createFamilyAndJoin(
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
+    );
 
     @Operation(summary = "내 접속 버전 조회", description = "현재 버전 정보를 조회합니다.")
     @GetMapping("/app-version")
@@ -67,6 +88,10 @@ public interface MeApi {
 
     @Operation(summary = "가족 탈퇴", description = "가족을 탈퇴합니다.")
     @PostMapping("/quit-family")
-    DefaultResponse quitFamily();
+    DefaultResponse quitFamily(
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
+    );
 
 }

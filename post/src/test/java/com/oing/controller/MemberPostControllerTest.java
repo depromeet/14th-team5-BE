@@ -1,11 +1,9 @@
 package com.oing.controller;
 
-import com.oing.domain.MemberPost;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostService;
-import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import org.junit.jupiter.api.Test;
@@ -24,8 +22,6 @@ public class MemberPostControllerTest {
     private MemberPostController memberPostController;
 
     @Mock
-    private AuthenticationHolder authenticationHolder;
-    @Mock
     private IdentityGenerator identityGenerator;
     @Mock
     private MemberPostService memberPostService;
@@ -41,9 +37,9 @@ public class MemberPostControllerTest {
 
         // when
         PreSignedUrlRequest request = new PreSignedUrlRequest(newFeedImage);
-        PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("https://test.com/presigend-request-url");
+        PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("https://test.com/presigend-request-url.jpg");
         when(preSignedUrlGenerator.getFeedPreSignedUrl(any())).thenReturn(dummyResponse);
-        PreSignedUrlResponse response = memberPostController.requestPresignedUrl(request);
+        PreSignedUrlResponse response = memberPostController.requestPresignedUrl(request, "1");
 
         // then
         assertNotNull(response.url());

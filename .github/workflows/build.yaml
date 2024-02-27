@@ -16,6 +16,8 @@ on:
         required: true
       DOCKER_PASSWORD:
         required: true
+      SENTRY_AUTH_TOKEN:
+        required: true
 
 env:
   IMAGE_TAG: ${{ inputs.image-tag || 'latest' }}
@@ -49,6 +51,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           echo "IMAGE_TAG=$IMAGE_TAG, ACTIVE_PROFILE=$ACTIVE_PROFILE, IMAGE_NAME=$IMAGE_NAME" &&
           chmod +x ./gradlew &&

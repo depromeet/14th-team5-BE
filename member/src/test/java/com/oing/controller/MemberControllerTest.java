@@ -11,7 +11,6 @@ import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberService;
-import com.oing.util.AuthenticationHolder;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -42,8 +41,6 @@ public class MemberControllerTest {
     @Mock
     private MemberService memberService;
     @Mock
-    private AuthenticationHolder authenticationHolder;
-    @Mock
     private PreSignedUrlGenerator preSignedUrlGenerator;
     @Mock
     private MemberDeviceService memberDeviceService;
@@ -55,9 +52,10 @@ public class MemberControllerTest {
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.findFamilyIdByMemberId(any())).thenReturn(member.getFamilyId());
 
         // when
-        MemberResponse response = memberController.getMember(member.getId());
+        MemberResponse response = memberController.getMember(member.getId(), member.getFamilyId(), member.getId());
 
         // then
         assertEquals(member.getId(), response.memberId());
@@ -77,8 +75,6 @@ public class MemberControllerTest {
                 "testMember2", null, null,
                 LocalDateTime.now());
         String familyId = "1";
-        when(authenticationHolder.getUserId()).thenReturn("1");
-        when(memberService.findFamilyIdByMemberId(anyString())).thenReturn(familyId);
         Page<FamilyMemberProfileResponse> profilePage = new PageImpl<>(Arrays.asList(
                 new FamilyMemberProfileResponse(member1.getId(), member1.getName(), member1.getProfileImgUrl(), member1.getFamilyJoinAt().toLocalDate(), member1.getDayOfBirth()),
                 new FamilyMemberProfileResponse(member2.getId(), member2.getName(), member2.getProfileImgUrl(),member2.getFamilyJoinAt().toLocalDate(), member2.getDayOfBirth())
@@ -88,7 +84,7 @@ public class MemberControllerTest {
 
         // when
         PaginationResponse<FamilyMemberProfileResponse> response = memberController.
-                getFamilyMembersProfiles(1, 5);
+                getFamilyMembersProfiles(1, 5, familyId, member1.getId());
 
         // then
         assertFalse(response.hasNext());
@@ -103,11 +99,10 @@ public class MemberControllerTest {
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
-        when(authenticationHolder.getUserId()).thenReturn("1");
 
         // when
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
-        memberController.updateMemberName(member.getId(), request);
+        memberController.updateMemberName(member.getId(), member.getId(), request);
 
         // then
         assertEquals(newName, member.getName());
@@ -121,13 +116,12 @@ public class MemberControllerTest {
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
-        when(authenticationHolder.getUserId()).thenReturn("1");
 
         // when
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
 
         // then
-        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), request));
+        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), member.getId(), request));
     }
 
     @Test
@@ -138,13 +132,12 @@ public class MemberControllerTest {
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
-        when(authenticationHolder.getUserId()).thenReturn("1");
 
         // when
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
 
         // then
-        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), request));
+        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), member.getId(), request));
     }
 
     @Test
@@ -170,12 +163,11 @@ public class MemberControllerTest {
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
-        when(authenticationHolder.getUserId()).thenReturn("1");
         when(preSignedUrlGenerator.extractImageKey(any())).thenReturn("/profile.jpg");
 
         // when
         UpdateMemberProfileImageUrlRequest request = new UpdateMemberProfileImageUrlRequest(newProfileImageUrl);
-        memberController.updateMemberProfileImageUrl(member.getId(), request);
+        memberController.updateMemberProfileImageUrl(member.getId(), member.getId(), request);
 
         // then
         assertEquals(newProfileImageUrl, member.getProfileImgUrl());
@@ -188,10 +180,9 @@ public class MemberControllerTest {
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
-        when(authenticationHolder.getUserId()).thenReturn("1");
 
         // when
-        memberController.deleteMemberProfileImageUrl(member.getId());
+        memberController.deleteMemberProfileImageUrl(member.getId(), member.getId());
 
         // then
         assertEquals(null, member.getProfileImgUrl());
@@ -205,10 +196,9 @@ public class MemberControllerTest {
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
-        when(authenticationHolder.getUserId()).thenReturn("1");
 
         // when
-        memberController.deleteMember(member.getId(), null);
+        memberController.deleteMember(member.getId(), member.getId(), null);
 
         // then
         assertEquals("DeletedMember", member.getName());
@@ -221,9 +211,8 @@ public class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(authenticationHolder.getUserId()).thenReturn("2");
 
         // then
-        assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember(member.getId(), null));
+        assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember("2", member.getId(), null));
     }
 }

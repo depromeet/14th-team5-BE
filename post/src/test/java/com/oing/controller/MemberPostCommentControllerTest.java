@@ -12,7 +12,6 @@ import com.oing.exception.AuthorizationFailedException;
 import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostCommentService;
 import com.oing.service.MemberPostService;
-import com.oing.util.AuthenticationHolder;
 import com.oing.util.IdentityGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,8 +33,6 @@ public class MemberPostCommentControllerTest {
     @InjectMocks
     private MemberPostCommentController memberPostCommentController;
 
-    @Mock
-    private AuthenticationHolder authenticationHolder;
     @Mock
     private IdentityGenerator identityGenerator;
     @Mock
@@ -64,7 +61,6 @@ public class MemberPostCommentControllerTest {
         ));
         CreatePostCommentRequest request = new CreatePostCommentRequest(memberPostComment.getComment());
         when(memberPostService.getMemberPostById("1")).thenReturn(memberPost);
-        when(authenticationHolder.getUserId()).thenReturn("1");
         when(memberBridge.isInSameFamily("1", "1")).thenReturn(true);
         when(identityGenerator.generateIdentity()).thenReturn(memberPost.getId());
         when(memberPostCommentService.savePostComment(any())).thenReturn(memberPostComment);
@@ -72,7 +68,8 @@ public class MemberPostCommentControllerTest {
         //when
         PostCommentResponse response = memberPostCommentController.createPostComment(
                 memberPost.getId(),
-                request
+                request,
+                "1"
         );
 
         //then
@@ -98,7 +95,6 @@ public class MemberPostCommentControllerTest {
         ));
         CreatePostCommentRequest request = new CreatePostCommentRequest(memberPostComment.getComment());
         when(memberPostService.getMemberPostById("1")).thenReturn(memberPost);
-        when(authenticationHolder.getUserId()).thenReturn("1");
         when(memberBridge.isInSameFamily("1", "1")).thenReturn(false);
 
         //when
@@ -106,7 +102,8 @@ public class MemberPostCommentControllerTest {
         assertThrows(AuthorizationFailedException.class, () -> {
             memberPostCommentController.createPostComment(
                     memberPost.getId(),
-                    request
+                    request,
+                    "1"
             );
         });
     }
@@ -131,12 +128,12 @@ public class MemberPostCommentControllerTest {
         when(memberPostService.getMemberPostById(memberPost.getId())).thenReturn(memberPost);
         when(memberPostCommentService.getMemberPostComment(memberPost.getId(), memberPostComment.getId()))
                 .thenReturn(memberPostComment);
-        when(authenticationHolder.getUserId()).thenReturn("1");
 
         //when
         memberPostCommentController.deletePostComment(
                 memberPost.getId(),
-                memberPostComment.getId()
+                memberPostComment.getId(),
+                "1"
         );
 
         //then
@@ -162,14 +159,14 @@ public class MemberPostCommentControllerTest {
         );
         when(memberPostCommentService.getMemberPostComment(memberPost.getId(), othersMemberPostComment.getId()))
                 .thenReturn(othersMemberPostComment);
-        when(authenticationHolder.getUserId()).thenReturn("1");
 
         //when
         //then
         assertThrows(AuthorizationFailedException.class, () -> {
             memberPostCommentController.deletePostComment(
                     memberPost.getId(),
-                    othersMemberPostComment.getId()
+                    othersMemberPostComment.getId(),
+                    "1"
             );
         });
     }
@@ -194,7 +191,6 @@ public class MemberPostCommentControllerTest {
         UpdatePostCommentRequest request = new UpdatePostCommentRequest(memberPostComment.getComment());
         when(memberPostCommentService.getMemberPostComment(memberPost.getId(), memberPostComment.getId()))
                 .thenReturn(memberPostComment);
-        when(authenticationHolder.getUserId()).thenReturn("1");
         when(memberPostCommentService.savePostComment(any())).thenReturn(memberPostComment);
         when(memberPostComment.getCreatedAt()).thenReturn(LocalDateTime.now());
 
@@ -202,7 +198,8 @@ public class MemberPostCommentControllerTest {
         PostCommentResponse response = memberPostCommentController.updatePostComment(
                 memberPost.getId(),
                 memberPostComment.getId(),
-                request
+                request,
+                "1"
         );
 
         //then
@@ -229,7 +226,6 @@ public class MemberPostCommentControllerTest {
         UpdatePostCommentRequest request = new UpdatePostCommentRequest(othersMemberPostComment.getComment());
         when(memberPostCommentService.getMemberPostComment(memberPost.getId(), othersMemberPostComment.getId()))
                 .thenReturn(othersMemberPostComment);
-        when(authenticationHolder.getUserId()).thenReturn("1");
 
         //when
         //then
@@ -237,7 +233,8 @@ public class MemberPostCommentControllerTest {
             memberPostCommentController.updatePostComment(
                     memberPost.getId(),
                     othersMemberPostComment.getId(),
-                    request
+                    request,
+                    "1"
             );
         });
     }
@@ -264,7 +261,8 @@ public class MemberPostCommentControllerTest {
         String postId = "1";
         boolean asc = true;
         List<MemberPostComment> memberPostComments = Lists.newArrayList(memberPostComment);
-
+        when(memberPostService.getMemberPostById("1")).thenReturn(memberPost);
+        when(memberBridge.isInSameFamily("1", "1")).thenReturn(true);
         when(memberPostComment.getCreatedAt()).thenReturn(LocalDateTime.now());
         when(memberPostCommentService.searchPostComments(page, size, postId, asc))
                 .thenReturn(new PaginationDTO(
@@ -274,7 +272,7 @@ public class MemberPostCommentControllerTest {
 
         //when
         PaginationResponse<PostCommentResponse> responses = memberPostCommentController
-                .getPostComments(postId, page, size, "ASC");
+                .getPostComments(postId, page, size, "ASC", "1");
 
         //then
         assertEquals(responses.results().size(), memberPostComments.size());

@@ -1,6 +1,7 @@
 package com.oing.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oing.component.SentryGateway;
 import com.oing.dto.response.ErrorResponse;
 import com.oing.exception.ErrorCode;
 import jakarta.servlet.ServletException;
@@ -30,6 +31,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
             HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException
     ) throws IOException, ServletException {
         writeErrorResponse(response, accessDeniedException);
+        SentryGateway.captureException(request, accessDeniedException);
     }
 
     private void writeErrorResponse(

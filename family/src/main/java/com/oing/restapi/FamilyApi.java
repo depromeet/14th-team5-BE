@@ -1,7 +1,7 @@
 package com.oing.restapi;
 
-import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
 import com.oing.dto.response.FamilyResponse;
+import com.oing.util.security.LoginFamilyId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +22,10 @@ public interface FamilyApi {
     FamilyResponse getFamilyCreatedAt(
             @Parameter(description = "가족 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
-            String familyId
+            String familyId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
     );
 }

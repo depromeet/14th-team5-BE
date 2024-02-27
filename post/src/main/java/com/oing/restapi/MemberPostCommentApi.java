@@ -5,6 +5,7 @@ import com.oing.dto.request.UpdatePostCommentRequest;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostCommentResponse;
+import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +27,11 @@ public interface MemberPostCommentApi {
 
             @Valid
             @RequestBody
-            CreatePostCommentRequest request
+            CreatePostCommentRequest request,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
     @Operation(summary = "게시물 댓글 삭제", description = "게시물에 댓글을 삭제합니다.")
@@ -38,7 +43,11 @@ public interface MemberPostCommentApi {
 
             @Parameter(description = "댓글 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
-            String commentId
+            String commentId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
     @Operation(summary = "게시물 댓글 수정", description = "게시물에 댓글을 수정합니다.")
@@ -54,7 +63,11 @@ public interface MemberPostCommentApi {
 
             @Valid
             @RequestBody
-            UpdatePostCommentRequest request
+            UpdatePostCommentRequest request,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
 
@@ -77,7 +90,11 @@ public interface MemberPostCommentApi {
 
             @RequestParam(required = false)
             @Parameter(description = "정렬 방식", example = "DESC | ASC")
-            String sort
+            String sort,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
 }

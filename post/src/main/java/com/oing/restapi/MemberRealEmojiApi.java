@@ -6,7 +6,8 @@ import com.oing.dto.request.UpdateMyRealEmojiRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.dto.response.RealEmojiResponse;
 import com.oing.dto.response.RealEmojisResponse;
-import com.oing.util.security.FamilyId;
+import com.oing.util.security.LoginFamilyId;
+import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +27,10 @@ public interface MemberRealEmojiApi {
             @PathVariable
             String memberId,
 
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
             @Valid
             @RequestBody
             PreSignedUrlRequest request
@@ -39,8 +44,12 @@ public interface MemberRealEmojiApi {
             String memberId,
 
             @Parameter(hidden = true)
-            @FamilyId
-            String familyId,
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId,
 
             @Valid
             @RequestBody
@@ -55,8 +64,12 @@ public interface MemberRealEmojiApi {
             String memberId,
 
             @Parameter(hidden = true)
-            @FamilyId
-            String familyId,
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId,
 
             @Parameter(description = "리얼 이모지 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
@@ -75,7 +88,11 @@ public interface MemberRealEmojiApi {
             String memberId,
 
             @Parameter(hidden = true)
-            @FamilyId
-            String familyId
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
     );
 }

@@ -2,11 +2,11 @@ package com.oing.restapi;
 
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
-import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
-import com.oing.util.security.FamilyId;
+import com.oing.util.security.LoginFamilyId;
+import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +33,11 @@ public interface MemberPostApi {
     PreSignedUrlResponse requestPresignedUrl(
             @Valid
             @RequestBody
-            PreSignedUrlRequest request
+            PreSignedUrlRequest request,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
     @Operation(summary = "게시물 조회", description = "게시물 목록을 조회합니다. 조회 기준은 생성 순서입니다.")
@@ -60,7 +64,11 @@ public interface MemberPostApi {
 
             @RequestParam(required = false)
             @Parameter(description = "정렬 방식", example = "DESC | ASC")
-            String sort
+            String sort,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
     @Operation(summary = "게시물 생성", description = "게시물을 생성합니다.")
@@ -71,8 +79,12 @@ public interface MemberPostApi {
             CreatePostRequest request,
 
             @Parameter(hidden = true)
-            @FamilyId
-            String familyId
+            @LoginFamilyId
+            String loginFamilyId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
     @Operation(summary = "단일 게시물 조회", description = "ID를 통해 게시물을 조회합니다.")
@@ -80,6 +92,10 @@ public interface MemberPostApi {
     PostResponse getPost(
             @PathVariable
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
-            String postId
+            String postId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 }

@@ -12,7 +12,6 @@ import com.oing.restapi.MemberApi;
 import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberQuitReasonService;
 import com.oing.service.MemberService;
-import com.oing.util.AuthenticationHolder;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +24,17 @@ import java.security.InvalidParameterException;
 @RequiredArgsConstructor
 public class MemberController implements MemberApi {
 
-    private final AuthenticationHolder authenticationHolder;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final MemberQuitReasonService memberQuitReasonService;
 
     @Override
-    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(Integer page, Integer size) {
-        String memberId = authenticationHolder.getUserId();
-        String familyId = memberService.findFamilyIdByMemberId(memberId);
+    public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(
+            Integer page, Integer size, String loginFamilyId, String loginMemberId
+    ) {
         Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyMembersProfilesByFamilyId(
-                familyId, page, size
+                loginFamilyId, page, size
         );
 
         PaginationDTO<FamilyMemberProfileResponse> paginationDTO = PaginationDTO.of(profilePage);
@@ -45,10 +43,17 @@ public class MemberController implements MemberApi {
     }
 
     @Override
-    public MemberResponse getMember(String memberId) {
+    public MemberResponse getMember(String memberId, String loginFamilyId, String loginMemberId) {
+        validateFamilyMember(memberId, loginFamilyId);
         Member member = memberService.findMemberById(memberId);
 
         return MemberResponse.of(member);
+    }
+
+    private void validateFamilyMember(String memberId, String loginFamilyId) {
+        if (!memberService.findFamilyIdByMemberId(memberId).equals(loginFamilyId)) {
+            throw new AuthorizationFailedException();
+        }
     }
 
     @Override
@@ -59,8 +64,9 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public MemberResponse updateMemberProfileImageUrl(String memberId, UpdateMemberProfileImageUrlRequest request) {
-        validateMemberId(memberId);
+    public MemberResponse updateMemberProfileImageUrl(String memberId, String loginMemberId,
+                                                      UpdateMemberProfileImageUrlRequest request) {
+        validateMemberId(memberId, loginMemberId);
         Member member = memberService.findMemberById(memberId);
         String profileImgKey = preSignedUrlGenerator.extractImageKey(request.profileImageUrl());
         member.updateProfileImg(request.profileImageUrl(), profileImgKey);
@@ -70,8 +76,8 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public MemberResponse deleteMemberProfileImageUrl(String memberId) {
-        validateMemberId(memberId);
+    public MemberResponse deleteMemberProfileImageUrl(String memberId, String loginMemberId) {
+        validateMemberId(memberId, loginMemberId);
         Member member = memberService.findMemberById(memberId);
         member.deleteProfileImg();
 
@@ -80,8 +86,8 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public MemberResponse updateMemberName(String memberId, UpdateMemberNameRequest request) {
-        validateMemberId(memberId);
+    public MemberResponse updateMemberName(String memberId, String loginMemberId, UpdateMemberNameRequest request) {
+        validateMemberId(memberId, loginMemberId);
         Member member = memberService.findMemberById(memberId);
 
         validateName(request.name());
@@ -98,8 +104,8 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public DefaultResponse deleteMember(String memberId, QuitMemberRequest request) {
-        validateMemberId(memberId);
+    public DefaultResponse deleteMember(String memberId, String loginMemberId, QuitMemberRequest request) {
+        validateMemberId(memberId, loginMemberId);
         Member member = memberService.findMemberById(memberId);
         memberService.deleteAllSocialMembersByMember(memberId);
         member.deleteMemberInfo();
@@ -113,9 +119,8 @@ public class MemberController implements MemberApi {
         return DefaultResponse.ok();
     }
 
-    private void validateMemberId(String memberId) {
-        String loginId = authenticationHolder.getUserId();
-        if (!loginId.equals(memberId)) {
+    private void validateMemberId(String memberId, String loginMemberId) {
+        if (!loginMemberId.equals(memberId)) {
             throw new AuthorizationFailedException();
         }
     }
