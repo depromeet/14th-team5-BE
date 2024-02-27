@@ -13,7 +13,6 @@ import com.oing.exception.DuplicateRealEmojiException;
 import com.oing.service.MemberRealEmojiService;
 import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@Transactional
+//@Transactional
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 public class MemberRealEmojiControllerTest {
@@ -49,7 +48,7 @@ public class MemberRealEmojiControllerTest {
 
         // when
         PreSignedUrlRequest request = new PreSignedUrlRequest(realEmojiImage);
-        PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("https://test.com/presigend-request-url");
+        PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("https://test.com/presigend-request-url.jpg");
         when(preSignedUrlGenerator.getRealEmojiPreSignedUrl(any())).thenReturn(dummyResponse);
         PreSignedUrlResponse response = memberRealEmojiController.requestPresignedUrl(memberId, memberId, request);
 
