@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-//@Transactional
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 public class MemberRealEmojiControllerTest {
