@@ -40,3 +40,12 @@ management:
     web:
       exposure:
         include: health,info,prometheus
+
+sentry:
+  environment: development
+  logging:
+    enabled: true
+    minimum-event-level: info
+    minimum-breadcrumb-level: info
+  dsn: ${SENTRY_DEV_DSN:}
+  traces-sample-rate: 1.0
