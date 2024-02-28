@@ -2,6 +2,8 @@ package com.oing.config.filter;
 
 import com.oing.config.properties.WebProperties;
 import com.oing.util.RandomStringGenerator;
+import io.sentry.Sentry;
+import io.sentry.protocol.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,8 @@ public class WebRequestInterceptor implements HandlerInterceptor {
         String appVersionValue = request.getHeader(webProperties.headerNames().appVersionHeader());
         String platformValue = request.getHeader(webProperties.headerNames().platformHeader());
         String userIdValue = request.getHeader(webProperties.headerNames().userIdHeader());
+        String forwardedIp = request.getHeader(webProperties.headerNames().proxyForwardHeader());
+        String originIp = forwardedIp != null ? forwardedIp : request.getRemoteAddr();
 
         String appVersion =
                 String.format("[%s]", appVersionValue != null ? appVersionValue : "UNKNOWN VERSION");
@@ -53,12 +57,17 @@ public class WebRequestInterceptor implements HandlerInterceptor {
         String userId =
                 String.format("[%s]", userIdValue != null ? userIdValue : "UNKNOWN USER");
 
+        User sentryUser = new User();
+        sentryUser.setId(userId);
+        sentryUser.setIpAddress(originIp);
+
+        Sentry.setUser(sentryUser);
+
         long startTime = (long) request.getAttribute(START_TIME_ATTR_NAME);
         long endTime = System.currentTimeMillis();
         long executionTime = endTime - startTime;
 
-        String forwardedIp = request.getHeader(webProperties.headerNames().proxyForwardHeader());
-        String originIp = forwardedIp != null ? forwardedIp : request.getRemoteAddr();
+
         log.info("{} {} {} {} {} {} {} {}ms", appVersion, platform, userId, request.getMethod(), request.getRequestURI(), originIp, response.getStatus(), executionTime);
         MDC.clear();
     }
