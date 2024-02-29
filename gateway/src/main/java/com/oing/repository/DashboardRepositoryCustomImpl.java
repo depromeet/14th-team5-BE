@@ -1,5 +1,9 @@
 package com.oing.repository;
 
+import com.oing.domain.DateCountProjection;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.DateTemplate;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -77,6 +81,28 @@ public class DashboardRepositoryCustomImpl {
                 .select(member.count())
                 .from(member)
                 .groupBy(member.familyId)
+                .fetch();
+    }
+
+    public List<DateCountProjection> getNewMemberCount(LocalDate startDate, LocalDate endDate) {
+        DateTemplate<LocalDate> createdAtDate =
+                Expressions.dateTemplate(LocalDate.class, "DATE({0})", member.createdAt);
+        return queryFactory
+                .select(Projections.constructor(DateCountProjection.class, createdAtDate, member.count()))
+                .from(member)
+                .where(createdAtDate.goe(startDate), createdAtDate.loe(endDate))
+                .groupBy(createdAtDate)
+                .fetch();
+    }
+
+    public List<DateCountProjection> getNewPostCount(LocalDate startDate, LocalDate endDate) {
+        DateTemplate<LocalDate> createdAtDate =
+                Expressions.dateTemplate(LocalDate.class, "DATE({0})", memberPost.createdAt);
+        return queryFactory
+                .select(Projections.constructor(DateCountProjection.class, createdAtDate, memberPost.count()))
+                .from(memberPost)
+                .where(createdAtDate.goe(startDate), createdAtDate.loe(endDate))
+                .groupBy(createdAtDate)
                 .fetch();
     }
 }

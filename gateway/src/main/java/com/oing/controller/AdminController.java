@@ -1,5 +1,6 @@
 package com.oing.controller;
 
+import com.oing.domain.DateCountProjection;
 import com.oing.dto.response.AdminDailyDashboardResponse;
 import com.oing.dto.response.AdminDashboardResponse;
 import com.oing.dto.response.DashboardDistributionResponse;
@@ -50,7 +51,21 @@ public class AdminController implements AdminApi {
 
     @Override
     public AdminDailyDashboardResponse getDailyDashboard(LocalDate fromDate, LocalDate toDate) {
-        return null;
+        List<DateCountProjection> newMemberCount = dashboardRepository.getNewMemberCount(fromDate, toDate);
+        List<DateCountProjection> newPostCount = dashboardRepository.getNewPostCount(fromDate, toDate);
+
+        Map<LocalDate, Integer> dailyMemberRegistration = new HashMap<>();
+        Map<LocalDate, Integer> dailyPostCreation = new HashMap<>();
+
+        for (DateCountProjection dateCountProjection : newMemberCount) {
+            dailyMemberRegistration.put(dateCountProjection.getDate(), dateCountProjection.getCount().intValue());
+        }
+
+        for (DateCountProjection dateCountProjection : newPostCount) {
+            dailyPostCreation.put(dateCountProjection.getDate(), dateCountProjection.getCount().intValue());
+        }
+
+        return new AdminDailyDashboardResponse(dailyMemberRegistration, dailyPostCreation);
     }
 
     private DashboardValueResponse evaluateValueBetweenYesterday(
