@@ -7,6 +7,9 @@ public record DashboardValueResponse(
         @Schema(description = "해당 값의 전체 수", example = "5096")
         Integer count,
 
+        @Schema(description = "어제와 오늘의 추이 (단위: 개수)", example = "5")
+        Integer gapBetweenYesterday,
+
         @Schema(description = "어제와 오늘의 추이 (단위: 퍼센트)", example = "20.3")
         Double percentBetweenYesterday
 ) {
