@@ -1,7 +1,7 @@
 name: 프로덕션 워크플로우
 on:
   push:
-    branches: [ 'main', 'feature/OING-272' ]
+    branches: [ 'main' ]
     paths:
       - 'gateway/**' # Gateway 모듈 변경
       - 'member/**' # Member 모듈 변경
