@@ -63,6 +63,7 @@ jobs:
       AWS_ASSUME_ROLE_ARN: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
       AWS_ECR_REGISTRY_URL: ${{ secrets.AWS_ECR_REGISTRY_URL }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_PROD_AUTH_TOKEN }}
 
   call-deploy-workflow:
     if: github.event_name == 'push'
