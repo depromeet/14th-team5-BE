@@ -70,7 +70,7 @@ jobs:
       - name: 설마 롤백한건 아닌지 확인해보기
         id: check-rollback
         run: |
-          CURRENT_TASK_DEF_ARN=$(aws ecs describe-services --cluster ${{ inputs.ecs-cluster }} --services ${{ inputs.ecs-service }}-service --query services[0].deployments[0].taskDefinition | jq -r ".")
+          CURRENT_TASK_DEF_ARN=$(aws ecs describe-services --cluster ${{ inputs.ecs-cluster }} --services ${{ inputs.ecs-service }} --query services[0].deployments[0].taskDefinition | jq -r ".")
           NEW_TASK_DEF_ARN=${{ steps.ecs-deploy.outputs.task-definition-arn }}
           if [ "$CURRENT_TASK_DEF_ARN" != "$NEW_TASK_DEF_ARN" ]; then
             echo "Deployment rolled back."
