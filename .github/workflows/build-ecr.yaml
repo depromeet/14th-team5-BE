@@ -21,6 +21,8 @@ on:
         required: true
       AWS_REGION:
         required: true
+      SENTRY_AUTH_TOKEN:
+        required: true
 
 jobs:
   build:
@@ -58,6 +60,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ needs.prepare.outputs.imageTag }}
           ECR_REGISTRY_PREFIX: '${{ secrets.AWS_ECR_REGISTRY_URL }}/'
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           chmod +x jib.sh &&
           chmod +x ./gradlew &&
