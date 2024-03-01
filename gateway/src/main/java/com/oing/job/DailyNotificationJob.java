@@ -47,7 +47,7 @@ public class DailyNotificationJob {
     public void sendDailyUploadNotification() {
         long start = System.currentTimeMillis();
         log.info("⏰ [DailyNotificationJob] 오늘 업로드 알림 전송 시작");
-        Sentry.captureMessage("[DailyNotificationJob] 오늘 업로드 알림 전송 시작", SentryLevel.INFO);
+
         try {
             HashSet<String> targetFcmTokens = new HashSet<>();
             List<Member> members = memberService.findAllMember();
@@ -88,7 +88,7 @@ public class DailyNotificationJob {
     public void sendDailyRemainingNotification() {
         long start = System.currentTimeMillis();
         log.info("[DailyNotificationJob] 오늘 미 업로드 사용자 대상 알림 전송 시작");
-        Sentry.captureMessage("⏰ [DailyNotificationJob] 오늘 미 업로드 사용자 대상 알림 전송 시작", SentryLevel.INFO);
+
         try {
             LocalDate today = LocalDate.now();
             List<Member> allMembers = memberService.findAllMember();

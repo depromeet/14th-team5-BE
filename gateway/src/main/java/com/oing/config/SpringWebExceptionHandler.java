@@ -12,7 +12,6 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -28,19 +27,26 @@ import java.io.StringWriter;
 import java.security.InvalidParameterException;
 import java.util.Enumeration;
 
+import static io.sentry.SentryLevel.ERROR;
+import static io.sentry.SentryLevel.WARNING;
+import static org.springframework.http.HttpStatus.*;
+
 @RequiredArgsConstructor
 @Slf4j
 @RestControllerAdvice
 public class SpringWebExceptionHandler {
+
+    private final SentryGateway sentryGateway;
     private final ApplicationEventPublisher eventPublisher;
 
     @ExceptionHandler(DomainException.class)
     ResponseEntity<ErrorResponse> handleDomainException(HttpServletRequest request, DomainException exception) {
-        SentryGateway.captureException(request, exception);
-        log.debug("[DomainException]", exception);
         if (exception.getErrorCode() == ErrorCode.UNKNOWN_SERVER_ERROR) {
             return handleUnhandledException(request, exception);
         }
+
+        log.warn("[DomainException]", exception);
+        sentryGateway.captureException(exception, WARNING, request, BAD_REQUEST);
 
         return ResponseEntity
                 .badRequest()
@@ -56,8 +62,9 @@ public class SpringWebExceptionHandler {
             MethodArgumentTypeMismatchException.class,
     })
     ResponseEntity<ErrorResponse> handleValidateException(HttpServletRequest request, Exception exception) {
-        SentryGateway.captureException(request, exception);
+
         log.warn("[InvalidParameterException]", exception);
+        sentryGateway.captureException(exception, WARNING, request, BAD_REQUEST);
 
         return ResponseEntity
                 .badRequest()
@@ -68,8 +75,9 @@ public class SpringWebExceptionHandler {
             HttpRequestMethodNotSupportedException.class,
     })
     ResponseEntity<ErrorResponse> handleMethodNotAllowedException(HttpServletRequest request, HttpRequestMethodNotSupportedException exception) {
-        SentryGateway.captureException(request, exception);
+
         log.warn("[HttpRequestMethodNotSupportedException]", exception);
+        sentryGateway.captureException(exception, WARNING, request, BAD_REQUEST);
 
         return ResponseEntity
                 .badRequest()
@@ -78,21 +86,24 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(TokenNotValidException.class)
     ResponseEntity<ErrorResponse> handleAuthenticationFailedException(HttpServletRequest request, TokenNotValidException exception) {
-        SentryGateway.captureException(request, exception);
+
         log.warn("[AuthenticationFailedException]", exception);
+        sentryGateway.captureException(exception, WARNING, request, UNAUTHORIZED);
 
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
+                .status(UNAUTHORIZED)
                 .body(ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED));
     }
 
     @ExceptionHandler(IOException.class)
     ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
-        SentryGateway.captureException(request, exception);
+
         if (exception.getMessage().contains("Broken pipe")) {
             log.warn("[IOException] Broken Pipe");
+            sentryGateway.captureException(exception, WARNING, request, BAD_REQUEST);
         } else {
             log.error("[IOException]", exception);
+            sentryGateway.captureException(exception, ERROR, request, BAD_REQUEST);
         }
 
         return ResponseEntity
@@ -103,9 +114,10 @@ public class SpringWebExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     ResponseEntity<ErrorResponse> handleUnhandledException(HttpServletRequest request, Throwable exception) {
-        SentryGateway.captureException(request, exception);
+
         StringBuilder dump = dumpRequest(request).append("\n ").append(getStackTraceAsString(exception));
         log.error("[UnhandledException] {} \n", dump);
+        sentryGateway.captureException(exception, ERROR, request, BAD_REQUEST);
 
         eventPublisher.publishEvent(new ErrorReportDTO(exception.getMessage(), dump.toString()));
         return ResponseEntity
