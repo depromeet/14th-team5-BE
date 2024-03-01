@@ -13,10 +13,11 @@ on:
       - 'settings.gradle' # Parent Gradle 설정이 변경된 경우
 
 env:
+  ECR_REPOSITORY_NAME: bibbi-backend-prod
   SPRING_PROFILE: prod
-  ENVIRONMENT: production
-  IMAGE_NAME: no5ing/spring-was
-  SERVICE_NAME: spring-was-prod_be-prod-was
+  ECS_SERVICE: bibbi-backend
+  ECS_CLUSTER: bibbi-cluster-prod
+  ECR_TASK_DEFINITION: bibbi-backend-prod
 
 concurrency:
   group: production
@@ -26,11 +27,12 @@ jobs:
     name: 환경변수 준비하기
     runs-on: ubuntu-latest
     outputs:
+      ecr-repository-name: ${{ steps.setup-env.outputs.ecr-repository-name }}
       image-tag: ${{ steps.setup-env.outputs.image-tag }}
       spring-profile: ${{ steps.setup-env.outputs.spring-profile }}
-      environment: ${{ steps.setup-env.outputs.environment }}
-      image-name: ${{ steps.setup-env.outputs.image-name }}
-      service-name: ${{ steps.setup-env.outputs.service-name }}
+      ecs-service: ${{ env.ECS_SERVICE }}
+      ecs-cluster: ${{ env.ECS_CLUSTER }}
+      ecr-task-definition: ${{ env.ECR_TASK_DEFINITION }}
     steps:
       - name: GitHub 에서 레포 받아오기
         uses: actions/checkout@v3
@@ -38,47 +40,47 @@ jobs:
       - name: 환경변수 출력하기
         id: setup-env
         run: |
+          echo "ecr-repository-name=$ECR_REPOSITORY_NAME" >> $GITHUB_OUTPUT
           echo "image-tag=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           echo "spring-profile=$SPRING_PROFILE" >> $GITHUB_OUTPUT
-          echo "environment=$ENVIRONMENT" >> $GITHUB_OUTPUT
-          echo "image-name=$IMAGE_NAME" >> $GITHUB_OUTPUT
-          echo "service-name=$SERVICE_NAME" >> $GITHUB_OUTPUT
+          echo "ecs-service=$ECS_SERVICE" >> $GITHUB_OUTPUT
+          echo "ecs-cluster=$ECS_CLUSTER" >> $GITHUB_OUTPUT
+          echo "ecr-task-definition=$ECR_TASK_DEFINITION" >> $GITHUB_OUTPUT
 
   call-build-workflow:
     if: github.event_name == 'push'
     needs: [ prepare-variables ]
     name: 이미지 빌드
-    uses: ./.github/workflows/build.yaml
+    uses: ./.github/workflows/build-ecr.yaml
     permissions:
       id-token: write
       contents: read
     with:
+      ecr-repository-name: ${{ needs.prepare-variables.outputs.ecr-repository-name }}
       image-tag: ${{ needs.prepare-variables.outputs.image-tag }}
       spring-profile: ${{ needs.prepare-variables.outputs.spring-profile }}
-      image-name: ${{ needs.prepare-variables.outputs.image-name }}
     secrets:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      AWS_ASSUME_ROLE_ARN: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
+      AWS_ECR_REGISTRY_URL: ${{ secrets.AWS_ECR_REGISTRY_URL }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_PROD_AUTH_TOKEN }}
 
   call-deploy-workflow:
     if: github.event_name == 'push'
     needs: [ prepare-variables, call-build-workflow ]
-    name: 서비스 배포
-    uses: ./.github/workflows/deploy.yaml
+    name: AWS ECS 배포
+    uses: ./.github/workflows/deploy-ecs.yaml
     permissions:
       id-token: write
       contents: read
-    secrets:
-      REMOTE_SSH_HOST: ${{ secrets.REMOTE_SSH_HOST }}
-      REMOTE_SSH_USERNAME: ${{ secrets.REMOTE_SSH_USERNAME }}
-      REMOTE_SSH_KEY: ${{ secrets.REMOTE_SSH_KEY }}
-      REMOTE_SSH_PASSPHRASE: ${{ secrets.REMOTE_SSH_PASSPHRASE }}
-      REMOTE_SSH_PORT: ${{ secrets.REMOTE_SSH_PORT }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     with:
-      image-tag: ${{ needs.prepare-variables.outputs.image-tag }}
-      spring-profile: ${{ needs.prepare-variables.outputs.spring-profile }}
-      environment: ${{ needs.prepare-variables.outputs.environment }}
-      image-name: ${{ needs.prepare-variables.outputs.image-name }}
-      service-name: ${{ needs.prepare-variables.outputs.service-name }}
+      environment: production
+      ecs-service: ${{ needs.prepare-variables.outputs.ecs-service }}
+      ecs-cluster: ${{ needs.prepare-variables.outputs.ecs-cluster }}
+      ecr-task-definition: ${{ needs.prepare-variables.outputs.ecr-task-definition }}
+      image-url: ${{ needs.call-build-workflow.outputs.image-url }}
+    secrets:
+      AWS_ASSUME_ROLE_ARN: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
+      AWS_ECR_REGISTRY_URL: ${{ secrets.AWS_ECR_REGISTRY_URL }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

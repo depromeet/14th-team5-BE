@@ -3,8 +3,8 @@ spring:
     hikari:
       auto-commit: false
       pool-name: bbibbi-sql-pool
-      minimum-idle: 10
-      maximum-pool-size: 20
+      minimum-idle: 15
+      maximum-pool-size: 30
       connection-timeout: 60000
       max-lifetime: 1800000
       idle-timeout: 60000
@@ -35,6 +35,8 @@ spring:
       port: ${REDIS_PORT}
 
 logging:
+  pattern:
+    console: "%X{requestId} %clr([${LOG_LEVEL_PATTERN:%5p}]) %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
   level:
     com.oing: INFO
 

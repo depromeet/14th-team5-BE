@@ -1,0 +1,68 @@
+name: 이미지 빌드 & 푸쉬
+on:
+  workflow_call:
+    outputs:
+      image-url:
+        value: ${{ jobs.build.outputs.image-url }}
+    inputs:
+      ecr-repository-name:
+        required: true
+        type: string
+      image-tag:
+        required: true
+        type: string
+      spring-profile:
+        required: true
+        type: string
+    secrets:
+      AWS_ASSUME_ROLE_ARN:
+        required: true
+      AWS_ECR_REGISTRY_URL:
+        required: true
+      AWS_REGION:
+        required: true
+
+jobs:
+  build:
+    runs-on: [ ubuntu-latest ]
+    name: 이미지 빌드하기
+
+    outputs:
+      image-url: ${{ steps.build-image.outputs.image-url }}
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: GitHub 에서 레포 받아오기
+        uses: actions/checkout@v3
+
+      - name: JDK17 준비하기
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Gradle 준비하기
+        uses: gradle/gradle-build-action@v2
+
+      - name: AWS 인증정보 준비하기
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: 이미지 빌드하고 푸쉬하기
+        id: build-image
+        env:
+          IMAGE_TAG: ${{ needs.prepare.outputs.imageTag }}
+          ECR_REGISTRY_PREFIX: '${{ secrets.AWS_ECR_REGISTRY_URL }}/'
+        run: |
+          chmod +x jib.sh &&
+          chmod +x ./gradlew &&
+          /bin/bash jib.sh \
+            ${{ env.ECR_REGISTRY_PREFIX }}${{ inputs.ecr-repository-name }} \
+            ${{ inputs.image-tag }} \
+            ${{ inputs.spring-profile }} &&
+          echo "image-url=${{ inputs.ecr-repository-name }}:${{ inputs.image-tag }}" >> $GITHUB_OUTPUT
