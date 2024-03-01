@@ -55,8 +55,8 @@ jib {
         jvmFlags = [
                 '-Dspring.profiles.active=' + activeProfile,
                 '-Dserver.port=' + serverPort,
-                '-Xms2G',
-                '-Xmx2G',
+                '-Xms3600M',
+                '-Xmx3600M',
                 '-XX:+UseG1GC',
                 '-XX:+UseContainerSupport',
                 '-XX:MaxGCPauseMillis=400',
