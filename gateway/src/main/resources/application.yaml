@@ -80,7 +80,7 @@ server:
   shutdown: graceful
   tomcat:
     threads:
-      min-spare: 10
+      min-spare: 15
       max: 200
     accept-count: 200
   compression:
