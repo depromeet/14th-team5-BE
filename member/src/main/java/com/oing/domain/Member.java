@@ -63,6 +63,7 @@ public class Member extends DeletableBaseAuditEntity {
         super.updateDeletedAt();
         this.name = "DeletedMember";
         this.profileImgUrl = null;
+        this.profileImgKey = null;
     }
 
     public void setFamilyId(String familyId) {
