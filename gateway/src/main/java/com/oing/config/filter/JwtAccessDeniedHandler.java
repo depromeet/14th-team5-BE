@@ -1,7 +1,6 @@
 package com.oing.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oing.component.SentryGateway;
 import com.oing.dto.response.ErrorResponse;
 import com.oing.exception.ErrorCode;
 import jakarta.servlet.ServletException;
@@ -15,9 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static io.sentry.SentryLevel.WARNING;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-
 /**
  * no5ing-server
  * User: CChuYong
@@ -28,14 +24,12 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     private final ObjectMapper objectMapper;
-    private final SentryGateway sentryGateway;
 
     @Override
     public void handle(
             HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException
     ) throws IOException, ServletException {
         writeErrorResponse(response, accessDeniedException);
-        sentryGateway.captureException(accessDeniedException, WARNING, request, FORBIDDEN);
 
     }
 
