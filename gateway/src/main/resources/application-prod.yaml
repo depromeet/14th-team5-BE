@@ -52,8 +52,8 @@ sentry:
   environment: production
   logging:
     enabled: true
-    minimum-event-level: info
-    minimum-breadcrumb-level: info
+    minimum-event-level: warn
+    minimum-breadcrumb-level: warn
   dsn: ${SENTRY_PROD_DSN:}
   # Set traces-sample-rate to 1.0 to capture 100% of transactions for performance monitoring.
   # We recommend adjusting this value in production.
