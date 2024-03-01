@@ -92,7 +92,7 @@ jobs:
                 fields: [
                   {
                     title: '배포 환경',
-                    value: `${process.env.ENVIRONMENT}`,
+                    value: `${{ inputs.environment }}`,
                     short: true,
                   },
                   {
@@ -135,7 +135,7 @@ jobs:
                 fields: [
                   {
                     title: '배포 환경',
-                    value: `${process.env.ENVIRONMENT}`,
+                    value: `${{ inputs.environment }}`,
                     short: true,
                   },
                   {
