@@ -37,8 +37,6 @@ jib {
     def imageTag = System.getenv("IMAGE_TAG")
     def serverPort = "8080"
     def activeProfile = System.getenv("ACTIVE_PROFILE")
-    def dockerUsername = System.getenv("DOCKER_USERNAME")
-    def dockerPassword = System.getenv("DOCKER_PASSWORD")
     def imageName = System.getenv("IMAGE_NAME")
     from {
         image = 'amazoncorretto:17-alpine3.17-jdk'
@@ -46,10 +44,6 @@ jib {
     to {
         image = imageName + ':latest'
         tags = ['latest', imageTag]
-        auth {
-            username = dockerUsername ? dockerUsername : ""
-            password = dockerPassword ? dockerPassword : ""
-        }
     }
     container {
         jvmFlags = [
