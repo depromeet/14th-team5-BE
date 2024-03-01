@@ -2,8 +2,6 @@ package com.oing.config.filter;
 
 import com.oing.config.properties.WebProperties;
 import com.oing.util.RandomStringGenerator;
-import io.sentry.Sentry;
-import io.sentry.protocol.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-/**
- * no5ing-server
- * User: CChuYong
- * Date: 2023/11/21
- * Time: 5:47 PM
- */
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -56,12 +48,6 @@ public class WebRequestInterceptor implements HandlerInterceptor {
                 String.format("[%s]", platformValue != null ? platformValue : "UNKNOWN PLATFORM");
         String userId =
                 String.format("[%s]", userIdValue != null ? userIdValue : "UNKNOWN USER");
-
-        User sentryUser = new User();
-        sentryUser.setId(userId);
-        sentryUser.setIpAddress(originIp);
-
-        Sentry.setUser(sentryUser);
 
         long startTime = (long) request.getAttribute(START_TIME_ATTR_NAME);
         long endTime = System.currentTimeMillis();

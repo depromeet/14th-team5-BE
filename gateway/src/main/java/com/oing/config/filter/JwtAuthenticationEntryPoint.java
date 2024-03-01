@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+import static io.sentry.SentryLevel.WARNING;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
 /**
  * no5ing-server
  * User: CChuYong
@@ -24,13 +27,14 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;
+    private final SentryGateway sentryGateway;
 
     @Override
     public void commence(
             HttpServletRequest request, HttpServletResponse response, AuthenticationException authException
     ) throws IOException {
         writeErrorResponse(response, authException);
-        SentryGateway.captureException(request, authException);
+        sentryGateway.captureException(authException, WARNING, request, UNAUTHORIZED);
     }
 
     private void writeErrorResponse(
