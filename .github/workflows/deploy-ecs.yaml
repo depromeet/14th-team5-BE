@@ -113,7 +113,7 @@ jobs:
                   {
                     title: '새 Task Definition ARN',
                     value: `${{ steps.ecs-deploy.outputs.task-definition-arn }}`,
-                    short: true,
+                    short: false,
                   }
                 ]
               }]
