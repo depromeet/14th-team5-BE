@@ -5,12 +5,10 @@ import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.Token;
 import com.oing.domain.TokenPair;
 import com.oing.domain.TokenType;
+import com.oing.exception.TokenExpiredException;
 import com.oing.exception.TokenNotValidException;
 import com.oing.service.TokenGenerator;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -62,6 +60,8 @@ public class JWTTokenGenerator implements TokenGenerator {
             String userId = tokenClaim.getBody().get(USER_ID_KEY_NAME, String.class);
             String provider = tokenClaim.getBody().get(PROVIDER_KEY_NAME, String.class);
             return new Token(userId, tokenType, provider);
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
         } catch (Exception e) {
             throw new TokenNotValidException();
         }

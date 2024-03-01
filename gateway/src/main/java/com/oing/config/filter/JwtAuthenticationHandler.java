@@ -1,6 +1,7 @@
 package com.oing.config.filter;
 
-import com.oing.config.authentication.APIKeyAuthentication;
+import com.oing.component.SentryGateway;
+import com.oing.config.authentication.JWTTokenAuthentication;
 import com.oing.config.properties.WebProperties;
 import com.oing.domain.Token;
 import com.oing.domain.TokenType;
@@ -18,15 +19,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-/**
- * no5ing-server
- * User: CChuYong
- * Date: 2023/11/21
- * Time: 5:04 PM
- */
+import static io.sentry.SentryLevel.WARNING;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
 @RequiredArgsConstructor
 @Component
 public class JwtAuthenticationHandler extends OncePerRequestFilter {
+    private final SentryGateway sentryGateway;
     private final WebProperties webProperties;
     private final TokenGenerator tokenGenerator;
 
@@ -42,10 +41,12 @@ public class JwtAuthenticationHandler extends OncePerRequestFilter {
 
         try {
             Token token = tokenGenerator.extractTokenData(accessToken);
-            Authentication authentication = new APIKeyAuthentication(token, token.userId(),
+            Authentication authentication = new JWTTokenAuthentication(token, token.userId(),
                     token.tokenType() == TokenType.TEMPORARY);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (TokenNotValidException ignored) {
+
+        } catch (TokenNotValidException exception) {
+            sentryGateway.captureException(exception, WARNING, request, UNAUTHORIZED);
 
         }
         filterChain.doFilter(request, response);

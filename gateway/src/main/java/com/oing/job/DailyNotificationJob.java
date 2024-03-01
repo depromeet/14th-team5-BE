@@ -14,6 +14,7 @@ import io.sentry.Sentry;
 import io.sentry.SentryLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -42,10 +43,11 @@ public class DailyNotificationJob {
     private final MemberPostService memberPostService;
 
     @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Seoul") // 12:00 PM
+    @SchedulerLock(name = "DailyPreUploadNotificationSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void sendDailyUploadNotification() {
         long start = System.currentTimeMillis();
         log.info("⏰ [DailyNotificationJob] 오늘 업로드 알림 전송 시작");
-        Sentry.captureMessage("[DailyNotificationJob] 오늘 업로드 알림 전송 시작", SentryLevel.INFO);
+
         try {
             HashSet<String> targetFcmTokens = new HashSet<>();
             List<Member> members = memberService.findAllMember();
@@ -82,10 +84,11 @@ public class DailyNotificationJob {
     }
 
     @Scheduled(cron = "0 30 23 * * *", zone = "Asia/Seoul") // 11:30 PM
+    @SchedulerLock(name = "DailyPostUploadNotificationSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void sendDailyRemainingNotification() {
         long start = System.currentTimeMillis();
         log.info("[DailyNotificationJob] 오늘 미 업로드 사용자 대상 알림 전송 시작");
-        Sentry.captureMessage("⏰ [DailyNotificationJob] 오늘 미 업로드 사용자 대상 알림 전송 시작", SentryLevel.INFO);
+
         try {
             LocalDate today = LocalDate.now();
             List<Member> allMembers = memberService.findAllMember();

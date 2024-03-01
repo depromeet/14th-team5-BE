@@ -193,7 +193,7 @@ public class MemberControllerTest {
     void 멤버_탈퇴_테스트() {
         // given
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
-                "testMember1", "http://test.com/test-profile.jpg", null,
+                "testMember1", "http://test.com/test-profile.jpg", "/test-profile.jpg",
                 LocalDateTime.now());
         when(memberService.findMemberById(any())).thenReturn(member);
 
@@ -203,6 +203,7 @@ public class MemberControllerTest {
         // then
         assertEquals("DeletedMember", member.getName());
         assertNull(member.getProfileImgUrl());
+        assertNull(member.getProfileImgKey());
     }
 
     @Test

@@ -16,7 +16,7 @@ import java.util.List;
  * Time: 8:04 PM
  */
 @RequiredArgsConstructor
-public class APIKeyAuthentication implements Authentication {
+public class JWTTokenAuthentication implements Authentication {
     private final Token token;
     private final String userId;
     private final boolean temporary;

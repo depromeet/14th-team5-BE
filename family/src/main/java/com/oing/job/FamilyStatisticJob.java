@@ -27,7 +27,6 @@ public class FamilyStatisticJob {
         int historyMonth = historyDate.getMonthValue();
 
         log.info("[MonthlyFamilyTopPercentageHistoryRecordingSchedule: {}-{}] scheduled and locked for 30s", historyYear, historyMonth);
-        Sentry.captureMessage("⏰ [MonthlyFamilyTopPercentageHistoryRecordingSchedule: {"+historyYear+"}-{"+historyMonth+"}] scheduled and locked for 30s", SentryLevel.INFO);
 
         familyScoreBridge.updateAllFamilyTopPercentageHistories(historyYear, historyMonth);
     }

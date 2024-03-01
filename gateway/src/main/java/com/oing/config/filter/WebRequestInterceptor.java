@@ -11,12 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-/**
- * no5ing-server
- * User: CChuYong
- * Date: 2023/11/21
- * Time: 5:47 PM
- */
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -45,6 +39,8 @@ public class WebRequestInterceptor implements HandlerInterceptor {
         String appVersionValue = request.getHeader(webProperties.headerNames().appVersionHeader());
         String platformValue = request.getHeader(webProperties.headerNames().platformHeader());
         String userIdValue = request.getHeader(webProperties.headerNames().userIdHeader());
+        String forwardedIp = request.getHeader(webProperties.headerNames().proxyForwardHeader());
+        String originIp = forwardedIp != null ? forwardedIp : request.getRemoteAddr();
 
         String appVersion =
                 String.format("[%s]", appVersionValue != null ? appVersionValue : "UNKNOWN VERSION");
@@ -57,8 +53,7 @@ public class WebRequestInterceptor implements HandlerInterceptor {
         long endTime = System.currentTimeMillis();
         long executionTime = endTime - startTime;
 
-        String forwardedIp = request.getHeader(webProperties.headerNames().proxyForwardHeader());
-        String originIp = forwardedIp != null ? forwardedIp : request.getRemoteAddr();
+
         log.info("{} {} {} {} {} {} {} {}ms", appVersion, platform, userId, request.getMethod(), request.getRequestURI(), originIp, response.getStatus(), executionTime);
         MDC.clear();
     }

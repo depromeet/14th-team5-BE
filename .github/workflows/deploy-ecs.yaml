@@ -1,0 +1,160 @@
+name: AWS ECS 배포
+on:
+  workflow_call:
+    inputs:
+      ecs-service:
+        required: true
+        type: string
+      ecs-cluster:
+        required: true
+        type: string
+      ecr-task-definition:
+        required: true
+        type: string
+      image-url:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+    secrets:
+      AWS_ASSUME_ROLE_ARN:
+        required: true
+      AWS_ECR_REGISTRY_URL:
+        required: true
+      AWS_REGION:
+        required: true
+      SLACK_WEBHOOK_URL:
+        required: true
+jobs:
+  deploy:
+    environment: ${{ inputs.environment }}
+    runs-on: [ ubuntu-latest ]
+    name: ECS 배포하기
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: AWS 인증정보 준비하기
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: AWS 태스크 정의 파일 내려받기
+        run: |
+          aws ecs describe-task-definition \
+          --task-definition ${{ inputs.ecr-task-definition }} \
+          --query taskDefinition \
+          > task-definition.json
+
+      - name: AWS 태스크 정의 파일에 이미지 버전 업데이트하기
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: api
+          image: "${{ secrets.AWS_ECR_REGISTRY_URL }}/${{ inputs.image-url }}"
+
+      - name: AWS 태스크 정의 배포하고 서비스 업데이트하기
+        id: ecs-deploy
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ inputs.ecs-service }}
+          cluster: ${{ inputs.ecs-cluster }}
+          wait-for-service-stability: true # ECS 배포후 롤링업데이트까지 성공해야 태스크가 완료됩니다.
+
+      - name: 설마 롤백한건 아닌지 확인해보기
+        id: check-rollback
+        run: |
+          CURRENT_TASK_DEF_ARN=$(aws ecs describe-services --cluster ${{ inputs.ecs-cluster }} --services ${{ inputs.ecs-service }} --query services[0].deployments[0].taskDefinition | jq -r ".")
+          NEW_TASK_DEF_ARN=${{ steps.ecs-deploy.outputs.task-definition-arn }}
+          if [ "$CURRENT_TASK_DEF_ARN" != "$NEW_TASK_DEF_ARN" ]; then
+            echo "Deployment rolled back."
+            exit 1
+          fi
+
+      - name: 배포 성공 슬랙 알림 보내기
+        uses: 8398a7/action-slack@v3
+        if: ${{ success() }}
+        with:
+          status: custom
+          fields: author, workflowRun, pullRequest
+          custom_payload: |
+            {
+              attachments: [{
+                color: '#59f764',
+                title: '백엔드 배포 알림',
+                text: `삐삐 서버 새 리비전 배포 성공!`,
+                fields: [
+                  {
+                    title: '배포 환경',
+                    value: `${{ inputs.environment }}`,
+                    short: true,
+                  },
+                  {
+                    title: '배포자',
+                    value: `${process.env.AS_AUTHOR}`,
+                    short: true,
+                  },
+                  {
+                    title: '워크플로 링크',
+                    value: `${process.env.AS_WORKFLOW_RUN}`,
+                    short: true,
+                  },
+                  {
+                    title: 'PR 링크',
+                    value: `${process.env.AS_PULL_REQUEST}`,
+                    short: true,
+                  },
+                  {
+                    title: '새 Task Definition ARN',
+                    value: `${{ steps.ecs-deploy.outputs.task-definition-arn }}`,
+                    short: false,
+                  }
+                ]
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: 배포 실패 슬랙 알림 보내기
+        uses: 8398a7/action-slack@v3
+        if: ${{ failure() }}
+        with:
+          status: custom
+          fields: author, workflowRun, pullRequest
+          custom_payload: |
+            {
+              attachments: [{
+                color: '#e83e20',
+                title: '백엔드 배포 알림',
+                text: `삐삐 서버 새 리비전 배포 실패..ㅠㅠ`,
+                fields: [
+                  {
+                    title: '배포 환경',
+                    value: `${{ inputs.environment }}`,
+                    short: true,
+                  },
+                  {
+                    title: '배포자',
+                    value: `${process.env.AS_AUTHOR}`,
+                    short: true,
+                  },
+                  {
+                    title: '워크플로 링크',
+                    value: `${process.env.AS_WORKFLOW_RUN}`,
+                    short: true,
+                  },
+                  {
+                    title: 'PR 링크',
+                    value: `${process.env.AS_PULL_REQUEST}`,
+                    short: true,
+                  }
+                ]
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
