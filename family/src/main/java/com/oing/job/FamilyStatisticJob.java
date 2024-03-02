@@ -18,7 +18,7 @@ public class FamilyStatisticJob {
 
     private final FamilyScoreBridge familyScoreBridge;
 
-    @Scheduled(cron = "0 0 1 1 * *") // 매월 1일 01시
+    @Scheduled(cron = "0 0 1 1 * *", zone = "Asia/Seoul") // 매월 1일 01시
     @SchedulerLock(name = "MonthlyFamilyTopPercentageHistoryRecordingSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void recordAllFamilyTopPercentageHistoriesMonthly() {
         // 방금 막 지나간 지난 달의 데이터를 기록한다.
