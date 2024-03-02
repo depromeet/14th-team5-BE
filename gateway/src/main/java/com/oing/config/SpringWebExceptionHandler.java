@@ -103,7 +103,7 @@ public class SpringWebExceptionHandler {
 
         return ResponseEntity
                 .status(UNAUTHORIZED)
-                .body(ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED));
+                .body(ErrorResponse.of(ErrorCode.TOKEN_AUTHENTICATION_FAILED));
     }
 
     @ExceptionHandler(IOException.class)
