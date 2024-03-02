@@ -24,6 +24,7 @@ public enum ErrorCode {
     AUTHENTICATION_FAILED("AU0001", "Authentication failed"),
     AUTHORIZATION_FAILED("AU0002", "No Permission"),
     REFRESH_TOKEN_INVALID("AU0003", "Refresh Token is invalid"),
+    TOKEN_EXPIRED("AU0004", "Token is expired"),
     /**
      * Member Related Errors
      */

@@ -10,4 +10,8 @@ public class TokenNotValidException extends DomainException {
     public TokenNotValidException() {
         super(ErrorCode.AUTHENTICATION_FAILED);
     }
+
+    public TokenNotValidException(ErrorCode errorCode) {
+        super(errorCode);
+    }
 }
