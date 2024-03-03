@@ -16,9 +16,6 @@ public class FamilyScoreEventListener {
     public final MemberBridge memberBridge;
     public final FamilyService familyService;
 
-    // TODO: 1. BEFORE_COMMIT, 2. Async 모두 작동 안함. 원인 파악 후 리펙토링 필요.
-//    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-//    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onMemberPostCreatedEvent(MemberPostCreatedEvent memberPostCreatedEvent) {
