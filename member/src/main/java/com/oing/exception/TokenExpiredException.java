@@ -7,4 +7,7 @@ package com.oing.exception;
  * Time: 6:24 PM
  */
 public class TokenExpiredException extends TokenNotValidException {
+    public TokenExpiredException() {
+        super(ErrorCode.TOKEN_EXPIRED);
+    }
 }

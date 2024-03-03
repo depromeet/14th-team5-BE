@@ -45,7 +45,7 @@ sentry:
   environment: development
   logging:
     enabled: true
-    minimum-event-level: warn
-    minimum-breadcrumb-level: warn
+    minimum-event-level: WARN
+    minimum-breadcrumb-level: DEBUG
   dsn: ${SENTRY_DEV_DSN:}
   traces-sample-rate: 1.0
