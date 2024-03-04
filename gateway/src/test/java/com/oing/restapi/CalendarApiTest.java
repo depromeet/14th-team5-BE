@@ -9,6 +9,7 @@ import com.oing.dto.response.DeepLinkResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.service.*;
 import com.oing.support.EmbeddedRedisConfig;
+import com.oing.support.RedisTestConfig;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
-@Import(EmbeddedRedisConfig.class)
+@Import({EmbeddedRedisConfig.class, RedisTestConfig.class})
 @ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc

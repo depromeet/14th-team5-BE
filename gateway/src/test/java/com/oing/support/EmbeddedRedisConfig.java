@@ -7,8 +7,8 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Profile;
 import redis.embedded.RedisServer;
 
-@TestConfiguration
 @Profile("test")
+@TestConfiguration
 public class EmbeddedRedisConfig {
 
     @Value("${spring.data.redis.port}")
