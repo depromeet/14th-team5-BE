@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Collections;
 
-@Profile({"local", "dev", "prod"})
+@Profile("!test")
 @Configuration
 public class RedisConfig {
 
