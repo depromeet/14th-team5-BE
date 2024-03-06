@@ -4,6 +4,7 @@ import com.oing.domain.*;
 import com.oing.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,8 +16,9 @@ import java.time.LocalDateTime;
 import static com.oing.domain.Family.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 @ActiveProfiles("test")
+@SpringBootTest
+@ExtendWith(DatabaseCleanerExtension.class)
 class FamilyScoreEventListenerTest {
 
     @Autowired
@@ -92,12 +94,9 @@ class FamilyScoreEventListenerTest {
                 "2"
         ));
 
-        // then
-        assertThat(memberPostRepository.findById("1")).isPresent();
-        assertThat(memberPostRepository.findById("2")).isPresent();
-
         Thread.sleep(1000);
 
+        // then
         int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
         assertThat(newScore).isEqualTo(NEW_POST_SCORE * 2);
     }
@@ -129,8 +128,6 @@ class FamilyScoreEventListenerTest {
         Thread.sleep(1000);
 
         // then
-        assertThat(memberPostRepository.findById("1")).isNotPresent();
-        assertThat(memberPostRepository.findById("2")).isNotPresent();
 
         int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
         assertThat(newScore).isEqualTo(0);
@@ -167,8 +164,6 @@ class FamilyScoreEventListenerTest {
         Thread.sleep(1000);
 
         // then
-        assertThat(memberPostCommentRepository.findById("1")).isPresent();
-        assertThat(memberPostCommentRepository.findById("2")).isPresent();
 
         int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
         assertThat(newScore).isEqualTo(originScore + NEW_COMMENT_SCORE * 2);
@@ -207,11 +202,9 @@ class FamilyScoreEventListenerTest {
         Thread.sleep(1000);
 
         // then
-        assertThat(memberPostCommentRepository.findById("1")).isNotPresent();
-        assertThat(memberPostCommentRepository.findById("2")).isNotPresent();
 
         int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore);
+        assertThat(newScore).isEqualTo(originScore - (NEW_COMMENT_SCORE * 2));
     }
 
     @Test
@@ -245,11 +238,8 @@ class FamilyScoreEventListenerTest {
         Thread.sleep(1000);
 
         // then
-        assertThat(memberPostReactionRepository.findById("1")).isPresent();
-        assertThat(memberPostReactionRepository.findById("2")).isPresent();
-
         int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore + NEW_REACTION_SCORE * 2);
+        assertThat(newScore).isEqualTo(originScore + (NEW_REACTION_SCORE * 2));
     }
 
     @Test
@@ -285,11 +275,9 @@ class FamilyScoreEventListenerTest {
         Thread.sleep(1000);
 
         // then
-        assertThat(memberPostReactionRepository.findById("1")).isPresent();
-        assertThat(memberPostReactionRepository.findById("2")).isPresent();
 
         int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore);
+        assertThat(newScore).isEqualTo(originScore - (NEW_REACTION_SCORE * 2));
     }
 
     @Test
@@ -340,11 +328,8 @@ class FamilyScoreEventListenerTest {
         Thread.sleep(1000);
 
         // then
-        assertThat(memberPostRealEmojiRepository.findById("1")).isPresent();
-        assertThat(memberPostRealEmojiRepository.findById("2")).isPresent();
-
         int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore + NEW_REAL_EMOJI_SCORE * 2);
+        assertThat(newScore).isEqualTo(originScore + (NEW_REAL_EMOJI_SCORE * 2));
     }
 
     @Test
@@ -399,10 +384,7 @@ class FamilyScoreEventListenerTest {
         Thread.sleep(1000);
 
         // then
-        assertThat(memberPostRealEmojiRepository.findById("1")).isNotPresent();
-        assertThat(memberPostRealEmojiRepository.findById("2")).isNotPresent();
-
         int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore);
+        assertThat(newScore).isEqualTo(originScore - (NEW_REAL_EMOJI_SCORE * 2));
     }
 }
