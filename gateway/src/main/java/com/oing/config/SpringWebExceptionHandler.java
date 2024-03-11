@@ -7,6 +7,7 @@ import com.oing.dto.response.ErrorResponse;
 import com.oing.exception.TokenNotValidException;
 import com.oing.exception.DomainException;
 import com.oing.exception.ErrorCode;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,7 @@ import java.io.StringWriter;
 import java.security.InvalidParameterException;
 import java.util.Enumeration;
 
-import static io.sentry.SentryLevel.ERROR;
-import static io.sentry.SentryLevel.WARNING;
+import static io.sentry.SentryLevel.*;
 import static org.springframework.http.HttpStatus.*;
 
 @RequiredArgsConstructor
@@ -84,15 +84,26 @@ public class SpringWebExceptionHandler {
                 .body(ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED));
     }
 
-    @ExceptionHandler(TokenNotValidException.class)
-    ResponseEntity<ErrorResponse> handleAuthenticationFailedException(HttpServletRequest request, TokenNotValidException exception) {
+    @ExceptionHandler(ExpiredJwtException.class)
+    ResponseEntity<ErrorResponse> handleExpiredJwtException(HttpServletRequest request, ExpiredJwtException exception) {
 
-        log.warn("[AuthenticationFailedException]", exception);
+        log.info("[ExpiredJwtException]", exception);
+        sentryGateway.captureException(exception, INFO, request, UNAUTHORIZED);
+
+        return ResponseEntity
+                .status(UNAUTHORIZED)
+                .body(ErrorResponse.of(ErrorCode.TOKEN_EXPIRED));
+    }
+
+    @ExceptionHandler(TokenNotValidException.class)
+    ResponseEntity<ErrorResponse> handleTokenNotValidException(HttpServletRequest request, TokenNotValidException exception) {
+
+        log.warn("[TokenNotValidException]", exception);
         sentryGateway.captureException(exception, WARNING, request, UNAUTHORIZED);
 
         return ResponseEntity
                 .status(UNAUTHORIZED)
-                .body(ErrorResponse.of(ErrorCode.AUTHENTICATION_FAILED));
+                .body(ErrorResponse.of(ErrorCode.TOKEN_AUTHENTICATION_FAILED));
     }
 
     @ExceptionHandler(IOException.class)

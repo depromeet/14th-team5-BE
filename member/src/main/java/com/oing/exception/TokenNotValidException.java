@@ -8,6 +8,10 @@ package com.oing.exception;
  */
 public class TokenNotValidException extends DomainException {
     public TokenNotValidException() {
-        super(ErrorCode.AUTHENTICATION_FAILED);
+        super(ErrorCode.TOKEN_AUTHENTICATION_FAILED);
+    }
+
+    public TokenNotValidException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }
