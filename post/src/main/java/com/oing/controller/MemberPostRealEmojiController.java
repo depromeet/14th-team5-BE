@@ -13,8 +13,6 @@ import com.oing.restapi.MemberPostRealEmojiApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostRealEmojiService;
 import com.oing.service.MemberPostService;
-import com.oing.service.MemberRealEmojiService;
-import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +27,8 @@ import java.util.stream.Collectors;
 @Controller
 public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
 
-    private final IdentityGenerator identityGenerator;
     private final MemberPostService memberPostService;
     private final MemberPostRealEmojiService memberPostRealEmojiService;
-    private final MemberRealEmojiService memberRealEmojiService;
     private final MemberBridge memberBridge;
 
     /**
@@ -45,29 +41,17 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
      */
     @Transactional
     @Override
-    public PostRealEmojiResponse createPostRealEmoji(String postId, String loginFamilyId, String loginMemberId, PostRealEmojiRequest request) {
+    public PostRealEmojiResponse createPostRealEmoji(
+            String postId, String loginFamilyId, String loginMemberId, PostRealEmojiRequest request
+    ) {
         log.info("Member {} is trying to create post real emoji", loginMemberId);
         MemberPost post = memberPostService.getMemberPostById(postId);
-        if (!memberBridge.isInSameFamily(loginMemberId, post.getMemberId())) {
-            log.warn("Unauthorized access attempt: Member {} is attempting to access post real emoji", loginMemberId);
-            throw new AuthorizationFailedException();
-        }
+        MemberPostRealEmoji addedPostRealEmoji = memberPostRealEmojiService.createPostRealEmoji(request, loginMemberId,
+                loginFamilyId, post);
 
-        MemberRealEmoji realEmoji = memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(request.realEmojiId(), loginFamilyId);
-        validatePostRealEmojiForAddition(post, loginMemberId, realEmoji);
-        MemberPostRealEmoji postRealEmoji = new MemberPostRealEmoji(identityGenerator.generateIdentity(), realEmoji,
-                post, loginMemberId);
-        MemberPostRealEmoji addedPostRealEmoji = memberPostRealEmojiService.savePostRealEmoji(postRealEmoji);
-        post.addRealEmoji(postRealEmoji);
-        log.info("Member {} has created post real emoji {}", loginMemberId, realEmoji.getId());
+        log.info("Member {} has created post real emoji {}", loginMemberId, addedPostRealEmoji.getId());
 
         return PostRealEmojiResponse.from(addedPostRealEmoji);
-    }
-
-    private void validatePostRealEmojiForAddition(MemberPost post, String memberId, MemberRealEmoji emoji) {
-        if (memberPostRealEmojiService.isMemberPostRealEmojiExists(post, memberId, emoji)) {
-            throw new RealEmojiAlreadyExistsException();
-        }
     }
 
     /**
