@@ -4,6 +4,7 @@ import com.oing.service.FamilyService;
 import com.oing.service.MemberBridge;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ public class FamilyScoreEventListener {
     public final MemberBridge memberBridge;
     public final FamilyService familyService;
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onMemberPostCreatedEvent(MemberPostCreatedEvent memberPostCreatedEvent) {
@@ -29,6 +31,7 @@ public class FamilyScoreEventListener {
         log.info("New post score of family({}) added", familyId);
     }
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onMemberPostDeletedEvent(MemberPostDeletedEvent memberPostDeletedEvent) {
@@ -40,6 +43,7 @@ public class FamilyScoreEventListener {
         log.info("Deleted post score of family({}) subtracted", familyId);
     }
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onMemberPostCommentCreatedEvent(MemberPostCommentCreatedEvent memberPostCommentCreatedEvent) {
@@ -51,6 +55,7 @@ public class FamilyScoreEventListener {
         log.info("New comment score of family({}) added", familyId);
     }
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onMemberPostCommentDeletedEvent(MemberPostCommentDeletedEvent memberPostCommentDeletedEvent) {
@@ -62,6 +67,7 @@ public class FamilyScoreEventListener {
         log.info("Deleted comment score of family({}) subtracted", familyId);
     }
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onMemberPostReactionCreatedEvent(MemberPostReactionCreatedEvent memberPostReactionCreatedEvent) {
@@ -73,6 +79,7 @@ public class FamilyScoreEventListener {
         log.info("New reaction score of family({}) added", familyId);
     }
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onMemberPostReactionDeletedEvent(MemberPostReactionDeletedEvent memberPostReactionDeletedEvent) {
@@ -84,6 +91,7 @@ public class FamilyScoreEventListener {
         log.info("Deleted reaction score of family({}) subtracted", familyId);
     }
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onMemberPostRealEmojiCreatedEvent(MemberPostRealEmojiCreatedEvent memberPostRealEmojiCreatedEvent) {
@@ -95,6 +103,7 @@ public class FamilyScoreEventListener {
         log.info("New real emoji score of family({}) added", familyId);
     }
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onMemberPostRealEmojiDeletedEvent(MemberPostRealEmojiDeletedEvent memberPostRealEmojiDeletedEvent) {
