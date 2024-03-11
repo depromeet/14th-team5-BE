@@ -2,6 +2,8 @@ package com.oing.domain;
 
 import com.oing.event.MemberPostCreatedEvent;
 import com.oing.event.MemberPostDeletedEvent;
+import com.oing.event.MemberPostRealEmojiCreatedEvent;
+import com.oing.event.MemberPostRealEmojiDeletedEvent;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import lombok.NoArgsConstructor;
@@ -22,11 +24,11 @@ public class MemberPostRealEmojiEntityListener {
 
     @PostPersist
     public void onPostPersist(MemberPostRealEmoji memberPostRealEmoji) {
-        applicationEventPublisher.publishEvent(new MemberPostCreatedEvent(memberPostRealEmoji, memberPostRealEmoji.getPost().getMemberId()));
+        applicationEventPublisher.publishEvent(new MemberPostRealEmojiCreatedEvent(memberPostRealEmoji, memberPostRealEmoji.getPost().getMemberId()));
     }
 
     @PostRemove
     public void onPostRemove(MemberPostRealEmoji memberPostRealEmoji) {
-        applicationEventPublisher.publishEvent(new MemberPostDeletedEvent(memberPostRealEmoji, memberPostRealEmoji.getPost().getMemberId()));
+        applicationEventPublisher.publishEvent(new MemberPostRealEmojiDeletedEvent(memberPostRealEmoji, memberPostRealEmoji.getPost().getMemberId()));
     }
 }
