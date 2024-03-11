@@ -114,6 +114,4 @@ public class FamilyScoreEventListener {
 
         log.info("Deleting real Emoji({}) score of Family({}) subtracted", memberPostRealEmojiDeletedEvent.getRealEmojiId(), familyId);
     }
-
-
 }
