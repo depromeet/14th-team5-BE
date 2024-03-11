@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 public class MemberPostCommentEntityListener {
 
     private ApplicationEventPublisher applicationEventPublisher;
-
     @Autowired
     public MemberPostCommentEntityListener(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
@@ -24,11 +23,13 @@ public class MemberPostCommentEntityListener {
 
     @PostPersist
     public void onPostPersist(MemberPostComment memberPostComment) {
-        applicationEventPublisher.publishEvent(new MemberPostCommentCreatedEvent(memberPostComment, memberPostComment.getMemberId()));
+        log.info("Comment({}) persist listened, publishing MemberPostCommentCreatedEvent", memberPostComment.getId());
+        applicationEventPublisher.publishEvent(new MemberPostCommentCreatedEvent(memberPostComment, memberPostComment.getId(), memberPostComment.getMemberId()));
     }
 
     @PostRemove
     public void onPostRemove(MemberPostComment memberPostComment) {
-        applicationEventPublisher.publishEvent(new MemberPostCommentDeletedEvent(memberPostComment, memberPostComment.getMemberId()));
+        log.info("Comment({}) removal listened, publishing MemberPostCommentDeletedEvent", memberPostComment.getId());
+        applicationEventPublisher.publishEvent(new MemberPostCommentDeletedEvent(memberPostComment, memberPostComment.getId(), memberPostComment.getMemberId()));
     }
 }
