@@ -52,6 +52,13 @@ public class FamilyService {
                 .orElseThrow(FamilyNotFoundException::new);
     }
 
+    @Transactional
+    public Family getFamilyByIdWithLock(String familyId) {
+        return familyRepository
+                .findByIdWithLock(familyId)
+                .orElseThrow(FamilyNotFoundException::new);
+    }
+
     public int getFamilyTopPercentage(String familyId, LocalDate calendarDate) {
         if (DateUtils.isCurrentMonth(calendarDate)) {
             return calculateLiveFamilyTopPercentage(familyId);

@@ -26,7 +26,7 @@ public class FamilyScoreEventListener {
         log.info("Event of new post uploaded by member({}) listened, adding family score", memberPostCreatedEvent.getMemberId());
 
         String familyId = memberBridge.getFamilyIdByMemberId(memberPostCreatedEvent.getMemberId());
-        familyService.getFamilyById(familyId).addNewPostScore();
+        familyService.getFamilyByIdWithLock(familyId).addNewPostScore();
 
         log.info("New post score of family({}) added", familyId);
     }
@@ -38,7 +38,7 @@ public class FamilyScoreEventListener {
         log.info("Event of post deleted by member({}) listened, subtracting family score", memberPostDeletedEvent.getMemberId());
 
         String familyId = memberBridge.getFamilyIdByMemberId(memberPostDeletedEvent.getMemberId());
-        familyService.getFamilyById(familyId).subtractNewPostScore();
+        familyService.getFamilyByIdWithLock(familyId).subtractNewPostScore();
 
         log.info("Deleted post score of family({}) subtracted", familyId);
     }
@@ -50,7 +50,7 @@ public class FamilyScoreEventListener {
         log.info("Event of new comment uploaded by member({}) listened, adding family score", memberPostCommentCreatedEvent.getMemberId());
 
         String familyId = memberBridge.getFamilyIdByMemberId(memberPostCommentCreatedEvent.getMemberId());
-        familyService.getFamilyById(familyId).addNewCommentScore();
+        familyService.getFamilyByIdWithLock(familyId).addNewCommentScore();
 
         log.info("New comment score of family({}) added", familyId);
     }
@@ -62,7 +62,7 @@ public class FamilyScoreEventListener {
         log.info("Event of comment deleted by member({}) listened, subtracting family score", memberPostCommentDeletedEvent.getMemberId());
 
         String familyId = memberBridge.getFamilyIdByMemberId(memberPostCommentDeletedEvent.getMemberId());
-        familyService.getFamilyById(familyId).subtractNewCommentScore();
+        familyService.getFamilyByIdWithLock(familyId).subtractNewCommentScore();
 
         log.info("Deleted comment score of family({}) subtracted", familyId);
     }
@@ -74,7 +74,7 @@ public class FamilyScoreEventListener {
         log.info("Event of new reaction uploaded by member({}) listened, adding family score", memberPostReactionCreatedEvent.getMemberId());
 
         String familyId = memberBridge.getFamilyIdByMemberId(memberPostReactionCreatedEvent.getMemberId());
-        familyService.getFamilyById(familyId).addNewReactionScore();
+        familyService.getFamilyByIdWithLock(familyId).addNewReactionScore();
 
         log.info("New reaction score of family({}) added", familyId);
     }
@@ -86,7 +86,7 @@ public class FamilyScoreEventListener {
         log.info("Event of new reaction uploaded by member({}) listened, adding family score", memberPostReactionDeletedEvent.getMemberId());
 
         String familyId = memberBridge.getFamilyIdByMemberId(memberPostReactionDeletedEvent.getMemberId());
-        familyService.getFamilyById(familyId).subtractNewReactionScore();
+        familyService.getFamilyByIdWithLock(familyId).subtractNewReactionScore();
 
         log.info("Deleted reaction score of family({}) subtracted", familyId);
     }
@@ -98,7 +98,7 @@ public class FamilyScoreEventListener {
         log.info("Event of new real emoji uploaded by member({}) listened, adding family score", memberPostRealEmojiCreatedEvent.getMemberId());
 
         String familyId = memberBridge.getFamilyIdByMemberId(memberPostRealEmojiCreatedEvent.getMemberId());
-        familyService.getFamilyById(familyId).addNewRealEmojiScore();
+        familyService.getFamilyByIdWithLock(familyId).addNewRealEmojiScore();
 
         log.info("New real emoji score of family({}) added", familyId);
     }
@@ -110,7 +110,7 @@ public class FamilyScoreEventListener {
         log.info("Event of real emoji deleted by member({}) listened, subtracting family score", memberPostRealEmojiDeletedEvent.getMemberId());
 
         String familyId = memberBridge.getFamilyIdByMemberId(memberPostRealEmojiDeletedEvent.getMemberId());
-        familyService.getFamilyById(familyId).subtractNewRealEmojiScore();
+        familyService.getFamilyByIdWithLock(familyId).subtractNewRealEmojiScore();
 
         log.info("Deleted real emoji score of family({}) subtracted", familyId);
     }
