@@ -96,7 +96,7 @@ class FamilyScoreEventListenerTest {
         ));
 
         // then
-        await().atMost(10, SECONDS).until(() -> {
+        await().atMost(5, SECONDS).until(() -> {
             Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
             return newScore.equals(NEW_POST_SCORE * 2);
         });
@@ -127,7 +127,7 @@ class FamilyScoreEventListenerTest {
         memberPostRepository.deleteById("2");
 
         // then
-        await().atMost(10, SECONDS).until(() -> {
+        await().atMost(5, SECONDS).until(() -> {
             Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
             return newScore.equals(0);
         });
@@ -162,7 +162,7 @@ class FamilyScoreEventListenerTest {
         ));
 
         // then
-        await().atMost(10, SECONDS).until(() -> {
+        await().atMost(5, SECONDS).until(() -> {
             Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
             return newScore.equals(originScore + NEW_COMMENT_SCORE * 2);
         });
@@ -199,7 +199,7 @@ class FamilyScoreEventListenerTest {
         memberPostCommentRepository.deleteById("2");
 
         // then
-        await().atMost(10, SECONDS).until(() -> {
+        await().atMost(5, SECONDS).until(() -> {
             Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
             return newScore.equals(originScore - (NEW_COMMENT_SCORE * 2));
         });
@@ -234,7 +234,7 @@ class FamilyScoreEventListenerTest {
         ));
 
         // then
-        await().atMost(10, SECONDS).until(() -> {
+        await().atMost(5, SECONDS).until(() -> {
             Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
             return newScore.equals(originScore + (NEW_REACTION_SCORE * 2));
         });
@@ -271,7 +271,7 @@ class FamilyScoreEventListenerTest {
         memberPostReactionRepository.deleteById("2");
 
         // then
-        await().atMost(10, SECONDS).until(() -> {
+        await().atMost(5, SECONDS).until(() -> {
             Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
             return newScore.equals(originScore - (NEW_REACTION_SCORE * 2));
         });
@@ -323,7 +323,7 @@ class FamilyScoreEventListenerTest {
         ));
 
         // then
-        await().atMost(10, SECONDS).until(() -> {
+        await().atMost(5, SECONDS).until(() -> {
             Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
             return newScore.equals(originScore + (NEW_REAL_EMOJI_SCORE * 2));
         });
@@ -378,7 +378,7 @@ class FamilyScoreEventListenerTest {
         memberPostRealEmojiRepository.deleteById("2");
 
         // then
-        await().atMost(10, SECONDS).until(() -> {
+        await().atMost(5, SECONDS).until(() -> {
             Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
             return newScore.equals(originScore - (NEW_REAL_EMOJI_SCORE * 2));
         });

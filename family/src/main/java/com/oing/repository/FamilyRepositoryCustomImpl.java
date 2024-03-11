@@ -1,7 +1,14 @@
 package com.oing.repository;
 
+import com.oing.domain.Family;
+import com.oing.domain.QFamily;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
 
 import static com.oing.domain.QFamily.family;
 
@@ -31,5 +38,14 @@ public class FamilyRepositoryCustomImpl implements FamilyRepositoryCustom {
                 .size();
     }
 
+    @Override
+    public Optional<Family> findByIdWithLock(String familyId) {
+        Family family = queryFactory
+                .selectFrom(QFamily.family)
+                .where(QFamily.family.id.eq(familyId))
+                .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                .fetchFirst();
 
+        return Optional.ofNullable(family);
+    }
 }
