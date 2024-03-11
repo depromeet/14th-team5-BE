@@ -4,7 +4,6 @@ import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostService;
-import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +20,6 @@ public class MemberPostControllerTest {
     @InjectMocks
     private MemberPostController memberPostController;
 
-    @Mock
-    private IdentityGenerator identityGenerator;
     @Mock
     private MemberPostService memberPostService;
     @Mock
