@@ -155,6 +155,10 @@ subprojects {
         testImplementation 'org.springframework.security:spring-security-test'
         testImplementation 'it.ozimov:embedded-redis:0.7.2'
     }
+
+    springBoot {
+        buildInfo()
+    }
 }
 
 tasks.named('bootJar') {
