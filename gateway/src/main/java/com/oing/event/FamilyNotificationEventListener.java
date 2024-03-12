@@ -46,7 +46,8 @@ public class FamilyNotificationEventListener {
                                     String.format("%s님이 생존신고를 완료했어요.", author.getName()))
                     )
                     .putData("aosDeepLink", "post/view/" + memberPost.getId())
-                    .putData("iosDeepLink", "post/view/" + memberPost.getId())
+                    .putData("iosDeepLink", "post/view/" + memberPost.getId() + "?openComment=false&dateOfPost="
+                            + memberPost.getCreatedAt().toLocalDate().toString())
                     .addAllTokens(targetFcmTokens)
                     .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                     .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
@@ -73,7 +74,8 @@ public class FamilyNotificationEventListener {
                                             String.format("\"%s\"", memberPostComment.getComment()))
                             )
                             .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
-                            .putData("iosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
+                            .putData("iosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true&dateOfPost="
+                                    + sourcePost.getCreatedAt().toLocalDate().toString())
                             .addAllTokens(targetFcmTokens)
                             .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                             .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
@@ -100,7 +102,8 @@ public class FamilyNotificationEventListener {
                                     String.format("\"%s\"", memberPostComment.getComment()))
                     )
                     .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
-                    .putData("iosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
+                    .putData("iosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true&dateOfPost="
+                            + sourcePost.getCreatedAt().toLocalDate().toString())
                     .addAllTokens(targetFcmTokens)
                     .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                     .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
