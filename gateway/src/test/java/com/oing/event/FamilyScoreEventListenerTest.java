@@ -14,10 +14,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.oing.domain.Family.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import static java.util.concurrent.TimeUnit.*;
+import static org.awaitility.Awaitility.await;
 
-@ActiveProfiles("test")
 @SpringBootTest
+@ActiveProfiles("test")
 @ExtendWith(DatabaseCleanerExtension.class)
 class FamilyScoreEventListenerTest {
 
@@ -75,7 +76,7 @@ class FamilyScoreEventListenerTest {
 
 
     @Test
-    void 새로운_글이_업로드되면_가족_점수를_더한다() throws InterruptedException {
+    void 새로운_글이_업로드되면_가족_점수를_더한다() {
         // given & when
         memberPostRepository.save(new MemberPost(
                 "1",
@@ -94,15 +95,15 @@ class FamilyScoreEventListenerTest {
                 "2"
         ));
 
-        Thread.sleep(1000);
-
         // then
-        int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(NEW_POST_SCORE * 2);
+        await().atMost(5, SECONDS).until(() -> {
+            Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
+            return newScore.equals(NEW_POST_SCORE * 2);
+        });
     }
 
     @Test
-    void 글이_삭제되면_가족_점수를_뺀다() throws InterruptedException {
+    void 글이_삭제되면_가족_점수를_뺀다() {
         // given
         memberPostRepository.save(new MemberPost(
                 "1",
@@ -125,16 +126,15 @@ class FamilyScoreEventListenerTest {
         memberPostRepository.deleteById("1");
         memberPostRepository.deleteById("2");
 
-        Thread.sleep(1000);
-
         // then
-
-        int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(0);
+        await().atMost(5, SECONDS).until(() -> {
+            Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
+            return newScore.equals(0);
+        });
     }
 
     @Test
-    void 새로운_댓글이_달리면_가족_점수를_더한다() throws InterruptedException {
+    void 새로운_댓글이_달리면_가족_점수를_더한다() {
         // given
         MemberPost post = memberPostRepository.save(new MemberPost(
                 "1",
@@ -161,16 +161,15 @@ class FamilyScoreEventListenerTest {
                 "1"
         ));
 
-        Thread.sleep(1000);
-
         // then
-
-        int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore + NEW_COMMENT_SCORE * 2);
+        await().atMost(5, SECONDS).until(() -> {
+            Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
+            return newScore.equals(originScore + NEW_COMMENT_SCORE * 2);
+        });
     }
 
     @Test
-    void 댓글이_지워지면_가족_점수를_뺀다() throws InterruptedException {
+    void 댓글이_지워지면_가족_점수를_뺀다() {
         // given
         MemberPost post = memberPostRepository.save(new MemberPost(
                 "1",
@@ -199,16 +198,15 @@ class FamilyScoreEventListenerTest {
         memberPostCommentRepository.deleteById("1");
         memberPostCommentRepository.deleteById("2");
 
-        Thread.sleep(1000);
-
         // then
-
-        int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore - (NEW_COMMENT_SCORE * 2));
+        await().atMost(5, SECONDS).until(() -> {
+            Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
+            return newScore.equals(originScore - (NEW_COMMENT_SCORE * 2));
+        });
     }
 
     @Test
-    void 새로운_리액션이_달리면_가족_점수를_더한다() throws InterruptedException {
+    void 새로운_리액션이_달리면_가족_점수를_더한다() {
         // given
         MemberPost post = memberPostRepository.save(new MemberPost(
                 "1",
@@ -235,15 +233,15 @@ class FamilyScoreEventListenerTest {
                 Emoji.EMOJI_3
         ));
 
-        Thread.sleep(1000);
-
         // then
-        int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore + (NEW_REACTION_SCORE * 2));
+        await().atMost(5, SECONDS).until(() -> {
+            Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
+            return newScore.equals(originScore + (NEW_REACTION_SCORE * 2));
+        });
     }
 
     @Test
-    void 리액션이_지워지면_가족_점수를_뺀다() throws InterruptedException {
+    void 리액션이_지워지면_가족_점수를_뺀다() {
         // given
         MemberPost post = memberPostRepository.save(new MemberPost(
                 "1",
@@ -272,16 +270,15 @@ class FamilyScoreEventListenerTest {
         memberPostReactionRepository.deleteById("1");
         memberPostReactionRepository.deleteById("2");
 
-        Thread.sleep(1000);
-
         // then
-
-        int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore - (NEW_REACTION_SCORE * 2));
+        await().atMost(5, SECONDS).until(() -> {
+            Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
+            return newScore.equals(originScore - (NEW_REACTION_SCORE * 2));
+        });
     }
 
     @Test
-    void 새로운_리얼이모지가_달리면_가족_점수를_더한다() throws InterruptedException {
+    void 새로운_리얼이모지가_달리면_가족_점수를_더한다() {
         // given
         MemberPost post = memberPostRepository.save(new MemberPost(
                 "1",
@@ -325,15 +322,15 @@ class FamilyScoreEventListenerTest {
                 testMember2.getId()
         ));
 
-        Thread.sleep(1000);
-
         // then
-        int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore + (NEW_REAL_EMOJI_SCORE * 2));
+        await().atMost(5, SECONDS).until(() -> {
+            Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
+            return newScore.equals(originScore + (NEW_REAL_EMOJI_SCORE * 2));
+        });
     }
 
     @Test
-    void 리얼이모지가_지워지면_가족_점수를_뺀다() throws InterruptedException {
+    void 리얼이모지가_지워지면_가족_점수를_뺀다() {
         // given
         MemberPost post = memberPostRepository.save(new MemberPost(
                 "1",
@@ -376,15 +373,14 @@ class FamilyScoreEventListenerTest {
 
         int originScore = NEW_POST_SCORE + NEW_REAL_EMOJI_SCORE * 2;
 
-
         // when
         memberPostRealEmojiRepository.deleteById("1");
         memberPostRealEmojiRepository.deleteById("2");
 
-        Thread.sleep(1000);
-
         // then
-        int newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
-        assertThat(newScore).isEqualTo(originScore - (NEW_REAL_EMOJI_SCORE * 2));
+        await().atMost(5, SECONDS).until(() -> {
+            Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
+            return newScore.equals(originScore - (NEW_REAL_EMOJI_SCORE * 2));
+        });
     }
 }
