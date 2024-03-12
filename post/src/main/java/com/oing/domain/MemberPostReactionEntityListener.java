@@ -5,16 +5,17 @@ import com.oing.event.MemberPostReactionDeletedEvent;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Component
 @NoArgsConstructor
+@Slf4j
 public class MemberPostReactionEntityListener {
 
     private ApplicationEventPublisher applicationEventPublisher;
-
     @Autowired
     public MemberPostReactionEntityListener(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
@@ -22,11 +23,13 @@ public class MemberPostReactionEntityListener {
 
    @PostPersist
     public void onPostPersist(MemberPostReaction memberPostReaction) {
-        applicationEventPublisher.publishEvent(new MemberPostReactionCreatedEvent(memberPostReaction, memberPostReaction.getMemberId()));
+       log.info("Reaction({}) persist listened, publishing MemberPostReactionCreatedEvent", memberPostReaction.getId());
+        applicationEventPublisher.publishEvent(new MemberPostReactionCreatedEvent(memberPostReaction, memberPostReaction.getId(), memberPostReaction.getMemberId()));
     }
 
     @PostRemove
     public void onPostRemove(MemberPostReaction memberPostReaction) {
-        applicationEventPublisher.publishEvent(new MemberPostReactionDeletedEvent(memberPostReaction, memberPostReaction.getMemberId()));
+        log.info("Reaction({}) removal listened, publishing MemberPostReactionDeletedEvent", memberPostReaction.getId());
+        applicationEventPublisher.publishEvent(new MemberPostReactionDeletedEvent(memberPostReaction, memberPostReaction.getId(), memberPostReaction.getMemberId()));
     }
 }
