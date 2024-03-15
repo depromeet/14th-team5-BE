@@ -41,12 +41,12 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
      */
     @Transactional
     @Override
-    public PostRealEmojiResponse createPostRealEmoji(
+    public PostRealEmojiResponse registerRealEmojiAtPost(
             String postId, String loginFamilyId, String loginMemberId, PostRealEmojiRequest request
     ) {
         log.info("Member {} is trying to create post real emoji", loginMemberId);
         MemberPost post = memberPostService.getMemberPostById(postId);
-        MemberPostRealEmoji addedPostRealEmoji = memberPostRealEmojiService.createPostRealEmoji(request, loginMemberId,
+        MemberPostRealEmoji addedPostRealEmoji = memberPostRealEmojiService.registerRealEmojiAtPost(request, loginMemberId,
                 loginFamilyId, post);
 
         log.info("Member {} has created post real emoji {}", loginMemberId, addedPostRealEmoji.getId());
@@ -84,7 +84,7 @@ public class MemberPostRealEmojiController implements MemberPostRealEmojiApi {
     @Override
     @Transactional
     public PostRealEmojiSummaryResponse getPostRealEmojiSummary(String postId, String loginMemberId) {
-        MemberPost post = memberPostService.findMemberPostById(postId);
+        MemberPost post = memberPostService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
         List<PostRealEmojiSummaryResponse.PostRealEmojiSummaryResponseElement> results = post.getRealEmojis()
                 .stream()

@@ -54,10 +54,10 @@ public class MemberPostRealEmojiControllerTest {
 
         MemberPostRealEmoji postRealEmoji = new MemberPostRealEmoji("1", realEmoji, post, memberId);
         PostRealEmojiRequest request = new PostRealEmojiRequest(realEmoji.getId());
-        when(memberPostRealEmojiService.createPostRealEmoji(request, memberId, familyId, post)).thenReturn(postRealEmoji);
+        when(memberPostRealEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post)).thenReturn(postRealEmoji);
 
         //when
-        PostRealEmojiResponse response = memberPostRealEmojiController.createPostRealEmoji(post.getId(), familyId, memberId, request);
+        PostRealEmojiResponse response = memberPostRealEmojiController.registerRealEmojiAtPost(post.getId(), familyId, memberId, request);
 
         //then
         assertEquals(post.getId(), response.postId());
@@ -108,7 +108,7 @@ public class MemberPostRealEmojiControllerTest {
         String memberId = "1";
         MemberPost post = new MemberPost("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
-        when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
+        when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
 
         //when

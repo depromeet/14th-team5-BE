@@ -52,7 +52,7 @@ public class MemberPostRealEmojiServiceTest {
 
         // then
         assertThrows(AuthorizationFailedException.class,
-                () -> memberPostRealEmojiService.createPostRealEmoji(request, memberId, familyId, post));
+                () -> memberPostRealEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post));
     }
 
     @Test
@@ -73,6 +73,6 @@ public class MemberPostRealEmojiServiceTest {
 
         //then
         assertThrows(RealEmojiAlreadyExistsException.class,
-                () -> memberPostRealEmojiService.createPostRealEmoji(request, memberId, familyId, post));
+                () -> memberPostRealEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post));
     }
 }

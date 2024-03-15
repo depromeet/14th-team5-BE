@@ -51,13 +51,6 @@ public class MemberPostService {
         }
     }
 
-    /**
-     * 업로드 시간이 허용 가능한 범위 내에 있는지 검증합니다.
-     * 범위는 서버의 로컬 시간을 기준으로 전 날의 오후 12시부터 다음 날의 오후 12시까지로 정의됩니다.
-     *
-     * @param uploadTime 검증할 업로드 시간입니다.
-     * @throws InvalidUploadTimeException 업로드 시간이 허용 가능한 범위를 벗어난 경우 발생하는 예외입니다.
-     */
     private void validateUploadTime(String memberId, ZonedDateTime uploadTime) {
         ZonedDateTime serverTime = ZonedDateTime.now();
 
@@ -70,33 +63,14 @@ public class MemberPostService {
         }
     }
 
-
-    /**
-     * 멤버들이 범위 날짜 안에 올린 대표 게시물들을 가져온다.
-     * (대표 게시글의 기준은 당일 가장 늦게 올라온 게시글)
-     *
-     * @param inclusiveStartDate 조회 시작 날짜
-     * @param exclusiveEndDate   조회 종료 날짜
-     * @param familyId           조회 대상 familyId
-     * @return 데일리 대표 게시물들
-     */
     public List<MemberPost> findLatestPostOfEveryday(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, String familyId) {
         return memberPostRepository.findLatestPostOfEveryday(inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay(), familyId);
     }
 
-
-    public MemberPost findMemberPostById(String postId) {
-        return memberPostRepository
-                .findById(postId)
-                .orElseThrow(PostNotFoundException::new);
-    }
-
-    @Transactional
     public MemberPost getMemberPostById(String postId) {
         return memberPostRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
-    @Transactional
     public PaginationDTO<MemberPost> searchMemberPost(int page, int size, LocalDate date, String memberId, String requesterMemberId, String familyId, boolean asc) {
         QueryResults<MemberPost> results = memberPostRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc);
         int totalPage = (int) Math.ceil((double) results.getTotal() / size);
@@ -117,12 +91,11 @@ public class MemberPostService {
         memberPostRepository.delete(memberPost);
     }
 
-    @Transactional
     public long countMonthlyPostByFamilyId(int year, int month, String familyId) {
         return memberPostRepository.countMonthlyPostByFamilyId(year, month, familyId);
     }
 
-    public List<String> getMemberIdsPostedToday(LocalDate date) {
+    public List<String> findMemberIdsPostedToday(LocalDate date) {
         return memberPostRepository.getMemberIdsPostedToday(date);
     }
 
