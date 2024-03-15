@@ -44,14 +44,14 @@ public class MemberPostRealEmojiService {
         }
     }
 
-    public boolean isMemberPostRealEmojiExists(MemberPost post, String memberId, MemberRealEmoji realEmoji) {
-        return memberPostRealEmojiRepository.existsByPostAndMemberIdAndRealEmoji(post, memberId, realEmoji);
-    }
-
     private void validatePostRealEmojiForAddition(MemberPost post, String memberId, MemberRealEmoji emoji) {
         if (isMemberPostRealEmojiExists(post, memberId, emoji)) {
             throw new RealEmojiAlreadyExistsException();
         }
+    }
+
+    public boolean isMemberPostRealEmojiExists(MemberPost post, String memberId, MemberRealEmoji realEmoji) {
+        return memberPostRealEmojiRepository.existsByPostAndMemberIdAndRealEmoji(post, memberId, realEmoji);
     }
 
     public MemberRealEmoji getMemberRealEmojiByIdAndFamilyId(String realEmojiId, String familyId) {
