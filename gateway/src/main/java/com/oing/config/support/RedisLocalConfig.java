@@ -1,22 +1,19 @@
-package com.oing.config;
+package com.oing.config.support;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.util.Collections;
-
-@Profile({"dev", "prod"})
+@Profile("local")
 @Configuration
-public class RedisConfig {
+public class RedisLocalConfig {
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -26,8 +23,7 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        LettuceClientConfiguration configuration = LettuceClientConfiguration.builder().useSsl().build();
-        return new LettuceConnectionFactory(new RedisClusterConfiguration(Collections.singleton(redisHost + ":" + redisPort)), configuration);
+        return new LettuceConnectionFactory(new RedisStandaloneConfiguration(redisHost, redisPort));
     }
 
     @Bean
