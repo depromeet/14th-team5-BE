@@ -156,6 +156,10 @@ subprojects {
         testImplementation 'it.ozimov:embedded-redis:0.7.2'
         testImplementation 'org.awaitility:awaitility:4.2.0'
     }
+
+    springBoot {
+        buildInfo()
+    }
 }
 
 tasks.named('bootJar') {
