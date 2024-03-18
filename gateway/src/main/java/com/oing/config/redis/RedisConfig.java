@@ -1,4 +1,4 @@
-package com.oing.config;
+package com.oing.config.redis;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Collections;
 
-@Profile("!test")
+@Profile({"prod", "dev"})
 @Configuration
 public class RedisConfig {
 
