@@ -8,11 +8,7 @@ import com.oing.dto.request.UpdateMyRealEmojiRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.dto.response.RealEmojiResponse;
 import com.oing.dto.response.RealEmojisResponse;
-import com.oing.exception.AuthorizationFailedException;
-import com.oing.exception.DuplicateRealEmojiException;
 import com.oing.service.MemberRealEmojiService;
-import com.oing.util.IdentityGenerator;
-import com.oing.util.PreSignedUrlGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +18,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -33,11 +30,8 @@ public class MemberRealEmojiControllerTest {
     private MemberRealEmojiController memberRealEmojiController;
 
     @Mock
-    private IdentityGenerator identityGenerator;
-    @Mock
     private MemberRealEmojiService memberRealEmojiService;
-    @Mock
-    private PreSignedUrlGenerator preSignedUrlGenerator;
+
 
     @Test
     void 리얼이모지_이미지_업로드_URL_요청_테스트() {
@@ -48,7 +42,7 @@ public class MemberRealEmojiControllerTest {
         // when
         PreSignedUrlRequest request = new PreSignedUrlRequest(realEmojiImage);
         PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("https://test.com/presigend-request-url.jpg");
-        when(preSignedUrlGenerator.getRealEmojiPreSignedUrl(any())).thenReturn(dummyResponse);
+        when(memberRealEmojiService.requestPresignedUrl(memberId, memberId, realEmojiImage)).thenReturn(dummyResponse);
         PreSignedUrlResponse response = memberRealEmojiController.requestPresignedUrl(memberId, memberId, request);
 
         // then
@@ -65,46 +59,13 @@ public class MemberRealEmojiControllerTest {
 
         // when
         CreateMyRealEmojiRequest request = new CreateMyRealEmojiRequest(emoji.getTypeKey(), realEmojiImageUrl);
-        when(memberRealEmojiService.save(any())).thenReturn(new MemberRealEmoji("1", memberId, familyId, emoji,
+        when(memberRealEmojiService.save(any(), any(), any(), any())).thenReturn(new MemberRealEmoji("1", memberId, familyId, emoji,
                 realEmojiImageUrl, "realEmoji.jpg"));
         RealEmojiResponse response = memberRealEmojiController.createMemberRealEmoji(memberId, memberId, familyId, request);
 
         // then
         assertEquals(emoji.getTypeKey(), response.type());
         assertEquals(request.imageUrl(), response.imageUrl());
-    }
-
-    @Test
-    void 권한없는_memberId로_리얼이모지_생성_예외_테스트() {
-        // given
-        String memberId = "1";
-        String familyId = "1";
-        String realEmojiImageUrl = "https://test.com/realEmoji.jpg";
-        Emoji emoji = Emoji.EMOJI_1;
-
-        // when
-        CreateMyRealEmojiRequest request = new CreateMyRealEmojiRequest(emoji.getTypeKey(), realEmojiImageUrl);
-
-        // then
-        assertThrows(AuthorizationFailedException.class,
-                () -> memberRealEmojiController.createMemberRealEmoji(memberId, "2", familyId, request));
-    }
-
-    @Test
-    void 중복된_리얼이모지_생성_예외_테스트() {
-        // given
-        String memberId = "1";
-        String familyId = "1";
-        String realEmojiImageUrl = "https://test.com/realEmoji.jpg";
-        Emoji emoji = Emoji.EMOJI_1;
-
-        // when
-        CreateMyRealEmojiRequest request = new CreateMyRealEmojiRequest(emoji.getTypeKey(), realEmojiImageUrl);
-        when(memberRealEmojiService.findRealEmojiByEmojiTypeAndMemberIdAndFamilyId(emoji, memberId, familyId)).thenReturn(true);
-
-        // then
-        assertThrows(DuplicateRealEmojiException.class,
-                () -> memberRealEmojiController.createMemberRealEmoji(memberId, memberId, familyId, request));
     }
 
     @Test
@@ -117,7 +78,7 @@ public class MemberRealEmojiControllerTest {
 
         // when
         UpdateMyRealEmojiRequest request = new UpdateMyRealEmojiRequest(realEmojiImageUrl);
-        when(memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(realEmojiId, familyId)).thenReturn(
+        when(memberRealEmojiService.changeMemberRealEmoji(memberId, memberId, familyId, realEmojiId, request)).thenReturn(
                 new MemberRealEmoji("1", memberId, familyId, Emoji.EMOJI_1, realEmojiImageUrl, "realEmoji.jpg"));
         RealEmojiResponse response = memberRealEmojiController.changeMemberRealEmoji(memberId, memberId, familyId, realEmojiId, request);
 
@@ -136,15 +97,15 @@ public class MemberRealEmojiControllerTest {
         Emoji emoji2 = Emoji.EMOJI_4;
         CreateMyRealEmojiRequest request1 = new CreateMyRealEmojiRequest(emoji1.getTypeKey(), realEmojiImageUrl1);
         CreateMyRealEmojiRequest request2 = new CreateMyRealEmojiRequest(emoji1.getTypeKey(), realEmojiImageUrl2);
-        when(memberRealEmojiService.save(any())).thenReturn(new MemberRealEmoji("1", memberId, familyId, emoji1,
+        when(memberRealEmojiService.save(any(), any(), any(), any())).thenReturn(new MemberRealEmoji("1", memberId, familyId, emoji1,
                 realEmojiImageUrl1, "realEmoji1.jpg"));
         memberRealEmojiController.createMemberRealEmoji(memberId, memberId, familyId, request1);
-        when(memberRealEmojiService.save(any())).thenReturn(new MemberRealEmoji("2", memberId, familyId, emoji2,
+        when(memberRealEmojiService.save(any(), any(), any(), any())).thenReturn(new MemberRealEmoji("2", memberId, familyId, emoji2,
                 realEmojiImageUrl2, "realEmoji2.jpg"));
         memberRealEmojiController.createMemberRealEmoji(memberId, memberId, familyId, request2);
 
         // when
-        when(memberRealEmojiService.findRealEmojisByMemberIdAndFamilyId(memberId, familyId)).thenReturn(List.of(
+        when(memberRealEmojiService.findRealEmojisByMemberIdAndFamilyId(memberId, memberId, familyId)).thenReturn(List.of(
                 new MemberRealEmoji("1", memberId, familyId, emoji1, realEmojiImageUrl1, "realEmoji1.jpg"),
                 new MemberRealEmoji("2", memberId, familyId, emoji2, realEmojiImageUrl2, "realEmoji2.jpg")
         ));
@@ -169,7 +130,7 @@ public class MemberRealEmojiControllerTest {
         String realEmojiImageUrl = "https://test.com/realEmoji1.jpg";
         Emoji emoji = Emoji.EMOJI_1;
         CreateMyRealEmojiRequest request = new CreateMyRealEmojiRequest(emoji.getTypeKey(), realEmojiImageUrl);
-        when(memberRealEmojiService.save(any())).thenReturn(new MemberRealEmoji("1", memberId, otherFamilyId, emoji,
+        when(memberRealEmojiService.save(any(), any(), any(), any())).thenReturn(new MemberRealEmoji("1", memberId, otherFamilyId, emoji,
                 realEmojiImageUrl, "realEmoji.jpg"));
         memberRealEmojiController.createMemberRealEmoji(memberId, memberId, otherFamilyId, request);
 
