@@ -3,40 +3,57 @@ package com.oing.service;
 import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostComment;
 import com.oing.domain.PaginationDTO;
+import com.oing.dto.request.CreatePostCommentRequest;
+import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.MemberPostCommentNotFoundException;
 import com.oing.repository.MemberPostCommentRepository;
 import com.oing.service.event.DeleteMemberPostEvent;
+import com.oing.util.IdentityGenerator;
 import com.querydsl.core.QueryResults;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MemberPostCommentService {
     private final MemberPostCommentRepository memberPostCommentRepository;
+    private final MemberBridge memberBridge;
+    private final IdentityGenerator identityGenerator;
 
-    /**
-     * 게시물의 댓글을 저장합니다
-     * @param memberPostComment 댓글
-     * @return 저장된 댓글
-     */
-    @Transactional
-    public MemberPostComment savePostComment(MemberPostComment memberPostComment) {
-        return memberPostCommentRepository.save(memberPostComment);
+
+    public MemberPostComment savePostComment(MemberPost post, CreatePostCommentRequest request, String loginMemberId) {
+        validateFamilyMember(loginMemberId, post);
+
+        MemberPostComment memberPostComment = new MemberPostComment(
+                identityGenerator.generateIdentity(),
+                post,
+                loginMemberId,
+                request.content()
+        );
+        MemberPostComment savedComment = memberPostCommentRepository.save(memberPostComment);
+        post.addComment(savedComment);
+        return savedComment;
     }
 
-    /**
-     * 게시물의 댓글을 조회합니다
-     * @param postId 게시글 ID
-     * @param commentId 댓글 ID
-     * @return 댓글
-     * @throws MemberPostCommentNotFoundException 댓글이 존재하지 않거나 게시글 ID가 댓글의 ID와 일치하지 않을 경우
-     */
-    @Transactional
+    public void deletePostComment(MemberPost post, String commentId, String loginMemberId) {
+        MemberPostComment memberPostComment = getMemberPostComment(post.getId(), commentId);
+        validateCommentOwner(loginMemberId, memberPostComment);
+
+        memberPostCommentRepository.delete(memberPostComment);
+        post.removeComment(memberPostComment);
+    }
+
+    public MemberPostComment updateMemberPostComment(String postId, String commentId, String content, String loginMemberId) {
+        MemberPostComment memberPostComment = getMemberPostComment(postId, commentId);
+        validateCommentOwner(loginMemberId, memberPostComment);
+
+        memberPostComment.setContent(content);
+        return memberPostComment;
+    }
+
     public MemberPostComment getMemberPostComment(String postId, String commentId) {
         MemberPostComment memberPostComment = memberPostCommentRepository
                 .findById(commentId)
@@ -46,24 +63,6 @@ public class MemberPostCommentService {
         return memberPostComment;
     }
 
-    /**
-     * 게시물의 댓글을 삭제합니다
-     * @param memberPostComment 댓글
-     */
-    @Transactional
-    public void deletePostComment(MemberPostComment memberPostComment) {
-        memberPostCommentRepository.delete(memberPostComment);
-    }
-
-    /**
-     * 게시글의 댓글들을 조회합니다.
-     * @param page 페이지
-     * @param size 페이지당 댓글 수
-     * @param postId 게시글 ID
-     * @param asc 오름차순 여부
-     * @return 댓글들 조회 결과
-     */
-    @Transactional
     public PaginationDTO<MemberPostComment> searchPostComments(int page, int size, String postId, boolean asc) {
         QueryResults<MemberPostComment> results = memberPostCommentRepository
                 .searchPostComments(page, size, postId, asc);
@@ -72,6 +71,20 @@ public class MemberPostCommentService {
                 totalPage,
                 results.getResults()
         );
+    }
+
+    private void validateFamilyMember(String memberId, MemberPost post) {
+        if (!memberBridge.isInSameFamily(memberId, post.getMemberId())) {
+            log.warn("Unauthorized access attempt: Member {} is attempting reaction operation on post {}", memberId, post.getId());
+            throw new AuthorizationFailedException();
+        }
+    }
+
+    private void validateCommentOwner(String memberId, MemberPostComment comment) {
+        if (!comment.getMemberId().equals(memberId)) {
+            log.warn("Unauthorized access attempt: Member {} is attempting comment operation on post {}", memberId, comment.getPost().getId());
+            throw new AuthorizationFailedException();
+        }
     }
 
     @EventListener
