@@ -1,4 +1,4 @@
-package com.oing.config;
+package com.oing.config.redis;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
