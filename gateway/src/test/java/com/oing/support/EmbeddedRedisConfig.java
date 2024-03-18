@@ -5,10 +5,13 @@ import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import redis.embedded.RedisServer;
 
-@Profile("test")
+import java.io.File;
+
 @TestConfiguration
+@Profile("test")
 public class EmbeddedRedisConfig {
 
     @Value("${spring.data.redis.port}")
@@ -24,6 +27,11 @@ public class EmbeddedRedisConfig {
                     .setting("maxmemory 256M")
                     .build();
             redisServer.start();
+
+        } catch (RuntimeException e) { // Run redis manually
+            redisServer = new RedisServer(new File("/usr/local/bin/redis-server"), port);
+            redisServer.start();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
