@@ -5,12 +5,9 @@ import com.oing.domain.MemberPost;
 import com.oing.domain.MemberPostReaction;
 import com.oing.dto.request.PostReactionRequest;
 import com.oing.dto.response.PostReactionMemberResponse;
-import com.oing.exception.EmojiAlreadyExistsException;
-import com.oing.exception.EmojiNotFoundException;
 import com.oing.service.MemberBridge;
 import com.oing.service.MemberPostReactionService;
 import com.oing.service.MemberPostService;
-import com.oing.util.IdentityGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,7 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,8 +26,6 @@ public class MemberPostReactionControllerTest {
     @InjectMocks
     private MemberPostReactionController memberPostReactionController;
 
-    @Mock
-    private IdentityGenerator identityGenerator;
     @Mock
     private MemberPostService memberPostService;
     @Mock
@@ -44,12 +40,10 @@ public class MemberPostReactionControllerTest {
         MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
         MemberPostReaction reaction = new MemberPostReaction("1", post, memberId, Emoji.EMOJI_1);
         when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
-        when(memberPostReactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(false);
-        when(identityGenerator.generateIdentity()).thenReturn(reaction.getId());
-        when(memberPostReactionService.createPostReaction(reaction.getId(), post, memberId, Emoji.EMOJI_1)).thenReturn(reaction);
 
         //when
         PostReactionRequest request = new PostReactionRequest("emoji_1");
+        when(memberPostReactionService.createPostReaction(post, memberId, request)).thenReturn(reaction);
         memberPostReactionController.createPostReaction(post.getId(), memberId, request);
 
         //then
@@ -57,30 +51,11 @@ public class MemberPostReactionControllerTest {
     }
 
     @Test
-    void 게시물_중복된_리액션_등록_예외_테스트() {
-        //given
-        String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
-        when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
-
-        //when
-        when(memberPostReactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(true);
-        PostReactionRequest request = new PostReactionRequest("emoji_1");
-
-        //then
-        assertThrows(EmojiAlreadyExistsException.class,
-                () -> memberPostReactionController.createPostReaction(post.getId(), memberId, request));
-    }
-
-    @Test
     void 게시물_리액션_삭제_테스트() {
         //given
         String memberId = "1";
         MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
-        MemberPostReaction reaction = new MemberPostReaction("1", post, memberId, Emoji.EMOJI_1);
         when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
-        when(memberPostReactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(true);
-        when(memberPostReactionService.findReaction(post, memberId, Emoji.EMOJI_1)).thenReturn(reaction);
 
         //when
         PostReactionRequest request = new PostReactionRequest("emoji_1");
@@ -88,22 +63,6 @@ public class MemberPostReactionControllerTest {
 
         //then
         //nothing. just check no exception
-    }
-
-    @Test
-    void 게시물_존재하지_않는_리액션_삭제_예외_테스트() {
-        //given
-        String memberId = "1";
-        MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
-        when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
-
-        //when
-        when(memberPostReactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(false);
-        PostReactionRequest request = new PostReactionRequest("emoji_1");
-
-        //then
-        assertThrows(EmojiNotFoundException.class,
-                () -> memberPostReactionController.deletePostReaction(post.getId(), memberId, request));
     }
 
     @Test
