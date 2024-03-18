@@ -3,13 +3,14 @@ package com.oing.config.support;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
-import com.oing.support.InfraTest;
 import com.oing.util.IdentityGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.URL;
 
@@ -19,7 +20,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class S3PreSignedUrlProviderTest extends InfraTest {
+@ExtendWith(MockitoExtension.class)
+class S3PreSignedUrlProviderTest {
 
     private S3PreSignedUrlProvider provider;
 
