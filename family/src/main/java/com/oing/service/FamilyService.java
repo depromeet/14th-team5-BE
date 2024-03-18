@@ -28,18 +28,6 @@ public class FamilyService {
         return familyRepository.save(family);
     }
 
-
-    public ZonedDateTime findFamilyCreatedAt(String familyId) {
-        Family family = getFamilyById(familyId);
-        return convertCreatedAtToZonedDateTime(family);
-    }
-
-    private ZonedDateTime convertCreatedAtToZonedDateTime(Family family) {
-        Instant createdAtInstant = family.getCreatedAt().toInstant(ZoneOffset.ofHours(9));
-        ZoneId zoneId = ZoneId.of("Asia/Seoul");
-        return ZonedDateTime.ofInstant(createdAtInstant, zoneId);
-    }
-
     public Family getFamilyById(String familyId) {
         return familyRepository
                 .findById(familyId)
