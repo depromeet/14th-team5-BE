@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.*;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,15 +21,17 @@ public class FamilyService {
     private final FamilyScoreBridge familyScoreBridge;
     private final IdentityGenerator identityGenerator;
 
-    public ZonedDateTime findFamilyCreatedAt(String familyId) {
-        Family family = findFamilyById(familyId);
-        return convertCreatedAtToZonedDateTime(family);
+
+    @Transactional
+    public Family createFamily() {
+        Family family = new Family(identityGenerator.generateIdentity());
+        return familyRepository.save(family);
     }
 
-    private Family findFamilyById(String familyId) {
-        return familyRepository
-                .findById(familyId)
-                .orElseThrow(FamilyNotFoundException::new);
+
+    public ZonedDateTime findFamilyCreatedAt(String familyId) {
+        Family family = getFamilyById(familyId);
+        return convertCreatedAtToZonedDateTime(family);
     }
 
     private ZonedDateTime convertCreatedAtToZonedDateTime(Family family) {
@@ -39,13 +40,6 @@ public class FamilyService {
         return ZonedDateTime.ofInstant(createdAtInstant, zoneId);
     }
 
-    @Transactional
-    public Family createFamily() {
-        Family family = new Family(identityGenerator.generateIdentity());
-        return familyRepository.save(family);
-    }
-
-    @Transactional
     public Family getFamilyById(String familyId) {
         return familyRepository
                 .findById(familyId)
