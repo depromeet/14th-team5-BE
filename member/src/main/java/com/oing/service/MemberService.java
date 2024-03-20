@@ -85,7 +85,8 @@ public class MemberService {
     }
 
     public List<String> findFamilyMembersIdsByFamilyJoinAtBefore(String familyId, LocalDate date) {
-        return memberRepository.findAllByFamilyIdAndFamilyJoinAtBefore(familyId, date.atStartOfDay())
+        return memberRepository
+                .findAllByFamilyIdAndFamilyJoinAtBeforeAndDeletedAtIsNull(familyId, date.atStartOfDay())
                 .stream()
                 .map(Member::getId)
                 .toList();
