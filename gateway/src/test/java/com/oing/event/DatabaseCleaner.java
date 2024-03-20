@@ -35,9 +35,6 @@ public class DatabaseCleaner {
     private void truncateAllTables() {
         entityManager.createNativeQuery(String.format("SET FOREIGN_KEY_CHECKS %d", 0)).executeUpdate();
         for (String tableName : tableNames) {
-            // Don't truncate flyway tables
-            if(tableName.startsWith("flyway")) continue;
-
             entityManager.createNativeQuery(String.format("TRUNCATE TABLE %s", tableName)).executeUpdate();
         }
         entityManager.createNativeQuery(String.format("SET FOREIGN_KEY_CHECKS %d", 1)).executeUpdate();
