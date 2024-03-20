@@ -104,10 +104,6 @@ public class MemberService {
         return new PageImpl<>(familyMemberProfiles, memberPage.getPageable(), memberPage.getTotalElements());
     }
 
-    public long countFamilyMembersByFamilyIdBefore(String familyId, LocalDate date) {
-        return memberRepository.countByFamilyIdAndFamilyJoinAtBefore(familyId, date.atStartOfDay());
-    }
-
     private List<FamilyMemberProfileResponse> createFamilyMemberProfiles(List<Member> members) {
         return members.stream()
                 .map(FamilyMemberProfileResponse::of)

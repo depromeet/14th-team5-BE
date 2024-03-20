@@ -21,8 +21,6 @@ public interface MemberRepository extends JpaRepository<Member, String> {
 
     List<Member> findAllByFamilyIdAndFamilyJoinAtBeforeAndDeletedAtIsNull(String familyId, LocalDateTime dateTime);
 
-    long countByFamilyIdAndFamilyJoinAtBefore(String familyId, LocalDateTime dateTime);
-
     List<Member> findAllByDeletedAtIsNull();
 
     boolean existsByIdAndDeletedAtNotNull(String memberId);
