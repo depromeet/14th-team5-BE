@@ -42,7 +42,7 @@ public class AuthController implements AuthApi {
 
         // 위 결과에서 나온 identifier로 이미 있는 사용자인지 확인
         Optional<Member> member = memberService
-                .findMemberBySocialMemberKey(socialLoginProvider, socialLoginResult.identifier());
+                .getMemberBySocialMemberKey(socialLoginProvider, socialLoginResult.identifier());
         if (member.isEmpty()) {
             //회원가입이 안된 경우 임시 토큰 발행
             TokenPair temporaryTokenPair = tokenGenerator
@@ -75,7 +75,7 @@ public class AuthController implements AuthApi {
 
             // identifier로 이미 있는 사용자인지 확인
             Optional<Member> preExistsMember = memberService
-                    .findMemberBySocialMemberKey(provider, token.userId());
+                    .getMemberBySocialMemberKey(provider, token.userId());
             if (preExistsMember.isPresent()) {
                 throw new MemberAlreadyExistsException();
             }

@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 @Transactional
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class MemberControllerTest {
+class MemberControllerTest {
 
     @InjectMocks
     private MemberController memberController;
@@ -51,11 +51,11 @@ public class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
-        when(memberService.findFamilyIdByMemberId(any())).thenReturn(member.getFamilyId());
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
+        when(memberService.getFamilyIdByMemberId(any())).thenReturn(member.getFamilyId());
 
         // when
-        MemberResponse response = memberController.getMember(member.getId(), member.getFamilyId(), member.getId());
+        MemberResponse response = memberController.getMember(member.getId(), member.getFamilyId());
 
         // then
         assertEquals(member.getId(), response.memberId());
@@ -79,12 +79,12 @@ public class MemberControllerTest {
                 new FamilyMemberProfileResponse(member1.getId(), member1.getName(), member1.getProfileImgUrl(), member1.getFamilyJoinAt().toLocalDate(), member1.getDayOfBirth()),
                 new FamilyMemberProfileResponse(member2.getId(), member2.getName(), member2.getProfileImgUrl(),member2.getFamilyJoinAt().toLocalDate(), member2.getDayOfBirth())
         ));
-        when(memberService.findFamilyMembersProfilesByFamilyId(familyId, 1, 5))
+        when(memberService.getFamilyMembersProfilesByFamilyId(familyId, 1, 5))
                 .thenReturn(profilePage);
 
         // when
         PaginationResponse<FamilyMemberProfileResponse> response = memberController.
-                getFamilyMembersProfiles(1, 5, familyId, member1.getId());
+                getFamilyMembersProfiles(1, 5, familyId);
 
         // then
         assertFalse(response.hasNext());
@@ -98,11 +98,11 @@ public class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
 
         // when
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
-        memberController.updateMemberName(member.getId(), member.getId(), request);
+        memberController.updateMemberName(member.getId(), request, member.getId());
 
         // then
         assertEquals(newName, member.getName());
@@ -115,13 +115,13 @@ public class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
 
         // when
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
 
         // then
-        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), member.getId(), request));
+        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), request, member.getId()));
     }
 
     @Test
@@ -131,13 +131,13 @@ public class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
 
         // when
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
 
         // then
-        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), member.getId(), request));
+        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), request, member.getId()));
     }
 
     @Test
@@ -162,12 +162,12 @@ public class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
         when(preSignedUrlGenerator.extractImageKey(any())).thenReturn("/profile.jpg");
 
         // when
         UpdateMemberProfileImageUrlRequest request = new UpdateMemberProfileImageUrlRequest(newProfileImageUrl);
-        memberController.updateMemberProfileImageUrl(member.getId(), member.getId(), request);
+        memberController.updateMemberProfileImageUrl(member.getId(), request, member.getId());
 
         // then
         assertEquals(newProfileImageUrl, member.getProfileImgUrl());
@@ -179,7 +179,7 @@ public class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
 
         // when
         memberController.deleteMemberProfileImageUrl(member.getId(), member.getId());
@@ -195,10 +195,10 @@ public class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", "/test-profile.jpg",
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
 
         // when
-        memberController.deleteMember(member.getId(), member.getId(), null);
+        memberController.deleteMember(member.getId(), null, member.getId());
 
         // then
         assertEquals("DeletedMember", member.getName());
@@ -214,6 +214,6 @@ public class MemberControllerTest {
                 LocalDateTime.now());
 
         // then
-        assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember("2", member.getId(), null));
+        assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember("2", null, member.getId()));
     }
 }

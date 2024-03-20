@@ -1,10 +1,12 @@
 package com.oing.domain;
 
+import com.oing.exception.InvalidMemberNameLengthException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -56,7 +58,14 @@ public class Member extends DeletableBaseAuditEntity {
     }
 
     public void updateName(String name) {
+        validateName(name);
         this.name = name;
+    }
+
+    private void validateName(String name) {
+        if (name.isBlank() || name.length() > 9) {
+            throw new InvalidMemberNameLengthException();
+        }
     }
 
     public void deleteMemberInfo() {

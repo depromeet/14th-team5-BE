@@ -37,7 +37,7 @@ public class MeController implements MeApi {
 
     @Override
     public MemberResponse getMe(String loginMemberId) {
-        Member member = memberService.findMemberById(loginMemberId);
+        Member member = memberService.getMemberByMemberId(loginMemberId);
         return MemberResponse.of(member);
     }
 
@@ -68,7 +68,7 @@ public class MeController implements MeApi {
         FamilyInviteLink link = familyInviteLinkService.retrieveDeepLinkDetails(request.inviteCode());
         Family targetFamily = familyService.getFamilyById(link.getFamilyId());
 
-        Member member = memberService.findMemberById(loginMemberId);
+        Member member = memberService.getMemberByMemberId(loginMemberId);
         // TODO: iOS 업데이트 이슈로 온보딩 플로우에 갖힌 유저를 위해 일시적으로 예외 핸들링 주석 처리 !!!
         //        if (member.hasFamily()) throw new AlreadyInFamilyException();
         member.setFamilyId(targetFamily.getId());
@@ -81,7 +81,7 @@ public class MeController implements MeApi {
     @Override
     public FamilyResponse createFamilyAndJoin(String loginMemberId) {
         log.info("Member {} is trying to create a family", loginMemberId);
-        Member member = memberService.findMemberById(loginMemberId);
+        Member member = memberService.getMemberByMemberId(loginMemberId);
         // TODO: iOS 업데이트 이슈로 온보딩 플로우에 갖힌 유저를 위해 일시적으로 예외 핸들링 주석 처리 !!!
         //        if (member.hasFamily()) throw new AlreadyInFamilyException();
 
@@ -102,7 +102,7 @@ public class MeController implements MeApi {
     @Override
     public DefaultResponse quitFamily(String loginMemberId) {
         log.info("Member {} is trying to quit from family", loginMemberId);
-        Member member = memberService.findMemberById(loginMemberId);
+        Member member = memberService.getMemberByMemberId(loginMemberId);
         if (!member.hasFamily()) {
             log.warn("Member {} is not in any family", loginMemberId);
             throw new FamilyNotFoundException();
