@@ -1,10 +1,10 @@
 package com.oing.controller;
 
 import com.oing.domain.Member;
-import com.oing.domain.MemberPost;
+import com.oing.domain.Post;
 import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.CalendarResponse;
-import com.oing.service.MemberPostService;
+import com.oing.service.PostService;
 import com.oing.service.MemberService;
 import com.oing.util.OptimizedImageUrlGenerator;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class CalendarControllerTest {
     @Mock
     private MemberService memberService;
     @Mock
-    private MemberPostService memberPostService;
+    private PostService postService;
     @Mock
     private OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
@@ -66,7 +66,7 @@ class CalendarControllerTest {
 
         LocalDate startDate = LocalDate.of(2023, 11, 1);
         LocalDate endDate = startDate.plusMonths(1);
-        MemberPost testPost1 = new MemberPost(
+        Post testPost1 = new Post(
                 "1",
                 testMember1.getId(),
                 familyId,
@@ -75,7 +75,7 @@ class CalendarControllerTest {
                 "test1"
         );
         ReflectionTestUtils.setField(testPost1, "createdAt", LocalDateTime.of(2023, 11, 1, 13, 0));
-        MemberPost testPost2 = new MemberPost(
+        Post testPost2 = new Post(
                 "2",
                 testMember2.getId(),
                 familyId,
@@ -84,7 +84,7 @@ class CalendarControllerTest {
                 "test2"
         );
         ReflectionTestUtils.setField(testPost2, "createdAt", LocalDateTime.of(2023, 11, 2, 13, 0));
-        MemberPost testPost3 = new MemberPost(
+        Post testPost3 = new Post(
                 "3",
                 testMember1.getId(),
                 familyId,
@@ -93,7 +93,7 @@ class CalendarControllerTest {
                 "test3"
         );
         ReflectionTestUtils.setField(testPost3, "createdAt", LocalDateTime.of(2023, 11, 8, 13, 0));
-        MemberPost testPost4 = new MemberPost(
+        Post testPost4 = new Post(
                 "4",
                 testMember2.getId(),
                 familyId,
@@ -102,8 +102,8 @@ class CalendarControllerTest {
                 "test4"
         );
         ReflectionTestUtils.setField(testPost4, "createdAt", LocalDateTime.of(2023, 11, 9, 13, 0));
-        List<MemberPost> representativePosts = List.of(testPost1, testPost2, testPost3, testPost4);
-        when(memberPostService.findLatestPostOfEveryday(startDate, endDate, familyId)).thenReturn(representativePosts);
+        List<Post> representativePosts = List.of(testPost1, testPost2, testPost3, testPost4);
+        when(postService.findLatestPostOfEveryday(startDate, endDate, familyId)).thenReturn(representativePosts);
 
         // When
         ArrayResponse<CalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, familyId);

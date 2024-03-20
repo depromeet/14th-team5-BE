@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oing.config.support.OptimizedImageUrlProvider;
 import com.oing.domain.CreateNewUserDTO;
 import com.oing.domain.Member;
-import com.oing.domain.MemberPost;
+import com.oing.domain.Post;
 import com.oing.domain.SocialLoginProvider;
 import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DeepLinkResponse;
@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,7 +46,7 @@ class WidgetApiTest {
     @Autowired
     private MemberService memberService;
     @Autowired
-    private MemberPostService memberPostService;
+    private PostService postService;
     @Autowired
     private FamilyService familyService;
     @Autowired
@@ -125,7 +124,7 @@ class WidgetApiTest {
     @Test
     void 최근_게시글_싱글_위젯_정상_조회_테스트() throws Exception {
         // given
-        MemberPost testPost1 = new MemberPost(
+        Post testPost1 = new Post(
                 "testPost1",
                 TEST_MEMBER1.getId(),
                 TEST_FAMILY_ID,
@@ -133,7 +132,7 @@ class WidgetApiTest {
                 "1",
                 "testPos1"
         );
-        MemberPost testPost2 = new MemberPost(
+        Post testPost2 = new Post(
                 "testPost2",
                 TEST_MEMBER2.getId(),
                 TEST_FAMILY_ID,
@@ -141,7 +140,7 @@ class WidgetApiTest {
                 "2",
                 "testPos2"
         );
-        MemberPost testPost3 = new MemberPost(
+        Post testPost3 = new Post(
                 "testPost3",
                 TEST_MEMBER3.getId(),
                 "something_other",
@@ -149,9 +148,9 @@ class WidgetApiTest {
                 "3",
                 "testPos3"
         );
-        memberPostService.save(testPost1);
-        memberPostService.save(testPost2);
-        memberPostService.save(testPost3);
+        postService.save(testPost1);
+        postService.save(testPost2);
+        postService.save(testPost3);
 
 
         // when & then
@@ -171,7 +170,7 @@ class WidgetApiTest {
     @Test
     void 최근_게시글_싱글_위젯_파라미터_없이_조회_테스트() throws Exception {
         // given
-        MemberPost testPost1 = new MemberPost(
+        Post testPost1 = new Post(
                 "testPost1",
                 TEST_MEMBER1.getId(),
                 TEST_FAMILY_ID,
@@ -179,7 +178,7 @@ class WidgetApiTest {
                 "1",
                 "testPos1"
         );
-        MemberPost testPost2 = new MemberPost(
+        Post testPost2 = new Post(
                 "testPost2",
                 TEST_MEMBER2.getId(),
                 TEST_FAMILY_ID,
@@ -187,7 +186,7 @@ class WidgetApiTest {
                 "2",
                 "testPos2"
         );
-        MemberPost testPost3 = new MemberPost(
+        Post testPost3 = new Post(
                 "testPost3",
                 TEST_MEMBER3.getId(),
                 "something_other",
@@ -195,9 +194,9 @@ class WidgetApiTest {
                 "3",
                 "testPos3"
         );
-        memberPostService.save(testPost1);
-        memberPostService.save(testPost2);
-        memberPostService.save(testPost3);
+        postService.save(testPost1);
+        postService.save(testPost2);
+        postService.save(testPost3);
 
 
         // when & then

@@ -3,7 +3,7 @@ package com.oing.controller;
 import com.oing.domain.TokenPair;
 import com.oing.dto.response.AuthResultResponse;
 import com.oing.dto.response.DefaultResponse;
-import com.oing.service.MemberPostService;
+import com.oing.service.PostService;
 import com.oing.service.TokenGenerator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Profile("!prod")
 public class DevController  {
     private final TokenGenerator tokenGenerator;
-    private final MemberPostService memberPostService;
+    private final PostService postService;
 
     @Operation(summary = "게시물 삭제", description = "ID를 통해 게시물을 삭제합니다.")
     @DeleteMapping("/v1/posts/{postId}")
@@ -25,7 +25,7 @@ public class DevController  {
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             String postId
     ) {
-        memberPostService.deleteMemberPostById(postId);
+        postService.deleteMemberPostById(postId);
         return DefaultResponse.ok();
     }
 

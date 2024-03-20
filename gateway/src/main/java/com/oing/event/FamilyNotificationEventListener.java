@@ -1,9 +1,9 @@
 package com.oing.event;
 
 import com.google.firebase.messaging.MulticastMessage;
+import com.oing.domain.Comment;
 import com.oing.domain.Member;
-import com.oing.domain.MemberPost;
-import com.oing.domain.MemberPostComment;
+import com.oing.domain.Post;
 import com.oing.service.FCMNotificationService;
 import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberService;
@@ -28,14 +28,14 @@ public class FamilyNotificationEventListener {
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void onMemberPostCreatedEvent(MemberPostCreatedEvent memberPostCreatedEvent) {
-        if (memberPostCreatedEvent.getSource() instanceof MemberPost memberPost) {
-            Member author = memberService.findMemberById(memberPost.getMemberId());
+    public void onPostCreatedEvent(PostCreatedEvent postCreatedEvent) {
+        if (postCreatedEvent.getSource() instanceof Post post) {
+            Member author = memberService.findMemberById(post.getMemberId());
             HashSet<String> targetFcmTokens = new HashSet<>();
-            String familyId = memberPost.getFamilyId();
+            String familyId = post.getFamilyId();
             List<String> familyMemberIds = memberService.findFamilyMembersIdsByFamilyId(familyId);
             for (String familyMemberId : familyMemberIds) {
-                if(memberPost.getMemberId().equals(familyMemberId)) continue; //게시물 작성자는 발송 X
+                if(post.getMemberId().equals(familyMemberId)) continue; //게시물 작성자는 발송 X
                 targetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(familyMemberId));
             }
 
@@ -45,9 +45,9 @@ public class FamilyNotificationEventListener {
                             FCMNotificationUtil.buildNotification("삐삐",
                                     String.format("%s님이 생존신고를 완료했어요.", author.getName()))
                     )
-                    .putData("aosDeepLink", "post/view/" + memberPost.getId())
-                    .putData("iosDeepLink", "post/view/" + memberPost.getId() + "?openComment=false&dateOfPost="
-                            + memberPost.getCreatedAt().toLocalDate().toString())
+                    .putData("aosDeepLink", "post/view/" + post.getId())
+                    .putData("iosDeepLink", "post/view/" + post.getId() + "?openComment=false&dateOfPost="
+                            + post.getCreatedAt().toLocalDate().toString())
                     .addAllTokens(targetFcmTokens)
                     .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                     .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
@@ -58,20 +58,20 @@ public class FamilyNotificationEventListener {
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void onMemberPostCommentCreatedEvent(MemberPostCommentCreatedEvent memberPostCommentCreatedEvent) {
-        if (memberPostCommentCreatedEvent.getSource() instanceof MemberPostComment memberPostComment) {
-            MemberPost sourcePost = memberPostComment.getPost();
+    public void onPostCommentCreatedEvent(CommentCreatedEvent commentCreatedEvent) {
+        if (commentCreatedEvent.getSource() instanceof Comment comment) {
+            Post sourcePost = comment.getPost();
             String postAuthorId = sourcePost.getMemberId(); //게시물 작성자 ID
-            Member author = memberService.findMemberById(memberPostComment.getMemberId()); //댓글 작성자
+            Member author = memberService.findMemberById(comment.getMemberId()); //댓글 작성자
 
-            if (!postAuthorId.equals(memberPostComment.getMemberId())) { //내가 내 게시물에 단 댓글이 아니라면
+            if (!postAuthorId.equals(comment.getMemberId())) { //내가 내 게시물에 단 댓글이 아니라면
                 List<String> targetFcmTokens = memberDeviceService.getFcmTokensByMemberId(postAuthorId);
                 if(!targetFcmTokens.isEmpty()) {
                     MulticastMessage multicastMessage = MulticastMessage.builder()
                             .setNotification(
                                     FCMNotificationUtil.buildNotification(
                                             String.format("%s님이 내 피드에 남긴 댓글", author.getName()),
-                                            String.format("\"%s\"", memberPostComment.getComment()))
+                                            String.format("\"%s\"", comment.getContent()))
                             )
                             .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
                             .putData("iosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true&dateOfPost="
@@ -85,8 +85,8 @@ public class FamilyNotificationEventListener {
             }
 
             Set<String> relatedMemberIds =
-                    sourcePost.getComments().stream().map(MemberPostComment::getMemberId).collect(Collectors.toSet());
-            relatedMemberIds.remove(memberPostComment.getMemberId()); // 댓글 단 사람은 제외
+                    sourcePost.getComments().stream().map(Comment::getMemberId).collect(Collectors.toSet());
+            relatedMemberIds.remove(comment.getMemberId()); // 댓글 단 사람은 제외
             relatedMemberIds.remove(postAuthorId); // 게시물 작성자도 제외
 
             HashSet<String> targetFcmTokens = new HashSet<>();
@@ -99,7 +99,7 @@ public class FamilyNotificationEventListener {
                     .setNotification(
                             FCMNotificationUtil.buildNotification(
                                     String.format("%s님의 댓글", author.getName()),
-                                    String.format("\"%s\"", memberPostComment.getComment()))
+                                    String.format("\"%s\"", comment.getContent()))
                     )
                     .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
                     .putData("iosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true&dateOfPost="

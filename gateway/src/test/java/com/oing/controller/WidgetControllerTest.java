@@ -1,9 +1,9 @@
 package com.oing.controller;
 
 import com.oing.domain.Member;
-import com.oing.domain.MemberPost;
+import com.oing.domain.Post;
 import com.oing.dto.response.SingleRecentPostWidgetResponse;
-import com.oing.service.MemberPostService;
+import com.oing.service.PostService;
 import com.oing.service.MemberService;
 import com.oing.util.OptimizedImageUrlGenerator;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class WidgetControllerTest {
     @Mock
     private MemberService memberService;
     @Mock
-    private MemberPostService memberPostService;
+    private PostService postService;
     @Mock
     private OptimizedImageUrlGenerator optimizedImageUrlGenerator;
 
@@ -57,7 +57,7 @@ class WidgetControllerTest {
             LocalDateTime.now()
     );
 
-    private final MemberPost testPost1 = new MemberPost(
+    private final Post testPost1 = new Post(
             "testPost1",
             testMember1.getId(),
             "1",
@@ -73,7 +73,7 @@ class WidgetControllerTest {
         String date = "2024-10-18";
         String familyId = testMember1.getFamilyId();
 
-        when(memberPostService.findLatestPostOfEveryday(LocalDate.parse(date), LocalDate.parse(date).plusDays(1), familyId)).thenReturn(List.of(testPost1));
+        when(postService.findLatestPostOfEveryday(LocalDate.parse(date), LocalDate.parse(date).plusDays(1), familyId)).thenReturn(List.of(testPost1));
         when(memberService.findMemberById(testPost1.getMemberId())).thenReturn(testMember1);
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testMember1.getProfileImgUrl())).thenReturn(testMember1.getProfileImgUrl());
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testPost1.getPostImgUrl())).thenReturn(testPost1.getPostImgUrl());
@@ -104,7 +104,7 @@ class WidgetControllerTest {
         String date = null;
         String familyId = testMember1.getFamilyId();
 
-        when(memberPostService.findLatestPostOfEveryday(LocalDate.now(), LocalDate.now().plusDays(1), familyId)).thenReturn(List.of(testPost1));
+        when(postService.findLatestPostOfEveryday(LocalDate.now(), LocalDate.now().plusDays(1), familyId)).thenReturn(List.of(testPost1));
         when(memberService.findMemberById(testPost1.getMemberId())).thenReturn(testMember1);
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testMember1.getProfileImgUrl())).thenReturn(testMember1.getProfileImgUrl());
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testPost1.getPostImgUrl())).thenReturn(testPost1.getPostImgUrl());
@@ -135,7 +135,7 @@ class WidgetControllerTest {
         String date = "2024-10-18";
         String familyId = testMember1.getFamilyId();
 
-        when(memberPostService.findLatestPostOfEveryday(LocalDate.parse(date), LocalDate.parse(date).plusDays(1), familyId)).thenReturn(List.of());
+        when(postService.findLatestPostOfEveryday(LocalDate.parse(date), LocalDate.parse(date).plusDays(1), familyId)).thenReturn(List.of());
 
         // when
         ResponseEntity<SingleRecentPostWidgetResponse> response = widgetController.getSingleRecentFamilyPostWidget(date, familyId);
