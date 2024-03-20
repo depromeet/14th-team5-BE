@@ -74,7 +74,7 @@ class WidgetControllerTest {
         String familyId = testMember1.getFamilyId();
 
         when(postService.findLatestPostOfEveryday(LocalDate.parse(date), LocalDate.parse(date).plusDays(1), familyId)).thenReturn(List.of(testPost1));
-        when(memberService.findMemberById(testPost1.getMemberId())).thenReturn(testMember1);
+        when(memberService.getMemberByMemberId(testPost1.getMemberId())).thenReturn(testMember1);
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testMember1.getProfileImgUrl())).thenReturn(testMember1.getProfileImgUrl());
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testPost1.getPostImgUrl())).thenReturn(testPost1.getPostImgUrl());
 
@@ -105,7 +105,7 @@ class WidgetControllerTest {
         String familyId = testMember1.getFamilyId();
 
         when(postService.findLatestPostOfEveryday(LocalDate.now(), LocalDate.now().plusDays(1), familyId)).thenReturn(List.of(testPost1));
-        when(memberService.findMemberById(testPost1.getMemberId())).thenReturn(testMember1);
+        when(memberService.getMemberByMemberId(testPost1.getMemberId())).thenReturn(testMember1);
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testMember1.getProfileImgUrl())).thenReturn(testMember1.getProfileImgUrl());
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testPost1.getPostImgUrl())).thenReturn(testPost1.getPostImgUrl());
 
