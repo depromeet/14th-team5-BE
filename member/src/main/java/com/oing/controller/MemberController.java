@@ -31,19 +31,18 @@ public class MemberController implements MemberApi {
 
     @Override
     public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(
-            Integer page, Integer size, String loginFamilyId, String loginMemberId
+            Integer page, Integer size, String loginFamilyId
     ) {
         Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyMembersProfilesByFamilyId(
                 loginFamilyId, page, size
         );
 
         PaginationDTO<FamilyMemberProfileResponse> paginationDTO = PaginationDTO.of(profilePage);
-
         return PaginationResponse.of(paginationDTO, page, size);
     }
 
     @Override
-    public MemberResponse getMember(String memberId, String loginFamilyId, String loginMemberId) {
+    public MemberResponse getMember(String memberId, String loginFamilyId) {
         validateFamilyMember(memberId, loginFamilyId);
         Member member = memberService.findMemberById(memberId);
 
@@ -64,8 +63,7 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public MemberResponse updateMemberProfileImageUrl(String memberId, String loginMemberId,
-                                                      UpdateMemberProfileImageUrlRequest request) {
+    public MemberResponse updateMemberProfileImageUrl(String memberId, UpdateMemberProfileImageUrlRequest request, String loginMemberId) {
         validateMemberId(memberId, loginMemberId);
         Member member = memberService.findMemberById(memberId);
         String profileImgKey = preSignedUrlGenerator.extractImageKey(request.profileImageUrl());
@@ -86,7 +84,7 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public MemberResponse updateMemberName(String memberId, String loginMemberId, UpdateMemberNameRequest request) {
+    public MemberResponse updateMemberName(String memberId, UpdateMemberNameRequest request, String loginMemberId) {
         validateMemberId(memberId, loginMemberId);
         Member member = memberService.findMemberById(memberId);
 
@@ -104,7 +102,7 @@ public class MemberController implements MemberApi {
 
     @Override
     @Transactional
-    public DefaultResponse deleteMember(String memberId, String loginMemberId, QuitMemberRequest request) {
+    public DefaultResponse deleteMember(String memberId, QuitMemberRequest request, String loginMemberId) {
         validateMemberId(memberId, loginMemberId);
         Member member = memberService.findMemberById(memberId);
         memberService.deleteAllSocialMembersByMember(memberId);

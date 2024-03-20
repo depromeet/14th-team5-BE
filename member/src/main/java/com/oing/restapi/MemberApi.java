@@ -37,11 +37,7 @@ public interface MemberApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String loginFamilyId,
-
-            @Parameter(hidden = true)
-            @LoginMemberId
-            String loginMemberId
+            String loginFamilyId
     );
 
     @Operation(summary = "회원 조회", description = "회원을 조회합니다.")
@@ -53,11 +49,7 @@ public interface MemberApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String loginFamilyId,
-
-            @Parameter(hidden = true)
-            @LoginMemberId
-            String loginMemberId
+            String loginFamilyId
     );
 
     @Operation(summary = "회원 프로필 사진 S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
@@ -75,13 +67,13 @@ public interface MemberApi {
             @PathVariable
             String memberId,
 
-            @Parameter(hidden = true)
-            @LoginMemberId
-            String loginMemberId,
-
             @Valid
             @RequestBody
-            UpdateMemberProfileImageUrlRequest request
+            UpdateMemberProfileImageUrlRequest request,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
     @Operation(summary = "회원 프로필 이미지 삭제", description = "회원 프로필 이미지를 삭제합니다.")
@@ -103,13 +95,13 @@ public interface MemberApi {
             @PathVariable
             String memberId,
 
-            @Parameter(hidden = true)
-            @LoginMemberId
-            String loginMemberId,
-
             @Valid
             @RequestBody
-            UpdateMemberNameRequest request
+            UpdateMemberNameRequest request,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
     );
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 수행합니다.")
@@ -119,11 +111,11 @@ public interface MemberApi {
             @PathVariable
             String memberId,
 
+            @RequestBody(required = false) //for api version compatibility
+            QuitMemberRequest request,
+
             @Parameter(hidden = true)
             @LoginMemberId
-            String loginMemberId,
-
-            @RequestBody(required = false) //for api version compatibility
-            QuitMemberRequest request
+            String loginMemberId
     );
 }
