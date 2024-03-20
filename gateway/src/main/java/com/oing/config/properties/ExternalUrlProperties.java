@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesBindin
 @ConfigurationProperties(prefix = "app.external-urls")
 @ConfigurationPropertiesBinding
 public record ExternalUrlProperties(
-        String slackWebhook
+        String slackErrorWebhook,
+        String slackNotificationWebhook
 ) {
 }

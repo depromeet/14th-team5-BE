@@ -34,7 +34,8 @@ app:
   oauth:
     google-client-id: ${GOOGLE_CLIENT_ID}
   external-urls:
-    slack-webhook: ${SLACK_WEBHOOK_URL}
+    slack-error-webhook: ${SLACK_WEBHOOK_URL}
+    slack-notification-webhook: ${SLACK_NOTIFICATION_WEBHOOK_URL}
   token:
     secret-key: ${TOKEN_SECRET_KEY}
     expiration:

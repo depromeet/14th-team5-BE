@@ -143,6 +143,7 @@ subprojects {
         implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3'
         implementation 'net.javacrumbs.shedlock:shedlock-spring:5.10.0'
         implementation 'net.javacrumbs.shedlock:shedlock-provider-jdbc-template:5.10.0'
+        implementation 'it.ozimov:embedded-redis:0.7.2'
         runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
         runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
         implementation("com.nimbusds:nimbus-jose-jwt:9.37")
@@ -153,7 +154,11 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.springframework.security:spring-security-test'
-        testImplementation 'it.ozimov:embedded-redis:0.7.2'
+        testImplementation 'org.awaitility:awaitility:4.2.0'
+    }
+
+    springBoot {
+        buildInfo()
     }
 }
 
