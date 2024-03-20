@@ -13,9 +13,9 @@ import java.util.List;
 @Getter
 @Builder
 @Table(indexes = {
-        @Index(name = "member_post_idx1", columnList = "member_id")
+        @Index(name = "post_idx1", columnList = "member_id")
 })
-@Entity(name = "member_post")
+@Entity(name = "post")
 @EntityListeners(MemberPostEntityListener.class)
 public class MemberPost extends BaseAuditEntity {
     @Id

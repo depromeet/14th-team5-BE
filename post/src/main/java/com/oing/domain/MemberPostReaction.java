@@ -9,10 +9,10 @@ import lombok.*;
 @Getter
 @Builder
 @Table(indexes = {
-        @Index(name = "member_post_reaction_idx1", columnList = "post_id"),
-        @Index(name = "member_post_reaction_idx2", columnList = "member_id")
+        @Index(name = "reaction_idx1", columnList = "post_id"),
+        @Index(name = "reaction_idx2", columnList = "member_id")
 })
-@Entity(name = "member_post_reaction")
+@Entity(name = "reaction")
 @EntityListeners(MemberPostReactionEntityListener.class)
 public class MemberPostReaction extends BaseEntity {
     @Id

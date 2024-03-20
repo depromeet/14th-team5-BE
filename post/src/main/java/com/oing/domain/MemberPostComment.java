@@ -9,10 +9,10 @@ import lombok.*;
 @Getter
 @Builder
 @Table(indexes = {
-        @Index(name = "member_post_comment_idx1", columnList = "post_id"),
-        @Index(name = "member_post_comment_idx2", columnList = "member_id")
+        @Index(name = "comment_idx1", columnList = "post_id"),
+        @Index(name = "comment_idx2", columnList = "member_id")
 })
-@Entity(name = "member_post_comment")
+@Entity(name = "comment")
 @EntityListeners(MemberPostCommentEntityListener.class)
 public class MemberPostComment extends BaseAuditEntity {
     @Id
