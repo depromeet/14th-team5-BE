@@ -26,32 +26,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final SocialMemberRepository socialMemberRepository;
+
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final IdentityGenerator identityGenerator;
 
-    public Member findMemberById(String memberId) {
-        return memberRepository
-                .findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
-    }
-
-    public String findFamilyIdByMemberId(String memberId) {
-        Member findMember = findMemberById(memberId);
-        if (findMember.getFamilyId() == null) {
-            throw new FamilyNotFoundException();
-        }
-        return findMember.getFamilyId();
-    }
-
-    @Transactional
-    public Optional<Member> findMemberBySocialMemberKey(SocialLoginProvider provider, String identifier) {
-        SocialMemberKey key = new SocialMemberKey(provider, identifier);
-        return socialMemberRepository
-                .findById(key)
-                .map(SocialMember::getMember);
-    }
 
     @Transactional
     public Member createNewMember(CreateNewUserDTO createNewUserDTO) {
@@ -76,7 +57,30 @@ public class MemberService {
         return member;
     }
 
-    public List<String> findFamilyMembersIdsByFamilyId(String familyId) {
+
+    public Member getMemberByMemberId(String memberId) {
+        return memberRepository
+                .findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+    }
+
+    public String getFamilyIdByMemberId(String memberId) {
+        Member member = getMemberByMemberId(memberId);
+        if (member.getFamilyId() == null) {
+            throw new FamilyNotFoundException();
+        }
+
+        return member.getFamilyId();
+    }
+
+    public Optional<Member> getMemberBySocialMemberKey(SocialLoginProvider provider, String identifier) {
+        SocialMemberKey key = new SocialMemberKey(provider, identifier);
+        return socialMemberRepository
+                .findById(key)
+                .map(SocialMember::getMember);
+    }
+
+    public List<String> getFamilyMembersIdsByFamilyId(String familyId) {
         return memberRepository
                 .findAllByFamilyIdAndDeletedAtIsNull(familyId)
                 .stream()
@@ -84,45 +88,38 @@ public class MemberService {
                 .toList();
     }
 
-    public List<String> findFamilyMembersIdsByFamilyJoinAtBefore(String familyId, LocalDate date) {
+    public List<String> getFamilyMembersIdsByFamilyJoinAtBefore(String familyId, LocalDate date) {
         return memberRepository.findAllByFamilyIdAndFamilyJoinAtBefore(familyId, date.atStartOfDay())
                 .stream()
                 .map(Member::getId)
                 .toList();
     }
 
-    @Transactional
-    public Page<FamilyMemberProfileResponse> findFamilyMembersProfilesByFamilyId(
+    public Page<FamilyMemberProfileResponse> getFamilyMembersProfilesByFamilyId(
             String familyId, int page, int size
     ) {
         Page<Member> memberPage = memberRepository.findAllByFamilyIdAndDeletedAtIsNull(familyId, PageRequest.of(page - 1, size));
-        List<Member> members = memberPage.getContent();
 
-        List<FamilyMemberProfileResponse> familyMemberProfiles = createFamilyMemberProfiles(members);
+        List<Member> members = memberPage.getContent();
+        List<FamilyMemberProfileResponse> familyMemberProfiles = members
+                .stream()
+                .map(FamilyMemberProfileResponse::of)
+                .toList();
 
         return new PageImpl<>(familyMemberProfiles, memberPage.getPageable(), memberPage.getTotalElements());
     }
 
     public boolean isFamilyMember(String memberId, String familyId) {
-        Member member = findMemberById(memberId);
+        Member member = getMemberByMemberId(memberId);
         return member.getFamilyId().equals(familyId);
     }
 
-    public long countFamilyMembersByFamilyIdBefore(String familyId, LocalDate date) {
-        return memberRepository.countByFamilyIdAndFamilyJoinAtBefore(familyId, date.atStartOfDay());
+    public List<Member> findAllActiveMembers() {
+        return memberRepository.findAllByDeletedAtIsNull();
     }
 
-    private List<FamilyMemberProfileResponse> createFamilyMemberProfiles(List<Member> members) {
-        return members.stream()
-                .map(FamilyMemberProfileResponse::of)
-                .toList();
-    }
 
     public void deleteAllSocialMembersByMember(String memberId) {
         socialMemberRepository.deleteAllByMemberId(memberId);
-    }
-
-    public List<Member> findAllMember() {
-        return memberRepository.findAllByDeletedAtIsNull();
     }
 }

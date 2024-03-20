@@ -52,7 +52,7 @@ public class CalendarController implements CalendarApi {
 
             // 탈퇴한 회원을 제외하고 allFamilyMembersUploaded 기본값이 true이므로, 탈퇴한 회원이 allFamilyMembersUploaded 계산에 영향을 미치지 않음
             // edge case: 글을 업로드하지 않은 회원이 탈퇴하면, 과거 날짜들의 allFamilyMembersUploaded이 true로 변함 -> 핸들링할 수 없는 케이스
-            List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, postDate.plusDays(1));
+            List<String> familyMembersIds = memberService.getFamilyMembersIdsByFamilyJoinAtBefore(familyId, postDate.plusDays(1));
             boolean allFamilyMembersUploaded = true;
             for (String memberId : familyMembersIds) {
                 if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, postDate)) {
@@ -97,7 +97,7 @@ public class CalendarController implements CalendarApi {
             boolean allFamilyMembersUploaded = true;
 
             if (memberPostService.existsByFamilyIdAndCreatedAt(familyId, startDate)) {
-                List<String> familyMembersIds = memberService.findFamilyMembersIdsByFamilyJoinAtBefore(familyId, startDate.plusDays(1));
+                List<String> familyMembersIds = memberService.getFamilyMembersIdsByFamilyJoinAtBefore(familyId, startDate.plusDays(1));
                 for (String memberId : familyMembersIds) {
                     if (!memberPostService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, startDate)) {
                         allFamilyMembersUploaded = false;
@@ -169,7 +169,7 @@ public class CalendarController implements CalendarApi {
         int year = Integer.parseInt(yearMonthArray[0]);
         int month = Integer.parseInt(yearMonthArray[1]);
 
-        String familyId = memberService.findFamilyIdByMemberId(loginMemberId);
+        String familyId = memberService.getFamilyIdByMemberId(loginMemberId);
         long monthlyPostCount = memberPostService.countMonthlyPostByFamilyId(year, month, familyId);
         return new FamilyMonthlyStatisticsResponse((int) monthlyPostCount);
     }

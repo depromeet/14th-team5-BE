@@ -50,7 +50,7 @@ public class DailyNotificationJob {
 
         try {
             HashSet<String> targetFcmTokens = new HashSet<>();
-            List<Member> members = memberService.findAllMember();
+            List<Member> members = memberService.findAllActiveMembers();
             for (Member member : members) {
                 targetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(member.getId()));
             }
@@ -91,7 +91,7 @@ public class DailyNotificationJob {
 
         try {
             LocalDate today = LocalDate.now();
-            List<Member> allMembers = memberService.findAllMember();
+            List<Member> allMembers = memberService.findAllActiveMembers();
             HashSet<String> targetFcmTokens = new HashSet<>();
             HashSet<String> postedMemberIds = new HashSet<>(memberPostService.getMemberIdsPostedToday(today));
             allMembers.stream()

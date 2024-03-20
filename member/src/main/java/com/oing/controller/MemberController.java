@@ -18,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
-import java.security.InvalidParameterException;
-
 @Controller
 @RequiredArgsConstructor
 public class MemberController implements MemberApi {
@@ -33,7 +31,7 @@ public class MemberController implements MemberApi {
     public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(
             Integer page, Integer size, String loginFamilyId
     ) {
-        Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyMembersProfilesByFamilyId(
+        Page<FamilyMemberProfileResponse> profilePage = memberService.getFamilyMembersProfilesByFamilyId(
                 loginFamilyId, page, size
         );
 
@@ -45,7 +43,7 @@ public class MemberController implements MemberApi {
     public MemberResponse getMember(String memberId, String loginFamilyId) {
         validateFamilyMember(memberId, loginFamilyId);
         
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberByMemberId(memberId);
         return MemberResponse.of(member);
     }
 
@@ -60,7 +58,7 @@ public class MemberController implements MemberApi {
     public MemberResponse updateMemberProfileImageUrl(String memberId, UpdateMemberProfileImageUrlRequest request, String loginMemberId) {
         validateMemberIdMatch(memberId, loginMemberId);
         
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberByMemberId(memberId);
         String profileImgKey = preSignedUrlGenerator.extractImageKey(request.profileImageUrl());
         member.updateProfileImg(request.profileImageUrl(), profileImgKey);
 
@@ -72,7 +70,7 @@ public class MemberController implements MemberApi {
     public MemberResponse deleteMemberProfileImageUrl(String memberId, String loginMemberId) {
         validateMemberIdMatch(memberId, loginMemberId);
 
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberByMemberId(memberId);
         member.deleteProfileImg();
 
         return MemberResponse.of(member);
@@ -83,7 +81,7 @@ public class MemberController implements MemberApi {
     public MemberResponse updateMemberName(String memberId, UpdateMemberNameRequest request, String loginMemberId) {
         validateMemberIdMatch(memberId, loginMemberId);
 
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberByMemberId(memberId);
         member.updateName(request.name());
 
         return MemberResponse.of(member);
@@ -94,7 +92,7 @@ public class MemberController implements MemberApi {
     public DefaultResponse deleteMember(String memberId, QuitMemberRequest request, String loginMemberId) {
         validateMemberIdMatch(memberId, loginMemberId);
 
-        Member member = memberService.findMemberById(memberId);
+        Member member = memberService.getMemberByMemberId(memberId);
         memberService.deleteAllSocialMembersByMember(memberId);
         member.deleteMemberInfo();
 

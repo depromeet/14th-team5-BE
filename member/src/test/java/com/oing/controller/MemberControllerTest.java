@@ -51,8 +51,8 @@ class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
-        when(memberService.findFamilyIdByMemberId(any())).thenReturn(member.getFamilyId());
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
+        when(memberService.getFamilyIdByMemberId(any())).thenReturn(member.getFamilyId());
 
         // when
         MemberResponse response = memberController.getMember(member.getId(), member.getFamilyId());
@@ -79,7 +79,7 @@ class MemberControllerTest {
                 new FamilyMemberProfileResponse(member1.getId(), member1.getName(), member1.getProfileImgUrl(), member1.getFamilyJoinAt().toLocalDate(), member1.getDayOfBirth()),
                 new FamilyMemberProfileResponse(member2.getId(), member2.getName(), member2.getProfileImgUrl(),member2.getFamilyJoinAt().toLocalDate(), member2.getDayOfBirth())
         ));
-        when(memberService.findFamilyMembersProfilesByFamilyId(familyId, 1, 5))
+        when(memberService.getFamilyMembersProfilesByFamilyId(familyId, 1, 5))
                 .thenReturn(profilePage);
 
         // when
@@ -98,7 +98,7 @@ class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
 
         // when
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
@@ -115,7 +115,7 @@ class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
 
         // when
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
@@ -131,7 +131,7 @@ class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
 
         // when
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
@@ -162,7 +162,7 @@ class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
         when(preSignedUrlGenerator.extractImageKey(any())).thenReturn("/profile.jpg");
 
         // when
@@ -179,7 +179,7 @@ class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", null,
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
 
         // when
         memberController.deleteMemberProfileImageUrl(member.getId(), member.getId());
@@ -195,7 +195,7 @@ class MemberControllerTest {
         Member member = new Member("1", "1", LocalDate.of(2000, 7, 8),
                 "testMember1", "http://test.com/test-profile.jpg", "/test-profile.jpg",
                 LocalDateTime.now());
-        when(memberService.findMemberById(any())).thenReturn(member);
+        when(memberService.getMemberByMemberId(any())).thenReturn(member);
 
         // when
         memberController.deleteMember(member.getId(), null, member.getId());
