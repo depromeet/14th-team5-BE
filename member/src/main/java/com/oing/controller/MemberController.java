@@ -24,8 +24,7 @@ public class MemberController implements MemberApi {
 
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final MemberService memberService;
-    private final MemberDeviceService memberDeviceService;
-    private final MemberQuitReasonService memberQuitReasonService;
+
 
     @Override
     public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(
@@ -54,54 +53,34 @@ public class MemberController implements MemberApi {
     }
 
     @Override
-    @Transactional
     public MemberResponse updateMemberProfileImageUrl(String memberId, UpdateMemberProfileImageUrlRequest request, String loginMemberId) {
         validateMemberIdMatch(memberId, loginMemberId);
-        
-        Member member = memberService.getMemberByMemberId(memberId);
-        String profileImgKey = preSignedUrlGenerator.extractImageKey(request.profileImageUrl());
-        member.updateProfileImg(request.profileImageUrl(), profileImgKey);
 
+        Member member = memberService.updateMemberProfileImageUrl(memberId, request.profileImageUrl());
         return MemberResponse.of(member);
     }
 
     @Override
-    @Transactional
     public MemberResponse deleteMemberProfileImageUrl(String memberId, String loginMemberId) {
         validateMemberIdMatch(memberId, loginMemberId);
 
-        Member member = memberService.getMemberByMemberId(memberId);
-        member.deleteProfileImg();
-
+        Member member = memberService.deleteMemberProfileImageUrl(memberId);
         return MemberResponse.of(member);
     }
 
     @Override
-    @Transactional
     public MemberResponse updateMemberName(String memberId, UpdateMemberNameRequest request, String loginMemberId) {
         validateMemberIdMatch(memberId, loginMemberId);
 
-        Member member = memberService.getMemberByMemberId(memberId);
-        member.updateName(request.name());
-
+        Member member = memberService.updateMemberName(memberId, request.name());
         return MemberResponse.of(member);
     }
 
     @Override
-    @Transactional
     public DefaultResponse deleteMember(String memberId, QuitMemberRequest request, String loginMemberId) {
         validateMemberIdMatch(memberId, loginMemberId);
 
-        Member member = memberService.getMemberByMemberId(memberId);
-        memberService.deleteAllSocialMembersByMember(memberId);
-        member.deleteMemberInfo();
-
-        if (request != null) { //For Api Version Compatibility
-            memberQuitReasonService.recordMemberQuitReason(memberId, request.reasonIds());
-        }
-
-        memberDeviceService.removeAllDevicesByMemberId(memberId);
-
+        memberService.deleteMember(memberId, request);
         return DefaultResponse.ok();
     }
 

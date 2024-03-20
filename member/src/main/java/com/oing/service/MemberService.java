@@ -5,6 +5,7 @@ import com.oing.domain.Member;
 import com.oing.domain.SocialLoginProvider;
 import com.oing.domain.SocialMember;
 import com.oing.domain.key.SocialMemberKey;
+import com.oing.dto.request.QuitMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.exception.FamilyNotFoundException;
 import com.oing.exception.MemberNotFoundException;
@@ -29,6 +30,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final SocialMemberRepository socialMemberRepository;
+    private final MemberDeviceService memberDeviceService;
+    private final MemberQuitReasonService memberQuitReasonService;
 
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final IdentityGenerator identityGenerator;
@@ -118,6 +121,48 @@ public class MemberService {
         return memberRepository.findAllByDeletedAtIsNull();
     }
 
+
+    @Transactional
+    public Member updateMemberProfileImageUrl(String memberId, String profileImageUrl) {
+        Member member = getMemberByMemberId(memberId);
+
+        String profileImgKey = preSignedUrlGenerator.extractImageKey(profileImageUrl);
+        member.updateProfileImg(profileImageUrl, profileImgKey);
+
+        return member;
+    }
+
+    @Transactional
+    public Member updateMemberName(String memberId, String name) {
+        Member member = getMemberByMemberId(memberId);
+
+        member.updateName(name);
+        return member;
+    }
+
+
+    @Transactional
+    public void deleteMember(String memberId, QuitMemberRequest quitReason) {
+        Member member = getMemberByMemberId(memberId);
+
+        deleteAllSocialMembersByMember(memberId);
+        member.deleteMemberInfo();
+
+        if (quitReason != null) { //For Api Version Compatibility
+            memberQuitReasonService.recordMemberQuitReason(memberId, quitReason.reasonIds());
+        }
+
+        memberDeviceService.removeAllDevicesByMemberId(memberId);
+    }
+
+    @Transactional
+    public Member deleteMemberProfileImageUrl(String memberId) {
+        Member member = getMemberByMemberId(memberId);
+
+        member.deleteProfileImg();
+
+        return member;
+    }
 
     public void deleteAllSocialMembersByMember(String memberId) {
         socialMemberRepository.deleteAllByMemberId(memberId);
