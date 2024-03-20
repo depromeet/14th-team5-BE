@@ -26,11 +26,13 @@ public enum ErrorCode {
     AUTHORIZATION_FAILED("AU0003", "No Permission"),
     REFRESH_TOKEN_INVALID("AU0004", "Refresh Token is invalid"),
     TOKEN_EXPIRED("AU0005", "Token is expired"),
+    UNAUTHORIZED_MEMBER_USED("AU0006", "Attempting to use unauthorized member"),
     /**
      * Member Related Errors
      */
     MEMBER_NOT_FOUND("MB0001", "Member not found"),
     MEMBER_ALREADY_EXISTS("MB0002", "Member With That Credentials Already Exists"),
+    INVALID_MEMBER_NAME_LENGTH("MB0003", "Member name is empty or longer than 9 characters"),
     /**
      * MemberPost Related Errors
      */
