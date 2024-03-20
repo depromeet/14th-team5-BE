@@ -9,6 +9,7 @@ import com.oing.exception.EmojiNotFoundException;
 import com.oing.repository.ReactionRepository;
 import com.oing.service.event.DeletePostEvent;
 import com.oing.util.IdentityGenerator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -25,6 +26,7 @@ public class ReactionService {
     private final ReactionRepository reactionRepository;
     private final MemberBridge memberBridge;
 
+    @Transactional
     public Reaction createPostReaction(Post post, String memberId, PostReactionRequest request) {
         Emoji emoji = Emoji.fromString(request.content());
         validatePostReactionForAddition(post, memberId, emoji);
@@ -46,6 +48,7 @@ public class ReactionService {
         return reactionRepository.findAllByPostId(postId);
     }
 
+    @Transactional
     public void deletePostReaction(Post post, String loginMemberId, PostReactionRequest request) {
         Emoji emoji = Emoji.fromString(request.content());
 

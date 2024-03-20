@@ -11,6 +11,7 @@ import com.oing.exception.RealEmojiNotFoundException;
 import com.oing.repository.MemberRealEmojiRepository;
 import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class MemberRealEmojiService {
     private final PreSignedUrlGenerator preSignedUrlGenerator;
 
 
+    @Transactional
     public PreSignedUrlResponse requestPresignedUrl(String memberId, String loginMemberId, String imageName) {
         log.info("Member {} is trying to request member real emoji Pre-Signed URL", loginMemberId);
         validateMemberId(loginMemberId, memberId);
@@ -36,6 +38,7 @@ public class MemberRealEmojiService {
         return response;
     }
 
+    @Transactional
     public MemberRealEmoji save(String memberId, String loginMemberId, String loginFamilyId, CreateMyRealEmojiRequest request) {
         validateMemberId(loginMemberId, memberId);
         String emojiId = identityGenerator.generateIdentity();
@@ -55,6 +58,7 @@ public class MemberRealEmojiService {
                 .isPresent();
     }
 
+    @Transactional
     public MemberRealEmoji changeMemberRealEmoji(
             String memberId, String loginMemberId, String loginFamilyId, String realEmojiId, UpdateMyRealEmojiRequest request
     ) {

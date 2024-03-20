@@ -10,6 +10,7 @@ import com.oing.repository.CommentRepository;
 import com.oing.service.event.DeletePostEvent;
 import com.oing.util.IdentityGenerator;
 import com.querydsl.core.QueryResults;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -24,6 +25,7 @@ public class CommentService {
     private final IdentityGenerator identityGenerator;
 
 
+    @Transactional
     public Comment savePostComment(Post post, CreatePostCommentRequest request, String loginMemberId) {
         validateFamilyMember(loginMemberId, post);
 
@@ -38,6 +40,7 @@ public class CommentService {
         return savedComment;
     }
 
+    @Transactional
     public void deletePostComment(Post post, String commentId, String loginMemberId) {
         Comment comment = getMemberPostComment(post.getId(), commentId);
         validateCommentOwner(loginMemberId, comment);
@@ -46,6 +49,7 @@ public class CommentService {
         post.removeComment(comment);
     }
 
+    @Transactional
     public Comment updateMemberPostComment(String postId, String commentId, String content, String loginMemberId) {
         Comment comment = getMemberPostComment(postId, commentId);
         validateCommentOwner(loginMemberId, comment);
