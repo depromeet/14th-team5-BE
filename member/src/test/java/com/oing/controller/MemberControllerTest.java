@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 @Transactional
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class MemberControllerTest {
+class MemberControllerTest {
 
     @InjectMocks
     private MemberController memberController;
@@ -55,7 +55,7 @@ public class MemberControllerTest {
         when(memberService.findFamilyIdByMemberId(any())).thenReturn(member.getFamilyId());
 
         // when
-        MemberResponse response = memberController.getMember(member.getId(), member.getFamilyId(), member.getId());
+        MemberResponse response = memberController.getMember(member.getId(), member.getFamilyId());
 
         // then
         assertEquals(member.getId(), response.memberId());
@@ -84,7 +84,7 @@ public class MemberControllerTest {
 
         // when
         PaginationResponse<FamilyMemberProfileResponse> response = memberController.
-                getFamilyMembersProfiles(1, 5, familyId, member1.getId());
+                getFamilyMembersProfiles(1, 5, familyId);
 
         // then
         assertFalse(response.hasNext());
@@ -102,7 +102,7 @@ public class MemberControllerTest {
 
         // when
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
-        memberController.updateMemberName(member.getId(), member.getId(), request);
+        memberController.updateMemberName(member.getId(), request, member.getId());
 
         // then
         assertEquals(newName, member.getName());
@@ -121,7 +121,7 @@ public class MemberControllerTest {
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
 
         // then
-        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), member.getId(), request));
+        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), request, member.getId()));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class MemberControllerTest {
         UpdateMemberNameRequest request = new UpdateMemberNameRequest(newName);
 
         // then
-        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), member.getId(), request));
+        assertThrows(InvalidParameterException.class, () -> memberController.updateMemberName(member.getId(), request, member.getId()));
     }
 
     @Test
@@ -167,7 +167,7 @@ public class MemberControllerTest {
 
         // when
         UpdateMemberProfileImageUrlRequest request = new UpdateMemberProfileImageUrlRequest(newProfileImageUrl);
-        memberController.updateMemberProfileImageUrl(member.getId(), member.getId(), request);
+        memberController.updateMemberProfileImageUrl(member.getId(), request, member.getId());
 
         // then
         assertEquals(newProfileImageUrl, member.getProfileImgUrl());
@@ -198,7 +198,7 @@ public class MemberControllerTest {
         when(memberService.findMemberById(any())).thenReturn(member);
 
         // when
-        memberController.deleteMember(member.getId(), member.getId(), null);
+        memberController.deleteMember(member.getId(), null, member.getId());
 
         // then
         assertEquals("DeletedMember", member.getName());
@@ -214,6 +214,6 @@ public class MemberControllerTest {
                 LocalDateTime.now());
 
         // then
-        assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember("2", member.getId(), null));
+        assertThrows(AuthorizationFailedException.class, () -> memberController.deleteMember("2", null, member.getId()));
     }
 }
