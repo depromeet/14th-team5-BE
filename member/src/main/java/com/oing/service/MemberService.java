@@ -85,7 +85,8 @@ public class MemberService {
     }
 
     public List<String> findFamilyMembersIdsByFamilyJoinAtBefore(String familyId, LocalDate date) {
-        return memberRepository.findAllByFamilyIdAndFamilyJoinAtBefore(familyId, date.atStartOfDay())
+        return memberRepository
+                .findAllByFamilyIdAndFamilyJoinAtBeforeAndDeletedAtIsNull(familyId, date.atStartOfDay())
                 .stream()
                 .map(Member::getId)
                 .toList();
@@ -101,10 +102,6 @@ public class MemberService {
         List<FamilyMemberProfileResponse> familyMemberProfiles = createFamilyMemberProfiles(members);
 
         return new PageImpl<>(familyMemberProfiles, memberPage.getPageable(), memberPage.getTotalElements());
-    }
-
-    public long countFamilyMembersByFamilyIdBefore(String familyId, LocalDate date) {
-        return memberRepository.countByFamilyIdAndFamilyJoinAtBefore(familyId, date.atStartOfDay());
     }
 
     private List<FamilyMemberProfileResponse> createFamilyMemberProfiles(List<Member> members) {
