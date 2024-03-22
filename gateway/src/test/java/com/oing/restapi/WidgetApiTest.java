@@ -6,6 +6,7 @@ import com.oing.domain.CreateNewUserDTO;
 import com.oing.domain.Member;
 import com.oing.domain.MemberPost;
 import com.oing.domain.SocialLoginProvider;
+import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DeepLinkResponse;
 import com.oing.dto.response.FamilyResponse;
@@ -23,8 +24,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -149,9 +150,24 @@ class WidgetApiTest {
                 "3",
                 "testPos3"
         );
-        memberPostService.save(testPost1);
-        memberPostService.save(testPost2);
-        memberPostService.save(testPost3);
+        CreatePostRequest request1 = new CreatePostRequest(
+                "https://storage.com/bucket/images/1",
+                "testPos1",
+                ZonedDateTime.now()
+        );
+        CreatePostRequest request2 = new CreatePostRequest(
+                "https://storage.com/bucket/images/2",
+                "testPos2",
+                ZonedDateTime.now()
+        );
+        CreatePostRequest request3 = new CreatePostRequest(
+                "https://storage.com/bucket/images/3",
+                "testPos3",
+                ZonedDateTime.now()
+        );
+        memberPostService.createMemberPost(request1, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
+        memberPostService.createMemberPost(request2, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
+        memberPostService.createMemberPost(request3, TEST_MEMBER3.getId(), "something_other");
 
 
         // when & then
@@ -195,9 +211,24 @@ class WidgetApiTest {
                 "3",
                 "testPos3"
         );
-        memberPostService.save(testPost1);
-        memberPostService.save(testPost2);
-        memberPostService.save(testPost3);
+        CreatePostRequest request1 = new CreatePostRequest(
+                "https://storage.com/bucket/images/1",
+                "testPos1",
+                ZonedDateTime.now()
+        );
+        CreatePostRequest request2 = new CreatePostRequest(
+                "https://storage.com/bucket/images/2",
+                "testPos2",
+                ZonedDateTime.now()
+        );
+        CreatePostRequest request3 = new CreatePostRequest(
+                "https://storage.com/bucket/images/3",
+                "testPos3",
+                ZonedDateTime.now()
+        );
+        memberPostService.createMemberPost(request1, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
+        memberPostService.createMemberPost(request2, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
+        memberPostService.createMemberPost(request3, TEST_MEMBER3.getId(), "something_other");
 
 
         // when & then
