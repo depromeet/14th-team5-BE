@@ -34,7 +34,7 @@ public class MemberPostReactionService {
                 .orElseThrow(EmojiNotFoundException::new);
     }
 
-    public List<MemberPostReaction> getMemberPostReactionsByPostId(String postId) {
+    public List<MemberPostReaction> findMemberPostReactionsByPostId(String postId) {
         return memberPostReactionRepository.findAllByPostId(postId);
     }
 

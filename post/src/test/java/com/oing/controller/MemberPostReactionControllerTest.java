@@ -43,7 +43,7 @@ public class MemberPostReactionControllerTest {
         String memberId = "1";
         MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
         MemberPostReaction reaction = new MemberPostReaction("1", post, memberId, Emoji.EMOJI_1);
-        when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
+        when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberPostReactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(false);
         when(identityGenerator.generateIdentity()).thenReturn(reaction.getId());
         when(memberPostReactionService.createPostReaction(reaction.getId(), post, memberId, Emoji.EMOJI_1)).thenReturn(reaction);
@@ -61,7 +61,7 @@ public class MemberPostReactionControllerTest {
         //given
         String memberId = "1";
         MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
-        when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
+        when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
         when(memberPostReactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(true);
@@ -78,7 +78,7 @@ public class MemberPostReactionControllerTest {
         String memberId = "1";
         MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
         MemberPostReaction reaction = new MemberPostReaction("1", post, memberId, Emoji.EMOJI_1);
-        when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
+        when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberPostReactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(true);
         when(memberPostReactionService.findReaction(post, memberId, Emoji.EMOJI_1)).thenReturn(reaction);
 
@@ -95,7 +95,7 @@ public class MemberPostReactionControllerTest {
         //given
         String memberId = "1";
         MemberPost post = new MemberPost("1", memberId, "1", "1", "1", "1");
-        when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
+        when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
         when(memberPostReactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(false);
@@ -115,9 +115,9 @@ public class MemberPostReactionControllerTest {
                 new MemberPostReaction("1", post, memberId, Emoji.EMOJI_1),
                 new MemberPostReaction("2", post, memberId, Emoji.EMOJI_2)
         );
-        when(memberPostService.findMemberPostById(post.getId())).thenReturn(post);
+        when(memberPostService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
-        when(memberPostReactionService.getMemberPostReactionsByPostId(post.getId())).thenReturn(mockReactions);
+        when(memberPostReactionService.findMemberPostReactionsByPostId(post.getId())).thenReturn(mockReactions);
 
         //when
         PostReactionMemberResponse response = memberPostReactionController.getPostReactionMembers(post.getId(), memberId);

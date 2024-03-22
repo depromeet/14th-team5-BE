@@ -2,69 +2,75 @@ package com.oing.service;
 
 import com.oing.domain.MemberPost;
 import com.oing.domain.PaginationDTO;
+import com.oing.dto.request.CreatePostRequest;
+import com.oing.exception.DuplicatePostUploadException;
+import com.oing.exception.InvalidUploadTimeException;
 import com.oing.exception.PostNotFoundException;
 import com.oing.repository.MemberPostRepository;
 import com.oing.service.event.DeleteMemberPostEvent;
+import com.oing.util.IdentityGenerator;
+import com.oing.util.PreSignedUrlGenerator;
 import com.querydsl.core.QueryResults;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberPostService {
 
     private final MemberPostRepository memberPostRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final IdentityGenerator identityGenerator;
+    private final PreSignedUrlGenerator preSignedUrlGenerator;
 
 
-    public MemberPost save(MemberPost post) {
+    public MemberPost createMemberPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
+        ZonedDateTime uploadTime = request.uploadTime();
+        validateUserHasNotCreatedPostToday(loginMemberId, loginFamilyId, uploadTime);
+        validateUploadTime(loginMemberId, uploadTime);
+
+        MemberPost post = new MemberPost(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId,
+                request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), request.content());
         return memberPostRepository.save(post);
     }
 
+    private void validateUserHasNotCreatedPostToday(String memberId, String familyId, ZonedDateTime uploadTime) {
+        LocalDate today = uploadTime.toLocalDate();
+        if (memberPostRepository.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, today)) {
+            log.warn("Member {} has already created a post today", memberId);
+            throw new DuplicatePostUploadException();
+        }
+    }
 
-    /**
-     * 멤버들이 범위 날짜 안에 올린 대표 게시물들을 가져온다.
-     * (대표 게시글의 기준은 당일 가장 늦게 올라온 게시글)
-     *
-     * @param memberIds          조회 대상 멤버들의 ID
-     * @param inclusiveStartDate 조회 시작 날짜
-     * @param exclusiveEndDate   조회 종료 날짜
-     * @return 데일리 대표 게시물들
-     */
+    private void validateUploadTime(String memberId, ZonedDateTime uploadTime) {
+        ZonedDateTime serverTime = ZonedDateTime.now();
+
+        ZonedDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(12, 0));
+        ZonedDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(12, 0));
+
+        if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
+            log.warn("Member {} is attempting to upload a post at an invalid time", memberId);
+            throw new InvalidUploadTimeException();
+        }
+    }
+
     public List<MemberPost> findLatestPostOfEveryday(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, String familyId) {
         return memberPostRepository.findLatestPostOfEveryday(inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay(), familyId);
     }
 
-
-    public MemberPost findMemberPostById(String postId) {
-        return memberPostRepository
-                .findById(postId)
-                .orElseThrow(PostNotFoundException::new);
-    }
-
-
-    /**
-     * 멤버가 해당 요일(클라이언트 기준의 오늘)에 게시글을 작성했는지 확인한다.
-     *
-     * @param memberId 조회 대상 멤버들의 ID
-     * @param today    조회 날짜
-     * @return 오늘 회원이 작성한 글이 있는지 반환
-     */
-    public boolean hasUserCreatedPostToday(String memberId, String familyId, LocalDate today) {
-        return memberPostRepository.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, today);
-    }
-
-    @Transactional
     public MemberPost getMemberPostById(String postId) {
         return memberPostRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
-    @Transactional
     public PaginationDTO<MemberPost> searchMemberPost(int page, int size, LocalDate date, String memberId, String requesterMemberId, String familyId, boolean asc) {
         QueryResults<MemberPost> results = memberPostRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc);
         int totalPage = (int) Math.ceil((double) results.getTotal() / size);
@@ -85,12 +91,11 @@ public class MemberPostService {
         memberPostRepository.delete(memberPost);
     }
 
-    @Transactional
     public long countMonthlyPostByFamilyId(int year, int month, String familyId) {
         return memberPostRepository.countMonthlyPostByFamilyId(year, month, familyId);
     }
 
-    public List<String> getMemberIdsPostedToday(LocalDate date) {
+    public List<String> findMemberIdsPostedToday(LocalDate date) {
         return memberPostRepository.getMemberIdsPostedToday(date);
     }
 

@@ -93,7 +93,7 @@ public class DailyNotificationJob {
             LocalDate today = LocalDate.now();
             List<Member> allMembers = memberService.findAllMember();
             HashSet<String> targetFcmTokens = new HashSet<>();
-            HashSet<String> postedMemberIds = new HashSet<>(memberPostService.getMemberIdsPostedToday(today));
+            HashSet<String> postedMemberIds = new HashSet<>(memberPostService.findMemberIdsPostedToday(today));
             allMembers.stream()
                     .filter(member -> !postedMemberIds.contains(member.getId())) //오늘 업로드한 사람이 아닌 사람들은
                     .forEach(member -> targetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(member.getId())));
