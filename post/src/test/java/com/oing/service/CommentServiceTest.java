@@ -26,7 +26,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PostCommentServiceTest {
+public class CommentServiceTest {
     @InjectMocks
     private CommentService commentService;
 
