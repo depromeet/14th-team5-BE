@@ -26,11 +26,23 @@ public class SlackGateway {
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
-    public void sendSlackBotMessage(SlackBotDto dto) {
+    public void sendErrorSlack(SlackBotDto dto) {
         String body = objectMapper.writeValueAsString(dto);
         RestTemplate restTemplate = new RestTemplate();
         RequestEntity<String> requestEntity = RequestEntity
-                .post(externalUrlProperties.slackWebhook())
+                .post(externalUrlProperties.slackErrorWebhook())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(body);
+
+        restTemplate.exchange(requestEntity, Void.class);
+    }
+
+    @SneakyThrows
+    public void sendNotificationSlack(SlackBotDto dto) {
+        String body = objectMapper.writeValueAsString(dto);
+        RestTemplate restTemplate = new RestTemplate();
+        RequestEntity<String> requestEntity = RequestEntity
+                .post(externalUrlProperties.slackNotificationWebhook())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(body);
 

@@ -12,11 +12,14 @@ spring:
           enabled: true
         show_sql: true
         format_sql: true
+  data:
+    redis:
+      host: ${REDIS_HOST} # Must Be Replaced
+      port: ${REDIS_PORT} # Must Be Replaced
+
 app:
-<<<<<<< HEAD
-=======
   oauth:
-    google-client-id: ${GOOGLE_CLIENT_ID}
+    google-client-id: ${GOOGLE_CLIENT_ID} # Must Be Replaced
   web:
     versionFilterEnabled: false
   external-urls:
@@ -25,11 +28,12 @@ app:
     secret-key: ${TOKEN_SECRET_KEY} # Must Be Replaced
 
 cloud:
+  firebase: ${FIREBASE_SECRET} # Must Be Replaced
   ncp:
-    region: ${OBJECT_STORAGE_REGION}
-    end-point: ${OBJECT_STORAGE_END_POINT}
-    access-key: ${OBJECT_STORAGE_ACCESS_KEY}
-    secret-key: ${OBJECT_STORAGE_SECRET_KEY}
-    image-optimizer-cdn: ${IMAGE_OPTIMIZER_CDN_URL}
+    region: ${OBJECT_STORAGE_REGION} # Must Be Replaced
+    end-point: ${OBJECT_STORAGE_END_POINT} # Must Be Replaced
+    access-key: ${OBJECT_STORAGE_ACCESS_KEY} # Must Be Replaced
+    secret-key: ${OBJECT_STORAGE_SECRET_KEY} # Must Be Replaced
     storage:
-      bucket: ${OBJECT_STORAGE_BUCKET_NAME}
+      bucket: ${OBJECT_STORAGE_BUCKET_NAME} # Must Be Replaced
+    image-optimizer-cdn: ${IMAGE_OPTIMIZER_CDN_URL} # Must Be Replaced

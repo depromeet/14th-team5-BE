@@ -1,8 +1,8 @@
 package com.oing.controller;
 
 import com.oing.domain.Comment;
-import com.oing.domain.Post;
 import com.oing.domain.PaginationDTO;
+import com.oing.domain.Post;
 import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.dto.request.UpdatePostCommentRequest;
 import com.oing.dto.response.DefaultResponse;
@@ -10,8 +10,8 @@ import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostCommentResponse;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.CommentApi;
-import com.oing.service.MemberBridge;
 import com.oing.service.CommentService;
+import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

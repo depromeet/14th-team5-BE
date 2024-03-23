@@ -2,16 +2,15 @@ package com.oing.controller;
 
 import com.google.common.collect.Lists;
 import com.oing.domain.Comment;
-import com.oing.domain.Post;
 import com.oing.domain.PaginationDTO;
+import com.oing.domain.Post;
 import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.dto.request.UpdatePostCommentRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostCommentResponse;
-import com.oing.service.MemberBridge;
 import com.oing.service.CommentService;
+import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
-import com.oing.util.IdentityGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,8 +29,6 @@ public class PostCommentControllerTest {
     @InjectMocks
     private CommentController commentController;
 
-    @Mock
-    private IdentityGenerator identityGenerator;
     @Mock
     private PostService postService;
     @Mock

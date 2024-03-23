@@ -6,8 +6,8 @@ import com.oing.domain.Reaction;
 import com.oing.dto.request.PostReactionRequest;
 import com.oing.dto.response.PostReactionMemberResponse;
 import com.oing.service.MemberBridge;
-import com.oing.service.ReactionService;
 import com.oing.service.PostService;
+import com.oing.service.ReactionService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PostReactionControllerTest {
+public class ReactionControllerTest {
     @InjectMocks
     private ReactionController reactionController;
 
@@ -39,7 +39,7 @@ public class PostReactionControllerTest {
         String memberId = "1";
         Post post = new Post("1", memberId, "1", "1", "1", "1");
         Reaction reaction = new Reaction("1", post, memberId, Emoji.EMOJI_1);
-        when(postService.findMemberPostById(post.getId())).thenReturn(post);
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
         PostReactionRequest request = new PostReactionRequest("emoji_1");
@@ -55,7 +55,7 @@ public class PostReactionControllerTest {
         //given
         String memberId = "1";
         Post post = new Post("1", memberId, "1", "1", "1", "1");
-        when(postService.findMemberPostById(post.getId())).thenReturn(post);
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
         PostReactionRequest request = new PostReactionRequest("emoji_1");
@@ -74,7 +74,7 @@ public class PostReactionControllerTest {
                 new Reaction("1", post, memberId, Emoji.EMOJI_1),
                 new Reaction("2", post, memberId, Emoji.EMOJI_2)
         );
-        when(postService.findMemberPostById(post.getId())).thenReturn(post);
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
         when(reactionService.getMemberPostReactionsByPostId(post.getId())).thenReturn(mockReactions);
 

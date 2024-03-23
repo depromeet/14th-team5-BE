@@ -33,7 +33,7 @@ public class ReactionController implements ReactionApi {
     @Transactional
     public DefaultResponse createPostReaction(String postId, String loginMemberId, PostReactionRequest request) {
         log.info("Member {} is trying to create post reaction", loginMemberId);
-        Post post = postService.findMemberPostById(postId);
+        Post post = postService.getMemberPostById(postId);
         Reaction reaction = reactionService.createPostReaction(post, loginMemberId, request);
 
         log.info("Member {} has created post reaction {}", loginMemberId, reaction.getId());
@@ -44,7 +44,7 @@ public class ReactionController implements ReactionApi {
     @Transactional
     public DefaultResponse deletePostReaction(String postId, String loginMemberId, PostReactionRequest request) {
         log.info("Member {} is trying to delete post reaction {}", loginMemberId, request.content());
-        Post post = postService.findMemberPostById(postId);
+        Post post = postService.getMemberPostById(postId);
         reactionService.deletePostReaction(post, loginMemberId, request);
 
         return DefaultResponse.ok();
@@ -53,7 +53,7 @@ public class ReactionController implements ReactionApi {
     @Override
     @Transactional
     public PostReactionSummaryResponse getPostReactionSummary(String postId, String loginMemberId) {
-        Post post = postService.findMemberPostById(postId);
+        Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
 
         List<PostReactionSummaryResponse.PostReactionSummaryResponseElement> results = post.getReactions()
@@ -76,7 +76,7 @@ public class ReactionController implements ReactionApi {
     @Override
     @Transactional
     public ArrayResponse<PostReactionResponse> getPostReactions(String postId, String loginMemberId) {
-        Post post = postService.findMemberPostById(postId);
+        Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
         return ArrayResponse.of(
                 post.getReactions().stream()
@@ -88,7 +88,7 @@ public class ReactionController implements ReactionApi {
     @Override
     @Transactional
     public PostReactionMemberResponse getPostReactionMembers(String postId, String loginMemberId) {
-        Post post = postService.findMemberPostById(postId);
+        Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
         List<Reaction> reactions = reactionService.getMemberPostReactionsByPostId(postId);
         List<Emoji> emojiList = Emoji.getEmojiList();

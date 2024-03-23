@@ -65,7 +65,7 @@ public class ApplicationListener {
                 ))
                 .build();
 
-        slackGateway.sendSlackBotMessage(dto);
+        slackGateway.sendNotificationSlack(dto);
     }
 
     @Async
@@ -78,7 +78,7 @@ public class ApplicationListener {
                 .attachments(List.of(
                         SlackGateway.SlackBotAttachmentDto.builder()
                                 .authorName("no5ing-server")
-                                .title("백엔드 서비스 에러 리포트")
+                                .title("백엔드 서비스 " + environment.getActiveProfiles()[0]  + " 에러 리포트")
                                 .text("백엔드 서버에서 핸들링되지 않은 오류가 발생하였습니다")
                                 .fields(List.of(
                                         SlackGateway.SlackBotFieldDto.builder()
@@ -96,6 +96,6 @@ public class ApplicationListener {
                 ))
                 .build();
 
-        slackGateway.sendSlackBotMessage(dto);
+        slackGateway.sendErrorSlack(dto);
     }
 }

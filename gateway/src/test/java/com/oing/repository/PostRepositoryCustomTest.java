@@ -29,7 +29,7 @@ class PostRepositoryCustomTest {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private PostRepositoryCustomImpl memberPostRepositoryCustomImpl;
+    private PostRepositoryCustomImpl postRepositoryCustomImpl;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -93,7 +93,7 @@ class PostRepositoryCustomTest {
     void 각_날짜에서_가장_마지막으로_업로드된_게시글을_조회한다() {
         // When
         String familyId = testMember1.getFamilyId();
-        List<Post> posts = memberPostRepositoryCustomImpl.findLatestPostOfEveryday(LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0), familyId);
+        List<Post> posts = postRepositoryCustomImpl.findLatestPostOfEveryday(LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0), familyId);
 
         // Then
         assertThat(posts)
@@ -107,7 +107,7 @@ class PostRepositoryCustomTest {
         LocalDate postDate = LocalDate.of(2023, 11, 1);
 
         // when
-        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndCreatedAt(testMember1.getId(),
+        boolean exists = postRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndCreatedAt(testMember1.getId(),
                 testMember1.getFamilyId(), postDate);
 
         // then
@@ -120,7 +120,7 @@ class PostRepositoryCustomTest {
         LocalDate postDate = LocalDate.of(2023, 11, 8);
 
         // when
-        boolean exists = memberPostRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndCreatedAt(testMember1.getId(),
+        boolean exists = postRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndCreatedAt(testMember1.getId(),
                 testMember1.getFamilyId(), postDate);
 
         // then

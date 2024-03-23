@@ -4,7 +4,6 @@ import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
-import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,12 +18,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class PostControllerTest {
     @InjectMocks
-    private PostController postController;
+    private PostController memberPostController;
 
     @Mock
-    private IdentityGenerator identityGenerator;
-    @Mock
-    private PostService postService;
+    private PostService memberPostService;
     @Mock
     private MemberBridge memberBridge;
     @Mock
@@ -39,7 +36,7 @@ public class PostControllerTest {
         PreSignedUrlRequest request = new PreSignedUrlRequest(newFeedImage);
         PreSignedUrlResponse dummyResponse = new PreSignedUrlResponse("https://test.com/presigend-request-url.jpg");
         when(preSignedUrlGenerator.getFeedPreSignedUrl(any())).thenReturn(dummyResponse);
-        PreSignedUrlResponse response = postController.requestPresignedUrl(request, "1");
+        PreSignedUrlResponse response = memberPostController.requestPresignedUrl(request, "1");
 
         // then
         assertNotNull(response.url());

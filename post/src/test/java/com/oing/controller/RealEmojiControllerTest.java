@@ -1,22 +1,18 @@
 package com.oing.controller;
 
 import com.oing.domain.Emoji;
+import com.oing.domain.MemberRealEmoji;
 import com.oing.domain.Post;
 import com.oing.domain.RealEmoji;
-import com.oing.domain.MemberRealEmoji;
 import com.oing.dto.request.PostRealEmojiRequest;
 import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.PostRealEmojiMemberResponse;
 import com.oing.dto.response.PostRealEmojiResponse;
 import com.oing.dto.response.PostRealEmojiSummaryResponse;
-import com.oing.exception.AuthorizationFailedException;
-import com.oing.exception.RealEmojiAlreadyExistsException;
 import com.oing.exception.RegisteredRealEmojiNotFoundException;
 import com.oing.service.MemberBridge;
-import com.oing.service.RealEmojiService;
 import com.oing.service.PostService;
-import com.oing.service.MemberRealEmojiService;
-import com.oing.util.IdentityGenerator;
+import com.oing.service.RealEmojiService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,24 +25,19 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @Transactional
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class PostRealEmojiControllerTest {
+public class RealEmojiControllerTest {
     @InjectMocks
     private RealEmojiController realEmojiController;
 
     @Mock
-    private IdentityGenerator identityGenerator;
-    @Mock
     private PostService postService;
     @Mock
     private RealEmojiService realEmojiService;
-    @Mock
-    private MemberRealEmojiService memberRealEmojiService;
     @Mock
     private MemberBridge memberBridge;
 
@@ -55,67 +46,22 @@ public class PostRealEmojiControllerTest {
         //given
         String memberId = "1";
         String familyId = "1";
-        when(memberBridge.isInSameFamily(memberId, memberId)).thenReturn(true);
-        Post post = new Post("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
-                "안녕.오잉.");
         MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
+        Post post = new Post("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
+                "안녕.오잉.");
         when(postService.getMemberPostById(post.getId())).thenReturn(post);
-        when(memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(realEmoji.getId(), familyId)).thenReturn(realEmoji);
 
         RealEmoji postRealEmoji = new RealEmoji("1", realEmoji, post, memberId);
-        when(realEmojiService.savePostRealEmoji(any(RealEmoji.class))).thenReturn(postRealEmoji);
-        when(identityGenerator.generateIdentity()).thenReturn(postRealEmoji.getId());
         PostRealEmojiRequest request = new PostRealEmojiRequest(realEmoji.getId());
+        when(realEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post)).thenReturn(postRealEmoji);
 
         //when
-        PostRealEmojiResponse response = realEmojiController.createPostRealEmoji(post.getId(), familyId, memberId, request);
+        PostRealEmojiResponse response = realEmojiController.registerRealEmojiAtPost(post.getId(), familyId, memberId, request);
 
         //then
         assertEquals(post.getId(), response.postId());
         assertEquals(request.realEmojiId(), response.realEmojiId());
-    }
-
-    @Test
-    void 권한없는_memberId로_게시물_리얼이모지_등록_예외_테스트() {
-        // given
-        String memberId = "1";
-        String familyId = "1";
-        Post post = new Post("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
-                "안녕.오잉.");
-        MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
-                Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
-        when(postService.getMemberPostById(post.getId())).thenReturn(post);
-
-        //when
-        when(memberBridge.isInSameFamily(memberId, memberId)).thenReturn(false);
-        PostRealEmojiRequest request = new PostRealEmojiRequest(realEmoji.getId());
-
-        // then
-        assertThrows(AuthorizationFailedException.class,
-                () -> realEmojiController.createPostRealEmoji(post.getId(), familyId, memberId, request));
-    }
-
-    @Test
-    void 게시물_중복된_리얼이모지_등록_예외_테스트() {
-        //given
-        String memberId = "1";
-        String familyId = "1";
-        when(memberBridge.isInSameFamily(memberId, memberId)).thenReturn(true);
-        Post post = new Post("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
-                "안녕.오잉.");
-        MemberRealEmoji realEmoji = new MemberRealEmoji("1",  memberId, familyId, Emoji.EMOJI_1,
-                "https://oing.com/emoji.jpg", "emoji.jpg");
-        when(postService.getMemberPostById(post.getId())).thenReturn(post);
-        when(memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(realEmoji.getId(), familyId)).thenReturn(realEmoji);
-
-        //when
-        when(realEmojiService.isMemberPostRealEmojiExists(post, memberId, realEmoji)).thenReturn(true);
-        PostRealEmojiRequest request = new PostRealEmojiRequest(realEmoji.getId());
-
-        //then
-        assertThrows(RealEmojiAlreadyExistsException.class,
-                () -> realEmojiController.createPostRealEmoji(post.getId(), familyId, memberId, request));
     }
 
     @Test
@@ -162,7 +108,7 @@ public class PostRealEmojiControllerTest {
         String memberId = "1";
         Post post = new Post("1", memberId, "1", "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
-        when(postService.findMemberPostById(post.getId())).thenReturn(post);
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
 
         //when

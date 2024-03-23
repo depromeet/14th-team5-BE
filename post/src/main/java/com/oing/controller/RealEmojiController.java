@@ -1,20 +1,16 @@
 package com.oing.controller;
 
 
+import com.oing.domain.MemberRealEmoji;
 import com.oing.domain.Post;
 import com.oing.domain.RealEmoji;
-import com.oing.domain.MemberRealEmoji;
 import com.oing.dto.request.PostRealEmojiRequest;
 import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
-import com.oing.exception.RealEmojiAlreadyExistsException;
-import com.oing.exception.RegisteredRealEmojiNotFoundException;
 import com.oing.restapi.RealEmojiApi;
 import com.oing.service.MemberBridge;
-import com.oing.service.RealEmojiService;
 import com.oing.service.PostService;
-import com.oing.service.MemberRealEmojiService;
-import com.oing.util.IdentityGenerator;
+import com.oing.service.RealEmojiService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,54 +25,26 @@ import java.util.stream.Collectors;
 @Controller
 public class RealEmojiController implements RealEmojiApi {
 
-    private final IdentityGenerator identityGenerator;
     private final PostService postService;
     private final RealEmojiService realEmojiService;
-    private final MemberRealEmojiService memberRealEmojiService;
     private final MemberBridge memberBridge;
 
-    /**
-     * 게시물에 리얼 이모지를 등록합니다
-     * @param postId 게시물 ID
-     * @param request 리얼 이모지 등록 요청
-     * @return 생성된 리얼 이모지
-     * @throws AuthorizationFailedException 내 가족이 올린 게시물이 아닌 경우
-     * @throws RealEmojiAlreadyExistsException 이미 등록된 리얼 이모지인 경우
-     */
+
     @Transactional
     @Override
-    public PostRealEmojiResponse createPostRealEmoji(String postId, String loginFamilyId, String loginMemberId, PostRealEmojiRequest request) {
+    public PostRealEmojiResponse registerRealEmojiAtPost(
+            String postId, String loginFamilyId, String loginMemberId, PostRealEmojiRequest request
+    ) {
         log.info("Member {} is trying to create post real emoji", loginMemberId);
         Post post = postService.getMemberPostById(postId);
-        if (!memberBridge.isInSameFamily(loginMemberId, post.getMemberId())) {
-            log.warn("Unauthorized access attempt: Member {} is attempting to access post real emoji", loginMemberId);
-            throw new AuthorizationFailedException();
-        }
+        RealEmoji addedPostRealEmoji = realEmojiService.registerRealEmojiAtPost(request, loginMemberId,
+                loginFamilyId, post);
 
-        MemberRealEmoji realEmoji = memberRealEmojiService.getMemberRealEmojiByIdAndFamilyId(request.realEmojiId(), loginFamilyId);
-        validatePostRealEmojiForAddition(post, loginMemberId, realEmoji);
-        RealEmoji postRealEmoji = new RealEmoji(identityGenerator.generateIdentity(), realEmoji,
-                post, loginMemberId);
-        RealEmoji addedPostRealEmoji = realEmojiService.savePostRealEmoji(postRealEmoji);
-        post.addRealEmoji(postRealEmoji);
-        log.info("Member {} has created post real emoji {}", loginMemberId, realEmoji.getId());
+        log.info("Member {} has created post real emoji {}", loginMemberId, addedPostRealEmoji.getId());
 
         return PostRealEmojiResponse.from(addedPostRealEmoji);
     }
 
-    private void validatePostRealEmojiForAddition(Post post, String memberId, MemberRealEmoji emoji) {
-        if (realEmojiService.isMemberPostRealEmojiExists(post, memberId, emoji)) {
-            throw new RealEmojiAlreadyExistsException();
-        }
-    }
-
-    /**
-     * 게시물에 등록된 리얼 이모지를 삭제합니다
-     * @param postId 게시물 ID
-     * @param realEmojiId 리얼 이모지 ID
-     * @return 삭제 결과
-     * @throws RegisteredRealEmojiNotFoundException 등록한 리얼 이모지가 없는 경우
-     */
     @Transactional
     @Override
     public DefaultResponse deletePostRealEmoji(String postId, String realEmojiId, String loginMemberId) {
@@ -92,15 +60,10 @@ public class RealEmojiController implements RealEmojiApi {
         return DefaultResponse.ok();
     }
 
-    /**
-     * 게시물에 등록된 리얼 이모지 요약을 조회합니다
-     * @param postId 게시물 ID
-     * @return 리얼 이모지 요약
-     */
     @Override
     @Transactional
     public PostRealEmojiSummaryResponse getPostRealEmojiSummary(String postId, String loginMemberId) {
-        Post post = postService.findMemberPostById(postId);
+        Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
         List<PostRealEmojiSummaryResponse.PostRealEmojiSummaryResponseElement> results = post.getRealEmojis()
                 .stream()
@@ -119,11 +82,6 @@ public class RealEmojiController implements RealEmojiApi {
         );
     }
 
-    /**
-     * 게시물에 등록된 리얼 이모지 목록을 조회합니다
-     * @param postId 게시물 ID
-     * @return 리얼 이모지 목록
-     */
     @Transactional
     @Override
     public ArrayResponse<PostRealEmojiResponse> getPostRealEmojis(String postId, String loginMemberId) {
@@ -156,11 +114,6 @@ public class RealEmojiController implements RealEmojiApi {
         return new PostRealEmojiMemberResponse(result);
     }
 
-    /**
-     * 리얼 이모지를 남긴 멤버 목록을 리얼 이모지 별로 그룹화합니다
-     * @param realEmojis 리얼 이모지 목록
-     * @return 리얼 이모지 별로 그룹화된 멤버 목록
-     */
     private Map<MemberRealEmoji, List<String>> groupByRealEmoji(List<RealEmoji> realEmojis) {
         return realEmojis.stream()
                 .collect(Collectors.groupingBy(
