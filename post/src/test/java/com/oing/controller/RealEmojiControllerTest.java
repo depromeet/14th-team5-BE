@@ -9,7 +9,6 @@ import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.PostRealEmojiMemberResponse;
 import com.oing.dto.response.PostRealEmojiResponse;
 import com.oing.dto.response.PostRealEmojiSummaryResponse;
-import com.oing.exception.RegisteredRealEmojiNotFoundException;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
 import com.oing.service.RealEmojiService;
@@ -24,7 +23,6 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @Transactional
@@ -80,26 +78,6 @@ public class RealEmojiControllerTest {
 
         //then
         //nothing. just check no exception
-    }
-
-    @Test
-    void 게시물_등록되지_않은_리얼이모지_삭제_예외_테스트() {
-        //given
-        String memberId = "1";
-        String familyId = "1";
-        Post post = new Post("1", memberId, familyId,"https://oing.com/post.jpg", "post.jpg",
-                "안녕.오잉.");
-        MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
-                Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
-        when(postService.getMemberPostById(post.getId())).thenReturn(post);
-
-        //when
-        when(realEmojiService.getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId("1", memberId, post.getId()))
-                .thenThrow(RegisteredRealEmojiNotFoundException.class);
-
-        //then
-        assertThrows(RegisteredRealEmojiNotFoundException.class,
-                () -> realEmojiController.deletePostRealEmoji(post.getId(), realEmoji.getId(), memberId));
     }
 
     @Test

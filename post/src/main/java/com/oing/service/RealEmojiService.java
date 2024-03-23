@@ -62,13 +62,16 @@ public class RealEmojiService {
                 .orElseThrow(RealEmojiNotFoundException::new);
     }
 
-    public RealEmoji getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId(String realEmojiId, String memberId,
-                                                                                       String postId) {
-        return realEmojiRepository.findByRealEmojiIdAndMemberIdAndPostId(realEmojiId, memberId, postId)
-                .orElseThrow(RegisteredRealEmojiNotFoundException::new);
+    public void deleteRealEmoji(String loginMemberId, String realEmojiId, Post post) {
+        RealEmoji postRealEmoji = getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId(realEmojiId, loginMemberId, post.getId());
+
+        post.removeRealEmoji(postRealEmoji);
+        realEmojiRepository.delete(postRealEmoji);
+        log.info("Member {} has deleted post real emoji {}", loginMemberId, realEmojiId);
     }
 
-    public void deletePostRealEmoji(RealEmoji postRealEmoji) {
-        realEmojiRepository.delete(postRealEmoji);
+    public RealEmoji getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId(String realEmojiId, String memberId, String postId) {
+        return realEmojiRepository.findByRealEmojiIdAndMemberIdAndPostId(realEmojiId, memberId, postId)
+                .orElseThrow(RegisteredRealEmojiNotFoundException::new);
     }
 }

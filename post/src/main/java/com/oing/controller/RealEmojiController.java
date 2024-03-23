@@ -35,24 +35,19 @@ public class RealEmojiController implements RealEmojiApi {
     ) {
         log.info("Member {} is trying to create post real emoji", loginMemberId);
         Post post = postService.getMemberPostById(postId);
-        RealEmoji addedPostRealEmoji = realEmojiService.registerRealEmojiAtPost(request, loginMemberId,
+        RealEmoji addedRealEmoji = realEmojiService.registerRealEmojiAtPost(request, loginMemberId,
                 loginFamilyId, post);
 
-        log.info("Member {} has created post real emoji {}", loginMemberId, addedPostRealEmoji.getId());
+        log.info("Member {} has created post real emoji {}", loginMemberId, addedRealEmoji.getId());
 
-        return PostRealEmojiResponse.from(addedPostRealEmoji);
+        return PostRealEmojiResponse.from(addedRealEmoji);
     }
 
     @Override
     public DefaultResponse deletePostRealEmoji(String postId, String realEmojiId, String loginMemberId) {
         log.info("Member {} is trying to delete post real emoji {}", loginMemberId, realEmojiId);
         Post post = postService.getMemberPostById(postId);
-        RealEmoji postRealEmoji = realEmojiService
-                .getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId(realEmojiId, loginMemberId, postId);
-
-        realEmojiService.deletePostRealEmoji(postRealEmoji);
-        post.removeRealEmoji(postRealEmoji);
-        log.info("Member {} has deleted post real emoji {}", loginMemberId, realEmojiId);
+        realEmojiService.deleteRealEmoji(loginMemberId, realEmojiId, post);
 
         return DefaultResponse.ok();
     }

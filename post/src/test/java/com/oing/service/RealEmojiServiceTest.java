@@ -7,6 +7,7 @@ import com.oing.domain.RealEmoji;
 import com.oing.dto.request.PostRealEmojiRequest;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.RealEmojiAlreadyExistsException;
+import com.oing.exception.RegisteredRealEmojiNotFoundException;
 import com.oing.repository.MemberRealEmojiRepository;
 import com.oing.repository.RealEmojiRepository;
 import com.oing.util.IdentityGenerator;
@@ -101,5 +102,40 @@ public class RealEmojiServiceTest {
         //then
         assertThrows(RealEmojiAlreadyExistsException.class,
                 () -> realEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post));
+    }
+
+    @Test
+    void 게시물_리얼이모지_삭제_테스트() {
+        //given
+        String memberId = "1";
+        String familyId = "1";
+        Post post = new Post("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
+                "안녕.오잉.");
+        MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1", memberId, familyId,
+                Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
+        RealEmoji realEmoji = new RealEmoji("1", memberRealEmoji, post, memberId);
+        when(realEmojiRepository.findByRealEmojiIdAndMemberIdAndPostId(memberRealEmoji.getId(), memberId, post.getId()))
+                .thenReturn(Optional.of(realEmoji));
+
+        //when
+        realEmojiService.deleteRealEmoji(memberId, memberRealEmoji.getId(), post);
+
+        //then
+        //nothing. just check no exception
+    }
+
+    @Test
+    void 게시물_등록되지_않은_리얼이모지_삭제_예외_테스트() {
+        //given
+        String memberId = "1";
+        String familyId = "1";
+        Post post = new Post("1", memberId, familyId,"https://oing.com/post.jpg", "post.jpg",
+                "안녕.오잉.");
+        MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1", memberId, familyId,
+                Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
+
+        //then
+        assertThrows(RegisteredRealEmojiNotFoundException.class,
+                () -> realEmojiService.deleteRealEmoji(memberId, memberRealEmoji.getId(), post));
     }
 }
