@@ -65,14 +65,18 @@ public class PostController implements PostApi {
 
     @Override
     public PostResponse getPost(String postId, String loginMemberId) {
+        validateFamilyMember(loginMemberId, postId);
+
+        Post memberPostProjection = postService.getMemberPostById(postId);
+        return PostResponse.from(memberPostProjection);
+    }
+
+    private void validateFamilyMember(String loginMemberId, String postId) {
         String postFamilyId = postService.getMemberPostById(postId).getFamilyId();
         String loginFamilyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
         if (!postFamilyId.equals(loginFamilyId)) {
             log.warn("Unauthorized access attempt: Member {} is attempting to access post {}", loginMemberId, postId);
             throw new AuthorizationFailedException();
         }
-
-        Post memberPostProjection = postService.getMemberPostById(postId);
-        return PostResponse.from(memberPostProjection);
     }
 }
