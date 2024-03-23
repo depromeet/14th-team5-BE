@@ -1,8 +1,8 @@
 package com.oing.controller;
 
 
-import com.oing.domain.Post;
 import com.oing.domain.PaginationDTO;
+import com.oing.domain.Post;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PaginationResponse;
@@ -12,8 +12,6 @@ import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.PostApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
-import com.oing.util.PreSignedUrlGenerator;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,20 +30,12 @@ import java.time.LocalDate;
 @Controller
 public class PostController implements PostApi {
 
-    private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final PostService postService;
     private final MemberBridge memberBridge;
 
-    @Transactional
     @Override
     public PreSignedUrlResponse requestPresignedUrl(PreSignedUrlRequest request, String loginMemberId) {
-        log.info("Member {} is trying to request post Pre-Signed URL", loginMemberId);
-        String imageName = request.imageName();
-
-        PreSignedUrlResponse response = preSignedUrlGenerator.getFeedPreSignedUrl(imageName);
-        log.info("Post Pre-Signed URL has been generated for member {}: {}", loginMemberId, response.url());
-
-        return response;
+        return postService.requestPresignedUrl(loginMemberId, request.imageName());
     }
 
     @Override
@@ -61,7 +51,6 @@ public class PostController implements PostApi {
                 .map(PostResponse::from);
     }
 
-    @Transactional
     @Override
     @CacheEvict(value = "calendarCache",
             key = "#loginFamilyId.concat(':').concat(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM').format(#request.uploadTime()))")

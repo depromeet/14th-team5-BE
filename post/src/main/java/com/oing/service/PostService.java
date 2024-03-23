@@ -3,6 +3,7 @@ package com.oing.service;
 import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
 import com.oing.dto.request.CreatePostRequest;
+import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.DuplicatePostUploadException;
 import com.oing.exception.InvalidUploadTimeException;
 import com.oing.exception.PostNotFoundException;
@@ -32,7 +33,16 @@ public class PostService {
     private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
 
+    @Transactional
+    public PreSignedUrlResponse requestPresignedUrl(String loginMemberId, String imageName) {
+        log.info("Member {} is trying to request post Pre-Signed URL", loginMemberId);
 
+        PreSignedUrlResponse response = preSignedUrlGenerator.getFeedPreSignedUrl(imageName);
+        log.info("Post Pre-Signed URL has been generated for member {}: {}", loginMemberId, response.url());
+        return response;
+    }
+
+    @Transactional
     public Post createMemberPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
         ZonedDateTime uploadTime = request.uploadTime();
         validateUserHasNotCreatedPostToday(loginMemberId, loginFamilyId, uploadTime);

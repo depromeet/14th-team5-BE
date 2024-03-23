@@ -24,7 +24,6 @@ public class ReactionService {
 
     private final IdentityGenerator identityGenerator;
     private final ReactionRepository reactionRepository;
-    private final MemberBridge memberBridge;
 
     @Transactional
     public Reaction createPostReaction(Post post, String memberId, PostReactionRequest request) {

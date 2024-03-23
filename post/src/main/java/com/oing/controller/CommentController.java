@@ -13,7 +13,6 @@ import com.oing.restapi.CommentApi;
 import com.oing.service.CommentService;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -26,7 +25,6 @@ public class CommentController implements CommentApi {
     private final CommentService commentService;
     private final MemberBridge memberBridge;
 
-    @Transactional
     @Override
     public PostCommentResponse createPostComment(String postId, CreatePostCommentRequest request, String loginMemberId) {
         log.info("Member {} is trying to create post comment", loginMemberId);
@@ -37,7 +35,6 @@ public class CommentController implements CommentApi {
         return PostCommentResponse.from(savedComment);
     }
 
-    @Transactional
     @Override
     public DefaultResponse deletePostComment(String postId, String commentId, String loginMemberId) {
         log.info("Member {} is trying to delete post comment {}", loginMemberId, commentId);
@@ -48,7 +45,6 @@ public class CommentController implements CommentApi {
         return DefaultResponse.ok();
     }
 
-    @Transactional
     @Override
     public PostCommentResponse updatePostComment(String postId, String commentId, UpdatePostCommentRequest request,
                                                  String loginMemberId) {
@@ -60,7 +56,6 @@ public class CommentController implements CommentApi {
         return PostCommentResponse.from(updatedComment);
     }
 
-    @Transactional
     @Override
     public PaginationResponse<PostCommentResponse> getPostComments(String postId, Integer page, Integer size, String sort,
                                                                    String loginMemberId) {

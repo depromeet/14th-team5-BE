@@ -11,7 +11,6 @@ import com.oing.restapi.RealEmojiApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
 import com.oing.service.RealEmojiService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -30,7 +29,6 @@ public class RealEmojiController implements RealEmojiApi {
     private final MemberBridge memberBridge;
 
 
-    @Transactional
     @Override
     public PostRealEmojiResponse registerRealEmojiAtPost(
             String postId, String loginFamilyId, String loginMemberId, PostRealEmojiRequest request
@@ -45,7 +43,6 @@ public class RealEmojiController implements RealEmojiApi {
         return PostRealEmojiResponse.from(addedPostRealEmoji);
     }
 
-    @Transactional
     @Override
     public DefaultResponse deletePostRealEmoji(String postId, String realEmojiId, String loginMemberId) {
         log.info("Member {} is trying to delete post real emoji {}", loginMemberId, realEmojiId);
@@ -61,7 +58,6 @@ public class RealEmojiController implements RealEmojiApi {
     }
 
     @Override
-    @Transactional
     public PostRealEmojiSummaryResponse getPostRealEmojiSummary(String postId, String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
@@ -82,7 +78,6 @@ public class RealEmojiController implements RealEmojiApi {
         );
     }
 
-    @Transactional
     @Override
     public ArrayResponse<PostRealEmojiResponse> getPostRealEmojis(String postId, String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
@@ -93,12 +88,6 @@ public class RealEmojiController implements RealEmojiApi {
         );
     }
 
-    /**
-     * 게시물에 등록된 리얼 이모지를 남긴 멤버 목록을 조회합니다
-     * @param postId 게시물 ID
-     * @return 리얼 이모지를 남긴 멤버 목록
-     */
-    @Transactional
     @Override
     public PostRealEmojiMemberResponse getPostRealEmojiMembers(String postId, String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
