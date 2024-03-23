@@ -24,6 +24,8 @@ public class FamilyController implements FamilyApi {
         if (!familyId.equals(loginFamilyId)) {
             throw new AuthorizationFailedException();
         }
-        return new FamilyResponse(familyId, familyService.findFamilyCreatedAt(familyId));
+
+        Family family = familyService.getFamilyById(familyId);
+        return FamilyResponse.of(family);
     }
 }
