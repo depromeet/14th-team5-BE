@@ -13,10 +13,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.oing.domain.QMember.member;
-import static com.oing.domain.QMemberPost.memberPost;
-import static com.oing.domain.QMemberPostComment.memberPostComment;
-import static com.oing.domain.QMemberPostReaction.memberPostReaction;
-import static com.oing.domain.QMemberPostRealEmoji.memberPostRealEmoji;
+import static com.oing.domain.QPost.post;
+import static com.oing.domain.QComment.comment;
+import static com.oing.domain.QReaction.reaction;
+import static com.oing.domain.QRealEmoji.realEmoji1;
 
 @Repository
 @RequiredArgsConstructor
@@ -46,32 +46,32 @@ public class DashboardRepositoryCustomImpl {
     public long getTotalPostCount(LocalDate untilDate) {
         LocalDateTime untilTime = untilDate.plusDays(1L).atStartOfDay();
         return queryFactory
-                .select(memberPost.count())
-                .from(memberPost)
-                .where(memberPost.createdAt.lt(untilTime))
+                .select(post.count())
+                .from(post)
+                .where(post.createdAt.lt(untilTime))
                 .fetchFirst();
     }
 
     public long getTotalPostCommentCount(LocalDate untilDate) {
         LocalDateTime untilTime = untilDate.plusDays(1L).atStartOfDay();
         return queryFactory
-                .select(memberPostComment.count())
-                .from(memberPostComment)
-                .where(memberPostComment.createdAt.lt(untilTime))
+                .select(comment.count())
+                .from(comment)
+                .where(comment.createdAt.lt(untilTime))
                 .fetchFirst();
     }
 
     public long getTotalPostReactionCount(LocalDate untilDate) {
         LocalDateTime untilTime = untilDate.plusDays(1L).atStartOfDay();
         long emojiCnt = queryFactory
-                .select(memberPostReaction.count())
-                .from(memberPostReaction)
-                .where(memberPostReaction.createdAt.lt(untilTime))
+                .select(reaction.count())
+                .from(reaction)
+                .where(reaction.createdAt.lt(untilTime))
                 .fetchFirst();
         long realEmojiCnt = queryFactory
-                .select(memberPostRealEmoji.count())
-                .from(memberPostRealEmoji)
-                .where(memberPostRealEmoji.createdAt.lt(untilTime))
+                .select(realEmoji1.count())
+                .from(realEmoji1)
+                .where(realEmoji1.createdAt.lt(untilTime))
                 .fetchFirst();
         return emojiCnt + realEmojiCnt;
     }
@@ -97,10 +97,10 @@ public class DashboardRepositoryCustomImpl {
 
     public List<DateCountProjection> getNewPostCount(LocalDate startDate, LocalDate endDate) {
         DateTemplate<LocalDate> createdAtDate =
-                Expressions.dateTemplate(LocalDate.class, "DATE({0})", memberPost.createdAt);
+                Expressions.dateTemplate(LocalDate.class, "DATE({0})", post.createdAt);
         return queryFactory
-                .select(Projections.constructor(DateCountProjection.class, createdAtDate, memberPost.count()))
-                .from(memberPost)
+                .select(Projections.constructor(DateCountProjection.class, createdAtDate, post.count()))
+                .from(post)
                 .where(createdAtDate.goe(startDate), createdAtDate.loe(endDate))
                 .groupBy(createdAtDate)
                 .fetch();
