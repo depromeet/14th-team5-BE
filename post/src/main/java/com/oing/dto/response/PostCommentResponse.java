@@ -1,6 +1,6 @@
 package com.oing.dto.response;
 
-import com.oing.domain.MemberPostComment;
+import com.oing.domain.Comment;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.ZoneId;
@@ -23,12 +23,12 @@ public record PostCommentResponse(
         @Schema(description = "댓글 작성 시간", example = "2023-12-23T01:53:21.577347+09:00")
         ZonedDateTime createdAt
 ) {
-    public static PostCommentResponse from(MemberPostComment postComment) {
+    public static PostCommentResponse from(Comment postComment) {
         return new PostCommentResponse(
                 postComment.getId(),
                 postComment.getPost().getId(),
                 postComment.getMemberId(),
-                postComment.getComment(),
+                postComment.getContent(),
                 postComment.getCreatedAt() != null ? postComment.getCreatedAt().atZone(ZoneId.systemDefault()) : null
         );
     }
