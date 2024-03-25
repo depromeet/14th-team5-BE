@@ -32,17 +32,17 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND("MB0001", "Member not found"),
     MEMBER_ALREADY_EXISTS("MB0002", "Member With That Credentials Already Exists"),
     /**
-     * MemberPost Related Errors
+     * Post Related Errors
      */
     POST_NOT_FOUND("PO0001", "Post not found"),
 
     /**
-     * MemberEmoji Related Errors
+     * Emoji Related Errors
      */
     EMOJI_ALREADY_EXISTS("EM0001", "Emoji already exists"),
     EMOJI_NOT_FOUND("EM0002", "Emoji not found"),
     /**
-     * MemberComment Related Errors
+     * Comment Related Errors
      */
     POST_COMMENT_NOT_FOUND("CM0001", "Comment not found"),
     /**

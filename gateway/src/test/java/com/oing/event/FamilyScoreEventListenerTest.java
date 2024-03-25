@@ -32,19 +32,19 @@ class FamilyScoreEventListenerTest {
     private MemberRepository memberRepository;
 
     @Autowired
-    private MemberPostRepository memberPostRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    private MemberPostCommentRepository memberPostCommentRepository;
+    private CommentRepository commentRepository;
 
     @Autowired
-    private MemberPostReactionRepository memberPostReactionRepository;
+    private ReactionRepository reactionRepository;
 
     @Autowired
     private MemberRealEmojiRepository memberRealEmojiRepository;
 
     @Autowired
-    private MemberPostRealEmojiRepository memberPostRealEmojiRepository;
+    private RealEmojiRepository realEmojiRepository;
 
     private final Member testMember1 = new Member(
             "testMember1",
@@ -78,7 +78,7 @@ class FamilyScoreEventListenerTest {
     @Test
     void 새로운_글이_업로드되면_가족_점수를_더한다() {
         // given & when
-        memberPostRepository.save(new MemberPost(
+        postRepository.save(new Post(
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
@@ -86,7 +86,7 @@ class FamilyScoreEventListenerTest {
                 "images/1",
                 "1"
         ));
-        memberPostRepository.save(new MemberPost(
+        postRepository.save(new Post(
                 "2",
                 testMember2.getId(),
                 testMember2.getFamilyId(),
@@ -105,7 +105,7 @@ class FamilyScoreEventListenerTest {
     @Test
     void 글이_삭제되면_가족_점수를_뺀다() {
         // given
-        memberPostRepository.save(new MemberPost(
+        postRepository.save(new Post(
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
@@ -113,7 +113,7 @@ class FamilyScoreEventListenerTest {
                 "images/1",
                 "1"
         ));
-        memberPostRepository.save(new MemberPost(
+        postRepository.save(new Post(
                 "2",
                 testMember2.getId(),
                 testMember2.getFamilyId(),
@@ -123,8 +123,8 @@ class FamilyScoreEventListenerTest {
         ));
 
         // when
-        memberPostRepository.deleteById("1");
-        memberPostRepository.deleteById("2");
+        postRepository.deleteById("1");
+        postRepository.deleteById("2");
 
         // then
         await().atMost(5, SECONDS).until(() -> {
@@ -136,7 +136,7 @@ class FamilyScoreEventListenerTest {
     @Test
     void 새로운_댓글이_달리면_가족_점수를_더한다() {
         // given
-        MemberPost post = memberPostRepository.save(new MemberPost(
+        Post post = postRepository.save(new Post(
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
@@ -148,13 +148,13 @@ class FamilyScoreEventListenerTest {
         int originScore = NEW_POST_SCORE;
 
         // when
-        memberPostCommentRepository.save(new MemberPostComment(
+        commentRepository.save(new Comment(
                 "1",
                 post,
                 testMember1.getId(),
                 "1"
         ));
-        memberPostCommentRepository.save(new MemberPostComment(
+        commentRepository.save(new Comment(
                 "2",
                 post,
                 testMember2.getId(),
@@ -171,7 +171,7 @@ class FamilyScoreEventListenerTest {
     @Test
     void 댓글이_지워지면_가족_점수를_뺀다() {
         // given
-        MemberPost post = memberPostRepository.save(new MemberPost(
+        Post post = postRepository.save(new Post(
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
@@ -179,13 +179,13 @@ class FamilyScoreEventListenerTest {
                 "images/1",
                 "1"
         ));
-        memberPostCommentRepository.save(new MemberPostComment(
+        commentRepository.save(new Comment(
                 "1",
                 post,
                 testMember1.getId(),
                 "1"
         ));
-        memberPostCommentRepository.save(new MemberPostComment(
+        commentRepository.save(new Comment(
                 "2",
                 post,
                 testMember2.getId(),
@@ -195,8 +195,8 @@ class FamilyScoreEventListenerTest {
         int originScore = NEW_POST_SCORE + (NEW_COMMENT_SCORE * 2);
 
         // when
-        memberPostCommentRepository.deleteById("1");
-        memberPostCommentRepository.deleteById("2");
+        commentRepository.deleteById("1");
+        commentRepository.deleteById("2");
 
         // then
         await().atMost(5, SECONDS).until(() -> {
@@ -208,7 +208,7 @@ class FamilyScoreEventListenerTest {
     @Test
     void 새로운_리액션이_달리면_가족_점수를_더한다() {
         // given
-        MemberPost post = memberPostRepository.save(new MemberPost(
+        Post post = postRepository.save(new Post(
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
@@ -220,13 +220,13 @@ class FamilyScoreEventListenerTest {
         int originScore = NEW_POST_SCORE;
 
         // when
-        memberPostReactionRepository.save(new MemberPostReaction(
+        reactionRepository.save(new Reaction(
                 "1",
                 post,
                 testMember1.getId(),
                 Emoji.EMOJI_1
         ));
-        memberPostReactionRepository.save(new MemberPostReaction(
+        reactionRepository.save(new Reaction(
                 "2",
                 post,
                 testMember2.getId(),
@@ -243,7 +243,7 @@ class FamilyScoreEventListenerTest {
     @Test
     void 리액션이_지워지면_가족_점수를_뺀다() {
         // given
-        MemberPost post = memberPostRepository.save(new MemberPost(
+        Post post = postRepository.save(new Post(
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
@@ -251,13 +251,13 @@ class FamilyScoreEventListenerTest {
                 "images/1",
                 "1"
         ));
-        memberPostReactionRepository.save(new MemberPostReaction(
+        reactionRepository.save(new Reaction(
                 "1",
                 post,
                 testMember1.getId(),
                 Emoji.EMOJI_1
         ));
-        memberPostReactionRepository.save(new MemberPostReaction(
+        reactionRepository.save(new Reaction(
                 "2",
                 post,
                 testMember2.getId(),
@@ -267,8 +267,8 @@ class FamilyScoreEventListenerTest {
         int originScore = NEW_POST_SCORE + (NEW_REACTION_SCORE * 2);
 
         // when
-        memberPostReactionRepository.deleteById("1");
-        memberPostReactionRepository.deleteById("2");
+        reactionRepository.deleteById("1");
+        reactionRepository.deleteById("2");
 
         // then
         await().atMost(5, SECONDS).until(() -> {
@@ -280,7 +280,7 @@ class FamilyScoreEventListenerTest {
     @Test
     void 새로운_리얼이모지가_달리면_가족_점수를_더한다() {
         // given
-        MemberPost post = memberPostRepository.save(new MemberPost(
+        Post post = postRepository.save(new Post(
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
@@ -309,13 +309,13 @@ class FamilyScoreEventListenerTest {
         int originScore = NEW_POST_SCORE;
 
         // when
-        memberPostRealEmojiRepository.save(new MemberPostRealEmoji(
+        realEmojiRepository.save(new RealEmoji(
                 "1",
                 testEmoji1,
                 post,
                 testMember1.getId()
         ));
-        memberPostRealEmojiRepository.save(new MemberPostRealEmoji(
+        realEmojiRepository.save(new RealEmoji(
                 "2",
                 testEmoji2,
                 post,
@@ -332,7 +332,7 @@ class FamilyScoreEventListenerTest {
     @Test
     void 리얼이모지가_지워지면_가족_점수를_뺀다() {
         // given
-        MemberPost post = memberPostRepository.save(new MemberPost(
+        Post post = postRepository.save(new Post(
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
@@ -358,13 +358,13 @@ class FamilyScoreEventListenerTest {
                 "2"
 
         ));
-        memberPostRealEmojiRepository.save(new MemberPostRealEmoji(
+        realEmojiRepository.save(new RealEmoji(
                 "1",
                 testEmoji1,
                 post,
                 testMember1.getId()
         ));
-        memberPostRealEmojiRepository.save(new MemberPostRealEmoji(
+        realEmojiRepository.save(new RealEmoji(
                 "2",
                 testEmoji2,
                 post,
@@ -374,8 +374,8 @@ class FamilyScoreEventListenerTest {
         int originScore = NEW_POST_SCORE + NEW_REAL_EMOJI_SCORE * 2;
 
         // when
-        memberPostRealEmojiRepository.deleteById("1");
-        memberPostRealEmojiRepository.deleteById("2");
+        realEmojiRepository.deleteById("1");
+        realEmojiRepository.deleteById("2");
 
         // then
         await().atMost(5, SECONDS).until(() -> {

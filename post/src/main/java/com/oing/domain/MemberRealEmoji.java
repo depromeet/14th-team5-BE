@@ -14,7 +14,7 @@ import lombok.*;
 public class MemberRealEmoji extends BaseAuditEntity {
 
     @Id
-    @Column(name = "real_emoji_id", columnDefinition = "CHAR(26)", nullable = false)
+    @Column(name = "member_real_emoji_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
 
     @Column(name = "member_id", columnDefinition = "CHAR(26)", nullable = false)

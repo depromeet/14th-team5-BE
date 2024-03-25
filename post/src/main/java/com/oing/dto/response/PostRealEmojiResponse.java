@@ -1,7 +1,7 @@
 package com.oing.dto.response;
 
 
-import com.oing.domain.MemberPostRealEmoji;
+import com.oing.domain.RealEmoji;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "피드 게시물 리얼 이모지 응답")
@@ -24,7 +24,7 @@ public record PostRealEmojiResponse(
         @Schema(description = "피드 게시물 리얼 이모지 이미지 주소", example = "http://test.com/test-profile.jpg")
         String emojiImageUrl
 ) {
-    public static PostRealEmojiResponse from(MemberPostRealEmoji postRealEmoji) {
+    public static PostRealEmojiResponse from(RealEmoji postRealEmoji) {
         return new PostRealEmojiResponse(postRealEmoji.getId(), postRealEmoji.getPost().getId(), postRealEmoji.getMemberId(),
                 postRealEmoji.getRealEmoji().getType().getTypeKey(), postRealEmoji.getRealEmoji().getId(),
                 postRealEmoji.getRealEmoji().getRealEmojiImageUrl());

@@ -1,6 +1,6 @@
 package com.oing.dto.response;
 
-import com.oing.domain.MemberPostReaction;
+import com.oing.domain.Reaction;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "피드 게시물 응답")
@@ -17,7 +17,7 @@ public record PostReactionResponse(
         @Schema(description = "피드 게시물 반응 타입", example = "EMOJI_1")
         String emojiType
 ) {
-    public static PostReactionResponse from(MemberPostReaction postReaction) {
+    public static PostReactionResponse from(Reaction postReaction) {
         return new PostReactionResponse(
                 postReaction.getId(),
                 postReaction.getPost().getId(),

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oing.config.support.OptimizedImageUrlProvider;
 import com.oing.domain.CreateNewUserDTO;
 import com.oing.domain.Member;
-import com.oing.domain.MemberPost;
+import com.oing.domain.Post;
 import com.oing.domain.SocialLoginProvider;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.JoinFamilyRequest;
@@ -48,7 +48,7 @@ class WidgetApiTest {
     @Autowired
     private MemberService memberService;
     @Autowired
-    private MemberPostService memberPostService;
+    private PostService postService;
     @Autowired
     private FamilyService familyService;
     @Autowired
@@ -126,7 +126,7 @@ class WidgetApiTest {
     @Test
     void 최근_게시글_싱글_위젯_정상_조회_테스트() throws Exception {
         // given
-        MemberPost testPost1 = new MemberPost(
+        Post testPost1 = new Post(
                 "testPost1",
                 TEST_MEMBER1.getId(),
                 TEST_FAMILY_ID,
@@ -134,7 +134,7 @@ class WidgetApiTest {
                 "1",
                 "testPos1"
         );
-        MemberPost testPost2 = new MemberPost(
+        Post testPost2 = new Post(
                 "testPost2",
                 TEST_MEMBER2.getId(),
                 TEST_FAMILY_ID,
@@ -142,7 +142,7 @@ class WidgetApiTest {
                 "2",
                 "testPos2"
         );
-        MemberPost testPost3 = new MemberPost(
+        Post testPost3 = new Post(
                 "testPost3",
                 TEST_MEMBER3.getId(),
                 "something_other",
@@ -165,9 +165,9 @@ class WidgetApiTest {
                 "testPos3",
                 ZonedDateTime.now()
         );
-        memberPostService.createMemberPost(request1, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
-        memberPostService.createMemberPost(request2, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
-        memberPostService.createMemberPost(request3, TEST_MEMBER3.getId(), "something_other");
+        postService.createMemberPost(request1, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request2, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request3, TEST_MEMBER3.getId(), "something_other");
 
 
         // when & then
@@ -187,7 +187,7 @@ class WidgetApiTest {
     @Test
     void 최근_게시글_싱글_위젯_파라미터_없이_조회_테스트() throws Exception {
         // given
-        MemberPost testPost1 = new MemberPost(
+        Post testPost1 = new Post(
                 "testPost1",
                 TEST_MEMBER1.getId(),
                 TEST_FAMILY_ID,
@@ -195,7 +195,7 @@ class WidgetApiTest {
                 "1",
                 "testPos1"
         );
-        MemberPost testPost2 = new MemberPost(
+        Post testPost2 = new Post(
                 "testPost2",
                 TEST_MEMBER2.getId(),
                 TEST_FAMILY_ID,
@@ -203,7 +203,7 @@ class WidgetApiTest {
                 "2",
                 "testPos2"
         );
-        MemberPost testPost3 = new MemberPost(
+        Post testPost3 = new Post(
                 "testPost3",
                 TEST_MEMBER3.getId(),
                 "something_other",
@@ -226,9 +226,9 @@ class WidgetApiTest {
                 "testPos3",
                 ZonedDateTime.now()
         );
-        memberPostService.createMemberPost(request1, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
-        memberPostService.createMemberPost(request2, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
-        memberPostService.createMemberPost(request3, TEST_MEMBER3.getId(), "something_other");
+        postService.createMemberPost(request1, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request2, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request3, TEST_MEMBER3.getId(), "something_other");
 
 
         // when & then
