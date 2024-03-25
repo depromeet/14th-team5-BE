@@ -1,14 +1,14 @@
 ALTER TABLE `member_post_reaction`
-    DROP FOREIGN KEY `member_post_reaction_ibfk_1`,
+    DROP FOREIGN KEY `member_post_reaction_pk1`,
     DROP INDEX `member_post_reaction_idx1`,
     DROP INDEX `member_post_reaction_idx2`;
 ALTER TABLE `member_post_comment`
-    DROP FOREIGN KEY `member_post_comment_ibfk_1`,
+    DROP FOREIGN KEY `member_post_comment_pk1`,
     DROP INDEX `member_post_comment_idx1`,
     DROP INDEX `member_post_comment_idx2`;
 ALTER TABLE `member_post_real_emoji`
-    DROP FOREIGN KEY `member_post_real_emoji_ibfk_1`,
-    DROP FOREIGN KEY `member_post_real_emoji_ibfk_2`,
+    DROP FOREIGN KEY `member_post_real_emoji_fk1`,
+    DROP FOREIGN KEY `member_post_real_emoji_fk2`,
     DROP INDEX `member_post_real_emoji_idx1`,
     DROP INDEX `member_post_real_emoji_idx2`;
 
