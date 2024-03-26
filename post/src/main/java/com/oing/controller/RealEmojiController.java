@@ -11,6 +11,7 @@ import com.oing.restapi.RealEmojiApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
 import com.oing.service.RealEmojiService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,7 @@ public class RealEmojiController implements RealEmojiApi {
 
 
     @Override
+    @Transactional
     public PostRealEmojiResponse registerRealEmojiAtPost(
             String postId, String loginFamilyId, String loginMemberId, PostRealEmojiRequest request
     ) {
@@ -44,6 +46,7 @@ public class RealEmojiController implements RealEmojiApi {
     }
 
     @Override
+    @Transactional
     public DefaultResponse deletePostRealEmoji(String postId, String realEmojiId, String loginMemberId) {
         log.info("Member {} is trying to delete post real emoji {}", loginMemberId, realEmojiId);
         Post post = postService.getMemberPostById(postId);
@@ -53,6 +56,7 @@ public class RealEmojiController implements RealEmojiApi {
     }
 
     @Override
+    @Transactional
     public PostRealEmojiSummaryResponse getPostRealEmojiSummary(String postId, String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
@@ -74,6 +78,7 @@ public class RealEmojiController implements RealEmojiApi {
     }
 
     @Override
+    @Transactional
     public ArrayResponse<PostRealEmojiResponse> getPostRealEmojis(String postId, String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
@@ -84,6 +89,7 @@ public class RealEmojiController implements RealEmojiApi {
     }
 
     @Override
+    @Transactional
     public PostRealEmojiMemberResponse getPostRealEmojiMembers(String postId, String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
