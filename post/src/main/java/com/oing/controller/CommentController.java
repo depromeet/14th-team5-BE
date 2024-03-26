@@ -13,6 +13,7 @@ import com.oing.restapi.CommentApi;
 import com.oing.service.CommentService;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,7 @@ public class CommentController implements CommentApi {
     private final MemberBridge memberBridge;
 
     @Override
+    @Transactional
     public PostCommentResponse createPostComment(String postId, CreatePostCommentRequest request, String loginMemberId) {
         log.info("Member {} is trying to create post comment", loginMemberId);
         Post post = postService.getMemberPostById(postId);
@@ -36,6 +38,7 @@ public class CommentController implements CommentApi {
     }
 
     @Override
+    @Transactional
     public DefaultResponse deletePostComment(String postId, String commentId, String loginMemberId) {
         log.info("Member {} is trying to delete post comment {}", loginMemberId, commentId);
         Post post = postService.getMemberPostById(postId);
@@ -46,6 +49,7 @@ public class CommentController implements CommentApi {
     }
 
     @Override
+    @Transactional
     public PostCommentResponse updatePostComment(String postId, String commentId, UpdatePostCommentRequest request,
                                                  String loginMemberId) {
         log.info("Member {} is trying to update post comment {}", loginMemberId, commentId);
@@ -57,6 +61,7 @@ public class CommentController implements CommentApi {
     }
 
     @Override
+    @Transactional
     public PaginationResponse<PostCommentResponse> getPostComments(String postId, Integer page, Integer size, String sort,
                                                                    String loginMemberId) {
         Post post = postService.getMemberPostById(postId);

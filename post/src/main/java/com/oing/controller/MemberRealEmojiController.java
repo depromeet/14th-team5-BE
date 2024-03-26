@@ -10,6 +10,7 @@ import com.oing.dto.response.RealEmojiResponse;
 import com.oing.dto.response.RealEmojisResponse;
 import com.oing.restapi.MemberRealEmojiApi;
 import com.oing.service.MemberRealEmojiService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -51,6 +52,7 @@ public class MemberRealEmojiController implements MemberRealEmojiApi {
     }
 
     @Override
+    @Transactional
     public RealEmojisResponse getMemberRealEmojis(String memberId, String loginMemberId, String loginFamilyId) {
         List<MemberRealEmoji> realEmojis = memberRealEmojiService.findRealEmojisByMemberIdAndFamilyId(memberId,
                 loginMemberId, loginFamilyId);

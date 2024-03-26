@@ -10,6 +10,7 @@ import com.oing.restapi.ReactionApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
 import com.oing.service.ReactionService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,7 @@ public class ReactionController implements ReactionApi {
     private final MemberBridge memberBridge;
 
     @Override
+    @Transactional
     public DefaultResponse createPostReaction(String postId, String loginMemberId, PostReactionRequest request) {
         log.info("Member {} is trying to create post reaction", loginMemberId);
         Post post = postService.getMemberPostById(postId);
@@ -39,6 +41,7 @@ public class ReactionController implements ReactionApi {
     }
 
     @Override
+    @Transactional
     public DefaultResponse deletePostReaction(String postId, String loginMemberId, PostReactionRequest request) {
         log.info("Member {} is trying to delete post reaction {}", loginMemberId, request.content());
         Post post = postService.getMemberPostById(postId);
@@ -48,6 +51,7 @@ public class ReactionController implements ReactionApi {
     }
 
     @Override
+    @Transactional
     public PostReactionSummaryResponse getPostReactionSummary(String postId, String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
@@ -70,6 +74,7 @@ public class ReactionController implements ReactionApi {
     }
 
     @Override
+    @Transactional
     public ArrayResponse<PostReactionResponse> getPostReactions(String postId, String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
@@ -81,6 +86,7 @@ public class ReactionController implements ReactionApi {
     }
 
     @Override
+    @Transactional
     public PostReactionMemberResponse getPostReactionMembers(String postId, String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
