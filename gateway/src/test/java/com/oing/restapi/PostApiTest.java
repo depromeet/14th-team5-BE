@@ -8,15 +8,12 @@ import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.repository.PostRepository;
 import com.oing.repository.MemberRepository;
 import com.oing.service.TokenGenerator;
-import com.oing.support.EmbeddedRedisConfig;
-import com.oing.support.RedisTestConfig;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@Import({EmbeddedRedisConfig.class, RedisTestConfig.class})
 @Transactional
 @ActiveProfiles("test")
 @AutoConfigureMockMvc

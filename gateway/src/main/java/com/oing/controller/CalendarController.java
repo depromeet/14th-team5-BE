@@ -12,7 +12,6 @@ import com.oing.service.MemberService;
 import com.oing.service.PostService;
 import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
