@@ -14,7 +14,6 @@ import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
@@ -52,8 +51,6 @@ public class PostController implements PostApi {
     }
 
     @Override
-    @CacheEvict(value = "calendarCache",
-            key = "#loginFamilyId.concat(':').concat(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM').format(#request.uploadTime()))")
     public PostResponse createPost(CreatePostRequest request, String loginFamilyId, String loginMemberId) {
         log.info("Member {} is trying to create post", loginMemberId);
 

@@ -12,10 +12,6 @@ spring:
           enabled: true
         show_sql: true
         format_sql: true
-  data:
-    redis:
-      host: ${REDIS_HOST} # Must Be Replaced
-      port: ${REDIS_PORT} # Must Be Replaced
 
 app:
   oauth:
