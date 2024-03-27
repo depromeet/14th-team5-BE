@@ -32,7 +32,6 @@ public class CalendarController implements CalendarApi {
 
 
     @Override
-    @Cacheable(value = "calendarCache", key = "#familyId.concat(':').concat(#yearMonth)", cacheManager = "monthlyCalendarCacheManager")
     public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
