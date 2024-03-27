@@ -8,8 +8,6 @@ import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DeepLinkResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.service.*;
-import com.oing.support.EmbeddedRedisConfig;
-import com.oing.support.RedisTestConfig;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -34,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
-@Import({EmbeddedRedisConfig.class, RedisTestConfig.class})
 @ActiveProfiles("test")
 @Transactional
 @AutoConfigureMockMvc
@@ -59,8 +54,6 @@ class CalendarApiTest {
     private DeepLinkService deepLinkService;
     @Autowired
     private TokenGenerator tokenGenerator;
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
 
     private String TEST_MEMBER1_ID;
     private String TEST_MEMBER1_TOKEN;
