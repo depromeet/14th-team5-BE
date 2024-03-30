@@ -34,17 +34,17 @@ public enum ErrorCode {
     MEMBER_ALREADY_EXISTS("MB0002", "Member With That Credentials Already Exists"),
     INVALID_MEMBER_NAME_LENGTH("MB0003", "Member name is empty or longer than 9 characters"),
     /**
-     * MemberPost Related Errors
+     * Post Related Errors
      */
     POST_NOT_FOUND("PO0001", "Post not found"),
 
     /**
-     * MemberEmoji Related Errors
+     * Emoji Related Errors
      */
     EMOJI_ALREADY_EXISTS("EM0001", "Emoji already exists"),
     EMOJI_NOT_FOUND("EM0002", "Emoji not found"),
     /**
-     * MemberComment Related Errors
+     * Comment Related Errors
      */
     POST_COMMENT_NOT_FOUND("CM0001", "Comment not found"),
     /**

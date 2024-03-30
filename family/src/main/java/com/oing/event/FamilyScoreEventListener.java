@@ -22,98 +22,96 @@ public class FamilyScoreEventListener {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void onMemberPostCreatedEvent(MemberPostCreatedEvent memberPostCreatedEvent) {
-        log.info("Event of uploading Post({}) by Member({}) listened, adding family score", memberPostCreatedEvent.getPostId(), memberPostCreatedEvent.getMemberId());
+    public void onPostCreatedEvent(PostCreatedEvent postCreatedEvent) {
+        log.info("Event of uploading Post({}) by Member({}) listened, adding family score", postCreatedEvent.getPostId(), postCreatedEvent.getMemberId());
 
-        String familyId = memberBridge.getFamilyIdByMemberId(memberPostCreatedEvent.getMemberId());
+        String familyId = memberBridge.getFamilyIdByMemberId(postCreatedEvent.getMemberId());
         familyService.getFamilyByIdWithLock(familyId).addNewPostScore();
 
-        log.info("Uploading Post({}) score of Family({}) added", memberPostCreatedEvent.getPostId(), familyId);
+        log.info("Uploading Post({}) score of Family({}) added", postCreatedEvent.getPostId(), familyId);
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void onMemberPostDeletedEvent(MemberPostDeletedEvent memberPostDeletedEvent) {
-        log.info("Event of deleting Post({}) by Member({}) listened, subtracting family score", memberPostDeletedEvent.getPostId(), memberPostDeletedEvent.getMemberId());
+    public void onPostDeletedEvent(PostDeletedEvent postDeletedEvent) {
+        log.info("Event of deleting Post({}) by Member({}) listened, subtracting family score", postDeletedEvent.getPostId(), postDeletedEvent.getMemberId());
 
-        String familyId = memberBridge.getFamilyIdByMemberId(memberPostDeletedEvent.getMemberId());
+        String familyId = memberBridge.getFamilyIdByMemberId(postDeletedEvent.getMemberId());
         familyService.getFamilyByIdWithLock(familyId).subtractNewPostScore();
 
-        log.info("Deleting Post({}) score of Family({}) subtracted", memberPostDeletedEvent.getPostId(), familyId);
+        log.info("Deleting Post({}) score of Family({}) subtracted", postDeletedEvent.getPostId(), familyId);
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void onMemberPostCommentCreatedEvent(MemberPostCommentCreatedEvent memberPostCommentCreatedEvent) {
-        log.info("Event of uploading Comment({}) by Member({}) listened, adding family score", memberPostCommentCreatedEvent.getCommentId(), memberPostCommentCreatedEvent.getMemberId());
+    public void onPostCommentCreatedEvent(CommentCreatedEvent commentCreatedEvent) {
+        log.info("Event of uploading Comment({}) by Member({}) listened, adding family score", commentCreatedEvent.getCommentId(), commentCreatedEvent.getMemberId());
 
-        String familyId = memberBridge.getFamilyIdByMemberId(memberPostCommentCreatedEvent.getMemberId());
+        String familyId = memberBridge.getFamilyIdByMemberId(commentCreatedEvent.getMemberId());
         familyService.getFamilyByIdWithLock(familyId).addNewCommentScore();
 
-        log.info("Uploading Comment({}) score of Family({}) added", memberPostCommentCreatedEvent.getCommentId(), familyId);
+        log.info("Uploading Comment({}) score of Family({}) added", commentCreatedEvent.getCommentId(), familyId);
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void onMemberPostCommentDeletedEvent(MemberPostCommentDeletedEvent memberPostCommentDeletedEvent) {
-        log.info("Event of Comment({}) deleted by Member({}) listened, subtracting family score", memberPostCommentDeletedEvent.getCommentId(), memberPostCommentDeletedEvent.getMemberId());
+    public void onPostCommentDeletedEvent(CommentDeletedEvent commentDeletedEvent) {
+        log.info("Event of Comment({}) deleted by Member({}) listened, subtracting family score", commentDeletedEvent.getCommentId(), commentDeletedEvent.getMemberId());
 
-        String familyId = memberBridge.getFamilyIdByMemberId(memberPostCommentDeletedEvent.getMemberId());
+        String familyId = memberBridge.getFamilyIdByMemberId(commentDeletedEvent.getMemberId());
         familyService.getFamilyByIdWithLock(familyId).subtractNewCommentScore();
 
-        log.info("Deleting Comment({}) score of Family({}) subtracted", memberPostCommentDeletedEvent.getCommentId(), familyId);
+        log.info("Deleting Comment({}) score of Family({}) subtracted", commentDeletedEvent.getCommentId(), familyId);
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void onMemberPostReactionCreatedEvent(MemberPostReactionCreatedEvent memberPostReactionCreatedEvent) {
-        log.info("Event of uploading Reaction({}) by Member({}) listened, adding family score", memberPostReactionCreatedEvent.getReactionId(), memberPostReactionCreatedEvent.getMemberId());
+    public void onPostReactionCreatedEvent(ReactionCreatedEvent reactionCreatedEvent) {
+        log.info("Event of uploading Reaction({}) by Member({}) listened, adding family score", reactionCreatedEvent.getReactionId(), reactionCreatedEvent.getMemberId());
 
-        String familyId = memberBridge.getFamilyIdByMemberId(memberPostReactionCreatedEvent.getMemberId());
+        String familyId = memberBridge.getFamilyIdByMemberId(reactionCreatedEvent.getMemberId());
         familyService.getFamilyByIdWithLock(familyId).addNewReactionScore();
 
-        log.info("Uploading Reaction({}) score of Family({}) added", memberPostReactionCreatedEvent.getReactionId(), familyId);
+        log.info("Uploading Reaction({}) score of Family({}) added", reactionCreatedEvent.getReactionId(), familyId);
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void onMemberPostReactionDeletedEvent(MemberPostReactionDeletedEvent memberPostReactionDeletedEvent) {
-        log.info("Event of uploading Reaction({}) by Member({}) listened, adding family score", memberPostReactionDeletedEvent.getReactionId(), memberPostReactionDeletedEvent.getMemberId());
+    public void onPostReactionDeletedEvent(ReactionDeletedEvent reactionDeletedEvent) {
+        log.info("Event of uploading Reaction({}) by Member({}) listened, adding family score", reactionDeletedEvent.getReactionId(), reactionDeletedEvent.getMemberId());
 
-        String familyId = memberBridge.getFamilyIdByMemberId(memberPostReactionDeletedEvent.getMemberId());
+        String familyId = memberBridge.getFamilyIdByMemberId(reactionDeletedEvent.getMemberId());
         familyService.getFamilyByIdWithLock(familyId).subtractNewReactionScore();
 
-        log.info("Deleting Reaction({}) score of Family({}) subtracted", memberPostReactionDeletedEvent.getReactionId(), familyId);
+        log.info("Deleting Reaction({}) score of Family({}) subtracted", reactionDeletedEvent.getReactionId(), familyId);
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void onMemberPostRealEmojiCreatedEvent(MemberPostRealEmojiCreatedEvent memberPostRealEmojiCreatedEvent) {
-        log.info("Event of new uploading Emoji({}) by Member({}) listened, adding family score", memberPostRealEmojiCreatedEvent.getRealEmojiId(), memberPostRealEmojiCreatedEvent.getMemberId());
+    public void onPostRealEmojiCreatedEvent(RealEmojiCreatedEvent realEmojiCreatedEvent) {
+        log.info("Event of new uploading Emoji({}) by Member({}) listened, adding family score", realEmojiCreatedEvent.getRealEmojiId(), realEmojiCreatedEvent.getMemberId());
 
-        String familyId = memberBridge.getFamilyIdByMemberId(memberPostRealEmojiCreatedEvent.getMemberId());
+        String familyId = memberBridge.getFamilyIdByMemberId(realEmojiCreatedEvent.getMemberId());
         familyService.getFamilyByIdWithLock(familyId).addNewRealEmojiScore();
 
-        log.info("Uploading real Emoji({}) score of Family({}) added", memberPostRealEmojiCreatedEvent.getRealEmojiId(), familyId);
+        log.info("Uploading real Emoji({}) score of Family({}) added", realEmojiCreatedEvent.getRealEmojiId(), familyId);
     }
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void onMemberPostRealEmojiDeletedEvent(MemberPostRealEmojiDeletedEvent memberPostRealEmojiDeletedEvent) {
-        log.info("Event of real Emoji({}) deleted by Member({}) listened, subtracting family score", memberPostRealEmojiDeletedEvent.getRealEmojiId(), memberPostRealEmojiDeletedEvent.getMemberId());
+    public void onPostRealEmojiDeletedEvent(RealEmojiDeletedEvent realEmojiDeletedEvent) {
+        log.info("Event of real Emoji({}) deleted by Member({}) listened, subtracting family score", realEmojiDeletedEvent.getRealEmojiId(), realEmojiDeletedEvent.getMemberId());
 
-        String familyId = memberBridge.getFamilyIdByMemberId(memberPostRealEmojiDeletedEvent.getMemberId());
+        String familyId = memberBridge.getFamilyIdByMemberId(realEmojiDeletedEvent.getMemberId());
         familyService.getFamilyByIdWithLock(familyId).subtractNewRealEmojiScore();
 
-        log.info("Deleting real Emoji({}) score of Family({}) subtracted", memberPostRealEmojiDeletedEvent.getRealEmojiId(), familyId);
+        log.info("Deleting real Emoji({}) score of Family({}) subtracted", realEmojiDeletedEvent.getRealEmojiId(), familyId);
     }
-
-
 }

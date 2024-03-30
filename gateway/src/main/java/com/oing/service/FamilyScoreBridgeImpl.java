@@ -3,17 +3,13 @@ package com.oing.service;
 import com.oing.domain.CreateNewFamilyTopPercentageHistoryDTO;
 import com.oing.domain.Family;
 import com.oing.domain.FamilyTopPercentageHistory;
-import com.oing.domain.MemberPost;
 import com.oing.repository.FamilyRepository;
 import com.oing.repository.FamilyTopPercentageHistoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
-
-import static com.oing.domain.Family.*;
 
 @Service
 @RequiredArgsConstructor
