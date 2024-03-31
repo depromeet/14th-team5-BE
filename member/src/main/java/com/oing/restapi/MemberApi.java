@@ -126,4 +126,20 @@ public interface MemberApi {
             @RequestBody(required = false) //for api version compatibility
             QuitMemberRequest request
     );
+
+    @Operation(summary = "콕 찌르기", description = "멤버를 콕 찌릅니다.")
+    @DeleteMapping("/{memberId}/pick")
+    DefaultResponse pickMember(
+            @Parameter(description = "콕 찌를 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String memberId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
 }

@@ -12,6 +12,7 @@ import com.oing.restapi.MemberApi;
 import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberQuitReasonService;
 import com.oing.service.MemberService;
+import com.oing.service.PostBridge;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.security.InvalidParameterException;
 public class MemberController implements MemberApi {
 
     private final PreSignedUrlGenerator preSignedUrlGenerator;
+    private final PostBridge postBridge;
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final MemberQuitReasonService memberQuitReasonService;
@@ -116,6 +118,14 @@ public class MemberController implements MemberApi {
 
         memberDeviceService.removeAllDevicesByMemberId(memberId);
 
+        return DefaultResponse.ok();
+    }
+
+    @Override
+    public DefaultResponse pickMember(String memberId, String loginMemberId, String loginFamilyId) {
+        if (postBridge.isUploadedToday(loginFamilyId, memberId)) {
+            //TODO: 실패 로직
+        }
         return DefaultResponse.ok();
     }
 
