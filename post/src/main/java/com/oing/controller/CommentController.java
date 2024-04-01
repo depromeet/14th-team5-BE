@@ -22,17 +22,14 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 @Controller
 public class CommentController implements CommentApi {
-    private final PostService postService;
     private final CommentService commentService;
+    private final PostService postService;
     private final MemberBridge memberBridge;
 
     @Override
-    @Transactional
     public PostCommentResponse createPostComment(String postId, CreatePostCommentRequest request, String loginMemberId) {
         log.info("Member {} is trying to create post comment", loginMemberId);
-        Post post = postService.getMemberPostById(postId);
-
-        Comment savedComment = commentService.savePostComment(post, request, loginMemberId);
+        Comment savedComment = commentService.savePostComment(postId, request, loginMemberId);
         log.info("Member {} has created post comment {}", loginMemberId, savedComment.getId());
         return PostCommentResponse.from(savedComment);
     }
@@ -41,9 +38,7 @@ public class CommentController implements CommentApi {
     @Transactional
     public DefaultResponse deletePostComment(String postId, String commentId, String loginMemberId) {
         log.info("Member {} is trying to delete post comment {}", loginMemberId, commentId);
-        Post post = postService.getMemberPostById(postId);
-
-        commentService.deletePostComment(post, commentId, loginMemberId);
+        commentService.deletePostComment(postId, commentId, loginMemberId);
         log.info("Member {} has deleted post comment {}", loginMemberId, commentId);
         return DefaultResponse.ok();
     }
@@ -53,7 +48,6 @@ public class CommentController implements CommentApi {
     public PostCommentResponse updatePostComment(String postId, String commentId, UpdatePostCommentRequest request,
                                                  String loginMemberId) {
         log.info("Member {} is trying to update post comment {}", loginMemberId, commentId);
-
         Comment updatedComment = commentService.updateMemberPostComment(postId, commentId,
                 request.content(), loginMemberId);
         log.info("Member {} has updated post comment {}", loginMemberId, commentId);

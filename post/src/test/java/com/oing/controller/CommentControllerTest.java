@@ -25,7 +25,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PostCommentControllerTest {
+public class CommentControllerTest {
     @InjectMocks
     private CommentController commentController;
 
@@ -42,8 +42,7 @@ public class PostCommentControllerTest {
         Post post = new Post("1", "1", "1", "1", "1", "1");
         Comment comment = spy(new Comment("1", post, "1", "1"));
         CreatePostCommentRequest request = new CreatePostCommentRequest(comment.getContent());
-        when(postService.getMemberPostById("1")).thenReturn(post);
-        when(commentService.savePostComment(post, request, "1")).thenReturn(comment);
+        when(commentService.savePostComment(post.getId(), request, "1")).thenReturn(comment);
 
         //when
         PostCommentResponse response = commentController.createPostComment(
@@ -62,7 +61,6 @@ public class PostCommentControllerTest {
         //given
         Post post = spy(new Post("1", "1", "1", "1", "1", "1"));
         Comment comment = spy(new Comment("1", post, "1", "1"));
-        when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
         commentController.deletePostComment(

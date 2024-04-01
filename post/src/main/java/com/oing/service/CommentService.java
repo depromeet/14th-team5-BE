@@ -21,12 +21,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final PostService postService;
     private final MemberBridge memberBridge;
     private final IdentityGenerator identityGenerator;
 
 
     @Transactional
-    public Comment savePostComment(Post post, CreatePostCommentRequest request, String loginMemberId) {
+    public Comment savePostComment(String postId, CreatePostCommentRequest request, String loginMemberId) {
+        Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
 
         Comment comment = new Comment(
@@ -41,7 +43,8 @@ public class CommentService {
     }
 
     @Transactional
-    public void deletePostComment(Post post, String commentId, String loginMemberId) {
+    public void deletePostComment(String postId, String commentId, String loginMemberId) {
+        Post post = postService.getMemberPostById(postId);
         Comment comment = getMemberPostComment(post.getId(), commentId);
         validateCommentOwner(loginMemberId, comment);
 

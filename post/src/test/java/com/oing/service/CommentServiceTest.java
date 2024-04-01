@@ -33,6 +33,8 @@ public class CommentServiceTest {
     @Mock
     private CommentRepository commentRepository;
     @Mock
+    private PostService postService;
+    @Mock
     private MemberBridge memberBridge;
     @Mock
     private IdentityGenerator identityGenerator;
@@ -45,12 +47,13 @@ public class CommentServiceTest {
         Post post = new Post("1", memberId, "1", "1", "1", "1");
         CreatePostCommentRequest request = new CreatePostCommentRequest("1");
         Comment comment = new Comment("1", null, "1", "1");
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
         when(identityGenerator.generateIdentity()).thenReturn("1");
         when(commentRepository.save(any())).thenReturn(comment);
 
         //when
-        Comment comment1 = commentService.savePostComment(post, request, memberId);
+        Comment comment1 = commentService.savePostComment(post.getId(), request, memberId);
 
         //then
         assertEquals(comment, comment1);
@@ -62,11 +65,12 @@ public class CommentServiceTest {
         Post post = new Post("1", "1", "1", "1", "1", "1");
         Comment comment = spy(new Comment("1", post, "1", "1"));
         CreatePostCommentRequest request = new CreatePostCommentRequest(comment.getContent());
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
         //then
         assertThrows(AuthorizationFailedException.class,
-                () -> commentService.savePostComment(post, request, "1")
+                () -> commentService.savePostComment(post.getId(), request, "1")
         );
     }
 
@@ -75,10 +79,11 @@ public class CommentServiceTest {
         //given
         String memberId = "1";
         Post post = new Post("1", memberId, "1", "1", "1", "1");
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(commentRepository.findById("1")).thenReturn(Optional.of(new Comment("1", post, "1", "1")));
 
         //when
-        commentService.deletePostComment(post, "1", memberId);
+        commentService.deletePostComment(post.getId(), "1", memberId);
 
         //then
         //ignore if no exception
@@ -89,12 +94,13 @@ public class CommentServiceTest {
         //given
         Post post = new Post("1", "1", "1", "1", "1", "1");
         Comment othersComment = new Comment("1", post, "2", "1");
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(commentRepository.findById("1")).thenReturn(Optional.of(othersComment));
 
         //when
         //then
         assertThrows(AuthorizationFailedException.class,
-                () -> commentService.deletePostComment(post, othersComment.getId(), "1")
+                () -> commentService.deletePostComment(post.getId(), othersComment.getId(), "1")
         );
     }
 
