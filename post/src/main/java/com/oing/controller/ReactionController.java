@@ -30,22 +30,18 @@ public class ReactionController implements ReactionApi {
     private final MemberBridge memberBridge;
 
     @Override
-    @Transactional
     public DefaultResponse createPostReaction(String postId, String loginMemberId, PostReactionRequest request) {
         log.info("Member {} is trying to create post reaction", loginMemberId);
-        Post post = postService.getMemberPostById(postId);
-        Reaction reaction = reactionService.createPostReaction(post, loginMemberId, request);
+        Reaction reaction = reactionService.createPostReaction(postId, loginMemberId, request);
 
         log.info("Member {} has created post reaction {}", loginMemberId, reaction.getId());
         return DefaultResponse.ok();
     }
 
     @Override
-    @Transactional
     public DefaultResponse deletePostReaction(String postId, String loginMemberId, PostReactionRequest request) {
         log.info("Member {} is trying to delete post reaction {}", loginMemberId, request.content());
-        Post post = postService.getMemberPostById(postId);
-        reactionService.deletePostReaction(post, loginMemberId, request);
+        reactionService.deletePostReaction(postId, loginMemberId, request);
 
         return DefaultResponse.ok();
     }

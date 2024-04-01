@@ -30,6 +30,8 @@ public class ReactionServiceTest {
     private ReactionRepository reactionRepository;
     @Mock
     private IdentityGenerator identityGenerator;
+    @Mock
+    private PostService postService;
 
 
     @Test
@@ -43,8 +45,9 @@ public class ReactionServiceTest {
         PostReactionRequest request = new PostReactionRequest("emoji_1");
         when(reactionRepository.save(reaction)).thenReturn(reaction);
         when(identityGenerator.generateIdentity()).thenReturn("1");
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(reactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(false);
-        Reaction savedReaction = reactionService.createPostReaction(post, memberId, request);
+        Reaction savedReaction = reactionService.createPostReaction(post.getId(), memberId, request);
 
         //then
         assertEquals(reaction.getEmoji(), savedReaction.getEmoji());
@@ -57,12 +60,13 @@ public class ReactionServiceTest {
         Post post = new Post("1", memberId, "1", "1", "1", "1");
 
         //when
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(reactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(true);
         PostReactionRequest request = new PostReactionRequest("emoji_1");
 
         //then
         assertThrows(EmojiAlreadyExistsException.class,
-                () -> reactionService.createPostReaction(post, memberId, request));
+                () -> reactionService.createPostReaction(post.getId(), memberId, request));
     }
 
     @Test
@@ -71,13 +75,14 @@ public class ReactionServiceTest {
         String memberId = "1";
         Post post = new Post("1", memberId, "1", "1", "1", "1");
         Reaction reaction = new Reaction("1", post, memberId, Emoji.EMOJI_1);
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(reactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(true);
         when(reactionRepository.findReactionByPostAndMemberIdAndEmoji(post, memberId, Emoji.EMOJI_1))
                 .thenReturn(Optional.of(reaction));
 
         //when
         PostReactionRequest request = new PostReactionRequest("emoji_1");
-        reactionService.deletePostReaction(post, memberId, request);
+        reactionService.deletePostReaction(post.getId(), memberId, request);
 
         //then
         //nothing. just check no exception
@@ -88,14 +93,14 @@ public class ReactionServiceTest {
         //given
         String memberId = "1";
         Post post = new Post("1", memberId, "1", "1", "1", "1");
-        when(reactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(false);
 
         //when
         when(reactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(false);
         PostReactionRequest request = new PostReactionRequest("emoji_1");
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         //then
         assertThrows(EmojiNotFoundException.class,
-                () -> reactionService.deletePostReaction(post, memberId, request));
+                () -> reactionService.deletePostReaction(post.getId(), memberId, request));
     }
 }

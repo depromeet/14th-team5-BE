@@ -24,9 +24,11 @@ public class ReactionService {
 
     private final IdentityGenerator identityGenerator;
     private final ReactionRepository reactionRepository;
+    private final PostService postService;
 
     @Transactional
-    public Reaction createPostReaction(Post post, String memberId, PostReactionRequest request) {
+    public Reaction createPostReaction(String postId, String memberId, PostReactionRequest request) {
+        Post post = postService.getMemberPostById(postId);
         Emoji emoji = Emoji.fromString(request.content());
         validatePostReactionForAddition(post, memberId, emoji);
         String reactionId = identityGenerator.generateIdentity();
@@ -48,7 +50,8 @@ public class ReactionService {
     }
 
     @Transactional
-    public void deletePostReaction(Post post, String loginMemberId, PostReactionRequest request) {
+    public void deletePostReaction(String postId, String loginMemberId, PostReactionRequest request) {
+        Post post = postService.getMemberPostById(postId);
         Emoji emoji = Emoji.fromString(request.content());
 
         validatePostReactionForDeletion(post, loginMemberId, emoji);

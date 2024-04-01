@@ -39,11 +39,10 @@ public class ReactionControllerTest {
         String memberId = "1";
         Post post = new Post("1", memberId, "1", "1", "1", "1");
         Reaction reaction = new Reaction("1", post, memberId, Emoji.EMOJI_1);
-        when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
         PostReactionRequest request = new PostReactionRequest("emoji_1");
-        when(reactionService.createPostReaction(post, memberId, request)).thenReturn(reaction);
+        when(reactionService.createPostReaction(post.getId(), memberId, request)).thenReturn(reaction);
         reactionController.createPostReaction(post.getId(), memberId, request);
 
         //then
@@ -55,7 +54,6 @@ public class ReactionControllerTest {
         //given
         String memberId = "1";
         Post post = new Post("1", memberId, "1", "1", "1", "1");
-        when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
         PostReactionRequest request = new PostReactionRequest("emoji_1");
