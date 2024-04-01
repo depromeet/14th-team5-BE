@@ -24,11 +24,14 @@ public class RealEmojiService {
     private final MemberRealEmojiRepository memberRealEmojiRepository;
     private final IdentityGenerator identityGenerator;
     private final MemberBridge memberBridge;
+    private final PostService postService;
 
 
     @Transactional
     public RealEmoji registerRealEmojiAtPost(
-            PostRealEmojiRequest request, String loginMemberId, String loginFamilyId, Post post) {
+            PostRealEmojiRequest request, String loginMemberId, String loginFamilyId, String postId
+    ) {
+        Post post = postService.getMemberPostById(postId);
         validateFamilyMember(loginMemberId, post);
         MemberRealEmoji realEmoji = getMemberRealEmojiByIdAndFamilyId(request.realEmojiId(), loginFamilyId);
         validatePostRealEmojiForAddition(post, loginMemberId, realEmoji);
@@ -62,7 +65,9 @@ public class RealEmojiService {
                 .orElseThrow(RealEmojiNotFoundException::new);
     }
 
-    public void deleteRealEmoji(String loginMemberId, String realEmojiId, Post post) {
+    @Transactional
+    public void deleteRealEmoji(String loginMemberId, String realEmojiId, String postId) {
+        Post post = postService.getMemberPostById(postId);
         RealEmoji postRealEmoji = getMemberPostRealEmojiByRealEmojiIdAndMemberIdAndPostId(realEmojiId, loginMemberId, post.getId());
 
         post.removeRealEmoji(postRealEmoji);

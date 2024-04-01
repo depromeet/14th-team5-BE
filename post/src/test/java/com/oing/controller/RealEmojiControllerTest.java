@@ -48,11 +48,10 @@ public class RealEmojiControllerTest {
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
         Post post = new Post("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
-        when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         RealEmoji postRealEmoji = new RealEmoji("1", realEmoji, post, memberId);
         PostRealEmojiRequest request = new PostRealEmojiRequest(realEmoji.getId());
-        when(realEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post)).thenReturn(postRealEmoji);
+        when(realEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post.getId())).thenReturn(postRealEmoji);
 
         //when
         PostRealEmojiResponse response = realEmojiController.registerRealEmojiAtPost(post.getId(), familyId, memberId, request);
@@ -71,7 +70,6 @@ public class RealEmojiControllerTest {
                 "안녕.오잉.");
         MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
-        when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
         realEmojiController.deletePostRealEmoji(post.getId(), realEmoji.getId(), memberId);

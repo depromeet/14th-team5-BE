@@ -35,7 +35,6 @@ public class CommentController implements CommentApi {
     }
 
     @Override
-    @Transactional
     public DefaultResponse deletePostComment(String postId, String commentId, String loginMemberId) {
         log.info("Member {} is trying to delete post comment {}", loginMemberId, commentId);
         commentService.deletePostComment(postId, commentId, loginMemberId);
@@ -44,7 +43,6 @@ public class CommentController implements CommentApi {
     }
 
     @Override
-    @Transactional
     public PostCommentResponse updatePostComment(String postId, String commentId, UpdatePostCommentRequest request,
                                                  String loginMemberId) {
         log.info("Member {} is trying to update post comment {}", loginMemberId, commentId);

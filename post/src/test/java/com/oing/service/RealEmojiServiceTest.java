@@ -38,6 +38,8 @@ public class RealEmojiServiceTest {
     private IdentityGenerator identityGenerator;
     @Mock
     private MemberBridge memberBridge;
+    @Mock
+    private PostService postService;
 
     @Test
     void 게시물_리얼이모지_등록_테스트() {
@@ -48,6 +50,7 @@ public class RealEmojiServiceTest {
                 "안녕.오잉.");
         MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
         when(memberRealEmojiRepository.findByIdAndFamilyId(memberRealEmoji.getId(), familyId)).thenReturn(Optional.of(memberRealEmoji));
         when(realEmojiService.isMemberPostRealEmojiExists(post, memberId, memberRealEmoji)).thenReturn(false);
@@ -56,7 +59,7 @@ public class RealEmojiServiceTest {
         RealEmoji realEmoji = new RealEmoji("1", memberRealEmoji, post, memberId);
         when(realEmojiRepository.save(any())).thenReturn(realEmoji);
         PostRealEmojiRequest request = new PostRealEmojiRequest(realEmoji.getId());
-        RealEmoji result = realEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post);
+        RealEmoji result = realEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post.getId());
 
         //then
         assertEquals(post.getId(), result.getPost().getId());
@@ -73,6 +76,7 @@ public class RealEmojiServiceTest {
                 "안녕.오잉.");
         MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(false);
 
         //when
@@ -80,7 +84,7 @@ public class RealEmojiServiceTest {
 
         // then
         assertThrows(AuthorizationFailedException.class,
-                () -> realEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post));
+                () -> realEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post.getId()));
     }
 
     @Test
@@ -92,6 +96,7 @@ public class RealEmojiServiceTest {
                 "안녕.오잉.");
         MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1",  memberId, familyId, Emoji.EMOJI_1,
                 "https://oing.com/emoji.jpg", "emoji.jpg");
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
         when(memberRealEmojiRepository.findByIdAndFamilyId(memberRealEmoji.getId(), familyId)).thenReturn(Optional.of(memberRealEmoji));
         when(realEmojiRepository.existsByPostAndMemberIdAndRealEmoji(post, memberId, memberRealEmoji)).thenReturn(true);
@@ -101,7 +106,7 @@ public class RealEmojiServiceTest {
 
         //then
         assertThrows(RealEmojiAlreadyExistsException.class,
-                () -> realEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post));
+                () -> realEmojiService.registerRealEmojiAtPost(request, memberId, familyId, post.getId()));
     }
 
     @Test
@@ -114,11 +119,12 @@ public class RealEmojiServiceTest {
         MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
         RealEmoji realEmoji = new RealEmoji("1", memberRealEmoji, post, memberId);
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(realEmojiRepository.findByRealEmojiIdAndMemberIdAndPostId(memberRealEmoji.getId(), memberId, post.getId()))
                 .thenReturn(Optional.of(realEmoji));
 
         //when
-        realEmojiService.deleteRealEmoji(memberId, memberRealEmoji.getId(), post);
+        realEmojiService.deleteRealEmoji(memberId, memberRealEmoji.getId(), post.getId());
 
         //then
         //nothing. just check no exception
@@ -133,9 +139,10 @@ public class RealEmojiServiceTest {
                 "안녕.오잉.");
         MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
+        when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         //then
         assertThrows(RegisteredRealEmojiNotFoundException.class,
-                () -> realEmojiService.deleteRealEmoji(memberId, memberRealEmoji.getId(), post));
+                () -> realEmojiService.deleteRealEmoji(memberId, memberRealEmoji.getId(), post.getId()));
     }
 }

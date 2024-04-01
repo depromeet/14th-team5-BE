@@ -31,14 +31,12 @@ public class RealEmojiController implements RealEmojiApi {
 
 
     @Override
-    @Transactional
     public PostRealEmojiResponse registerRealEmojiAtPost(
             String postId, String loginFamilyId, String loginMemberId, PostRealEmojiRequest request
     ) {
         log.info("Member {} is trying to create post real emoji", loginMemberId);
-        Post post = postService.getMemberPostById(postId);
         RealEmoji addedRealEmoji = realEmojiService.registerRealEmojiAtPost(request, loginMemberId,
-                loginFamilyId, post);
+                loginFamilyId, postId);
 
         log.info("Member {} has created post real emoji {}", loginMemberId, addedRealEmoji.getId());
 
@@ -46,11 +44,9 @@ public class RealEmojiController implements RealEmojiApi {
     }
 
     @Override
-    @Transactional
     public DefaultResponse deletePostRealEmoji(String postId, String realEmojiId, String loginMemberId) {
         log.info("Member {} is trying to delete post real emoji {}", loginMemberId, realEmojiId);
-        Post post = postService.getMemberPostById(postId);
-        realEmojiService.deleteRealEmoji(loginMemberId, realEmojiId, post);
+        realEmojiService.deleteRealEmoji(loginMemberId, realEmojiId, postId);
 
         return DefaultResponse.ok();
     }
