@@ -1,6 +1,9 @@
 package com.oing.controller;
 
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.MulticastMessage;
 import com.oing.domain.Member;
+import com.oing.domain.MemberPick;
 import com.oing.domain.PaginationDTO;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.request.QuitMemberRequest;
@@ -8,11 +11,10 @@ import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
+import com.oing.exception.PickFailedAlreadyUploadedException;
 import com.oing.restapi.MemberApi;
-import com.oing.service.MemberDeviceService;
-import com.oing.service.MemberQuitReasonService;
-import com.oing.service.MemberService;
-import com.oing.service.PostBridge;
+import com.oing.service.*;
+import com.oing.util.FCMNotificationUtil;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +29,11 @@ public class MemberController implements MemberApi {
 
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final PostBridge postBridge;
+    private final MemberPickService memberPickService;
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final MemberQuitReasonService memberQuitReasonService;
+    private final FCMNotificationService fcmNotificationService;
 
     @Override
     public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(
@@ -124,8 +128,22 @@ public class MemberController implements MemberApi {
     @Override
     public DefaultResponse pickMember(String memberId, String loginMemberId, String loginFamilyId) {
         if (postBridge.isUploadedToday(loginFamilyId, memberId)) {
-            //TODO: 실패 로직
+            throw new PickFailedAlreadyUploadedException();
         }
+        MemberPick memberPick = memberPickService.pickMember(loginFamilyId, loginMemberId, memberId);
+
+        Member fromMember = memberService.findMemberById(memberPick.getFromMemberId());
+        Member toMember = memberService.findMemberById(memberPick.getToMemberId());
+        MulticastMessage message = MulticastMessage.builder().build().builder()
+                .setNotification(
+                        FCMNotificationUtil.buildNotification(String.format("%s님, 살아있나요?", toMember.getName()),
+                                String.format("%s님이 당신의 생존을 궁금해해요.", fromMember.getName()))
+                )
+                .addAllTokens(memberDeviceService.getFcmTokensByMemberId(toMember.getId()))
+                .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
+                .build();
+        fcmNotificationService.sendMulticastMessage(message);
         return DefaultResponse.ok();
     }
 
