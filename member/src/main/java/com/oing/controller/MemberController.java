@@ -131,10 +131,11 @@ public class MemberController implements MemberApi {
         if (postBridge.isUploadedToday(loginFamilyId, memberId)) {
             throw new PickFailedAlreadyUploadedException();
         }
+        Member toMember = memberService.findMemberById(memberId);
         MemberPick memberPick = memberPickService.pickMember(loginFamilyId, loginMemberId, memberId);
 
         Member fromMember = memberService.findMemberById(memberPick.getFromMemberId());
-        Member toMember = memberService.findMemberById(memberPick.getToMemberId());
+
         MulticastMessage message = MulticastMessage.builder()
                 .setNotification(
                         FCMNotificationUtil.buildNotification(String.format("%s님, 살아있나요?", toMember.getName()),
