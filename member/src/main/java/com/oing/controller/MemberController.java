@@ -150,7 +150,21 @@ public class MemberController implements MemberApi {
 
     @Override
     public ArrayResponse<MemberResponse> getPickMembers(String memberId, String loginFamilyId) {
+        //나를 찌른 사람들
         List<MemberPick> pickedMembers = memberPickService.getPickMembers(loginFamilyId, memberId);
+        return new ArrayResponse<>(
+                pickedMembers
+                        .stream()
+                        .map(memberPick -> memberService.findMemberById(memberPick.getFromMemberId()))
+                        .map(MemberResponse::of)
+                        .toList()
+        );
+    }
+
+    @Override
+    public ArrayResponse<MemberResponse> getPickedMembers(String memberId, String loginFamilyId) {
+        //내가 찌른 사람들
+        List<MemberPick> pickedMembers = memberPickService.getPickedMembers(loginFamilyId, memberId);
         return new ArrayResponse<>(
                 pickedMembers
                         .stream()

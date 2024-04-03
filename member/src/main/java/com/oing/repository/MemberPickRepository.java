@@ -15,4 +15,5 @@ import java.util.List;
 public interface MemberPickRepository extends JpaRepository<MemberPick, String> {
     MemberPick findByFamilyIdAndFromMemberIdAndDateAndToMemberId(String familyId, String fromMemberId, LocalDate date, String toMemberId);
     List<MemberPick> findAllByFamilyIdAndDateAndToMemberId(String familyId, LocalDate date, String toMemberId);
+    List<MemberPick> findAllByFamilyIdAndDateAndFromMemberId(String familyId, LocalDate date, String fromMemberId);
 }

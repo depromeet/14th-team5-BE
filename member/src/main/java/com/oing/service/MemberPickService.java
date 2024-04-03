@@ -46,4 +46,9 @@ public class MemberPickService {
         LocalDate today = LocalDate.now();
         return memberPickRepository.findAllByFamilyIdAndDateAndToMemberId(familyId, today, pickedMemberId);
     }
+
+    public List<MemberPick> getPickedMembers(String familyId, String pickerMemberId) {
+        LocalDate today = LocalDate.now();
+        return memberPickRepository.findAllByFamilyIdAndDateAndFromMemberId(familyId, today, pickerMemberId);
+    }
 }
