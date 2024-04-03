@@ -128,7 +128,7 @@ public interface MemberApi {
     );
 
     @Operation(summary = "콕 찌르기", description = "사용자를 콕 찌릅니다.")
-    @DeleteMapping("/{memberId}/pick")
+    @PostMapping("/{memberId}/pick")
     DefaultResponse pickMember(
             @Parameter(description = "콕 찌를 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable

@@ -126,6 +126,7 @@ public class MemberController implements MemberApi {
         return DefaultResponse.ok();
     }
 
+    @Transactional
     @Override
     public DefaultResponse pickMember(String memberId, String loginMemberId, String loginFamilyId) {
         if (postBridge.isUploadedToday(loginFamilyId, memberId)) {
@@ -136,16 +137,20 @@ public class MemberController implements MemberApi {
 
         Member fromMember = memberService.findMemberById(memberPick.getFromMemberId());
 
-        MulticastMessage message = MulticastMessage.builder()
-                .setNotification(
-                        FCMNotificationUtil.buildNotification(String.format("%s님, 살아있나요?", toMember.getName()),
-                                String.format("%s님이 당신의 생존을 궁금해해요.", fromMember.getName()))
-                )
-                .addAllTokens(memberDeviceService.getFcmTokensByMemberId(toMember.getId()))
-                .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
-                .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
-                .build();
-        fcmNotificationService.sendMulticastMessage(message);
+        List<String> tokens = memberDeviceService.getFcmTokensByMemberId(toMember.getId());
+        if (!tokens.isEmpty()) {
+            MulticastMessage message = MulticastMessage.builder()
+                    .setNotification(
+                            FCMNotificationUtil.buildNotification(String.format("%s님, 살아있나요?", toMember.getName()),
+                                    String.format("%s님이 당신의 생존을 궁금해해요.", fromMember.getName()))
+                    )
+                    .addAllTokens(tokens)
+                    .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                    .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
+                    .build();
+            fcmNotificationService.sendMulticastMessage(message);
+        }
+
         return DefaultResponse.ok();
     }
 
