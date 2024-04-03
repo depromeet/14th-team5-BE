@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
 import java.security.InvalidParameterException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -134,7 +135,7 @@ public class MemberController implements MemberApi {
 
         Member fromMember = memberService.findMemberById(memberPick.getFromMemberId());
         Member toMember = memberService.findMemberById(memberPick.getToMemberId());
-        MulticastMessage message = MulticastMessage.builder().build().builder()
+        MulticastMessage message = MulticastMessage.builder()
                 .setNotification(
                         FCMNotificationUtil.buildNotification(String.format("%s님, 살아있나요?", toMember.getName()),
                                 String.format("%s님이 당신의 생존을 궁금해해요.", fromMember.getName()))
@@ -145,6 +146,18 @@ public class MemberController implements MemberApi {
                 .build();
         fcmNotificationService.sendMulticastMessage(message);
         return DefaultResponse.ok();
+    }
+
+    @Override
+    public ArrayResponse<MemberResponse> getPickMembers(String memberId, String loginFamilyId) {
+        List<MemberPick> pickedMembers = memberPickService.getPickMembers(loginFamilyId, memberId);
+        return new ArrayResponse<>(
+                pickedMembers
+                        .stream()
+                        .map(memberPick -> memberService.findMemberById(memberPick.getFromMemberId()))
+                        .map(MemberResponse::of)
+                        .toList()
+        );
     }
 
     private void validateMemberId(String memberId, String loginMemberId) {

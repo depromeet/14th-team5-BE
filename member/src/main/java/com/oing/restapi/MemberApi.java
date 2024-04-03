@@ -142,4 +142,16 @@ public interface MemberApi {
             @LoginFamilyId
             String loginFamilyId
     );
+
+    @Operation(summary = "콕 찌른 사람들", description = "멤버를 콕 찌른 사람 목록을 반환합니다.")
+    @DeleteMapping("/{memberId}/pick")
+    ArrayResponse<MemberResponse> getPickMembers(
+            @Parameter(description = "콕 찌를 회원 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            @PathVariable
+            String memberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
 }

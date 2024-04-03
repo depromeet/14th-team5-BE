@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * no5ing-server
@@ -39,5 +40,10 @@ public class MemberPickService {
                 toMemberId
         );
         return memberPickRepository.save(newMemberPick);
+    }
+
+    public List<MemberPick> getPickMembers(String familyId, String pickedMemberId) {
+        LocalDate today = LocalDate.now();
+        return memberPickRepository.findAllByFamilyIdAndDateAndToMemberId(familyId, today, pickedMemberId);
     }
 }
