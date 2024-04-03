@@ -15,7 +15,7 @@ on:
 env:
   ECR_REPOSITORY_NAME: bibbi-backend-prod
   SPRING_PROFILE: prod
-  ECS_SERVICE: bibbi-backend-production
+  ECS_SERVICE: bibbi-backend-prod
   ECS_CLUSTER: bibbi-cluster-prod
   ECR_TASK_DEFINITION: bibbi-backend-prod
 
