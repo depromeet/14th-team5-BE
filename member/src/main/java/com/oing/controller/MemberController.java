@@ -7,16 +7,15 @@ import com.oing.dto.request.QuitMemberRequest;
 import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.*;
-import com.oing.exception.UnauthorizedMemberException;
+import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.MemberApi;
-import com.oing.service.MemberDeviceService;
-import com.oing.service.MemberQuitReasonService;
 import com.oing.service.MemberService;
 import com.oing.util.PreSignedUrlGenerator;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+
+import static com.oing.exception.ErrorCode.UNAUTHORIZED_MEMBER_USED;
 
 @Controller
 @RequiredArgsConstructor
@@ -87,13 +86,13 @@ public class MemberController implements MemberApi {
 
     private void validateFamilyMember(String memberId, String loginFamilyId) {
         if (!memberService.isFamilyMember(memberId, loginFamilyId)) {
-            throw new UnauthorizedMemberException();
+            throw new AuthorizationFailedException(UNAUTHORIZED_MEMBER_USED);
         }
     }
 
     private void validateMemberIdMatch(String memberId, String loginMemberId) {
         if (!loginMemberId.equals(memberId)) {
-            throw new UnauthorizedMemberException();
+            throw new AuthorizationFailedException(UNAUTHORIZED_MEMBER_USED);
         }
     }
 }
