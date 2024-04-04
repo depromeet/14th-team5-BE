@@ -2,6 +2,7 @@ package com.oing.controller;
 
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MulticastMessage;
+import com.google.firebase.messaging.Notification;
 import com.oing.domain.Member;
 import com.oing.domain.MemberPick;
 import com.oing.domain.PaginationDTO;
@@ -139,11 +140,11 @@ public class MemberController implements MemberApi {
 
         List<String> tokens = memberDeviceService.getFcmTokensByMemberId(toMember.getId());
         if (!tokens.isEmpty()) {
+            Notification notification = FCMNotificationUtil
+                    .buildNotification(String.format("%s님, 살아있나요?", toMember.getName()),
+                        String.format("%s님이 당신의 생존을 궁금해해요.", fromMember.getName()));
             MulticastMessage message = MulticastMessage.builder()
-                    .setNotification(
-                            FCMNotificationUtil.buildNotification(String.format("%s님, 살아있나요?", toMember.getName()),
-                                    String.format("%s님이 당신의 생존을 궁금해해요.", fromMember.getName()))
-                    )
+                    .setNotification(notification)
                     .addAllTokens(tokens)
                     .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                     .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
