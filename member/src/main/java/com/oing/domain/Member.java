@@ -58,14 +58,7 @@ public class Member extends DeletableBaseAuditEntity {
     }
 
     public void updateName(String name) {
-        validateName(name);
         this.name = name;
-    }
-
-    private void validateName(String name) {
-        if (name.isBlank() || name.length() > 9) {
-            throw new InvalidMemberNameLengthException();
-        }
     }
 
     public void deleteMemberInfo() {

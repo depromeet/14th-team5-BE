@@ -8,6 +8,7 @@ import com.oing.domain.key.SocialMemberKey;
 import com.oing.dto.request.QuitMemberRequest;
 import com.oing.dto.response.FamilyMemberProfileResponse;
 import com.oing.exception.FamilyNotFoundException;
+import com.oing.exception.InvalidMemberNameLengthException;
 import com.oing.exception.MemberNotFoundException;
 import com.oing.repository.MemberRepository;
 import com.oing.repository.SocialMemberRepository;
@@ -135,12 +136,12 @@ public class MemberService {
 
     @Transactional
     public Member updateMemberName(String memberId, String name) {
-        Member member = getMemberByMemberId(memberId);
+        validateName(name);
 
+        Member member = getMemberByMemberId(memberId);
         member.updateName(name);
         return member;
     }
-
 
     @Transactional
     public void deleteMember(String memberId, QuitMemberRequest quitReason) {
@@ -167,5 +168,12 @@ public class MemberService {
 
     public void deleteAllSocialMembersByMember(String memberId) {
         socialMemberRepository.deleteAllByMemberId(memberId);
+    }
+
+
+    private void validateName(String name) {
+        if (name.isBlank() || name.length() > 9) {
+            throw new InvalidMemberNameLengthException();
+        }
     }
 }
