@@ -69,7 +69,15 @@ public enum ErrorCode {
     /**
      * Deep Link Related Errors
      */
-    LINK_NOT_VALID("DL0001", "Link is not valid");
+    LINK_NOT_VALID("DL0001", "Link is not valid"),
+
+    /**
+     * Member Pick Related Errors
+     */
+    ALREADY_PICKED_TODAY("MP0001", "Already picked today"),
+    MEMBER_ALREADY_UPLOADED_POST("MP0002", "Member already uploaded post"),
+
+    ;
 
 
     private final String code;
