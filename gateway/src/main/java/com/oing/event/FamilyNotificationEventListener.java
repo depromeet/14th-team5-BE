@@ -30,10 +30,10 @@ public class FamilyNotificationEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onPostCreatedEvent(PostCreatedEvent postCreatedEvent) {
         if (postCreatedEvent.getSource() instanceof Post post) {
-            Member author = memberService.findMemberById(post.getMemberId());
+            Member author = memberService.getMemberByMemberId(post.getMemberId());
             HashSet<String> targetFcmTokens = new HashSet<>();
             String familyId = post.getFamilyId();
-            List<String> familyMemberIds = memberService.findFamilyMembersIdsByFamilyId(familyId);
+            List<String> familyMemberIds = memberService.getFamilyMembersIdsByFamilyId(familyId);
             for (String familyMemberId : familyMemberIds) {
                 if(post.getMemberId().equals(familyMemberId)) continue; //게시물 작성자는 발송 X
                 targetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(familyMemberId));
@@ -62,7 +62,7 @@ public class FamilyNotificationEventListener {
         if (commentCreatedEvent.getSource() instanceof Comment comment) {
             Post sourcePost = comment.getPost();
             String postAuthorId = sourcePost.getMemberId(); //게시물 작성자 ID
-            Member author = memberService.findMemberById(comment.getMemberId()); //댓글 작성자
+            Member author = memberService.getMemberByMemberId(comment.getMemberId()); //댓글 작성자
 
             if (!postAuthorId.equals(comment.getMemberId())) { //내가 내 게시물에 단 댓글이 아니라면
                 List<String> targetFcmTokens = memberDeviceService.getFcmTokensByMemberId(postAuthorId);
