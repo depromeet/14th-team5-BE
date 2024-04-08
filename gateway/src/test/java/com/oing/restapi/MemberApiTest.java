@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class MemberApiTest {
+class MemberApiTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -42,10 +42,14 @@ public class MemberApiTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    private String TEST_MEMBER1_ID = "01HGW2N7EHJVJ4CJ999RRS2E97";
-    private String TEST_MEMBER2_ID = "01HGW2N7EHJVJ4CJ99IIFIFE94";
-    private String TEST_FAMILY_ID = "01HGW2N7EHJVJ4CJ999RRS2E44";
+    private String TEST_MEMBER1_ID = "id1";
     private String TEST_MEMBER1_TOKEN;
+    private String TEST_MEMBER2_ID = "id2";
+    private String TEST_MEMBER2_TOKEN;
+    private String TEST_FAMILY_ID = "family1";
+    private String TEST_MEMBER3_ID = "id3";
+    private String TEST_MEMBER3_TOKEN;
+
 
 
     @BeforeEach
@@ -62,6 +66,7 @@ public class MemberApiTest {
         TEST_MEMBER1_TOKEN = tokenGenerator
                 .generateTokenPair(TEST_MEMBER1_ID)
                 .accessToken();
+
         memberRepository.save(
                 new Member(
                         TEST_MEMBER2_ID,
@@ -71,10 +76,26 @@ public class MemberApiTest {
                         LocalDateTime.now()
                 )
         );
+        TEST_MEMBER2_TOKEN = tokenGenerator
+                .generateTokenPair(TEST_MEMBER2_ID)
+                .accessToken();
+
+        memberRepository.save(
+                new Member(
+                        TEST_MEMBER3_ID,
+                        "different-family",
+                        LocalDate.now(),
+                        "타인", "http://test.com/test-profile.jpg", "/test-profile.jpg",
+                        LocalDateTime.now()
+                )
+        );
+        TEST_MEMBER3_TOKEN = tokenGenerator
+                .generateTokenPair(TEST_MEMBER3_ID)
+                .accessToken();
     }
 
     @Test
-    void 가족_멤버_프로필_조회_테스트() throws Exception {
+    void 가족_회원_프로필_조회_테스트() throws Exception {
         // given
 
         // when
@@ -93,7 +114,7 @@ public class MemberApiTest {
     }
 
     @Test
-    void 멤버_프로필_조회_테스트() throws Exception {
+    void 회원_프로필_조회_테스트() throws Exception {
         // given
 
         // when
@@ -111,7 +132,22 @@ public class MemberApiTest {
     }
 
     @Test
-    void 멤버_프로필이미지_수정_테스트() throws Exception {
+    void 다른_가족의_회원_프로필_조회_예외_검증() throws Exception {
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/v1/members/{memberId}", TEST_MEMBER1_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER3_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("AU0006"));
+    }
+
+    @Test
+    void 회원_프로필이미지_수정_테스트() throws Exception {
         // given
         UpdateMemberProfileImageUrlRequest request = new UpdateMemberProfileImageUrlRequest("https://bucket.com/new-image.jpg");
 
@@ -131,6 +167,25 @@ public class MemberApiTest {
     }
 
     @Test
+    void 타인의_프로필이미지_수정_예외_검증() throws Exception {
+        // given
+        UpdateMemberProfileImageUrlRequest request = new UpdateMemberProfileImageUrlRequest("https://bucket.com/new-image.jpg");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                put("/v1/members/profile-image-url/{memberId}", TEST_MEMBER1_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("AU0006"));
+    }
+
+    @Test
     void 회원_프로필이미지_삭제_테스트() throws Exception {
         // given
 
@@ -147,7 +202,22 @@ public class MemberApiTest {
     }
 
     @Test
-    void 멤버_닉네임_수정_테스트() throws Exception {
+    void 타인의_프로필이미지_삭제_예외_검증() throws Exception {
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/v1/members/profile-image-url/{memberId}", TEST_MEMBER1_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("AU0006"));
+    }
+
+    @Test
+    void 회원_닉네임_수정_테스트() throws Exception {
         // given
         UpdateMemberNameRequest request = new UpdateMemberNameRequest("newName");
 
@@ -164,6 +234,25 @@ public class MemberApiTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(TEST_MEMBER1_ID))
                 .andExpect(jsonPath("$.name").value(request.name()));
+    }
+
+    @Test
+    void 타인의_닉네임_수정_예외_검증() throws Exception {
+        // given
+        UpdateMemberNameRequest request = new UpdateMemberNameRequest("newName");
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                put("/v1/members/name/{memberId}", TEST_MEMBER1_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER3_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("AU0006"));
     }
 
     @Test
@@ -220,5 +309,20 @@ public class MemberApiTest {
         resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true));
+    }
+
+    @Test
+    void 타인의_탈퇴_예외_검증() throws Exception {
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/v1/members/{memberId}", TEST_MEMBER1_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER2_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("AU0006"));
     }
 }

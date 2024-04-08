@@ -1,6 +1,5 @@
 package com.oing.controller;
 
-import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
 import com.oing.domain.Member;
@@ -14,6 +13,7 @@ import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.PickFailedAlreadyUploadedException;
 import com.oing.restapi.MemberApi;
+import com.oing.service.MemberService;
 import com.oing.service.*;
 import com.oing.util.FCMNotificationUtil;
 import com.oing.util.PreSignedUrlGenerator;
@@ -22,46 +22,41 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
-import java.security.InvalidParameterException;
+import static com.oing.exception.ErrorCode.UNAUTHORIZED_MEMBER_USED;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class MemberController implements MemberApi {
 
-    private final PreSignedUrlGenerator preSignedUrlGenerator;
-    private final PostBridge postBridge;
     private final MemberPickService memberPickService;
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final MemberQuitReasonService memberQuitReasonService;
+
+    private final PreSignedUrlGenerator preSignedUrlGenerator;
+    private final PostBridge postBridge;
     private final FCMNotificationService fcmNotificationService;
+
 
     @Override
     public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(
-            Integer page, Integer size, String loginFamilyId, String loginMemberId
+            Integer page, Integer size, String loginFamilyId
     ) {
-        Page<FamilyMemberProfileResponse> profilePage = memberService.findFamilyMembersProfilesByFamilyId(
+        Page<FamilyMemberProfileResponse> profilePage = memberService.getFamilyMembersProfilesByFamilyId(
                 loginFamilyId, page, size
         );
 
         PaginationDTO<FamilyMemberProfileResponse> paginationDTO = PaginationDTO.of(profilePage);
-
         return PaginationResponse.of(paginationDTO, page, size);
     }
 
     @Override
-    public MemberResponse getMember(String memberId, String loginFamilyId, String loginMemberId) {
+    public MemberResponse getMember(String memberId, String loginFamilyId) {
         validateFamilyMember(memberId, loginFamilyId);
-        Member member = memberService.findMemberById(memberId);
-
+        
+        Member member = memberService.getMemberByMemberId(memberId);
         return MemberResponse.of(member);
-    }
-
-    private void validateFamilyMember(String memberId, String loginFamilyId) {
-        if (!memberService.findFamilyIdByMemberId(memberId).equals(loginFamilyId)) {
-            throw new AuthorizationFailedException();
-        }
     }
 
     @Override
@@ -71,60 +66,42 @@ public class MemberController implements MemberApi {
     }
 
     @Override
-    @Transactional
-    public MemberResponse updateMemberProfileImageUrl(String memberId, String loginMemberId,
-                                                      UpdateMemberProfileImageUrlRequest request) {
-        validateMemberId(memberId, loginMemberId);
-        Member member = memberService.findMemberById(memberId);
-        String profileImgKey = preSignedUrlGenerator.extractImageKey(request.profileImageUrl());
-        member.updateProfileImg(request.profileImageUrl(), profileImgKey);
+    public MemberResponse updateMemberProfileImageUrl(String memberId, UpdateMemberProfileImageUrlRequest request, String loginMemberId) {
+        validateMemberIdMatch(memberId, loginMemberId);
 
+        Member member = memberService.updateMemberProfileImageUrl(memberId, request.profileImageUrl());
         return MemberResponse.of(member);
     }
 
     @Override
-    @Transactional
     public MemberResponse deleteMemberProfileImageUrl(String memberId, String loginMemberId) {
-        validateMemberId(memberId, loginMemberId);
-        Member member = memberService.findMemberById(memberId);
-        member.deleteProfileImg();
+        validateMemberIdMatch(memberId, loginMemberId);
 
+        Member member = memberService.deleteMemberProfileImageUrl(memberId);
         return MemberResponse.of(member);
     }
 
     @Override
-    @Transactional
-    public MemberResponse updateMemberName(String memberId, String loginMemberId, UpdateMemberNameRequest request) {
-        validateMemberId(memberId, loginMemberId);
-        Member member = memberService.findMemberById(memberId);
+    public MemberResponse updateMemberName(String memberId, UpdateMemberNameRequest request, String loginMemberId) {
+        validateMemberIdMatch(memberId, loginMemberId);
 
-        validateName(request.name());
-        member.updateName(request.name());
-
+        Member member = memberService.updateMemberName(memberId, request.name());
         return MemberResponse.of(member);
     }
 
-    private void validateName(String name) {
-        if (name.length() < 1 || name.length() > 9) {
-            throw new InvalidParameterException();
-        }
-    }
-
     @Override
-    @Transactional
-    public DefaultResponse deleteMember(String memberId, String loginMemberId, QuitMemberRequest request) {
-        validateMemberId(memberId, loginMemberId);
-        Member member = memberService.findMemberById(memberId);
-        memberService.deleteAllSocialMembersByMember(memberId);
-        member.deleteMemberInfo();
+    public DefaultResponse deleteMember(String memberId, QuitMemberRequest request, String loginMemberId) {
+        validateMemberIdMatch(memberId, loginMemberId);
 
-        if (request != null) { //For Api Version Compatibility
-            memberQuitReasonService.recordMemberQuitReason(memberId, request.reasonIds());
-        }
-
-        memberDeviceService.removeAllDevicesByMemberId(memberId);
-
+        memberService.deleteMember(memberId, request);
         return DefaultResponse.ok();
+    }
+
+
+    private void validateFamilyMember(String memberId, String loginFamilyId) {
+        if (!memberService.isFamilyMember(memberId, loginFamilyId)) {
+            throw new AuthorizationFailedException(UNAUTHORIZED_MEMBER_USED);
+        }
     }
 
     @Transactional
@@ -133,10 +110,10 @@ public class MemberController implements MemberApi {
         if (postBridge.isUploadedToday(loginFamilyId, memberId)) {
             throw new PickFailedAlreadyUploadedException();
         }
-        Member toMember = memberService.findMemberById(memberId);
+        Member toMember = memberService.getMemberByMemberId(memberId);
         MemberPick memberPick = memberPickService.pickMember(loginFamilyId, loginMemberId, memberId);
 
-        Member fromMember = memberService.findMemberById(memberPick.getFromMemberId());
+        Member fromMember = memberService.getMemberByMemberId(memberPick.getFromMemberId());
 
         List<String> tokens = memberDeviceService.getFcmTokensByMemberId(toMember.getId());
         if (!tokens.isEmpty()) {
@@ -162,7 +139,7 @@ public class MemberController implements MemberApi {
         return new ArrayResponse<>(
                 pickedMembers
                         .stream()
-                        .map(memberPick -> memberService.findMemberById(memberPick.getFromMemberId()))
+                        .map(memberPick -> memberService.getMemberByMemberId(memberPick.getFromMemberId()))
                         .map(MemberResponse::of)
                         .toList()
         );
@@ -175,15 +152,15 @@ public class MemberController implements MemberApi {
         return new ArrayResponse<>(
                 pickedMembers
                         .stream()
-                        .map(memberPick -> memberService.findMemberById(memberPick.getFromMemberId()))
+                        .map(memberPick -> memberService.getMemberByMemberId(memberPick.getFromMemberId()))
                         .map(MemberResponse::of)
                         .toList()
         );
     }
 
-    private void validateMemberId(String memberId, String loginMemberId) {
+    private void validateMemberIdMatch(String memberId, String loginMemberId) {
         if (!loginMemberId.equals(memberId)) {
-            throw new AuthorizationFailedException();
+            throw new AuthorizationFailedException(UNAUTHORIZED_MEMBER_USED);
         }
     }
 }

@@ -20,7 +20,8 @@ public class MemberQuitReasonService {
         List<MemberQuitReason> records = reasonIds
                 .stream()
                 .map(reasonId -> new MemberQuitReason(memberId, reasonId))
-                .collect(Collectors.toList());
+                .toList();
+
         memberQuitReasonRepository.saveAll(records);
     }
 }
