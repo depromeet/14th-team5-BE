@@ -1,6 +1,10 @@
 package com.oing.controller;
 
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.MulticastMessage;
+import com.google.firebase.messaging.Notification;
 import com.oing.domain.Member;
+import com.oing.domain.MemberPick;
 import com.oing.domain.PaginationDTO;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.request.QuitMemberRequest;
@@ -8,10 +12,10 @@ import com.oing.dto.request.UpdateMemberNameRequest;
 import com.oing.dto.request.UpdateMemberProfileImageUrlRequest;
 import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
+import com.oing.exception.PickFailedAlreadyUploadedException;
 import com.oing.restapi.MemberApi;
-import com.oing.service.MemberDeviceService;
-import com.oing.service.MemberQuitReasonService;
-import com.oing.service.MemberService;
+import com.oing.service.*;
+import com.oing.util.FCMNotificationUtil;
 import com.oing.util.PreSignedUrlGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +23,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
 import java.security.InvalidParameterException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class MemberController implements MemberApi {
 
     private final PreSignedUrlGenerator preSignedUrlGenerator;
+    private final PostBridge postBridge;
+    private final MemberPickService memberPickService;
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final MemberQuitReasonService memberQuitReasonService;
+    private final FCMNotificationService fcmNotificationService;
 
     @Override
     public PaginationResponse<FamilyMemberProfileResponse> getFamilyMembersProfiles(
@@ -117,6 +125,60 @@ public class MemberController implements MemberApi {
         memberDeviceService.removeAllDevicesByMemberId(memberId);
 
         return DefaultResponse.ok();
+    }
+
+    @Transactional
+    @Override
+    public DefaultResponse pickMember(String memberId, String loginMemberId, String loginFamilyId) {
+        if (postBridge.isUploadedToday(loginFamilyId, memberId)) {
+            throw new PickFailedAlreadyUploadedException();
+        }
+        Member toMember = memberService.findMemberById(memberId);
+        MemberPick memberPick = memberPickService.pickMember(loginFamilyId, loginMemberId, memberId);
+
+        Member fromMember = memberService.findMemberById(memberPick.getFromMemberId());
+
+        List<String> tokens = memberDeviceService.getFcmTokensByMemberId(toMember.getId());
+        if (!tokens.isEmpty()) {
+            Notification notification = FCMNotificationUtil
+                    .buildNotification(String.format("%s님, 살아있나요?", toMember.getName()),
+                        String.format("%s님이 당신의 생존을 궁금해해요.", fromMember.getName()));
+            MulticastMessage message = MulticastMessage.builder()
+                    .setNotification(notification)
+                    .addAllTokens(tokens)
+                    .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                    .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
+                    .build();
+            fcmNotificationService.sendMulticastMessage(message);
+        }
+
+        return DefaultResponse.ok();
+    }
+
+    @Override
+    public ArrayResponse<MemberResponse> getPickMembers(String memberId, String loginFamilyId) {
+        //나를 찌른 사람들
+        List<MemberPick> pickedMembers = memberPickService.getPickMembers(loginFamilyId, memberId);
+        return new ArrayResponse<>(
+                pickedMembers
+                        .stream()
+                        .map(memberPick -> memberService.findMemberById(memberPick.getFromMemberId()))
+                        .map(MemberResponse::of)
+                        .toList()
+        );
+    }
+
+    @Override
+    public ArrayResponse<MemberResponse> getPickedMembers(String memberId, String loginFamilyId) {
+        //내가 찌른 사람들
+        List<MemberPick> pickedMembers = memberPickService.getPickedMembers(loginFamilyId, memberId);
+        return new ArrayResponse<>(
+                pickedMembers
+                        .stream()
+                        .map(memberPick -> memberService.findMemberById(memberPick.getFromMemberId()))
+                        .map(MemberResponse::of)
+                        .toList()
+        );
     }
 
     private void validateMemberId(String memberId, String loginMemberId) {
