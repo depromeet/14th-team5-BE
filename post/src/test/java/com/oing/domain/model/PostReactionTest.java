@@ -24,7 +24,7 @@ public class PostReactionTest {
         String content = "밥 맛있다!";
         String reactionId = "sampleCommentId";
         Emoji emoji = Emoji.EMOJI_1;
-        Post post = new Post(postId, memberId, familyId, null, Type.FEED.getTypeKey(), imageUrl, imageKey, content, 0,
+        Post post = new Post(postId, memberId, familyId, null, Type.FEED, imageUrl, imageKey, content, 0,
                 0, 0, null, null, null);
 
         // When
