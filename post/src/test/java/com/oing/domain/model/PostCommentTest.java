@@ -2,6 +2,7 @@ package com.oing.domain.model;
 
 import com.oing.domain.Comment;
 import com.oing.domain.Post;
+import com.oing.domain.Type;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +23,7 @@ public class PostCommentTest {
         String content = "밥 맛있다!";
         String commentId = "sampleCommentId";
         String commentContents = "sampleCommentContents";
-        Post post = new Post(postId, memberId, familyId, imageUrl, imageKey, content, 0,
+        Post post = new Post(postId, memberId, familyId, null, Type.FEED, imageUrl, imageKey, content, 0,
                 0, 0, null, null, null);
 
         // When

@@ -28,6 +28,12 @@ public class Post extends BaseAuditEntity {
     @Column(name = "family_id", columnDefinition = "CHAR(26)", nullable = false)
     private String familyId;
 
+    @Column(name = "mission_id", columnDefinition = "CHAR(26)")
+    private String missionId;
+
+    @Column(name = "type", nullable = false)
+    private Type type;
+
     @Column(name = "post_img_url", nullable = false)
     private String postImgUrl;
 
@@ -60,6 +66,8 @@ public class Post extends BaseAuditEntity {
         this.id = id;
         this.memberId = memberId;
         this.familyId = familyId;
+        // TODO: 미션용 API 모킹 시, 변경 필요
+        this.type = Type.FEED;
         this.postImgUrl = postImgUrl;
         this.postImgKey = postImgKey;
         this.content = content;
