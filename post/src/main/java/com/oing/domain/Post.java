@@ -31,6 +31,7 @@ public class Post extends BaseAuditEntity {
     @Column(name = "mission_id", columnDefinition = "CHAR(26)")
     private String missionId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private Type type;
 
