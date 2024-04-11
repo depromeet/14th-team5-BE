@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.security.InvalidParameterException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,13 +63,12 @@ public class Post extends BaseAuditEntity {
     @OneToMany(mappedBy = "post")
     private List<RealEmoji> realEmojis = new ArrayList<>();
 
-    public Post(String id, String memberId, String familyId, String postImgUrl, String postImgKey, String content) {
+    public Post(String id, String memberId, String familyId, Type type, String postImgUrl, String postImgKey, String content) {
         validateContent(content);
         this.id = id;
         this.memberId = memberId;
         this.familyId = familyId;
-        // TODO: 미션용 API 모킹 시, 변경 필요
-        this.type = Type.FEED;
+        this.type = type;
         this.postImgUrl = postImgUrl;
         this.postImgKey = postImgKey;
         this.content = content;
