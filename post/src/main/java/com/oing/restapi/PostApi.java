@@ -66,6 +66,10 @@ public interface PostApi {
             @Parameter(description = "정렬 방식", example = "DESC | ASC")
             String sort,
 
+            @RequestParam(required = false, defaultValue = "feed")
+            @Parameter(description = "게시물 타입", example = "feed")
+            String type,
+
             @Parameter(hidden = true)
             @LoginMemberId
             String loginMemberId
@@ -77,6 +81,10 @@ public interface PostApi {
             @Valid
             @RequestBody
             CreatePostRequest request,
+
+            @RequestParam(required = false, defaultValue = "feed")
+            @Parameter(description = "게시물 타입", example = "feed")
+            String type,
 
             @Parameter(hidden = true)
             @LoginFamilyId

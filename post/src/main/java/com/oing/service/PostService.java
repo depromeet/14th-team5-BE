@@ -2,6 +2,7 @@ package com.oing.service;
 
 import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
+import com.oing.domain.Type;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.DuplicatePostUploadException;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
@@ -43,14 +45,34 @@ public class PostService {
     }
 
     @Transactional
-    public Post createMemberPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
+    public Post createMemberPost(CreatePostRequest request, String type, String loginMemberId, String loginFamilyId) {
+        if (type.equals("feed")) {
+            return createFeedPost(request, loginMemberId, loginFamilyId);
+        } else if (type.equals("mission")) {
+            return createMissionPost(request, loginMemberId, loginFamilyId);
+        } else {
+            throw new InvalidParameterException();
+        }
+    }
+
+    public Post createFeedPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
         ZonedDateTime uploadTime = request.uploadTime();
         validateUserHasNotCreatedPostToday(loginMemberId, loginFamilyId, uploadTime);
         validateUploadTime(loginMemberId, uploadTime);
 
-        Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId,
+        Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, Type.FEED,
                 request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), request.content());
         return postRepository.save(post);
+    }
+
+    public Post createMissionPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
+        ZonedDateTime uploadTime = request.uploadTime();
+        validateUploadTime(loginMemberId, uploadTime);
+        // TODO: 미션 게시물 업로드 가능한 사용자인지 검증하는 로직 필요
+        Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, Type.MISSION,
+                request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), request.content());
+
+        return null;
     }
 
     private void validateUserHasNotCreatedPostToday(String memberId, String familyId, ZonedDateTime uploadTime) {
@@ -81,13 +103,25 @@ public class PostService {
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
-    public PaginationDTO<Post> searchMemberPost(int page, int size, LocalDate date, String memberId, String requesterMemberId, String familyId, boolean asc) {
-        QueryResults<Post> results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc);
-        int totalPage = (int) Math.ceil((double) results.getTotal() / size);
-        return new PaginationDTO<>(
-                totalPage,
-                results.getResults()
-        );
+    public PaginationDTO<Post> searchMemberPost(int page, int size, LocalDate date, String memberId, String requesterMemberId,
+                                                String familyId, boolean asc, String type) {
+        Type postType = Type.fromString(type);
+        if (postType.equals(Type.FEED)) {
+            QueryResults<Post> results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, postType);
+            int totalPage = (int) Math.ceil((double) results.getTotal() / size);
+            return new PaginationDTO<>(
+                    totalPage,
+                    results.getResults()
+            );
+        } else {
+            // TODO: mission type으로 응답을 모킹하기가 힘들어 구현 전까지는 feed type으로 응답합니다
+            QueryResults<Post> results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, Type.FEED);
+            int totalPage = (int) Math.ceil((double) results.getTotal() / size);
+            return new PaginationDTO<>(
+                    totalPage,
+                    results.getResults()
+            );
+        }
     }
 
     public List<Post> findAllByFamilyIdAndCreatedAtBetween(String familyId, LocalDate startDate, LocalDate endDate) {

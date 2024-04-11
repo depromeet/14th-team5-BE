@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 /**
  * no5ing-server
@@ -39,10 +40,11 @@ public class PostController implements PostApi {
 
     @Override
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId,
-                                                            String sort, String loginMemberId) {
+                                                            String sort, String type, String loginMemberId) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
         PaginationDTO<Post> fetchResult = postService.searchMemberPost(
-                page, size, date, memberId, loginMemberId, familyId, sort == null || sort.equalsIgnoreCase("ASC")
+                page, size, date, memberId, loginMemberId, familyId,
+                sort == null || sort.equalsIgnoreCase("ASC"), type
         );
 
         return PaginationResponse
@@ -51,13 +53,19 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PostResponse createPost(CreatePostRequest request, String loginFamilyId, String loginMemberId) {
-        log.info("Member {} is trying to create post", loginMemberId);
+    public PostResponse createPost(CreatePostRequest request, String type, String loginFamilyId, String loginMemberId) {
+        if (type.equals("feed")) {
+            log.info("Member {} is trying to create post", loginMemberId);
 
-        Post savedPost = postService.createMemberPost(request, loginMemberId, loginFamilyId);
-        log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
+            Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);
+            log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
+            return PostResponse.from(savedPost);
+        } else {
+            // 미션 API 응답 모킹을 위해 if-else 문으로 분기 처리했습니다 (추후 삭제 예정)
+            return new PostResponse("01HGW2N7EHJVJ4CJ999RRS2E97", "01HGWOODDDFFF4CJ999RRS2E111",
+                    "MISSION", "01HGW2N7EHJVJ4CJ999RRS2E97", 3, 2, "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97", "맛있는 밥!", ZonedDateTime.now());
+        }
 
-        return PostResponse.from(savedPost);
     }
 
     @Override
