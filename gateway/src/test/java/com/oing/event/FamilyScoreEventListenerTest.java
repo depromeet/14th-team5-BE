@@ -82,6 +82,7 @@ class FamilyScoreEventListenerTest {
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
+                Type.FEED,
                 "https://storage.com/images/1",
                 "images/1",
                 "1"
@@ -90,6 +91,7 @@ class FamilyScoreEventListenerTest {
                 "2",
                 testMember2.getId(),
                 testMember2.getFamilyId(),
+                Type.FEED,
                 "https://storage.com/images/2",
                 "images/2",
                 "2"
@@ -109,6 +111,7 @@ class FamilyScoreEventListenerTest {
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
+                Type.FEED,
                 "https://storage.com/images/1",
                 "images/1",
                 "1"
@@ -117,6 +120,7 @@ class FamilyScoreEventListenerTest {
                 "2",
                 testMember2.getId(),
                 testMember2.getFamilyId(),
+                Type.FEED,
                 "https://storage.com/images/2",
                 "images/2",
                 "2"
@@ -140,6 +144,7 @@ class FamilyScoreEventListenerTest {
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
+                Type.FEED,
                 "https://storage.com/images/1",
                 "images/1",
                 "1"
@@ -175,6 +180,7 @@ class FamilyScoreEventListenerTest {
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
+                Type.FEED,
                 "https://storage.com/images/1",
                 "images/1",
                 "1"
@@ -212,6 +218,7 @@ class FamilyScoreEventListenerTest {
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
+                Type.FEED,
                 "https://storage.com/images/1",
                 "images/1",
                 "1"
@@ -247,6 +254,7 @@ class FamilyScoreEventListenerTest {
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
+                Type.FEED,
                 "https://storage.com/images/1",
                 "images/1",
                 "1"
@@ -284,6 +292,7 @@ class FamilyScoreEventListenerTest {
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
+                Type.FEED,
                 "https://storage.com/images/1",
                 "images/1",
                 "1"
@@ -336,6 +345,7 @@ class FamilyScoreEventListenerTest {
                 "1",
                 testMember1.getId(),
                 testMember1.getFamilyId(),
+                Type.FEED,
                 "https://storage.com/images/1",
                 "images/1",
                 "1"

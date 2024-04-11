@@ -3,6 +3,7 @@ package com.oing.service;
 import com.oing.domain.Emoji;
 import com.oing.domain.Post;
 import com.oing.domain.Reaction;
+import com.oing.domain.Type;
 import com.oing.dto.request.PostReactionRequest;
 import com.oing.exception.EmojiAlreadyExistsException;
 import com.oing.exception.EmojiNotFoundException;
@@ -36,7 +37,7 @@ public class ReactionServiceTest {
     void 게시물_리액션_생성_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", "1", "1", "1");
+        Post post = new Post("1", memberId, "1", Type.FEED, "1", "1", "1");
         Reaction reaction = new Reaction("1", post, memberId, Emoji.EMOJI_1);
 
         //when
@@ -54,7 +55,7 @@ public class ReactionServiceTest {
     void 게시물_중복된_리액션_등록_예외_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", "1", "1", "1");
+        Post post = new Post("1", memberId, "1", Type.FEED, "1", "1", "1");
 
         //when
         when(reactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(true);
@@ -69,7 +70,7 @@ public class ReactionServiceTest {
     void 게시물_리액션_삭제_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", "1", "1", "1");
+        Post post = new Post("1", memberId, "1", Type.FEED, "1", "1", "1");
         Reaction reaction = new Reaction("1", post, memberId, Emoji.EMOJI_1);
         when(reactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(true);
         when(reactionRepository.findReactionByPostAndMemberIdAndEmoji(post, memberId, Emoji.EMOJI_1))
@@ -87,7 +88,7 @@ public class ReactionServiceTest {
     void 게시물_존재하지_않는_리액션_삭제_예외_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", "1", "1", "1");
+        Post post = new Post("1", memberId, "1", Type.FEED, "1", "1", "1");
         when(reactionService.isMemberPostReactionExists(post, memberId, Emoji.EMOJI_1)).thenReturn(false);
 
         //when

@@ -1,5 +1,6 @@
 package com.oing.dto.response;
 
+import com.oing.domain.Type;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
@@ -26,7 +27,7 @@ public class PostFeedResponseTest {
         ZonedDateTime createdAt = ZonedDateTime.parse("2021-12-05T12:30:00.000+09:00");
 
         // When
-        PostResponse postFeedResponse = new PostResponse(postId, authorId, commentCount, emojiCount, imageUrl,
+        PostResponse postFeedResponse = new PostResponse(postId, authorId, Type.FEED.getTypeKey(), null, commentCount, emojiCount, imageUrl,
                 content, createdAt);
 
         // Then

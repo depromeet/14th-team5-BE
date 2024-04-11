@@ -2,10 +2,7 @@ package com.oing.restapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oing.config.support.OptimizedImageUrlProvider;
-import com.oing.domain.CreateNewUserDTO;
-import com.oing.domain.Member;
-import com.oing.domain.Post;
-import com.oing.domain.SocialLoginProvider;
+import com.oing.domain.*;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.JoinFamilyRequest;
 import com.oing.dto.response.DeepLinkResponse;
@@ -130,6 +127,7 @@ class WidgetApiTest {
                 "testPost1",
                 TEST_MEMBER1.getId(),
                 TEST_FAMILY_ID,
+                Type.FEED,
                 "https://storage.com/bucket/images/1",
                 "1",
                 "testPos1"
@@ -138,6 +136,7 @@ class WidgetApiTest {
                 "testPost2",
                 TEST_MEMBER2.getId(),
                 TEST_FAMILY_ID,
+                Type.FEED,
                 "https://storage.com/bucket/images/2",
                 "2",
                 "testPos2"
@@ -146,6 +145,7 @@ class WidgetApiTest {
                 "testPost3",
                 TEST_MEMBER3.getId(),
                 "something_other",
+                Type.FEED,
                 "https://storage.com/bucket/images/3",
                 "3",
                 "testPos3"
@@ -165,9 +165,9 @@ class WidgetApiTest {
                 "testPos3",
                 ZonedDateTime.now()
         );
-        postService.createMemberPost(request1, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request2, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request3, TEST_MEMBER3.getId(), "something_other");
+        postService.createMemberPost(request1, "feed", TEST_MEMBER1.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request2, "feed", TEST_MEMBER2.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request3, "feed", TEST_MEMBER3.getId(), "something_other");
 
 
         // when & then
@@ -191,6 +191,7 @@ class WidgetApiTest {
                 "testPost1",
                 TEST_MEMBER1.getId(),
                 TEST_FAMILY_ID,
+                Type.FEED,
                 "https://storage.com/bucket/images/1",
                 "1",
                 "testPos1"
@@ -199,6 +200,7 @@ class WidgetApiTest {
                 "testPost2",
                 TEST_MEMBER2.getId(),
                 TEST_FAMILY_ID,
+                Type.FEED,
                 "https://storage.com/bucket/images/2",
                 "2",
                 "testPos2"
@@ -207,6 +209,7 @@ class WidgetApiTest {
                 "testPost3",
                 TEST_MEMBER3.getId(),
                 "something_other",
+                Type.FEED,
                 "https://storage.com/bucket/images/3",
                 "3",
                 "testPos3"
@@ -226,9 +229,9 @@ class WidgetApiTest {
                 "testPos3",
                 ZonedDateTime.now()
         );
-        postService.createMemberPost(request1, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request2, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request3, TEST_MEMBER3.getId(), "something_other");
+        postService.createMemberPost(request1, "feed", TEST_MEMBER1.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request2, "feed", TEST_MEMBER2.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request3, "feed", TEST_MEMBER3.getId(), "something_other");
 
 
         // when & then

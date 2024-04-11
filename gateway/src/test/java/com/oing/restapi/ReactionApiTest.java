@@ -1,10 +1,7 @@
 package com.oing.restapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oing.domain.Emoji;
-import com.oing.domain.Member;
-import com.oing.domain.Post;
-import com.oing.domain.Reaction;
+import com.oing.domain.*;
 import com.oing.dto.request.PostReactionRequest;
 import com.oing.repository.ReactionRepository;
 import com.oing.repository.PostRepository;
@@ -72,6 +69,7 @@ public class ReactionApiTest {
                         TEST_POST_ID,
                         TEST_MEMBER_ID,
                         TEST_FAMILY_ID,
+                        Type.FEED,
                         "img",
                         "img",
                         "content"

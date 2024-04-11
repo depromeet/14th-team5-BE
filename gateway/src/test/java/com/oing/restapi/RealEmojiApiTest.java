@@ -61,7 +61,7 @@ public class RealEmojiApiTest {
                 LocalDateTime.now()));
         TEST_MEMBER_TOKEN = tokenGenerator.generateTokenPair(TEST_MEMBER_ID).accessToken();
 
-        postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER_ID, TEST_FAMILY_ID, "img", "img",
+        postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER_ID, TEST_FAMILY_ID, Type.FEED, "img", "img",
                 "content"));
 
         memberRealEmojiRepository.save(new MemberRealEmoji(TEST_MEMBER_REAL_EMOJI_ID, TEST_MEMBER_ID, TEST_FAMILY_ID, Emoji.EMOJI_1,

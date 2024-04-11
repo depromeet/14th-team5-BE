@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.oing.domain.Comment;
 import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
+import com.oing.domain.Type;
 import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.dto.request.UpdatePostCommentRequest;
 import com.oing.dto.response.PaginationResponse;
@@ -39,7 +40,7 @@ public class PostCommentControllerTest {
     @Test
     void 게시물_댓글_생성_테스트() {
         //given
-        Post post = new Post("1", "1", "1", "1", "1", "1");
+        Post post = new Post("1", "1", "1", Type.FEED, "1", "1", "1");
         Comment comment = spy(new Comment("1", post, "1", "1"));
         CreatePostCommentRequest request = new CreatePostCommentRequest(comment.getContent());
         when(postService.getMemberPostById("1")).thenReturn(post);
@@ -60,7 +61,7 @@ public class PostCommentControllerTest {
     @Test
     void 게시물_댓글_삭제_테스트() {
         //given
-        Post post = spy(new Post("1", "1", "1", "1", "1", "1"));
+        Post post = spy(new Post("1", "1", "1", Type.FEED, "1", "1", "1"));
         Comment comment = spy(new Comment("1", post, "1", "1"));
         when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
@@ -78,7 +79,7 @@ public class PostCommentControllerTest {
     @Test
     void 게시물_댓글_수정_테스트() {
         //given
-        Post post = new Post("1", "1", "1", "1", "1", "1");
+        Post post = new Post("1", "1", "1", Type.FEED, "1", "1", "1");
         Comment comment = spy(new Comment("1", post, "1", "1"));
         UpdatePostCommentRequest updateRequest = new UpdatePostCommentRequest(comment.getContent());
         when(commentService.updateMemberPostComment(post.getId(), comment.getId(), updateRequest.content(), "1"))
@@ -103,6 +104,7 @@ public class PostCommentControllerTest {
                 "1",
                 "1",
                 "1",
+                Type.FEED,
                 "1",
                 "1",
                 "1"
