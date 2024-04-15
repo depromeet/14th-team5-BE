@@ -7,16 +7,16 @@ import java.security.InvalidParameterException;
 
 @RequiredArgsConstructor
 @Getter
-public enum Type {
+public enum PostType {
 
-    FEED("feed"),
+    SURVIVAL("survival"),
     MISSION("mission");
 
     private final String typeKey;
 
-    public static Type fromString(String typeKey) {
+    public static PostType fromString(String typeKey) {
         return switch (typeKey.toUpperCase()) {
-            case "FEED" -> FEED;
+            case "SURVIVAL" -> SURVIVAL;
             case "MISSION" -> MISSION;
             default -> throw new InvalidParameterException();
         };

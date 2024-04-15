@@ -20,6 +20,12 @@ public record PostResponse(
         @Schema(description = "피드 게시물 작성자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
         String authorId,
 
+        @Schema(description = "게시물 타입", example = "MISSION")
+        String type,
+
+        @Schema(description = "미션 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+        String missionId,
+
         @Schema(description = "피드 게시물 댓글 수", example = "3")
         Integer commentCount,
 
@@ -39,6 +45,8 @@ public record PostResponse(
         return new PostResponse(
                 post.getId(),
                 post.getMemberId(),
+                post.getType().getTypeKey(),
+                post.getMissionId(),
                 post.getCommentCnt(),
                 post.getReactionCnt() + post.getRealEmojiCnt(),
                 post.getPostImgUrl(),
