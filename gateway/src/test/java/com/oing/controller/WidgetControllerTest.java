@@ -2,7 +2,7 @@ package com.oing.controller;
 
 import com.oing.domain.Member;
 import com.oing.domain.Post;
-import com.oing.domain.Type;
+import com.oing.domain.PostType;
 import com.oing.dto.response.SingleRecentPostWidgetResponse;
 import com.oing.service.MemberService;
 import com.oing.service.PostService;
@@ -62,7 +62,7 @@ class WidgetControllerTest {
             "testPost1",
             testMember1.getId(),
             "1",
-            Type.SURVIVAL,
+            PostType.SURVIVAL,
             "post.com/1",
             "1",
             "testPost"

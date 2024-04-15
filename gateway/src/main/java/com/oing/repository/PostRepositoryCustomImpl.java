@@ -1,7 +1,7 @@
 package com.oing.repository;
 
 import com.oing.domain.Post;
-import com.oing.domain.Type;
+import com.oing.domain.PostType;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -54,7 +54,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     @Override
     public QueryResults<Post> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId,
-                                          String familyId, boolean asc, Type type) {
+                                          String familyId, boolean asc, PostType type) {
         return queryFactory
                 .select(post)
                 .from(post)

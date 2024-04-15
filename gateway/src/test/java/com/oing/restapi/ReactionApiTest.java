@@ -69,7 +69,7 @@ public class ReactionApiTest {
                         TEST_POST_ID,
                         TEST_MEMBER_ID,
                         TEST_FAMILY_ID,
-                        Type.SURVIVAL,
+                        PostType.SURVIVAL,
                         "img",
                         "img",
                         "content"

@@ -127,7 +127,7 @@ class WidgetApiTest {
                 "testPost1",
                 TEST_MEMBER1.getId(),
                 TEST_FAMILY_ID,
-                Type.SURVIVAL,
+                PostType.SURVIVAL,
                 "https://storage.com/bucket/images/1",
                 "1",
                 "testPos1"
@@ -136,7 +136,7 @@ class WidgetApiTest {
                 "testPost2",
                 TEST_MEMBER2.getId(),
                 TEST_FAMILY_ID,
-                Type.SURVIVAL,
+                PostType.SURVIVAL,
                 "https://storage.com/bucket/images/2",
                 "2",
                 "testPos2"
@@ -145,7 +145,7 @@ class WidgetApiTest {
                 "testPost3",
                 TEST_MEMBER3.getId(),
                 "something_other",
-                Type.SURVIVAL,
+                PostType.SURVIVAL,
                 "https://storage.com/bucket/images/3",
                 "3",
                 "testPos3"
@@ -165,9 +165,9 @@ class WidgetApiTest {
                 "testPos3",
                 ZonedDateTime.now()
         );
-        postService.createMemberPost(request1, Type.SURVIVAL, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request2, Type.SURVIVAL, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request3, Type.SURVIVAL, TEST_MEMBER3.getId(), "something_other");
+        postService.createMemberPost(request1, PostType.SURVIVAL, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request2, PostType.SURVIVAL, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request3, PostType.SURVIVAL, TEST_MEMBER3.getId(), "something_other");
 
 
         // when & then
@@ -191,7 +191,7 @@ class WidgetApiTest {
                 "testPost1",
                 TEST_MEMBER1.getId(),
                 TEST_FAMILY_ID,
-                Type.SURVIVAL,
+                PostType.SURVIVAL,
                 "https://storage.com/bucket/images/1",
                 "1",
                 "testPos1"
@@ -200,7 +200,7 @@ class WidgetApiTest {
                 "testPost2",
                 TEST_MEMBER2.getId(),
                 TEST_FAMILY_ID,
-                Type.SURVIVAL,
+                PostType.SURVIVAL,
                 "https://storage.com/bucket/images/2",
                 "2",
                 "testPos2"
@@ -209,7 +209,7 @@ class WidgetApiTest {
                 "testPost3",
                 TEST_MEMBER3.getId(),
                 "something_other",
-                Type.SURVIVAL,
+                PostType.SURVIVAL,
                 "https://storage.com/bucket/images/3",
                 "3",
                 "testPos3"
@@ -229,9 +229,9 @@ class WidgetApiTest {
                 "testPos3",
                 ZonedDateTime.now()
         );
-        postService.createMemberPost(request1, Type.SURVIVAL, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request2, Type.SURVIVAL, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request3, Type.SURVIVAL, TEST_MEMBER3.getId(), "something_other");
+        postService.createMemberPost(request1, PostType.SURVIVAL, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request2, PostType.SURVIVAL, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request3, PostType.SURVIVAL, TEST_MEMBER3.getId(), "something_other");
 
 
         // when & then

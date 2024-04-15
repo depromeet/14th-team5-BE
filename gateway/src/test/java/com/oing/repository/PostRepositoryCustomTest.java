@@ -4,7 +4,6 @@ import com.oing.config.QuerydslConfig;
 import com.oing.domain.Family;
 import com.oing.domain.Member;
 import com.oing.domain.Post;
-import com.oing.domain.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

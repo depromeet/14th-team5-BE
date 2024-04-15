@@ -3,7 +3,7 @@ package com.oing.controller;
 
 import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
-import com.oing.domain.Type;
+import com.oing.domain.PostType;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PaginationResponse;
@@ -41,7 +41,7 @@ public class PostController implements PostApi {
 
     @Override
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId,
-                                                            String sort, Type type, String loginMemberId) {
+                                                            String sort, PostType type, String loginMemberId) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
         // TODO: type이 mission이라면 사용자 검증 로직 추가
         PaginationDTO<Post> fetchResult = postService.searchMemberPost(
@@ -55,8 +55,8 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PostResponse createPost(CreatePostRequest request, Type type, String loginFamilyId, String loginMemberId) {
-        if (type.equals(Type.SURVIVAL)) {
+    public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId) {
+        if (type.equals(PostType.SURVIVAL)) {
             log.info("Member {} is trying to create post", loginMemberId);
 
             Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);

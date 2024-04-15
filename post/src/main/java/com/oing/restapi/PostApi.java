@@ -1,6 +1,6 @@
 package com.oing.restapi;
 
-import com.oing.domain.Type;
+import com.oing.domain.PostType;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PaginationResponse;
@@ -69,7 +69,7 @@ public interface PostApi {
 
             @RequestParam(required = false, defaultValue = "SURVIVAL")
             @Parameter(description = "게시물 타입", example = "SURVIVAL")
-            Type type,
+            PostType type,
 
             @Parameter(hidden = true)
             @LoginMemberId
@@ -85,7 +85,7 @@ public interface PostApi {
 
             @RequestParam(required = false, defaultValue = "SURVIVAL")
             @Parameter(description = "게시물 타입", example = "SURVIVAL")
-            Type type,
+            PostType type,
 
             @Parameter(hidden = true)
             @LoginFamilyId

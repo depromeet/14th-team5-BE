@@ -43,7 +43,7 @@ public class RealEmojiControllerTest {
         String familyId = "1";
         MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
-        Post post = new Post("1", memberId, familyId, Type.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
+        Post post = new Post("1", memberId, familyId, PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
@@ -64,7 +64,7 @@ public class RealEmojiControllerTest {
         //given
         String memberId = "1";
         String familyId = "1";
-        Post post = new Post("1", memberId, familyId, Type.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
+        Post post = new Post("1", memberId, familyId, PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji realEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
@@ -81,7 +81,7 @@ public class RealEmojiControllerTest {
     void 게시물_리얼이모지_요약_조회_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", Type.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
+        Post post = new Post("1", memberId, "1", PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
@@ -97,7 +97,7 @@ public class RealEmojiControllerTest {
     void 게시물_리얼이모지_목록_조회_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", Type.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
+        Post post = new Post("1", memberId, "1", PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
@@ -114,7 +114,7 @@ public class RealEmojiControllerTest {
     void 게시물_리얼이모지_멤버_조회_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", Type.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
+        Post post = new Post("1", memberId, "1", PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         when(postService.getMemberPostById(post.getId())).thenReturn(post);
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);

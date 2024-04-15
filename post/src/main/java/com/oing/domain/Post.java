@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.security.InvalidParameterException;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class Post extends BaseAuditEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
-    private Type type;
+    private PostType type;
 
     @Column(name = "post_img_url", nullable = false)
     private String postImgUrl;
@@ -63,7 +62,7 @@ public class Post extends BaseAuditEntity {
     @OneToMany(mappedBy = "post")
     private List<RealEmoji> realEmojis = new ArrayList<>();
 
-    public Post(String id, String memberId, String familyId, Type type, String postImgUrl, String postImgKey, String content) {
+    public Post(String id, String memberId, String familyId, PostType type, String postImgUrl, String postImgKey, String content) {
         validateContent(content);
         this.id = id;
         this.memberId = memberId;

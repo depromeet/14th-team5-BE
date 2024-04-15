@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oing.domain.Comment;
 import com.oing.domain.Member;
 import com.oing.domain.Post;
-import com.oing.domain.Type;
+import com.oing.domain.PostType;
 import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.dto.request.UpdatePostCommentRequest;
 import com.oing.repository.CommentRepository;
@@ -75,7 +75,7 @@ public class CommentApiTest {
                         TEST_POST_ID,
                         TEST_MEMBER_ID,
                         TEST_FAMILY_ID,
-                        Type.SURVIVAL,
+                        PostType.SURVIVAL,
                         "img",
                         "img",
                         "content"
