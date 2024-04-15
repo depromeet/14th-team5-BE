@@ -1,6 +1,7 @@
 package com.oing.repository;
 
 import com.oing.domain.Post;
+import com.oing.domain.PostType;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -52,12 +53,13 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public QueryResults<Post> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId, String familyId, boolean asc) {
+    public QueryResults<Post> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId,
+                                          String familyId, boolean asc, PostType type) {
         return queryFactory
                 .select(post)
                 .from(post)
                 .leftJoin(member).on(post.memberId.eq(member.id))
-                .where(post.familyId.eq(familyId), eqDate(date), eqMemberId(memberId))
+                .where(post.familyId.eq(familyId), eqDate(date), eqMemberId(memberId), post.type.eq(type))
                 .orderBy(asc ? post.id.asc() : post.id.desc())
                 .offset((long) (page - 1) * size)
                 .limit(size)
