@@ -17,10 +17,9 @@ import org.springframework.stereotype.Service;
 public class MissionService {
 
     private final MissionRepository missionRepository;
-
     private final IdentityGenerator identityGenerator;
 
-    @Transactional
+
     public MissionResponse createMission(CreateMissionRequest request) {
         log.info("Create mission request: {}", request.content());
 
