@@ -64,8 +64,8 @@ public class PostService {
     private void validateUploadTime(String memberId, ZonedDateTime uploadTime) {
         ZonedDateTime serverTime = ZonedDateTime.now();
 
-        ZonedDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(12, 0));
-        ZonedDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(12, 0));
+        ZonedDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(10, 0));
+        ZonedDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(10, 0));
 
         if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
             log.warn("Member {} is attempting to upload a post at an invalid time", memberId);
