@@ -125,7 +125,7 @@ class PostApiTest {
     @Test
     void 그룹에서_탈퇴한_회원_게시물_조회_테스트() throws Exception {
         //given
-        postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER1_ID, TEST_FAMILY_ID, Type.FEED, "img", "img",
+        postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER1_ID, TEST_FAMILY_ID, Type.SURVIVAL, "img", "img",
                 "content"));
         mockMvc.perform(
                 post("/v1/me/quit-family")

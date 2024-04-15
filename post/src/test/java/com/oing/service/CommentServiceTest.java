@@ -43,7 +43,7 @@ public class CommentServiceTest {
     void 게시물_댓글_저장_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", Type.FEED,  "1", "1", "1");
+        Post post = new Post("1", memberId, "1", Type.SURVIVAL,  "1", "1", "1");
         CreatePostCommentRequest request = new CreatePostCommentRequest("1");
         Comment comment = new Comment("1", null, "1", "1");
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
@@ -60,7 +60,7 @@ public class CommentServiceTest {
     @Test
     void 게시물_댓글_생성_내_가족이_아닌_경우_테스트() {
         //given
-        Post post = new Post("1", "1", "1", Type.FEED, "1", "1", "1");
+        Post post = new Post("1", "1", "1", Type.SURVIVAL, "1", "1", "1");
         Comment comment = spy(new Comment("1", post, "1", "1"));
         CreatePostCommentRequest request = new CreatePostCommentRequest(comment.getContent());
 
@@ -75,7 +75,7 @@ public class CommentServiceTest {
     void 게시물_삭제_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", Type.FEED, "1", "1", "1");
+        Post post = new Post("1", memberId, "1", Type.SURVIVAL, "1", "1", "1");
         when(commentRepository.findById("1")).thenReturn(Optional.of(new Comment("1", post, "1", "1")));
 
         //when
@@ -88,7 +88,7 @@ public class CommentServiceTest {
     @Test
     void 게시물_댓글_삭제_내가_작성하지_않은경우_테스트() {
         //given
-        Post post = new Post("1", "1", "1", Type.FEED, "1", "1", "1");
+        Post post = new Post("1", "1", "1", Type.SURVIVAL, "1", "1", "1");
         Comment othersComment = new Comment("1", post, "2", "1");
         when(commentRepository.findById("1")).thenReturn(Optional.of(othersComment));
 
@@ -102,7 +102,7 @@ public class CommentServiceTest {
     @Test
     void 게시물_댓글_수정_테스트() {
         //given
-        Post post = new Post("1", "1", "1", Type.FEED, "1", "1", "1");
+        Post post = new Post("1", "1", "1", Type.SURVIVAL, "1", "1", "1");
         Comment comment = spy(new Comment("1", post, "1", "1"));
         UpdatePostCommentRequest updateRequest = new UpdatePostCommentRequest(comment.getContent());
         when(commentRepository.findById("1")).thenReturn(Optional.of(comment));
@@ -122,7 +122,7 @@ public class CommentServiceTest {
     @Test
     void 게시물_댓글_수정_내가_작성하지_않은경우_테스트() {
         //given
-        Post post = new Post("1", "1", "1", Type.FEED, "1", "1", "1");
+        Post post = new Post("1", "1", "1", Type.SURVIVAL, "1", "1", "1");
         Comment othersComment = new Comment("1", post, "2", "1");
         UpdatePostCommentRequest request = new UpdatePostCommentRequest(othersComment.getContent());
         when(commentRepository.findById("1")).thenReturn(Optional.of(othersComment));
@@ -137,7 +137,7 @@ public class CommentServiceTest {
     @Test
     void 게시물_댓글_조회_테스트() {
         //given
-        Post post = new Post("1", "1", "1", Type.FEED, "1", "1", "1");
+        Post post = new Post("1", "1", "1", Type.SURVIVAL, "1", "1", "1");
         Comment comment = new Comment("1", post, "1", "1");
         when(commentRepository.findById("1")).thenReturn(java.util.Optional.of(comment));
 
@@ -152,7 +152,7 @@ public class CommentServiceTest {
     @Test
     void 게시물_댓글_조회_게시물ID_댓글ID_불일치_테스트() {
         //given
-        Post post = new Post("1", "1", "1", Type.FEED, "1", "1", "1");
+        Post post = new Post("1", "1", "1", Type.SURVIVAL, "1", "1", "1");
         Comment comment = new Comment("1", post, "1", "1");
         when(commentRepository.findById("2")).thenReturn(java.util.Optional.of(comment));
 
@@ -182,7 +182,7 @@ public class CommentServiceTest {
                 "1",
                 "1",
                 "1",
-                Type.FEED,
+                Type.SURVIVAL,
                 "1",
                 "1",
                 "1"

@@ -69,7 +69,7 @@ public class ReactionApiTest {
                         TEST_POST_ID,
                         TEST_MEMBER_ID,
                         TEST_FAMILY_ID,
-                        Type.FEED,
+                        Type.SURVIVAL,
                         "img",
                         "img",
                         "content"

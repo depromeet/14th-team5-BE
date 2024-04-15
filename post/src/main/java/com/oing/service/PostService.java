@@ -45,22 +45,22 @@ public class PostService {
     }
 
     @Transactional
-    public Post createMemberPost(CreatePostRequest request, String type, String loginMemberId, String loginFamilyId) {
-        if (type.equals("feed")) {
-            return createFeedPost(request, loginMemberId, loginFamilyId);
-        } else if (type.equals("mission")) {
+    public Post createMemberPost(CreatePostRequest request, Type type, String loginMemberId, String loginFamilyId) {
+        if (type.equals(Type.SURVIVAL)) {
+            return createSurvivalPost(request, loginMemberId, loginFamilyId);
+        } else if (type.equals(Type.MISSION)) {
             return createMissionPost(request, loginMemberId, loginFamilyId);
         } else {
             throw new InvalidParameterException();
         }
     }
 
-    public Post createFeedPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
+    public Post createSurvivalPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
         ZonedDateTime uploadTime = request.uploadTime();
         validateUserHasNotCreatedPostToday(loginMemberId, loginFamilyId, uploadTime);
         validateUploadTime(loginMemberId, uploadTime);
 
-        Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, Type.FEED,
+        Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, Type.SURVIVAL,
                 request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), request.content());
         return postRepository.save(post);
     }
@@ -104,10 +104,9 @@ public class PostService {
     }
 
     public PaginationDTO<Post> searchMemberPost(int page, int size, LocalDate date, String memberId, String requesterMemberId,
-                                                String familyId, boolean asc, String type) {
-        Type postType = Type.fromString(type);
-        if (postType.equals(Type.FEED)) {
-            QueryResults<Post> results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, postType);
+                                                String familyId, boolean asc, Type type) {
+        if (type.equals(Type.SURVIVAL)) {
+            QueryResults<Post> results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, type);
             int totalPage = (int) Math.ceil((double) results.getTotal() / size);
             return new PaginationDTO<>(
                     totalPage,
@@ -115,7 +114,7 @@ public class PostService {
             );
         } else {
             // TODO: mission type으로 응답을 모킹하기가 힘들어 구현 전까지는 feed type으로 응답합니다
-            QueryResults<Post> results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, Type.FEED);
+            QueryResults<Post> results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, Type.SURVIVAL);
             int totalPage = (int) Math.ceil((double) results.getTotal() / size);
             return new PaginationDTO<>(
                     totalPage,

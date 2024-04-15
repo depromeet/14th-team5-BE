@@ -62,7 +62,7 @@ class WidgetControllerTest {
             "testPost1",
             testMember1.getId(),
             "1",
-            Type.FEED,
+            Type.SURVIVAL,
             "post.com/1",
             "1",
             "testPost"

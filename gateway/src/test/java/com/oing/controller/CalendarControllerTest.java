@@ -71,7 +71,7 @@ class CalendarControllerTest {
                 "1",
                 testMember1.getId(),
                 familyId,
-                Type.FEED,
+                Type.SURVIVAL,
                 "post.com/1",
                 "1",
                 "test1"
@@ -81,7 +81,7 @@ class CalendarControllerTest {
                 "2",
                 testMember2.getId(),
                 familyId,
-                Type.FEED,
+                Type.SURVIVAL,
                 "post.com/2",
                 "2",
                 "test2"
@@ -91,7 +91,7 @@ class CalendarControllerTest {
                 "3",
                 testMember1.getId(),
                 familyId,
-                Type.FEED,
+                Type.SURVIVAL,
                 "post.com/3",
                 "3",
                 "test3"
@@ -101,7 +101,7 @@ class CalendarControllerTest {
                 "4",
                 testMember2.getId(),
                 familyId,
-                Type.FEED,
+                Type.SURVIVAL,
                 "post.com/4",
                 "4",
                 "test4"
