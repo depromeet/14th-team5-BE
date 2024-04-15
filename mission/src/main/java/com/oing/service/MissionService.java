@@ -29,7 +29,7 @@ public class MissionService {
             .build();
         mission = missionRepository.save(mission);
 
-        return MissionResponse.from(missionRepository.save(mission));
+        return MissionResponse.from(mission);
     }
 
     public Mission getMissionByMissionId(String missionId) {

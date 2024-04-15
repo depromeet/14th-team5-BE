@@ -28,7 +28,7 @@ public class DailyMissionHistoryService {
                 .build();
         dailyMissionHistory = dailyMissionHistoryRepository.save(dailyMissionHistory);
 
-        return DailyMissionHistoryResponse.from(dailyMissionHistoryRepository.save(dailyMissionHistory));
+        return DailyMissionHistoryResponse.from(dailyMissionHistory);
     }
 
     public DailyMissionHistory getDailyMissionHistoryByDate(LocalDate date) {
