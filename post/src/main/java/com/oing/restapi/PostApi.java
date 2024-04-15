@@ -1,5 +1,6 @@
 package com.oing.restapi;
 
+import com.oing.domain.Type;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.PaginationResponse;
@@ -66,9 +67,9 @@ public interface PostApi {
             @Parameter(description = "정렬 방식", example = "DESC | ASC")
             String sort,
 
-            @RequestParam(required = false, defaultValue = "feed")
-            @Parameter(description = "게시물 타입", example = "feed")
-            String type,
+            @RequestParam(required = false, defaultValue = "SURVIVAL")
+            @Parameter(description = "게시물 타입", example = "SURVIVAL")
+            Type type,
 
             @Parameter(hidden = true)
             @LoginMemberId
@@ -82,9 +83,9 @@ public interface PostApi {
             @RequestBody
             CreatePostRequest request,
 
-            @RequestParam(required = false, defaultValue = "feed")
-            @Parameter(description = "게시물 타입", example = "feed")
-            String type,
+            @RequestParam(required = false, defaultValue = "SURVIVAL")
+            @Parameter(description = "게시물 타입", example = "SURVIVAL")
+            Type type,
 
             @Parameter(hidden = true)
             @LoginFamilyId
