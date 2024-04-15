@@ -18,4 +18,9 @@ public class Mission extends BaseAuditEntity {
 
     @Column(nullable = false)
     private String content;
+
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
