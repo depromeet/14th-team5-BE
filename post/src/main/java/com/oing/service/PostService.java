@@ -46,13 +46,10 @@ public class PostService {
 
     @Transactional
     public Post createMemberPost(CreatePostRequest request, PostType type, String loginMemberId, String loginFamilyId) {
-        if (type.equals(PostType.SURVIVAL)) {
-            return createSurvivalPost(request, loginMemberId, loginFamilyId);
-        } else if (type.equals(PostType.MISSION)) {
-            return createMissionPost(request, loginMemberId, loginFamilyId);
-        } else {
-            throw new InvalidParameterException();
-        }
+        return switch (type) {
+            case SURVIVAL -> createSurvivalPost(request, loginMemberId, loginFamilyId);
+            case MISSION -> createMissionPost(request, loginMemberId, loginFamilyId);
+        };
     }
 
     public Post createSurvivalPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
