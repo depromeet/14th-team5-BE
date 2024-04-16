@@ -33,8 +33,13 @@ public class MissionService {
     }
 
     public Mission getMissionByMissionId(String missionId) {
-        return missionRepository.findById(missionId)
-            .orElseThrow(MissionNotFoundException::new);
+        // TODO: MissionService 의 Feature Mocking 입니다.
+        Mission mockMission = new Mission("1", "오늘의 기분을 나타내는 사진 찍기.");
+        return mockMission;
+
+        // TODO: Mocking 제거 시, 주석 해제
+//        return missionRepository.findById(missionId)
+//            .orElseThrow(MissionNotFoundException::new);
     }
 
 
