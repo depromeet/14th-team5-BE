@@ -66,6 +66,13 @@ public enum ErrorCode {
     REAL_EMOJI_ALREADY_EXISTS("RE0002", "이미 존재하는 리얼이모지입니다."),
     REGISTERED_REAL_EMOJI_NOT_FOUND("RE0003", "등록된 리얼이모지가 아닙니다."),
     DUPLICATE_REAL_EMOJI("RE0004", "이미 등록된 리얼이모지입니다."),
+
+    /**
+     * Mission Related Errors
+     */
+    MISSION_NOT_FOUND("MI0001", "존재하지 않는 미션입니다."),
+    DAILY_MISSION_HISTORY_NOT_FOUND("MI0002", "존재하지 않는 미션 히스토리입니다."),
+
     /**
      * Deep Link Related Errors
      */
