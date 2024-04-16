@@ -3,7 +3,6 @@ package com.oing.service;
 import com.oing.domain.Mission;
 import com.oing.dto.request.CreateMissionRequest;
 import com.oing.dto.response.MissionResponse;
-import com.oing.exception.MissionNotFoundException;
 import com.oing.repository.MissionRepository;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
