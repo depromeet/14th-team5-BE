@@ -16,7 +16,7 @@ public class DailyMissionHistory extends BaseEntity {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mission_id", referencedColumnName = "mission_id", columnDefinition = "CHAR(26)", nullable = false)
     private Mission mission;
 }
