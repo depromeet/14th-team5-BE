@@ -6,9 +6,7 @@ import com.oing.domain.Post;
 import com.oing.domain.PostType;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
-import com.oing.dto.response.PaginationResponse;
-import com.oing.dto.response.PostResponse;
-import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.PostApi;
 import com.oing.service.MemberBridge;
@@ -78,11 +76,40 @@ public class PostController implements PostApi {
         return PostResponse.from(memberPostProjection);
     }
 
+    @Override
+    public SurvivalUploadStatusResponse getSurvivalUploadStatus(String memberId, String loginMemberId, boolean valid) {
+        validateMemberId(loginMemberId, memberId);
+        // TODO: 추후 valid 파라미터 삭제
+        // TODO: 해당 회원이 생존신고 글을 올렸는지 검증 로직 추가
+        if (valid) {
+            return new SurvivalUploadStatusResponse(true);
+        }
+        return new SurvivalUploadStatusResponse(false);
+    }
+
+    @Override
+    public MissionAvailableStatusResponse getMissionAvailableStatus(String memberId, String loginMemberId, boolean valid) {
+        validateMemberId(loginMemberId, memberId);
+        // TODO: 추후 valid 파라미터 삭제
+        // TODO: 해당 회원이 미션에 참여 가능한 회원인지 검증 로직 추가
+        if (valid) {
+            return new MissionAvailableStatusResponse(true);
+        }
+        return new MissionAvailableStatusResponse(false);
+    }
+
     private void validateFamilyMember(String loginMemberId, String postId) {
         String postFamilyId = postService.getMemberPostById(postId).getFamilyId();
         String loginFamilyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
         if (!postFamilyId.equals(loginFamilyId)) {
             log.warn("Unauthorized access attempt: Member {} is attempting to access post {}", loginMemberId, postId);
+            throw new AuthorizationFailedException();
+        }
+    }
+
+    private void validateMemberId(String loginMemberId, String memberId) {
+        if (!loginMemberId.equals(memberId)) {
+            log.warn("Unauthorized access attempt: Member {} is attempting to access post", loginMemberId);
             throw new AuthorizationFailedException();
         }
     }
