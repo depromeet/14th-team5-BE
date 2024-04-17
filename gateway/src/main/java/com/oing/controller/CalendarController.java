@@ -2,6 +2,7 @@ package com.oing.controller;
 
 import com.oing.domain.BannerImageType;
 import com.oing.domain.Post;
+import com.oing.domain.PostType;
 import com.oing.dto.response.ArrayResponse;
 import com.oing.dto.response.BannerResponse;
 import com.oing.dto.response.CalendarResponse;
@@ -53,7 +54,7 @@ public class CalendarController implements CalendarApi {
             List<String> familyMembersIds = memberService.getFamilyMembersIdsByFamilyIdAndJoinAtBefore(familyId, postDate.plusDays(1));
             boolean allFamilyMembersUploaded = true;
             for (String memberId : familyMembersIds) {
-                if (!postService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, postDate)) {
+                if (!postService.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, postDate)) {
                     allFamilyMembersUploaded = false;
                     break;
                 }
@@ -97,7 +98,7 @@ public class CalendarController implements CalendarApi {
             if (postService.existsByFamilyIdAndCreatedAt(familyId, startDate)) {
                 List<String> familyMembersIds = memberService.getFamilyMembersIdsByFamilyIdAndJoinAtBefore(familyId, startDate.plusDays(1));
                 for (String memberId : familyMembersIds) {
-                    if (!postService.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, startDate)) {
+                    if (!postService.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, startDate)) {
                         allFamilyMembersUploaded = false;
                         break;
                     }

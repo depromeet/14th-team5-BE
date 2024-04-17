@@ -56,18 +56,11 @@ public class PostController implements PostApi {
 
     @Override
     public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId) {
-        if (type.equals(PostType.SURVIVAL)) {
-            log.info("Member {} is trying to create post", loginMemberId);
+        log.info("Member {} is trying to create post", loginMemberId);
 
-            Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);
-            log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
-            return PostResponse.from(savedPost);
-        } else {
-            // 미션 API 응답 모킹을 위해 if-else 문으로 분기 처리했습니다 (추후 삭제 예정)
-            return new PostResponse("01HGW2N7EHJVJ4CJ999RRS2E97", "01HGWOODDDFFF4CJ999RRS2E111",
-                    "MISSION", "01HGW2N7EHJVJ4CJ999RRS2E97", 3, 2, "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97", "맛있는 밥!", ZonedDateTime.now());
-        }
-
+        Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);
+        log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
+        return PostResponse.from(savedPost);
     }
 
     @Override
