@@ -40,7 +40,8 @@ public enum ErrorCode {
      */
     POST_NOT_FOUND("PO0001", "존재하지 않는 게시글입니다."),
     INVALID_UPLOAD_TIME("PO0002", "게시글 업로드가 허용되지 않은 시간대입니다."),
-    DUPLICATE_POST_UPLOAD("PO0003", "이미 게시글을 업로드했습니다."),
+    DUPLICATE_SURVIVAL_POST_UPLOAD("PO0003", "이미 생존신고 게시글을 업로드했습니다."),
+    DUPLICATE_MISSION_POST_UPLOAD("PO0004", "이미 미션 게시글을 업로드했습니다."),
 
     /**
      * Emoji Related Errors
