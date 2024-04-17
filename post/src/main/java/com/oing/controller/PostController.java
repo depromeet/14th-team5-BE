@@ -10,6 +10,7 @@ import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.AuthorizationFailedException;
+import com.oing.exception.MissionPostAccessDeniedException;
 import com.oing.restapi.PostApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
@@ -41,8 +42,13 @@ public class PostController implements PostApi {
 
     @Override
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId,
-                                                            String sort, PostType type, String loginMemberId) {
+                                                            String sort, PostType type, String loginMemberId, boolean available) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
+
+        // TODO: type이 mission이라면 사용자 검증 로직 추가 (프론트 요청으로 나중에 추가)
+        if (type == PostType.MISSION) {
+            validateMissionPostAccessMember(available);
+        }
         PaginationDTO<Post> fetchResult = postService.searchMemberPost(
                 page, size, date, memberId, loginMemberId, familyId,
                 sort == null || sort.equalsIgnoreCase("ASC"), type
@@ -54,12 +60,22 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId) {
+    public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId, boolean available) {
         log.info("Member {} is trying to create post", loginMemberId);
 
+        // TODO: 미션 게시물 업로드 가능한 사용자인지 검증하는 로직 필요 (프론트 요청으로 나중에 추가)
+        if (type == PostType.MISSION) {
+            validateMissionPostAccessMember(available);
+        }
         Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);
         log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
         return PostResponse.from(savedPost);
+    }
+
+    private void validateMissionPostAccessMember(boolean available) {
+        if (!available) {
+            throw new MissionPostAccessDeniedException();
+        }
     }
 
     @Override

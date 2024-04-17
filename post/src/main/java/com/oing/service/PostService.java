@@ -69,7 +69,6 @@ public class PostService {
         validateUploadTime(loginMemberId, uploadTime);
         String missionId = missionBridge.getTodayMissionId();
 
-        // TODO: 미션 게시물 업로드 가능한 사용자인지 검증하는 로직 필요 (프론트 요청으로 나중에 추가)
         Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, missionId, PostType.MISSION,
                 request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), request.content());
         return postRepository.save(post);
@@ -128,7 +127,6 @@ public class PostService {
                 totalPage = (int) Math.ceil((double) results.getTotal() / size);
             }
             case MISSION -> {
-                // TODO: type이 mission이라면 사용자 검증 로직 추가 (프론트 요청으로 나중에 추가)
                 results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, type);
                 totalPage = (int) Math.ceil((double) results.getTotal() / size);
             }

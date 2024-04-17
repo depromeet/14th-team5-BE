@@ -42,6 +42,7 @@ public enum ErrorCode {
     INVALID_UPLOAD_TIME("PO0002", "게시글 업로드가 허용되지 않은 시간대입니다."),
     DUPLICATE_SURVIVAL_POST_UPLOAD("PO0003", "이미 생존신고 게시글을 업로드했습니다."),
     DUPLICATE_MISSION_POST_UPLOAD("PO0004", "이미 미션 게시글을 업로드했습니다."),
+    MISSION_POST_ACCESS_DENIED("PO0005", "미션 게시글 기능에 접근할 수 없습니다."),
 
     /**
      * Emoji Related Errors
