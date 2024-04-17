@@ -123,8 +123,8 @@ public interface PostApi {
     );
 
     @Operation(summary = "회원 미션 참여 가능 여부 응답 조회", description = "회원 미션 참여 가능 여부를 조회합니다.")
-    @GetMapping("/{memberId}/mission-eligible")
-    MissionEligibleStatusResponse getMissionEligibleStatus(
+    @GetMapping("/{memberId}/mission-available")
+    MissionAvailableStatusResponse getMissionAvailableStatus(
             @PathVariable
             @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             String memberId,
