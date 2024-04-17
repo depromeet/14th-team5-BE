@@ -43,7 +43,6 @@ public class PostController implements PostApi {
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId,
                                                             String sort, PostType type, String loginMemberId) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
-        // TODO: type이 mission이라면 사용자 검증 로직 추가
         PaginationDTO<Post> fetchResult = postService.searchMemberPost(
                 page, size, date, memberId, loginMemberId, familyId,
                 sort == null || sort.equalsIgnoreCase("ASC"), type

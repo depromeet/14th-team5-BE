@@ -119,22 +119,21 @@ public class PostService {
 
     public PaginationDTO<Post> searchMemberPost(int page, int size, LocalDate date, String memberId, String requesterMemberId,
                                                 String familyId, boolean asc, PostType type) {
-        if (type.equals(PostType.SURVIVAL)) {
-            QueryResults<Post> results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, type);
-            int totalPage = (int) Math.ceil((double) results.getTotal() / size);
-            return new PaginationDTO<>(
-                    totalPage,
-                    results.getResults()
-            );
-        } else {
-            // TODO: mission type으로 응답을 모킹하기가 힘들어 구현 전까지는 feed type으로 응답합니다
-            QueryResults<Post> results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, PostType.SURVIVAL);
-            int totalPage = (int) Math.ceil((double) results.getTotal() / size);
-            return new PaginationDTO<>(
-                    totalPage,
-                    results.getResults()
-            );
+        QueryResults<Post> results = null;
+        int totalPage = 0;
+
+        switch (type) {
+            case SURVIVAL -> {
+                results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, type);
+                totalPage = (int) Math.ceil((double) results.getTotal() / size);
+            }
+            case MISSION -> {
+                // TODO: type이 mission이라면 사용자 검증 로직 추가 (프론트 요청으로 나중에 추가)
+                results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, type);
+                totalPage = (int) Math.ceil((double) results.getTotal() / size);
+            }
         }
+        return new PaginationDTO<>(totalPage, results.getResults());
     }
 
     public List<Post> findAllByFamilyIdAndCreatedAtBetween(String familyId, LocalDate startDate, LocalDate endDate) {
