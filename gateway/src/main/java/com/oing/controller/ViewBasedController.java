@@ -70,7 +70,8 @@ public class ViewBasedController implements ViewBasedApi {
                         String.valueOf(member.name().charAt(0)),
                         member.name(),
                         postUploaderRankMap.get(member.memberId()),
-                        today.isEqual(member.dayOfBirth()),
+                        member.dayOfBirth().getMonth() == today.getMonth()
+                                && member.dayOfBirth().getDayOfMonth() == today.getDayOfMonth(),
                         !pickedSet.contains(member.memberId())
                                 && !member.memberId().equals(loginMemberId)
                         && !postUploaderRankMap.containsKey(member.memberId())
