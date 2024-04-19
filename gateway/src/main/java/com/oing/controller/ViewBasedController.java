@@ -76,6 +76,7 @@ public class ViewBasedController implements ViewBasedApi {
                         && !postUploaderRankMap.containsKey(member.memberId())
                 )).toList(),
                 true,
+                postUploaderRankMap.containsKey(loginMemberId),
                 survivalPosts.stream().map(post -> {
                     FamilyMemberProfileResponse member = memberMap.get(post.getMemberId());
                     return new MainPageFeedResponse(

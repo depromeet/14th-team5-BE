@@ -12,6 +12,9 @@ public record MainPageResponse(
         @Schema(description = "미션 해금 여부", example = "true")
         boolean isMissionUnlocked,
 
+        @Schema(description = "오늘 나 업로드 여부", example = "true")
+        boolean isMeUploadedToday,
+
         @Schema(description = "생존 피드 목록")
         List<MainPageFeedResponse> survivalFeeds,
 
