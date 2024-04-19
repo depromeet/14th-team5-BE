@@ -1,10 +1,7 @@
 package com.oing.controller;
 
 import com.oing.domain.*;
-import com.oing.dto.response.FamilyMemberProfileResponse;
-import com.oing.dto.response.MainPageFeedResponse;
-import com.oing.dto.response.MainPageResponse;
-import com.oing.dto.response.MainPageTopBarResponse;
+import com.oing.dto.response.*;
 import com.oing.restapi.ViewBasedApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.MemberPickService;
@@ -96,7 +93,23 @@ public class ViewBasedController implements ViewBasedApi {
                             member != null ? member.name() : "UNKNOWN",
                             post.getCreatedAt().atZone(ZoneId.systemDefault())
                     );
+                }).toList(),
+                memberPickService.getPickMembers(familyId, loginMemberId).stream().map(pickMember -> {
+                    FamilyMemberProfileResponse member = memberMap.get(pickMember.getFromMemberId());
+                    if(member == null) {
+                        return new MainPagePickerResponse(
+                                pickMember.getFromMemberId(),
+                                "UNKNOWN",
+                                "UNKNOWN"
+                        );
+                    }
+                    return new MainPagePickerResponse(
+                            member.memberId(),
+                            member.imageUrl(),
+                            member.name()
+                    );
                 }).toList()
+
         );
     }
 }
