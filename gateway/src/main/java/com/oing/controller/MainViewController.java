@@ -2,11 +2,8 @@ package com.oing.controller;
 
 import com.oing.domain.*;
 import com.oing.dto.response.*;
-import com.oing.restapi.ViewBasedApi;
-import com.oing.service.MemberBridge;
-import com.oing.service.MemberPickService;
-import com.oing.service.MemberService;
-import com.oing.service.PostService;
+import com.oing.restapi.MainViewApi;
+import com.oing.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -23,15 +20,20 @@ import java.util.*;
  */
 @Controller
 @RequiredArgsConstructor
-public class ViewBasedController implements ViewBasedApi {
+public class MainViewController implements MainViewApi {
+
     private final PostService postService;
     private final MemberService memberService;
     private final MemberPickService memberPickService;
     private final MemberBridge memberBridge;
+    private final MissionBridge missionBridge;
 
     private static final int PAGE_FETCH_SIZE = 1000;
+
     @Override
-    public MainPageResponse getMainPage(
+    public DaytimePageResponse getDaytimePage(
+            boolean isMissionUnlocked,
+            boolean isMeUploadedToday,
             String loginMemberId
     ) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
@@ -62,8 +64,11 @@ public class ViewBasedController implements ViewBasedApi {
         memberPickService.getPickedMembers(familyId, loginMemberId)
                 .forEach(pick -> pickedSet.add(pick.getToMemberId()));
 
+        String todayMissionId = missionBridge.getTodayMissionId();
+        String dailyMissionContent = missionBridge.getContentByMissionId(todayMissionId);
 
-        return new MainPageResponse(
+
+        return new DaytimePageResponse(
                 members.stream().sorted(comparator).map((member) -> new MainPageTopBarResponse(
                         member.memberId(),
                         member.imageUrl(),
@@ -76,26 +81,7 @@ public class ViewBasedController implements ViewBasedApi {
                                 && !member.memberId().equals(loginMemberId)
                         && !postUploaderRankMap.containsKey(member.memberId())
                 )).toList(),
-                true,
-                postUploaderRankMap.containsKey(loginMemberId),
-                survivalPosts.stream().map(post -> {
-                    FamilyMemberProfileResponse member = memberMap.get(post.getMemberId());
-                    return new MainPageFeedResponse(
-                            post.getId(),
-                            post.getPostImgUrl(),
-                            member != null ? member.name() : "UNKNOWN",
-                            post.getCreatedAt().atZone(ZoneId.systemDefault())
-                    );
-                }).toList(),
-                missionPosts.stream().map(post -> {
-                    FamilyMemberProfileResponse member = memberMap.get(post.getMemberId());
-                    return new MainPageFeedResponse(
-                            post.getId(),
-                            post.getPostImgUrl(),
-                            member != null ? member.name() : "UNKNOWN",
-                            post.getCreatedAt().atZone(ZoneId.systemDefault())
-                    );
-                }).toList(),
+
                 memberPickService.getPickMembers(familyId, loginMemberId).stream().map(pickMember -> {
                     FamilyMemberProfileResponse member = memberMap.get(pickMember.getFromMemberId());
                     if(member == null) {
@@ -110,8 +96,35 @@ public class ViewBasedController implements ViewBasedApi {
                             member.imageUrl(),
                             member.name()
                     );
-                }).toList()
+                }).toList(),
 
+                2,
+
+                isMissionUnlocked,
+
+                isMeUploadedToday,
+
+                dailyMissionContent,
+
+                survivalPosts.stream().map(post -> {
+                    FamilyMemberProfileResponse member = memberMap.get(post.getMemberId());
+                    return new MainPageFeedResponse(
+                            post.getId(),
+                            post.getPostImgUrl(),
+                            member != null ? member.name() : "UNKNOWN",
+                            post.getCreatedAt().atZone(ZoneId.systemDefault())
+                    );
+                }).toList(),
+
+                missionPosts.stream().map(post -> {
+                    FamilyMemberProfileResponse member = memberMap.get(post.getMemberId());
+                    return new MainPageFeedResponse(
+                            post.getId(),
+                            post.getPostImgUrl(),
+                            member != null ? member.name() : "UNKNOWN",
+                            post.getCreatedAt().atZone(ZoneId.systemDefault())
+                    );
+                }).toList()
         );
     }
 }
