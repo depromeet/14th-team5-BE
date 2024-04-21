@@ -20,6 +20,6 @@ public interface PostRepositoryCustom {
 
     boolean existsByFamilyIdAndCreatedAt(String familyId, LocalDate postDate);
 
-    boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate);
+    boolean existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(String memberId, String familyId, PostType type, LocalDate postDate);
 
 }

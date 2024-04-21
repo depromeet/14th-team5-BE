@@ -102,13 +102,14 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     @Override
     @Transactional
-    public boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate) {
+    public boolean existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(String memberId, String familyId, PostType type, LocalDate postDate) {
         return queryFactory
                 .select(post.id)
                 .from(post)
                 .where(
                         post.memberId.eq(memberId),
                         post.familyId.eq(familyId),
+                        post.type.eq(type),
                         dateExpr(post.createdAt).eq(postDate)
                 )
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE)

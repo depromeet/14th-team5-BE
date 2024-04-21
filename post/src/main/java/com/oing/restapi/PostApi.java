@@ -71,7 +71,11 @@ public interface PostApi {
 
             @Parameter(hidden = true)
             @LoginMemberId
-            String loginMemberId
+            String loginMemberId,
+
+            @RequestParam(required = false, defaultValue = "true")
+            @Parameter(description = "미션 게시물 조회 가능 여부 조작 필드", example = "true")
+            boolean available
     );
 
     @Operation(summary = "게시물 생성", description = "게시물을 생성합니다.")
@@ -91,7 +95,11 @@ public interface PostApi {
 
             @Parameter(hidden = true)
             @LoginMemberId
-            String loginMemberId
+            String loginMemberId,
+
+            @RequestParam(required = false, defaultValue = "true")
+            @Parameter(description = "미션 게시물 업로드 가능 여부 조작 필드", example = "true")
+            boolean available
     );
 
     @Operation(summary = "단일 게시물 조회", description = "ID를 통해 게시물을 조회합니다.")

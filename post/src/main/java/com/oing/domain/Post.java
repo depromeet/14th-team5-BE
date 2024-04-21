@@ -76,6 +76,21 @@ public class Post extends BaseAuditEntity {
         this.realEmojiCnt = 0;
     }
 
+    public Post(String id, String memberId, String familyId, String missionId, PostType type, String postImgUrl, String postImgKey, String content) {
+        validateContent(content);
+        this.id = id;
+        this.memberId = memberId;
+        this.familyId = familyId;
+        this.missionId = missionId;
+        this.type = type;
+        this.postImgUrl = postImgUrl;
+        this.postImgKey = postImgKey;
+        this.content = content;
+        this.commentCnt = 0;
+        this.reactionCnt = 0;
+        this.realEmojiCnt = 0;
+    }
+
     private void validateContent(String content) {
         if (content != null && (content.codePoints().count() > 8 || content.contains(" "))) {
             throw new InvalidParameterException();
