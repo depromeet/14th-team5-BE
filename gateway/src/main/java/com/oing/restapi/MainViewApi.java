@@ -42,7 +42,7 @@ public interface MainViewApi {
     );
 
 
-    @Operation(summary = "주간의 메인 페이지 조회")
+    @Operation(summary = "야간의 메인 페이지 조회")
     @GetMapping("/nighttime-page")
     NighttimePageResponse getNighttimePage(
             @Parameter(hidden = true)
@@ -56,6 +56,7 @@ public interface MainViewApi {
 
 
     @Operation(summary = "금월의 가족 구성원 월간 랭킹 조회", description = "이번 달에 해당하는 가족 구성원 월간 랭킹을 조회합니다.")
+    @GetMapping("/family-ranking")
     FamilyMemberMonthlyRankingResponse getFamilyMemberMonthlyRanking(
             @Parameter(hidden = true)
             @LoginMemberId
