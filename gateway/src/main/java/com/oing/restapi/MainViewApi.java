@@ -1,6 +1,9 @@
 package com.oing.restapi;
 
 import com.oing.dto.response.DaytimePageResponse;
+import com.oing.dto.response.FamilyMemberMonthlyRankingResponse;
+import com.oing.dto.response.NighttimePageResponse;
+import com.oing.util.security.LoginFamilyId;
 import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,5 +39,30 @@ public interface MainViewApi {
             @Parameter(hidden = true)
             @LoginMemberId
             String loginMemberId
+    );
+
+
+    @Operation(summary = "주간의 메인 페이지 조회")
+    @GetMapping("/daytime-page")
+    NighttimePageResponse getNighttimePage(
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
+
+
+    @Operation(summary = "금월의 가족 구성원 월간 랭킹 조회", description = "이번 달에 해당하는 가족 구성원 월간 랭킹을 조회합니다.")
+    FamilyMemberMonthlyRankingResponse getFamilyMemberMonthlyRanking(
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
     );
 }

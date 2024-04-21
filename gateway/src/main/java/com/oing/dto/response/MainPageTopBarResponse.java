@@ -22,7 +22,9 @@ public record MainPageTopBarResponse(
         @Schema(description = "닉네임", example = "엄마")
         String displayName,
 
-        @Schema(description = "순위 표기", example = "1")
+        @Schema(description = "순위 표기 (1부터 시작)" +
+                "\n- 야간의 경우 모두 1입니다."
+                , example = "1")
         Integer displayRank,
 
         @Schema(description = "생일 마크 표시 여부", example = "true")

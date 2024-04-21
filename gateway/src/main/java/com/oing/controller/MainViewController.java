@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -37,7 +38,7 @@ public class MainViewController implements MainViewApi {
             String loginMemberId
     ) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
-        LocalDate today = LocalDate.now();
+        LocalDate today = ZonedDateTime.now().toLocalDate();
         Map<String, FamilyMemberProfileResponse> memberMap = new HashMap<>();
         Page<FamilyMemberProfileResponse> members = memberService.getFamilyMembersProfilesByFamilyId(familyId, 1, PAGE_FETCH_SIZE);
         members.forEach(member -> memberMap.put(member.memberId(), member));
@@ -79,12 +80,12 @@ public class MainViewController implements MainViewApi {
                                 && member.dayOfBirth().getDayOfMonth() == today.getDayOfMonth(),
                         !pickedSet.contains(member.memberId())
                                 && !member.memberId().equals(loginMemberId)
-                        && !postUploaderRankMap.containsKey(member.memberId())
+                                && !postUploaderRankMap.containsKey(member.memberId())
                 )).toList(),
 
                 memberPickService.getPickMembers(familyId, loginMemberId).stream().map(pickMember -> {
                     FamilyMemberProfileResponse member = memberMap.get(pickMember.getFromMemberId());
-                    if(member == null) {
+                    if (member == null) {
                         return new MainPagePickerResponse(
                                 pickMember.getFromMemberId(),
                                 "UNKNOWN",
@@ -126,5 +127,41 @@ public class MainViewController implements MainViewApi {
                     );
                 }).toList()
         );
+    }
+
+
+    @Override
+    public NighttimePageResponse getNighttimePage(String loginMemberId, String loginFamilyId) {
+        Page<FamilyMemberProfileResponse> members = memberService.getFamilyMembersProfilesByFamilyId(loginFamilyId, 1, PAGE_FETCH_SIZE);
+        LocalDate today = ZonedDateTime.now().toLocalDate();
+        List<MainPageTopBarResponse> mainPageTopBarResponses = members.stream().map((member) -> new MainPageTopBarResponse(
+                member.memberId(),
+                member.imageUrl(),
+                String.valueOf(member.name().charAt(0)),
+                member.name(),
+                1,
+                member.dayOfBirth().getMonth() == today.getMonth()
+                        && member.dayOfBirth().getDayOfMonth() == today.getDayOfMonth(),
+                false
+        )).toList();
+
+        FamilyMemberMonthlyRankingResponse familyMemberMonthlyRanking = getFamilyMemberMonthlyRanking(loginMemberId, loginFamilyId);
+
+        return new NighttimePageResponse(
+                mainPageTopBarResponses,
+                familyMemberMonthlyRanking
+        );
+    }
+
+
+    @Override
+    public FamilyMemberMonthlyRankingResponse getFamilyMemberMonthlyRanking(String loginMemberId, String loginFamilyId) {
+        // TODO: API Response Mocking 입니다.
+
+        FamilyMemberRankerResponse first = new FamilyMemberRankerResponse("https://static01.nyt.com/images/2016/09/28/us/28xp-pepefrog/28xp-pepefrog-superJumbo.jpg", "정신적 지주", 24);
+        FamilyMemberRankerResponse second = new FamilyMemberRankerResponse("https://static01.nyt.com/images/2016/09/28/us/28xp-pepefrog/28xp-pepefrog-superJumbo.jpg", "권순찬", 23);
+        FamilyMemberRankerResponse third = null;
+
+        return new FamilyMemberMonthlyRankingResponse(4, first, second, third);
     }
 }

@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
-@Schema(description = "메인 페이지")
+@Schema(description = "주간 메인 페이지")
 public record DaytimePageResponse(
         @Schema(description = "상단 바 요소")
         List<MainPageTopBarResponse> topBarElements,
