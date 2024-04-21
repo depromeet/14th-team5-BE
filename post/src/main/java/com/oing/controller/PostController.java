@@ -10,7 +10,8 @@ import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.AuthorizationFailedException;
-import com.oing.exception.MissionPostAccessDeniedException;
+import com.oing.exception.MissionPostAccessDeniedFamilyException;
+import com.oing.exception.MissionPostCreateAccessDeniedMemberException;
 import com.oing.restapi.PostApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
@@ -19,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 
 /**
  * no5ing-server
@@ -45,9 +45,9 @@ public class PostController implements PostApi {
                                                             String sort, PostType type, String loginMemberId, boolean available) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
 
-        // TODO: type이 mission이라면 사용자 검증 로직 추가 (프론트 요청으로 나중에 추가)
+        // TODO: 미션 게시물 접근 가능한 가족인지 검증하는 로직 필요 (프론트 요청으로 나중에 추가)
         if (type == PostType.MISSION) {
-            validateMissionPostAccessMember(available);
+            validateMissionPostAccessFamily(available);
         }
         PaginationDTO<Post> fetchResult = postService.searchMemberPost(
                 page, size, date, memberId, loginMemberId, familyId,
@@ -59,22 +59,28 @@ public class PostController implements PostApi {
                 .map(PostResponse::from);
     }
 
+    private void validateMissionPostAccessFamily(boolean available) {
+        if (!available) {
+            throw new MissionPostAccessDeniedFamilyException();
+        }
+    }
+
     @Override
     public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId, boolean available) {
         log.info("Member {} is trying to create post", loginMemberId);
 
         // TODO: 미션 게시물 업로드 가능한 사용자인지 검증하는 로직 필요 (프론트 요청으로 나중에 추가)
         if (type == PostType.MISSION) {
-            validateMissionPostAccessMember(available);
+            validateMissionPostCreateAccessMember(available);
         }
         Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);
         log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
         return PostResponse.from(savedPost);
     }
 
-    private void validateMissionPostAccessMember(boolean available) {
+    private void validateMissionPostCreateAccessMember(boolean available) {
         if (!available) {
-            throw new MissionPostAccessDeniedException();
+            throw new MissionPostCreateAccessDeniedMemberException();
         }
     }
 
