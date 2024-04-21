@@ -43,7 +43,7 @@ public interface MainViewApi {
 
 
     @Operation(summary = "주간의 메인 페이지 조회")
-    @GetMapping("/daytime-page")
+    @GetMapping("/nighttime-page")
     NighttimePageResponse getNighttimePage(
             @Parameter(hidden = true)
             @LoginMemberId
