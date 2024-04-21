@@ -2,17 +2,15 @@ package com.oing.controller;
 
 import com.oing.domain.*;
 import com.oing.dto.response.*;
-import com.oing.restapi.ViewBasedApi;
-import com.oing.service.MemberBridge;
-import com.oing.service.MemberPickService;
-import com.oing.service.MemberService;
-import com.oing.service.PostService;
+import com.oing.restapi.MainViewApi;
+import com.oing.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -23,19 +21,24 @@ import java.util.*;
  */
 @Controller
 @RequiredArgsConstructor
-public class ViewBasedController implements ViewBasedApi {
+public class MainViewController implements MainViewApi {
+
     private final PostService postService;
     private final MemberService memberService;
     private final MemberPickService memberPickService;
     private final MemberBridge memberBridge;
+    private final MissionBridge missionBridge;
 
     private static final int PAGE_FETCH_SIZE = 1000;
+
     @Override
-    public MainPageResponse getMainPage(
+    public DaytimePageResponse getDaytimePage(
+            boolean isMissionUnlocked,
+            boolean isMeUploadedToday,
             String loginMemberId
     ) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
-        LocalDate today = LocalDate.now();
+        LocalDate today = ZonedDateTime.now().toLocalDate();
         Map<String, FamilyMemberProfileResponse> memberMap = new HashMap<>();
         Page<FamilyMemberProfileResponse> members = memberService.getFamilyMembersProfilesByFamilyId(familyId, 1, PAGE_FETCH_SIZE);
         members.forEach(member -> memberMap.put(member.memberId(), member));
@@ -62,8 +65,11 @@ public class ViewBasedController implements ViewBasedApi {
         memberPickService.getPickedMembers(familyId, loginMemberId)
                 .forEach(pick -> pickedSet.add(pick.getToMemberId()));
 
+        String todayMissionId = missionBridge.getTodayMissionId();
+        String dailyMissionContent = missionBridge.getContentByMissionId(todayMissionId);
 
-        return new MainPageResponse(
+
+        return new DaytimePageResponse(
                 members.stream().sorted(comparator).map((member) -> new MainPageTopBarResponse(
                         member.memberId(),
                         member.imageUrl(),
@@ -74,31 +80,12 @@ public class ViewBasedController implements ViewBasedApi {
                                 && member.dayOfBirth().getDayOfMonth() == today.getDayOfMonth(),
                         !pickedSet.contains(member.memberId())
                                 && !member.memberId().equals(loginMemberId)
-                        && !postUploaderRankMap.containsKey(member.memberId())
+                                && !postUploaderRankMap.containsKey(member.memberId())
                 )).toList(),
-                true,
-                postUploaderRankMap.containsKey(loginMemberId),
-                survivalPosts.stream().map(post -> {
-                    FamilyMemberProfileResponse member = memberMap.get(post.getMemberId());
-                    return new MainPageFeedResponse(
-                            post.getId(),
-                            post.getPostImgUrl(),
-                            member != null ? member.name() : "UNKNOWN",
-                            post.getCreatedAt().atZone(ZoneId.systemDefault())
-                    );
-                }).toList(),
-                missionPosts.stream().map(post -> {
-                    FamilyMemberProfileResponse member = memberMap.get(post.getMemberId());
-                    return new MainPageFeedResponse(
-                            post.getId(),
-                            post.getPostImgUrl(),
-                            member != null ? member.name() : "UNKNOWN",
-                            post.getCreatedAt().atZone(ZoneId.systemDefault())
-                    );
-                }).toList(),
+
                 memberPickService.getPickMembers(familyId, loginMemberId).stream().map(pickMember -> {
                     FamilyMemberProfileResponse member = memberMap.get(pickMember.getFromMemberId());
-                    if(member == null) {
+                    if (member == null) {
                         return new MainPagePickerResponse(
                                 pickMember.getFromMemberId(),
                                 "UNKNOWN",
@@ -110,8 +97,71 @@ public class ViewBasedController implements ViewBasedApi {
                             member.imageUrl(),
                             member.name()
                     );
-                }).toList()
+                }).toList(),
 
+                2,
+
+                isMissionUnlocked,
+
+                isMeUploadedToday,
+
+                dailyMissionContent,
+
+                survivalPosts.stream().map(post -> {
+                    FamilyMemberProfileResponse member = memberMap.get(post.getMemberId());
+                    return new MainPageFeedResponse(
+                            post.getId(),
+                            post.getPostImgUrl(),
+                            member != null ? member.name() : "UNKNOWN",
+                            post.getCreatedAt().atZone(ZoneId.systemDefault())
+                    );
+                }).toList(),
+
+                missionPosts.stream().map(post -> {
+                    FamilyMemberProfileResponse member = memberMap.get(post.getMemberId());
+                    return new MainPageFeedResponse(
+                            post.getId(),
+                            post.getPostImgUrl(),
+                            member != null ? member.name() : "UNKNOWN",
+                            post.getCreatedAt().atZone(ZoneId.systemDefault())
+                    );
+                }).toList()
         );
+    }
+
+
+    @Override
+    public NighttimePageResponse getNighttimePage(String loginMemberId, String loginFamilyId) {
+        Page<FamilyMemberProfileResponse> members = memberService.getFamilyMembersProfilesByFamilyId(loginFamilyId, 1, PAGE_FETCH_SIZE);
+        LocalDate today = ZonedDateTime.now().toLocalDate();
+        List<MainPageTopBarResponse> mainPageTopBarResponses = members.stream().map((member) -> new MainPageTopBarResponse(
+                member.memberId(),
+                member.imageUrl(),
+                String.valueOf(member.name().charAt(0)),
+                member.name(),
+                1,
+                member.dayOfBirth().getMonth() == today.getMonth()
+                        && member.dayOfBirth().getDayOfMonth() == today.getDayOfMonth(),
+                false
+        )).toList();
+
+        FamilyMemberMonthlyRankingResponse familyMemberMonthlyRanking = getFamilyMemberMonthlyRanking(loginMemberId, loginFamilyId);
+
+        return new NighttimePageResponse(
+                mainPageTopBarResponses,
+                familyMemberMonthlyRanking
+        );
+    }
+
+
+    @Override
+    public FamilyMemberMonthlyRankingResponse getFamilyMemberMonthlyRanking(String loginMemberId, String loginFamilyId) {
+        // TODO: API Response Mocking 입니다.
+
+        FamilyMemberRankerResponse first = new FamilyMemberRankerResponse("https://static01.nyt.com/images/2016/09/28/us/28xp-pepefrog/28xp-pepefrog-superJumbo.jpg", "정신적 지주", 24);
+        FamilyMemberRankerResponse second = new FamilyMemberRankerResponse("https://static01.nyt.com/images/2016/09/28/us/28xp-pepefrog/28xp-pepefrog-superJumbo.jpg", "권순찬", 23);
+        FamilyMemberRankerResponse third = null;
+
+        return new FamilyMemberMonthlyRankingResponse(4, first, second, third);
     }
 }
