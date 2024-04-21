@@ -91,11 +91,10 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public SurvivalUploadStatusResponse getSurvivalUploadStatus(String memberId, String loginMemberId, boolean valid) {
+    public SurvivalUploadStatusResponse getSurvivalUploadStatus(String memberId, String loginMemberId, String loginFamilyId) {
         validateMemberId(loginMemberId, memberId);
-        // TODO: 추후 valid 파라미터 삭제
-        // TODO: 해당 회원이 생존신고 글을 올렸는지 검증 로직 추가
-        if (valid) {
+
+        if (postService.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, loginFamilyId, PostType.SURVIVAL, LocalDate.now())) {
             return new SurvivalUploadStatusResponse(true);
         }
         return new SurvivalUploadStatusResponse(false);
