@@ -1,5 +1,6 @@
 package com.oing.service;
 
+import com.oing.domain.PostType;
 import com.oing.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,6 @@ public class PostBridgeImpl implements PostBridge {
     @Override
     public boolean isUploadedToday(String familyId, String memberId) {
         LocalDate today = LocalDate.now();
-        return postRepository.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, today);
+        return postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, today);
     }
 }

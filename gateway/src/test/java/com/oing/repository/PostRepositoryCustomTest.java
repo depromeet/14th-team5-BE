@@ -4,6 +4,7 @@ import com.oing.config.QuerydslConfig;
 import com.oing.domain.Family;
 import com.oing.domain.Member;
 import com.oing.domain.Post;
+import com.oing.domain.PostType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,8 +108,8 @@ class PostRepositoryCustomTest {
         LocalDate postDate = LocalDate.of(2023, 11, 1);
 
         // when
-        boolean exists = postRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndCreatedAt(testMember1.getId(),
-                testMember1.getFamilyId(), postDate);
+        boolean exists = postRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(testMember1.getId(),
+                testMember1.getFamilyId(), PostType.SURVIVAL, postDate);
 
         // then
         assertThat(exists).isTrue();
@@ -120,8 +121,8 @@ class PostRepositoryCustomTest {
         LocalDate postDate = LocalDate.of(2023, 11, 8);
 
         // when
-        boolean exists = postRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndCreatedAt(testMember1.getId(),
-                testMember1.getFamilyId(), postDate);
+        boolean exists = postRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(testMember1.getId(),
+                testMember1.getFamilyId(), PostType.SURVIVAL, postDate);
 
         // then
         assertThat(exists).isFalse();

@@ -8,6 +8,8 @@ import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
+import com.oing.exception.MissionPostAccessDeniedFamilyException;
+import com.oing.exception.MissionPostCreateAccessDeniedMemberException;
 import com.oing.restapi.PostApi;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
@@ -16,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 
 /**
  * no5ing-server
@@ -39,9 +40,13 @@ public class PostController implements PostApi {
 
     @Override
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId,
-                                                            String sort, PostType type, String loginMemberId) {
+                                                            String sort, PostType type, String loginMemberId, boolean available) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
-        // TODO: type이 mission이라면 사용자 검증 로직 추가
+
+        // TODO: 미션 게시물 접근 가능한 가족인지 검증하는 로직 필요 (프론트 요청으로 나중에 추가)
+        if (type == PostType.MISSION) {
+            validateMissionPostAccessFamily(available);
+        }
         PaginationDTO<Post> fetchResult = postService.searchMemberPost(
                 page, size, date, memberId, loginMemberId, familyId,
                 sort == null || sort.equalsIgnoreCase("ASC"), type
@@ -52,20 +57,29 @@ public class PostController implements PostApi {
                 .map(PostResponse::from);
     }
 
-    @Override
-    public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId) {
-        if (type.equals(PostType.SURVIVAL)) {
-            log.info("Member {} is trying to create post", loginMemberId);
-
-            Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);
-            log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
-            return PostResponse.from(savedPost);
-        } else {
-            // 미션 API 응답 모킹을 위해 if-else 문으로 분기 처리했습니다 (추후 삭제 예정)
-            return new PostResponse("01HGW2N7EHJVJ4CJ999RRS2E97", "01HGWOODDDFFF4CJ999RRS2E111",
-                    "MISSION", "01HGW2N7EHJVJ4CJ999RRS2E97", 3, 2, "https://asset.no5ing.kr/post/01HGW2N7EHJVJ4CJ999RRS2E97", "맛있는 밥!", ZonedDateTime.now());
+    private void validateMissionPostAccessFamily(boolean available) {
+        if (!available) {
+            throw new MissionPostAccessDeniedFamilyException();
         }
+    }
 
+    @Override
+    public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId, boolean available) {
+        log.info("Member {} is trying to create post", loginMemberId);
+
+        // TODO: 미션 게시물 업로드 가능한 사용자인지 검증하는 로직 필요 (프론트 요청으로 나중에 추가)
+        if (type == PostType.MISSION) {
+            validateMissionPostCreateAccessMember(available);
+        }
+        Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);
+        log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
+        return PostResponse.from(savedPost);
+    }
+
+    private void validateMissionPostCreateAccessMember(boolean available) {
+        if (!available) {
+            throw new MissionPostCreateAccessDeniedMemberException();
+        }
     }
 
     @Override
