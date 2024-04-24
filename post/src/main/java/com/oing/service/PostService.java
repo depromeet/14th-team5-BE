@@ -160,4 +160,8 @@ public class PostService {
     public boolean existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(String memberId, String familyId, PostType type, LocalDate postDate) {
         return postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, type, postDate);
     }
+
+    public int calculateRemainingSurvivalPostCount(String familyId) {
+        return postRepository.calculateRemainingSurvivalPostCount(familyId);
+    }
 }

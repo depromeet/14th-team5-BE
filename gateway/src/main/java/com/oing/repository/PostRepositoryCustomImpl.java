@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static com.oing.domain.QMember.member;
@@ -114,6 +115,30 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 )
                 .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                 .fetchFirst() != null;
+    }
+
+    @Override
+    public int calculateRemainingSurvivalPostCount(String familyId) {
+        Long familyMemberCount = queryFactory
+                .select(member.id.count())
+                .from(member)
+                .where(member.familyId.eq(familyId)
+                        .and(member.deletedAt.isNull()))
+                .fetchFirst();
+
+        LocalDate today = ZonedDateTime.now().toLocalDate();
+        Long todaySurvivalCount = queryFactory
+                .select(post.id.count())
+                .from(post)
+                .where(post.familyId.eq(familyId),
+                        post.type.eq(PostType.SURVIVAL),
+                        dateExpr(post.createdAt).eq(today))
+                .fetchFirst();
+
+        int requiredSurvivalPostCount = familyMemberCount != null ? (int) Math.floor(familyMemberCount / 2.0) : 0;
+        int todaySurvivalPostCount = todaySurvivalCount != null ? todaySurvivalCount.intValue() : 0;
+
+        return Math.max(requiredSurvivalPostCount - todaySurvivalPostCount, 0);
     }
 
     private DateTimeTemplate<LocalDate> dateExpr(DateTimePath<LocalDateTime> localDateTime) {

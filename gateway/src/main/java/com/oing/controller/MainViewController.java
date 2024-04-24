@@ -28,6 +28,7 @@ public class MainViewController implements MainViewApi {
     private final MemberPickService memberPickService;
     private final MemberBridge memberBridge;
     private final MissionBridge missionBridge;
+    private final PostController postController;
 
     private static final int PAGE_FETCH_SIZE = 1000;
 
@@ -67,7 +68,8 @@ public class MainViewController implements MainViewApi {
 
         String todayMissionId = missionBridge.getTodayMissionId();
         String dailyMissionContent = missionBridge.getContentByMissionId(todayMissionId);
-
+        int leftUploadCountUntilMissionUnlock = postController.getRemainingSurvivalPostCount(loginMemberId, loginMemberId, familyId)
+                .leftUploadCountUntilMissionUnlock();
 
         return new DaytimePageResponse(
                 members.stream().sorted(comparator).map((member) -> new MainPageTopBarResponse(
@@ -99,7 +101,7 @@ public class MainViewController implements MainViewApi {
                     );
                 }).toList(),
 
-                2,
+                leftUploadCountUntilMissionUnlock,
 
                 isMissionUnlocked,
 

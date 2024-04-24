@@ -22,4 +22,5 @@ public interface PostRepositoryCustom {
 
     boolean existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(String memberId, String familyId, PostType type, LocalDate postDate);
 
+    int calculateRemainingSurvivalPostCount(String familyId);
 }
