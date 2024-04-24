@@ -28,13 +28,12 @@ public class MainViewController implements MainViewApi {
     private final MemberPickService memberPickService;
     private final MemberBridge memberBridge;
     private final MissionBridge missionBridge;
+    private final PostController postController;
 
     private static final int PAGE_FETCH_SIZE = 1000;
 
     @Override
     public DaytimePageResponse getDaytimePage(
-            boolean isMissionUnlocked,
-            boolean isMeUploadedToday,
             String loginMemberId
     ) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
@@ -67,6 +66,10 @@ public class MainViewController implements MainViewApi {
 
         String todayMissionId = missionBridge.getTodayMissionId();
         String dailyMissionContent = missionBridge.getContentByMissionId(todayMissionId);
+        boolean isMissionUnlocked = postController.getMissionAvailableStatus(loginMemberId, loginMemberId, familyId)
+                .isMissionUnlocked();
+        boolean isMeUploadedToday = postController.getSurvivalUploadStatus(loginMemberId, loginMemberId, familyId)
+                .isMeUploadedToday();
 
 
         return new DaytimePageResponse(
