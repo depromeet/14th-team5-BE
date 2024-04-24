@@ -68,8 +68,10 @@ public class MainViewController implements MainViewApi {
         String dailyMissionContent = missionBridge.getContentByMissionId(todayMissionId);
         boolean isMissionUnlocked = postController.getMissionAvailableStatus(loginMemberId, loginMemberId, familyId)
                 .isMissionUnlocked();
-        boolean isMeUploadedToday = postController.getSurvivalUploadStatus(loginMemberId, loginMemberId, familyId)
-                .isMeUploadedToday();
+        boolean isMeSurvivalUploadedToday = postController.getSurvivalUploadStatus(loginMemberId, loginMemberId, familyId)
+                .isMeSurvivalUploadedToday();
+        boolean isMeMissionUploadedToday = postController.getMissionUploadStatus(loginMemberId, loginMemberId, familyId)
+                .isMeMissionUploadedToday();
         int leftUploadCountUntilMissionUnlock = postController.getRemainingSurvivalPostCount(loginMemberId, loginMemberId, familyId)
                 .leftUploadCountUntilMissionUnlock();
 
@@ -107,7 +109,9 @@ public class MainViewController implements MainViewApi {
 
                 isMissionUnlocked,
 
-                isMeUploadedToday,
+                isMeSurvivalUploadedToday,
+
+                isMeMissionUploadedToday,
 
                 dailyMissionContent,
 
