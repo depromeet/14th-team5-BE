@@ -165,7 +165,7 @@ public class PostService {
         return postRepository.isCreatedSurvivalPostByMajority(date, familyId);
     }
 
-    public int calculateRemainingSurvivalPostCountUntilMissuonUnlocked(String familyId) {
+    public int calculateRemainingSurvivalPostCountUntilMissionUnlocked(String familyId) {
         int familyMemberCount = postRepository.countFamilyMembersByFamilyId(familyId);
         int requiredSurvivalPostCount = familyMemberCount / 2;
         int todaySurvivalPostCount = postRepository.countTodaySurvivalPostsByFamilyId(familyId);

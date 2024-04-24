@@ -116,7 +116,7 @@ public class PostController implements PostApi {
     public RemainingSurvivalPostCountResponse getRemainingSurvivalPostCount(String memberId, String loginMemberId, String loginFamilyId) {
         validateMemberId(loginMemberId, memberId);
 
-        int remainingSurvivalPostCount = postService.calculateRemainingSurvivalPostCountUntilMissuonUnlocked(loginFamilyId);
+        int remainingSurvivalPostCount = postService.calculateRemainingSurvivalPostCountUntilMissionUnlocked(loginFamilyId);
         return new RemainingSurvivalPostCountResponse(remainingSurvivalPostCount);
     }
 
