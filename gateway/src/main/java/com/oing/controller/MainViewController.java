@@ -68,8 +68,10 @@ public class MainViewController implements MainViewApi {
         String dailyMissionContent = missionBridge.getContentByMissionId(todayMissionId);
         boolean isMissionUnlocked = postController.getMissionAvailableStatus(loginMemberId, loginMemberId, familyId)
                 .isMissionUnlocked();
-        boolean isMeUploadedToday = postController.getSurvivalUploadStatus(loginMemberId, loginMemberId, familyId)
-                .isMeUploadedToday();
+        boolean isMeSurvivalUploadedToday = postController.getSurvivalUploadStatus(loginMemberId, loginMemberId, familyId)
+                .isMeSurvivalUploadedToday();
+        boolean isMeMissionUploadedToday = postController.getMissionUploadStatus(loginMemberId, loginMemberId, familyId)
+                .isMeMissionUploadedToday();
         int leftUploadCountUntilMissionUnlock = postController.getRemainingSurvivalPostCount(loginMemberId, loginMemberId, familyId)
                 .leftUploadCountUntilMissionUnlock();
 
@@ -107,7 +109,9 @@ public class MainViewController implements MainViewApi {
 
                 isMissionUnlocked,
 
-                isMeUploadedToday,
+                isMeSurvivalUploadedToday,
+
+                isMeMissionUploadedToday,
 
                 dailyMissionContent,
 
@@ -165,7 +169,8 @@ public class MainViewController implements MainViewApi {
         FamilyMemberRankerResponse first = new FamilyMemberRankerResponse("https://static01.nyt.com/images/2016/09/28/us/28xp-pepefrog/28xp-pepefrog-superJumbo.jpg", "정신적 지주", 24);
         FamilyMemberRankerResponse second = new FamilyMemberRankerResponse("https://static01.nyt.com/images/2016/09/28/us/28xp-pepefrog/28xp-pepefrog-superJumbo.jpg", "권순찬", 23);
         FamilyMemberRankerResponse third = null;
+        LocalDate mostRecentSurvivalPostDate = LocalDate.now().minusDays(1);
 
-        return new FamilyMemberMonthlyRankingResponse(4, first, second, third);
+        return new FamilyMemberMonthlyRankingResponse(4, first, second, third, mostRecentSurvivalPostDate);
     }
 }

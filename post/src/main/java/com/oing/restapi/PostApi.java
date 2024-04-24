@@ -130,6 +130,22 @@ public interface PostApi {
             String loginFamilyId
     );
 
+    @Operation(summary = "회원 미션 게시글 업로드 여부 응답 조회", description = "회원 미션 게시글 업로드 여부를 조회합니다.")
+    @GetMapping("/{memberId}/mission-uploaded")
+    MissionUploadStatusResponse getMissionUploadStatus(
+            @PathVariable
+            @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            String memberId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
+
     @Operation(summary = "회원 미션 참여 가능 여부 응답 조회", description = "회원 미션 참여 가능 여부를 조회합니다.")
     @GetMapping("/{memberId}/mission-available")
     MissionAvailableStatusResponse getMissionAvailableStatus(

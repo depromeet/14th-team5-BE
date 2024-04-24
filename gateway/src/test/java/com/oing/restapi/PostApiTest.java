@@ -201,7 +201,26 @@ class PostApiTest {
         //then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isMeUploadedToday").value(true));
+                .andExpect(jsonPath("$.isMeSurvivalUploadedToday").value(true));
+    }
+
+    @Test
+    void 회원_미션_게시글_업로드_여부_조회_테스트() throws Exception {
+        //given
+        postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER1_ID, TEST_FAMILY_ID, PostType.MISSION, "img", "img",
+                "content"));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get("/v1/posts/{memberId}/mission-uploaded", TEST_MEMBER1_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isMeMissionUploadedToday").value(true));
     }
 
     @Test

@@ -102,6 +102,16 @@ public class PostController implements PostApi {
     }
 
     @Override
+    public MissionUploadStatusResponse getMissionUploadStatus(String memberId, String loginMemberId, String loginFamilyId) {
+        validateMemberId(loginMemberId, memberId);
+
+        if (postService.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, loginFamilyId, PostType.MISSION, LocalDate.now())) {
+            return new MissionUploadStatusResponse(true);
+        }
+        return new MissionUploadStatusResponse(false);
+    }
+
+    @Override
     public MissionAvailableStatusResponse getMissionAvailableStatus(String memberId, String loginMemberId, String loginFamilyId) {
         validateMemberId(loginMemberId, memberId);
         LocalDate today = ZonedDateTime.now().toLocalDate();
