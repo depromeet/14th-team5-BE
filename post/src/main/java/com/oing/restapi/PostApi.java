@@ -145,4 +145,20 @@ public interface PostApi {
             @LoginFamilyId
             String loginFamilyId
     );
+
+    @Operation(summary = "미션 키 획득까지 남은 생존신고 업로드 수", description = "미션 키 획득까지 남은 생존신고 업로드 수를 조회합니다.")
+    @GetMapping("/{memberId}/remaining-survival-count")
+    RemainingSurvivalPostCountResponse getRemainingSurvivalPostCount(
+            @PathVariable
+            @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            String memberId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
 }

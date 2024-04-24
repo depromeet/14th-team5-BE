@@ -164,4 +164,8 @@ public class PostService {
     public boolean isCreatedSurvivalPostByMajority(LocalDate date, String familyId) {
         return postRepository.isCreatedSurvivalPostByMajority(date, familyId);
     }
+
+    public int calculateRemainingSurvivalPostCount(String familyId) {
+        return postRepository.calculateRemainingSurvivalPostCount(familyId);
+    }
 }

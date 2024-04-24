@@ -70,7 +70,8 @@ public class MainViewController implements MainViewApi {
                 .isMissionUnlocked();
         boolean isMeUploadedToday = postController.getSurvivalUploadStatus(loginMemberId, loginMemberId, familyId)
                 .isMeUploadedToday();
-
+        int leftUploadCountUntilMissionUnlock = postController.getRemainingSurvivalPostCount(loginMemberId, loginMemberId, familyId)
+                .leftUploadCountUntilMissionUnlock();
 
         return new DaytimePageResponse(
                 members.stream().sorted(comparator).map((member) -> new MainPageTopBarResponse(
@@ -102,7 +103,7 @@ public class MainViewController implements MainViewApi {
                     );
                 }).toList(),
 
-                2,
+                leftUploadCountUntilMissionUnlock,
 
                 isMissionUnlocked,
 

@@ -112,6 +112,14 @@ public class PostController implements PostApi {
         return new MissionAvailableStatusResponse(false);
     }
 
+    @Override
+    public RemainingSurvivalPostCountResponse getRemainingSurvivalPostCount(String memberId, String loginMemberId, String loginFamilyId) {
+        validateMemberId(loginMemberId, memberId);
+
+        int remainingSurvivalPostCount = postService.calculateRemainingSurvivalPostCount(loginFamilyId);
+        return new RemainingSurvivalPostCountResponse(remainingSurvivalPostCount);
+    }
+
     private void validateFamilyMember(String loginMemberId, String postId) {
         String postFamilyId = postService.getMemberPostById(postId).getFamilyId();
         String loginFamilyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
