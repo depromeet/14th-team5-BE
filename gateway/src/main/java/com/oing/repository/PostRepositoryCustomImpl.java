@@ -123,7 +123,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .select(member.count())
                 .from(member)
                 .where(member.familyId.eq(familyId)
-                        .and(member.deletedAt.isNull()))
+                        .and(isActiveMember()))
                 .fetchFirst();
 
         long survivalPostCount = queryFactory
@@ -145,7 +145,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .select(member.id.count())
                 .from(member)
                 .where(member.familyId.eq(familyId)
-                        .and(member.deletedAt.isNull()))
+                        .and(isActiveMember()))
                 .fetchFirst();
         return count.intValue();
     }
@@ -161,6 +161,10 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                         dateExpr(post.createdAt).eq(today))
                 .fetchFirst();
         return count.intValue();
+    }
+
+    private BooleanExpression isActiveMember() {
+        return member.deletedAt.isNull();
     }
 
     private DateTimeTemplate<LocalDate> dateExpr(DateTimePath<LocalDateTime> localDateTime) {
