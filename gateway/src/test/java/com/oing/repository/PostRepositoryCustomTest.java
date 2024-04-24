@@ -127,4 +127,28 @@ class PostRepositoryCustomTest {
         // then
         assertThat(exists).isFalse();
     }
+
+    @Test
+    void 가족_구성원_수가_짝수인_경우_남은_생존게시글_업로드_수를_확인한다() {
+        // given
+        String familyId = testMember1.getFamilyId();
+
+        // when
+        int remainingSurvivalPostCount = postRepositoryCustomImpl.calculateRemainingSurvivalPostCount(familyId);
+
+        // then
+        assertThat(remainingSurvivalPostCount).isEqualTo(1);
+    }
+
+    @Test
+    void 가족_구성원_수가_홀수인_경우_남은_생존게시글_업로드_수를_확인한다() {
+        // given
+        String familyId = testMember3.getFamilyId();
+
+        // when
+        int remainingSurvivalPostCount = postRepositoryCustomImpl.calculateRemainingSurvivalPostCount(familyId);
+
+        // then
+        assertThat(remainingSurvivalPostCount).isEqualTo(0);
+    }
 }
