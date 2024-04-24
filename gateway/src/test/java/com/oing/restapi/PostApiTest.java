@@ -148,4 +148,42 @@ class PostApiTest {
                 .andExpect(jsonPath("$.results[0].authorId").value(TEST_MEMBER1_ID))
                 .andExpect(jsonPath("$.results[0].content").value("content"));
     }
+
+    @Test
+    void 회원_생존신고_게시글_업로드_여부_조회_테스트() throws Exception {
+        //given
+        postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER1_ID, TEST_FAMILY_ID, PostType.SURVIVAL, "img", "img",
+                "content"));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get("/v1/posts/{memberId}/survival-uploaded", TEST_MEMBER1_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isValid").value(true));
+    }
+
+    @Test
+    void 해당_가족의_미션_키_획득_여부_조회_테스트() throws Exception {
+        //given
+        postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER1_ID, TEST_FAMILY_ID, PostType.SURVIVAL, "img", "img",
+                "content"));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get("/v1/posts/{memberId}/mission-available", TEST_MEMBER1_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isAvailable").value(true));
+    }
 }
