@@ -165,7 +165,11 @@ public class PostService {
         return postRepository.isCreatedSurvivalPostByMajority(date, familyId);
     }
 
-    public int calculateRemainingSurvivalPostCount(String familyId) {
-        return postRepository.calculateRemainingSurvivalPostCount(familyId);
+    public int calculateRemainingSurvivalPostCountUntilMissuonUnlocked(String familyId) {
+        int familyMemberCount = postRepository.countFamilyMembersByFamilyId(familyId);
+        int requiredSurvivalPostCount = familyMemberCount / 2;
+        int todaySurvivalPostCount = postRepository.countTodaySurvivalPostsByFamilyId(familyId);
+
+        return Math.max(requiredSurvivalPostCount - todaySurvivalPostCount, 0);
     }
 }

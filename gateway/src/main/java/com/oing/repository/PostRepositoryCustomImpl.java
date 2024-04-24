@@ -139,27 +139,28 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return survivalPostCount >= totalFamilyMembers / 2;
     }
 
-    public int calculateRemainingSurvivalPostCount(String familyId) {
-        Long familyMemberCount = queryFactory
+    @Override
+    public int countFamilyMembersByFamilyId(String familyId) {
+        Long count = queryFactory
                 .select(member.id.count())
                 .from(member)
                 .where(member.familyId.eq(familyId)
                         .and(member.deletedAt.isNull()))
                 .fetchFirst();
+        return count.intValue();
+    }
 
+    @Override
+    public int countTodaySurvivalPostsByFamilyId(String familyId) {
         LocalDate today = ZonedDateTime.now().toLocalDate();
-        Long todaySurvivalCount = queryFactory
+        Long count = queryFactory
                 .select(post.id.count())
                 .from(post)
                 .where(post.familyId.eq(familyId),
                         post.type.eq(PostType.SURVIVAL),
                         dateExpr(post.createdAt).eq(today))
                 .fetchFirst();
-
-        int requiredSurvivalPostCount = familyMemberCount != null ? (int) Math.floor(familyMemberCount / 2.0) : 0;
-        int todaySurvivalPostCount = todaySurvivalCount != null ? todaySurvivalCount.intValue() : 0;
-
-        return Math.max(requiredSurvivalPostCount - todaySurvivalPostCount, 0);
+        return count.intValue();
     }
 
     private DateTimeTemplate<LocalDate> dateExpr(DateTimePath<LocalDateTime> localDateTime) {
