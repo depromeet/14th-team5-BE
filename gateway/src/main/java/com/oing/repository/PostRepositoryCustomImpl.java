@@ -134,7 +134,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 )
                 .fetchFirst();
 
-        return survivalPostCount >= Math.floor(totalFamilyMembers / 2);
+        return survivalPostCount >= totalFamilyMembers / 2;
     }
 
     private DateTimeTemplate<LocalDate> dateExpr(DateTimePath<LocalDateTime> localDateTime) {
