@@ -121,7 +121,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         long totalFamilyMembers = queryFactory
                 .select(member.count())
                 .from(member)
-                .where(member.familyId.eq(familyId))
+                .where(member.familyId.eq(familyId)
+                    .and(member.deletedAt.isNull()))
                 .fetchFirst();
 
         long survivalPostCount = queryFactory
