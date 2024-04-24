@@ -129,6 +129,31 @@ class PostRepositoryCustomTest {
     }
 
     @Test
+    void 미션_키_획득한_날짜에_가족의_미션_키_획득_여부를_조회한다() {
+        // given
+        String familyId = testMember1.getFamilyId();
+        LocalDate today = LocalDate.of(2023, 11, 1);
+
+        // when
+        boolean exists = postRepositoryCustomImpl.isCreatedSurvivalPostByMajority(today, familyId);
+
+        // then
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    void 미션_키_획득하지_못한_날짜에_가족의_미션_키_획득_여부를_조회한다() {
+        // given
+        String familyId = testMember1.getFamilyId();
+        LocalDate today = LocalDate.of(2024, 4, 1);
+
+        // when
+        boolean exists = postRepositoryCustomImpl.isCreatedSurvivalPostByMajority(today, familyId);
+
+        // then
+        assertThat(exists).isFalse();
+    }
+
     void 가족_구성원_수가_짝수인_경우_남은_생존게시글_업로드_수를_확인한다() {
         // given
         String familyId = testMember1.getFamilyId();

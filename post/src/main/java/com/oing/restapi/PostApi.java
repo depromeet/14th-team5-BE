@@ -125,9 +125,9 @@ public interface PostApi {
             @LoginMemberId
             String loginMemberId,
 
-            @RequestParam
-            @Parameter(description = "응답 값 조작 필드", example = "true")
-            boolean valid
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
     );
 
     @Operation(summary = "회원 미션 참여 가능 여부 응답 조회", description = "회원 미션 참여 가능 여부를 조회합니다.")
@@ -141,9 +141,9 @@ public interface PostApi {
             @LoginMemberId
             String loginMemberId,
 
-            @RequestParam
-            @Parameter(description = "응답 값 조작 필드", example = "true")
-            boolean valid
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
     );
 
     @Operation(summary = "미션 키 획득까지 남은 생존신고 업로드 수", description = "미션 키 획득까지 남은 생존신고 업로드 수를 조회합니다.")
