@@ -141,8 +141,8 @@ public interface PostApi {
             @LoginMemberId
             String loginMemberId,
 
-            @RequestParam
-            @Parameter(description = "응답 값 조작 필드", example = "true")
-            boolean valid
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
     );
 }

@@ -116,6 +116,27 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .fetchFirst() != null;
     }
 
+    @Override
+    public boolean isCreatedSurvivalPostByMajority(LocalDate date, String familyId) {
+        long totalFamilyMembers = queryFactory
+                .select(member.count())
+                .from(member)
+                .where(member.familyId.eq(familyId))
+                .fetchFirst();
+
+        long survivalPostCount = queryFactory
+                .select(post.count())
+                .from(post)
+                .where(
+                        post.familyId.eq(familyId),
+                        post.type.eq(PostType.SURVIVAL),
+                        dateExpr(post.createdAt).eq(date)
+                )
+                .fetchFirst();
+
+        return survivalPostCount >= Math.floor(totalFamilyMembers / 2);
+    }
+
     private DateTimeTemplate<LocalDate> dateExpr(DateTimePath<LocalDateTime> localDateTime) {
         return Expressions.dateTimeTemplate(LocalDate.class, "DATE({0})", localDateTime);
     }

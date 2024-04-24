@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 /**
  * no5ing-server
@@ -101,11 +102,11 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public MissionAvailableStatusResponse getMissionAvailableStatus(String memberId, String loginMemberId, boolean valid) {
+    public MissionAvailableStatusResponse getMissionAvailableStatus(String memberId, String loginMemberId, String loginFamilyId) {
         validateMemberId(loginMemberId, memberId);
-        // TODO: 추후 valid 파라미터 삭제
-        // TODO: 해당 회원이 미션에 참여 가능한 회원인지 검증 로직 추가
-        if (valid) {
+        LocalDate today = ZonedDateTime.now().toLocalDate();
+
+        if (postService.isCreatedSurvivalPostByMajority(today, loginFamilyId)) {
             return new MissionAvailableStatusResponse(true);
         }
         return new MissionAvailableStatusResponse(false);
