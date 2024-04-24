@@ -165,7 +165,7 @@ class PostApiTest {
         //then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isValid").value(true));
+                .andExpect(jsonPath("$.isMeUploadedToday").value(true));
     }
 
     @Test
@@ -184,6 +184,6 @@ class PostApiTest {
         //then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isAvailable").value(true));
+                .andExpect(jsonPath("$.isMissionUnlocked").value(true));
     }
 }
