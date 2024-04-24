@@ -34,8 +34,6 @@ public class MainViewController implements MainViewApi {
 
     @Override
     public DaytimePageResponse getDaytimePage(
-            boolean isMissionUnlocked,
-            boolean isMeUploadedToday,
             String loginMemberId
     ) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
@@ -68,6 +66,10 @@ public class MainViewController implements MainViewApi {
 
         String todayMissionId = missionBridge.getTodayMissionId();
         String dailyMissionContent = missionBridge.getContentByMissionId(todayMissionId);
+        boolean isMissionUnlocked = postController.getMissionAvailableStatus(loginMemberId, loginMemberId, familyId)
+                .isMissionUnlocked();
+        boolean isMeUploadedToday = postController.getSurvivalUploadStatus(loginMemberId, loginMemberId, familyId)
+                .isMeUploadedToday();
         int leftUploadCountUntilMissionUnlock = postController.getRemainingSurvivalPostCount(loginMemberId, loginMemberId, familyId)
                 .leftUploadCountUntilMissionUnlock();
 
