@@ -18,8 +18,11 @@ public record DaytimePageResponse(
         @Schema(description = "미션 해금 여부", example = "true")
         boolean isMissionUnlocked,
 
-        @Schema(description = "오늘 나 업로드 여부", example = "true")
-        boolean isMeUploadedToday,
+        @Schema(description = "오늘 요청자가 생존신고를 업로드 했는지 여부", example = "true")
+        boolean isMeSurvivalUploadedToday,
+
+        @Schema(description = "오늘 요청자가 미션을 업로드 했는지 여부", example = "true")
+        boolean isMeMissionUploadedToday,
 
         @Schema(description = "오늘의 미션 내용 (모킹됨)", example = "오늘의 기분을 나타내는 사진 찍기.")
         String dailyMissionContent,
