@@ -148,4 +148,40 @@ class PostApiTest {
                 .andExpect(jsonPath("$.results[0].authorId").value(TEST_MEMBER1_ID))
                 .andExpect(jsonPath("$.results[0].content").value("content"));
     }
+
+    @Test
+    void 생존게시글_올린_사람이_없을_때_미션_키_획득을_위해_앞으로_올려야_하는_생존게시글_수_조회_테스트() throws Exception {
+        //given
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get("/v1/posts/{memberId}/remaining-survival-count", TEST_MEMBER1_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.leftUploadCountUntilMissionUnlock").value(1));
+    }
+
+    @Test
+    void 다른_구성원이_생존게시글_올렸을_때_미션_키_획득을_위해_앞으로_올려야_하는_생존게시글_수_조회_테스트() throws Exception {
+        //given
+        postRepository.save(new Post("1", TEST_MEMBER2_ID, TEST_FAMILY_ID, PostType.SURVIVAL, "img", "img",
+                "content"));
+
+        //when
+        ResultActions resultActions = mockMvc.perform(
+                get("/v1/posts/{memberId}/remaining-survival-count", TEST_MEMBER1_ID)
+                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.leftUploadCountUntilMissionUnlock").value(0));
+    }
 }
