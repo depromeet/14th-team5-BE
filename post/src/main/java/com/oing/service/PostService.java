@@ -84,14 +84,14 @@ public class PostService {
 
     private void validateUserHasNotCreatedSurvivalPostToday(String memberId, String familyId, LocalDate today) {
         if (postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, today)) {
-            log.warn("Member {} has already created a survival post today", memberId);
+            log.warn("Member {} has already created a survival post today {}", memberId, today);
             throw new DuplicateSurvivalPostUploadException();
         }
     }
 
     private void validateUserHasNotCreatedMissionPostToday(String memberId, String familyId, LocalDate today) {
         if (postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.MISSION, today)) {
-            log.warn("Member {} has already created a mission post today", memberId);
+            log.warn("Member {} has already created a mission post today {}", memberId, today);
             throw new DuplicateMissionPostUploadException();
         }
     }
