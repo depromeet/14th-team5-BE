@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * no5ing-server
  * User: CChuYong
@@ -47,5 +49,12 @@ public class MemberBridgeImpl implements MemberBridge {
     @Override
     public boolean isDeletedMember(String memberId) {
         return memberRepository.existsByIdAndDeletedAtNotNull(memberId);
+    }
+
+    @Override
+    public List<String> getFamilyMembersIdsByFamilyId(String familyId) {
+        return memberRepository.findAllByFamilyIdAndDeletedAtIsNull(familyId).stream()
+                .map(Member::getId)
+                .toList();
     }
 }

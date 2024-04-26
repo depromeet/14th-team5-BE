@@ -10,12 +10,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MissionService {
 
     private final MissionRepository missionRepository;
+    private final DailyMissionHistoryService dailyMissionHistoryService;
+
     private final IdentityGenerator identityGenerator;
 
 
@@ -39,6 +43,12 @@ public class MissionService {
         // TODO: Mocking 제거 시, 주석 해제
 //        return missionRepository.findById(missionId)
 //            .orElseThrow(MissionNotFoundException::new);
+    }
+
+    public MissionResponse getMissionByDate(LocalDate date) {
+        Mission mission = dailyMissionHistoryService.getDailyMissionHistoryByDate(date).getMission();
+
+        return MissionResponse.from(mission);
     }
 
 

@@ -3,14 +3,9 @@ package com.oing.controller;
 import com.oing.domain.BannerImageType;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
-import com.oing.dto.response.ArrayResponse;
-import com.oing.dto.response.BannerResponse;
-import com.oing.dto.response.CalendarResponse;
-import com.oing.dto.response.FamilyMonthlyStatisticsResponse;
+import com.oing.dto.response.*;
 import com.oing.restapi.CalendarApi;
-import com.oing.service.FamilyService;
-import com.oing.service.MemberService;
-import com.oing.service.PostService;
+import com.oing.service.*;
 import com.oing.util.OptimizedImageUrlGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,11 +13,18 @@ import org.springframework.stereotype.Controller;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 public class CalendarController implements CalendarApi {
+
+    private final PostController postController;
+    private final MissionBridge missionBridge;
+    private final MemberBridge memberBridge;
 
     private final MemberService memberService;
     private final PostService postService;
@@ -32,19 +34,40 @@ public class CalendarController implements CalendarApi {
 
 
     @Override
-    public ArrayResponse<CalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
+    public ArrayResponse<DailyCalendarResponse> getDailyCalendar(String yearMonthDay, String loginMemberId) {
+        List<DailyCalendarResponse> dailyCalendarResponses = new ArrayList<>();
+        LocalDate date = LocalDate.parse(yearMonthDay, DateTimeFormatter.ISO_DATE);
+
+        String missionContent = missionBridge.getContentByDate(date);
+        Collection<PostResponse> survivalPosts = postController.fetchDailyFeeds(1, 10, date, loginMemberId, "ASC", PostType.SURVIVAL, loginMemberId, true).results();
+        Collection<PostResponse> missionPosts = postController.fetchDailyFeeds(1, 10, date, loginMemberId, "ASC", PostType.SURVIVAL, loginMemberId, true).results();
+
+        HashSet<String> uploadedFamilyMembers = survivalPosts.stream().map(PostResponse::authorId).collect(Collectors.toCollection(HashSet::new));
+        List<String> familyMembersIds = memberBridge.getFamilyMembersIdsByFamilyId(loginMemberId);
+        boolean allFamilyMembersUploaded = uploadedFamilyMembers.containsAll(familyMembersIds);
+
+        survivalPosts.forEach(post -> dailyCalendarResponses.add(new DailyCalendarResponse(date, PostType.SURVIVAL, post.postId(), post.imageUrl(), missionContent, allFamilyMembersUploaded)));
+        missionPosts.forEach(post -> dailyCalendarResponses.add(new DailyCalendarResponse(date, PostType.SURVIVAL, post.postId(), post.imageUrl(), missionContent, allFamilyMembersUploaded)));
+
+
+        return null;
+    }
+
+
+    @Override
+    public ArrayResponse<MonthlyCalendarResponse> getMonthlyCalendar(String yearMonth, String familyId) {
         if (yearMonth == null) yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
 
         List<Post> daysLatestPosts = postService.findLatestPostOfEveryday(startDate, endDate, familyId);
-        List<CalendarResponse> calendarResponses = convertToCalendarResponse(daysLatestPosts, familyId);
-        return new ArrayResponse<>(calendarResponses);
+        List<MonthlyCalendarResponse> monthlyCalendarRespons = convertToCalendarResponse(daysLatestPosts, familyId);
+        return new ArrayResponse<>(monthlyCalendarRespons);
     }
 
-    private List<CalendarResponse> convertToCalendarResponse(List<Post> daysLatestPosts, String familyId) {
-        List<CalendarResponse> calendarResponses = new ArrayList<>();
+    private List<MonthlyCalendarResponse> convertToCalendarResponse(List<Post> daysLatestPosts, String familyId) {
+        List<MonthlyCalendarResponse> monthlyCalendarRespons = new ArrayList<>();
 
         for (Post dayLatestPost : daysLatestPosts) {
             LocalDate postDate = dayLatestPost.getCreatedAt().toLocalDate();
@@ -60,14 +83,14 @@ public class CalendarController implements CalendarApi {
                 }
             }
 
-            calendarResponses.add(new CalendarResponse(
+            monthlyCalendarRespons.add(new MonthlyCalendarResponse(
                     dayLatestPost.getCreatedAt().toLocalDate(),
                     dayLatestPost.getId(),
                     optimizedImageUrlGenerator.getThumbnailUrlGenerator(dayLatestPost.getPostImgUrl()),
                     allFamilyMembersUploaded
             ));
         }
-        return calendarResponses;
+        return monthlyCalendarRespons;
     }
 
 
@@ -161,6 +184,7 @@ public class CalendarController implements CalendarApi {
 
         return bannerImageType;
     }
+
 
     @Override
     public FamilyMonthlyStatisticsResponse getSummary(String yearMonth, String loginMemberId) {

@@ -4,7 +4,7 @@ import com.oing.domain.Member;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
 import com.oing.dto.response.ArrayResponse;
-import com.oing.dto.response.CalendarResponse;
+import com.oing.dto.response.MonthlyCalendarResponse;
 import com.oing.service.MemberService;
 import com.oing.service.PostService;
 import com.oing.util.OptimizedImageUrlGenerator;
@@ -111,11 +111,11 @@ class CalendarControllerTest {
         when(postService.findLatestPostOfEveryday(startDate, endDate, familyId)).thenReturn(representativePosts);
 
         // When
-        ArrayResponse<CalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, familyId);
+        ArrayResponse<MonthlyCalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, familyId);
 
         // Then
         assertThat(weeklyCalendar.results())
-                .extracting(CalendarResponse::representativePostId)
+                .extracting(MonthlyCalendarResponse::representativePostId)
                 .containsExactly("1", "2", "3", "4");
     }
 }
