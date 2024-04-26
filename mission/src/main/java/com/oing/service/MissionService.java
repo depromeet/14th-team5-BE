@@ -46,9 +46,12 @@ public class MissionService {
     }
 
     public MissionResponse getMissionByDate(LocalDate date) {
-        Mission mission = dailyMissionHistoryService.getDailyMissionHistoryByDate(date).getMission();
+        return new MissionResponse("1", "오늘의 기분을 나타내는 사진 찍기.");
 
-        return MissionResponse.from(mission);
+        // TODO: Mocking 제거 시, 주석 해제
+//        Mission mission = dailyMissionHistoryService.getDailyMissionHistoryByDate(date).getMission();
+//
+//        return MissionResponse.from(mission);
     }
 
 

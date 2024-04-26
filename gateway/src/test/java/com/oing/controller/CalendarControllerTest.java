@@ -60,7 +60,7 @@ class CalendarControllerTest {
 
 
     @Test
-    void 월별_캘린더_조회_테스트() {
+    void 월간_캘린더_조회_테스트() {
         // Given
         String yearMonth = "2023-11";
         String familyId = testMember1.getFamilyId();

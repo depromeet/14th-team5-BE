@@ -34,23 +34,24 @@ public class CalendarController implements CalendarApi {
 
 
     @Override
-    public ArrayResponse<DailyCalendarResponse> getDailyCalendar(String yearMonthDay, String loginMemberId) {
+    public ArrayResponse<DailyCalendarResponse> getDailyCalendar(String yearMonthDay, String loginMemberId, String loginFamilyId) {
         List<DailyCalendarResponse> dailyCalendarResponses = new ArrayList<>();
         LocalDate date = LocalDate.parse(yearMonthDay, DateTimeFormatter.ISO_DATE);
 
+        Collection<PostResponse> survivalPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", PostType.SURVIVAL, loginMemberId, true).results();
+        Collection<PostResponse> missionPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", PostType.MISSION, loginMemberId, true).results();
         String missionContent = missionBridge.getContentByDate(date);
-        Collection<PostResponse> survivalPosts = postController.fetchDailyFeeds(1, 10, date, loginMemberId, "ASC", PostType.SURVIVAL, loginMemberId, true).results();
-        Collection<PostResponse> missionPosts = postController.fetchDailyFeeds(1, 10, date, loginMemberId, "ASC", PostType.SURVIVAL, loginMemberId, true).results();
 
         HashSet<String> uploadedFamilyMembers = survivalPosts.stream().map(PostResponse::authorId).collect(Collectors.toCollection(HashSet::new));
-        List<String> familyMembersIds = memberBridge.getFamilyMembersIdsByFamilyId(loginMemberId);
+        System.out.println(uploadedFamilyMembers.toString());
+        List<String> familyMembersIds = memberBridge.getFamilyMembersIdsByFamilyId(loginFamilyId);
+        System.out.println(familyMembersIds.toString());
         boolean allFamilyMembersUploaded = uploadedFamilyMembers.containsAll(familyMembersIds);
+        System.out.println(allFamilyMembersUploaded);
 
-        survivalPosts.forEach(post -> dailyCalendarResponses.add(new DailyCalendarResponse(date, PostType.SURVIVAL, post.postId(), post.imageUrl(), missionContent, allFamilyMembersUploaded)));
-        missionPosts.forEach(post -> dailyCalendarResponses.add(new DailyCalendarResponse(date, PostType.SURVIVAL, post.postId(), post.imageUrl(), missionContent, allFamilyMembersUploaded)));
-
-
-        return null;
+        survivalPosts.forEach(post -> dailyCalendarResponses.add(new DailyCalendarResponse(date, PostType.SURVIVAL, post.postId(), post.imageUrl(), null, allFamilyMembersUploaded)));
+        missionPosts.forEach(post -> dailyCalendarResponses.add(new DailyCalendarResponse(date, PostType.MISSION, post.postId(), post.imageUrl(), missionContent, allFamilyMembersUploaded)));
+        return ArrayResponse.of(dailyCalendarResponses);
     }
 
 
