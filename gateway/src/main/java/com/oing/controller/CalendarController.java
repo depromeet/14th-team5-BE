@@ -43,11 +43,8 @@ public class CalendarController implements CalendarApi {
         String missionContent = missionBridge.getContentByDate(date);
 
         HashSet<String> uploadedFamilyMembers = survivalPosts.stream().map(PostResponse::authorId).collect(Collectors.toCollection(HashSet::new));
-        System.out.println(uploadedFamilyMembers.toString());
         List<String> familyMembersIds = memberBridge.getFamilyMembersIdsByFamilyId(loginFamilyId);
-        System.out.println(familyMembersIds.toString());
         boolean allFamilyMembersUploaded = uploadedFamilyMembers.containsAll(familyMembersIds);
-        System.out.println(allFamilyMembersUploaded);
 
         survivalPosts.forEach(post -> dailyCalendarResponses.add(new DailyCalendarResponse(date, PostType.SURVIVAL, post.postId(), post.imageUrl(), null, allFamilyMembersUploaded)));
         missionPosts.forEach(post -> dailyCalendarResponses.add(new DailyCalendarResponse(date, PostType.MISSION, post.postId(), post.imageUrl(), missionContent, allFamilyMembersUploaded)));
