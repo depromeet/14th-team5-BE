@@ -147,7 +147,7 @@ public class MainViewController implements MainViewApi {
                 member.imageUrl(),
                 String.valueOf(member.name().charAt(0)),
                 member.name(),
-                1,
+                null,
                 member.dayOfBirth().getMonth() == today.getMonth()
                         && member.dayOfBirth().getDayOfMonth() == today.getDayOfMonth(),
                 false
