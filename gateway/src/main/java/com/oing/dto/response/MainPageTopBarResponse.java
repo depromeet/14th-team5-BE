@@ -23,7 +23,7 @@ public record MainPageTopBarResponse(
         String displayName,
 
         @Schema(description = "순위 표기 (1부터 시작)" +
-                "\n- 야간의 경우 모두 1입니다."
+                "\n- 야간의 경우 모두 NULL입니다."
                 , example = "1")
         Integer displayRank,
 
