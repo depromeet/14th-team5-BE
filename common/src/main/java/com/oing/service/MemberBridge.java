@@ -1,5 +1,7 @@
 package com.oing.service;
 
+import java.util.List;
+
 /**
  * no5ing-server
  * User: CChuYong
@@ -31,4 +33,6 @@ public interface MemberBridge {
      * @return 삭제된 사용자인지 여부
      */
     boolean isDeletedMember(String memberId);
+
+    List<String> getFamilyMembersIdsByFamilyId(String familyId);
 }
