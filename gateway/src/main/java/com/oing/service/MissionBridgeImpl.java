@@ -20,6 +20,11 @@ public class MissionBridgeImpl implements MissionBridge {
     }
 
     @Override
+    public String getContentByDate(LocalDate date) {
+        return missionService.getMissionByDate(date).content();
+    }
+
+    @Override
     public String getTodayMissionId() {
         LocalDate today = ZonedDateTime.now().toLocalDate();
         DailyMissionHistory todayMission = dailyMissionHistoryService.getDailyMissionHistoryByDate(today);
