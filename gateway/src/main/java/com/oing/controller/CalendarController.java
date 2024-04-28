@@ -74,12 +74,12 @@ public class CalendarController implements CalendarApi {
         LocalDate endDate = startDate.plusMonths(1);
 
         List<Post> daysLatestPosts = postService.findLatestPostOfEveryday(startDate, endDate, familyId);
-        List<MonthlyCalendarResponse> monthlyCalendarRespons = convertToMonthlyCalendarResponse(daysLatestPosts, familyId);
-        return new ArrayResponse<>(monthlyCalendarRespons);
+        List<MonthlyCalendarResponse> monthlyCalendarResponses = convertToMonthlyCalendarResponse(daysLatestPosts, familyId);
+        return new ArrayResponse<>(monthlyCalendarResponses);
     }
 
     private List<MonthlyCalendarResponse> convertToMonthlyCalendarResponse(List<Post> daysLatestPosts, String familyId) {
-        List<MonthlyCalendarResponse> monthlyCalendarRespons = new ArrayList<>();
+        List<MonthlyCalendarResponse> monthlyCalendarResponses = new ArrayList<>();
 
         for (Post dayLatestPost : daysLatestPosts) {
             LocalDate postDate = dayLatestPost.getCreatedAt().toLocalDate();
@@ -95,14 +95,20 @@ public class CalendarController implements CalendarApi {
                 }
             }
 
-            monthlyCalendarRespons.add(new MonthlyCalendarResponse(
+            monthlyCalendarResponses.add(new MonthlyCalendarResponse(
                     dayLatestPost.getCreatedAt().toLocalDate(),
                     dayLatestPost.getId(),
                     optimizedImageUrlGenerator.getThumbnailUrlGenerator(dayLatestPost.getPostImgUrl()),
                     allFamilyMembersUploaded
             ));
         }
-        return monthlyCalendarRespons;
+        return monthlyCalendarResponses;
+    }
+
+
+    @Override
+    public ArrayResponse<MonthlyCalendarResponse> getMonthlyCalendarLegacy(String yearMonth, String familyId) {
+        return getMonthlyCalendar(yearMonth, familyId);
     }
 
 
