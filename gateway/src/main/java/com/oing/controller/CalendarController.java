@@ -18,6 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.oing.domain.PostType.MISSION;
+import static com.oing.domain.PostType.SURVIVAL;
+
 @Controller
 @RequiredArgsConstructor
 public class CalendarController implements CalendarApi {
@@ -38,17 +41,24 @@ public class CalendarController implements CalendarApi {
         List<DailyCalendarResponse> dailyCalendarResponses = new ArrayList<>();
         LocalDate date = LocalDate.parse(yearMonthDay, DateTimeFormatter.ISO_DATE);
 
-        Collection<PostResponse> survivalPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", PostType.SURVIVAL, loginMemberId, true).results();
-        Collection<PostResponse> missionPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", PostType.MISSION, loginMemberId, true).results();
+        Collection<PostResponse> survivalPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", SURVIVAL, loginMemberId, true).results();
+        Collection<PostResponse> missionPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", MISSION, loginMemberId, true).results();
         String missionContent = missionBridge.getContentByDate(date);
 
         HashSet<String> uploadedFamilyMembers = survivalPosts.stream().map(PostResponse::authorId).collect(Collectors.toCollection(HashSet::new));
         List<String> familyMembersIds = memberBridge.getFamilyMembersIdsByFamilyId(loginFamilyId);
         boolean allFamilyMembersUploaded = uploadedFamilyMembers.containsAll(familyMembersIds);
 
-        survivalPosts.forEach(post -> dailyCalendarResponses.add(new DailyCalendarResponse(date, PostType.SURVIVAL, post.postId(), post.imageUrl(), null, allFamilyMembersUploaded)));
-        missionPosts.forEach(post -> dailyCalendarResponses.add(new DailyCalendarResponse(date, PostType.MISSION, post.postId(), post.imageUrl(), missionContent, allFamilyMembersUploaded)));
+        dailyCalendarResponses.addAll(convertToDailyCalendarResponse(survivalPosts, missionContent, allFamilyMembersUploaded));
+        dailyCalendarResponses.addAll(convertToDailyCalendarResponse(missionPosts, missionContent, allFamilyMembersUploaded));
         return ArrayResponse.of(dailyCalendarResponses);
+    }
+
+    private List<DailyCalendarResponse> convertToDailyCalendarResponse(Collection<PostResponse> postResponses, String missionContent, boolean allFamilyMembersUploaded) {
+        return postResponses.stream().map(postResponse -> switch (PostType.valueOf(postResponse.type())) {
+            case MISSION -> new DailyCalendarResponse(postResponse.createdAt().toLocalDate(), MISSION, postResponse.postId(), postResponse.imageUrl(), missionContent, allFamilyMembersUploaded);
+            case SURVIVAL -> new DailyCalendarResponse(postResponse.createdAt().toLocalDate(), SURVIVAL, postResponse.postId(), postResponse.imageUrl(), null, allFamilyMembersUploaded);
+        }).toList();
     }
 
 
@@ -60,11 +70,11 @@ public class CalendarController implements CalendarApi {
         LocalDate endDate = startDate.plusMonths(1);
 
         List<Post> daysLatestPosts = postService.findLatestPostOfEveryday(startDate, endDate, familyId);
-        List<MonthlyCalendarResponse> monthlyCalendarRespons = convertToCalendarResponse(daysLatestPosts, familyId);
+        List<MonthlyCalendarResponse> monthlyCalendarRespons = convertToMonthlyCalendarResponse(daysLatestPosts, familyId);
         return new ArrayResponse<>(monthlyCalendarRespons);
     }
 
-    private List<MonthlyCalendarResponse> convertToCalendarResponse(List<Post> daysLatestPosts, String familyId) {
+    private List<MonthlyCalendarResponse> convertToMonthlyCalendarResponse(List<Post> daysLatestPosts, String familyId) {
         List<MonthlyCalendarResponse> monthlyCalendarRespons = new ArrayList<>();
 
         for (Post dayLatestPost : daysLatestPosts) {
@@ -75,7 +85,7 @@ public class CalendarController implements CalendarApi {
             List<String> familyMembersIds = memberService.getFamilyMembersIdsByFamilyIdAndJoinAtBefore(familyId, postDate.plusDays(1));
             boolean allFamilyMembersUploaded = true;
             for (String memberId : familyMembersIds) {
-                if (!postService.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, postDate)) {
+                if (!postService.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, SURVIVAL, postDate)) {
                     allFamilyMembersUploaded = false;
                     break;
                 }
@@ -119,7 +129,7 @@ public class CalendarController implements CalendarApi {
             if (postService.existsByFamilyIdAndCreatedAt(familyId, startDate)) {
                 List<String> familyMembersIds = memberService.getFamilyMembersIdsByFamilyIdAndJoinAtBefore(familyId, startDate.plusDays(1));
                 for (String memberId : familyMembersIds) {
-                    if (!postService.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, startDate)) {
+                    if (!postService.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, SURVIVAL, startDate)) {
                         allFamilyMembersUploaded = false;
                         break;
                     }
