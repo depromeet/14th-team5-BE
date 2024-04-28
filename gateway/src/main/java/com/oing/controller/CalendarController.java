@@ -44,20 +44,24 @@ public class CalendarController implements CalendarApi {
         Collection<PostResponse> survivalPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", SURVIVAL, loginMemberId, true).results();
         Collection<PostResponse> missionPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", MISSION, loginMemberId, true).results();
         String missionContent = missionBridge.getContentByDate(date);
-
-        HashSet<String> uploadedFamilyMembers = survivalPosts.stream().map(PostResponse::authorId).collect(Collectors.toCollection(HashSet::new));
-        List<String> familyMembersIds = memberBridge.getFamilyMembersIdsByFamilyId(loginFamilyId);
-        boolean allFamilyMembersUploaded = uploadedFamilyMembers.containsAll(familyMembersIds);
+        boolean allFamilyMembersUploaded = getAllFamilyMembersUploaded(survivalPosts, loginFamilyId);
 
         dailyCalendarResponses.addAll(convertToDailyCalendarResponse(survivalPosts, missionContent, allFamilyMembersUploaded));
         dailyCalendarResponses.addAll(convertToDailyCalendarResponse(missionPosts, missionContent, allFamilyMembersUploaded));
         return ArrayResponse.of(dailyCalendarResponses);
     }
 
-    private List<DailyCalendarResponse> convertToDailyCalendarResponse(Collection<PostResponse> postResponses, String missionContent, boolean allFamilyMembersUploaded) {
-        return postResponses.stream().map(postResponse -> switch (PostType.valueOf(postResponse.type())) {
-            case MISSION -> new DailyCalendarResponse(postResponse.createdAt().toLocalDate(), MISSION, postResponse.postId(), postResponse.imageUrl(), missionContent, allFamilyMembersUploaded);
-            case SURVIVAL -> new DailyCalendarResponse(postResponse.createdAt().toLocalDate(), SURVIVAL, postResponse.postId(), postResponse.imageUrl(), null, allFamilyMembersUploaded);
+    private boolean getAllFamilyMembersUploaded(Collection<PostResponse> survivalPosts, String familyId) {
+        HashSet<String> uploadedFamilyMembers = survivalPosts.stream().map(PostResponse::authorId).collect(Collectors.toCollection(HashSet::new));
+        List<String> familyMembersIds = memberService.getFamilyMembersIdsByFamilyIdAndJoinAtBefore(familyId, LocalDate.now());
+
+        return uploadedFamilyMembers.containsAll(familyMembersIds);
+    }
+
+    private List<DailyCalendarResponse> convertToDailyCalendarResponse(Collection<PostResponse> posts, String missionContent, boolean allFamilyMembersUploaded) {
+        return posts.stream().map(post -> switch (PostType.valueOf(post.type())) {
+            case MISSION -> new DailyCalendarResponse(post.createdAt().toLocalDate(), MISSION, post.postId(), post.imageUrl(), missionContent, allFamilyMembersUploaded);
+            case SURVIVAL -> new DailyCalendarResponse(post.createdAt().toLocalDate(), SURVIVAL, post.postId(), post.imageUrl(), null, allFamilyMembersUploaded);
         }).toList();
     }
 
