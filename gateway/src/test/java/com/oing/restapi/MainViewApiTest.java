@@ -168,9 +168,7 @@ class MainViewApiTest {
 
             // when
             ResultActions resultActions = mockMvc.perform(
-                    get("/v1/posts/ranking")
-                            .param("type", "SURVIVAL")
-                            .param("scope", "FAMILY")
+                    get("/v1/view/main/family-ranking")
                             .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
                             .contentType(MediaType.APPLICATION_JSON)
             );
