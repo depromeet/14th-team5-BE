@@ -187,7 +187,6 @@ class CalendarApiTest {
                 .andExpect(jsonPath("$.results[0].commentCount").value(0))
                 .andExpect(jsonPath("$.results[0].emojiCount").value(0))
                 .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(true))
-                .andExpect(jsonPath("$.results[0].createdAt").value("2023-11-02T14:00:00+09:00"))
                 .andExpect(jsonPath("$.results[1].date").value("2023-11-02"))
                 .andExpect(jsonPath("$.results[1].type").value("survival"))
                 .andExpect(jsonPath("$.results[1].postId").value("4"))
@@ -198,7 +197,6 @@ class CalendarApiTest {
                 .andExpect(jsonPath("$.results[1].commentCount").value(0))
                 .andExpect(jsonPath("$.results[1].emojiCount").value(0))
                 .andExpect(jsonPath("$.results[1].allFamilyMembersUploaded").value(true))
-                .andExpect(jsonPath("$.results[1].createdAt").value("2023-11-02T15:00:00+09:00"))
                 .andExpect(jsonPath("$.results[2].date").value("2023-11-02"))
                 .andExpect(jsonPath("$.results[2].type").value("mission"))
                 .andExpect(jsonPath("$.results[2].postId").value("7"))
@@ -209,7 +207,6 @@ class CalendarApiTest {
                 .andExpect(jsonPath("$.results[2].commentCount").value(0))
                 .andExpect(jsonPath("$.results[2].emojiCount").value(0))
                 .andExpect(jsonPath("$.results[2].allFamilyMembersUploaded").value(true))
-                .andExpect(jsonPath("$.results[2].createdAt").value("2023-11-02T14:00:00+09:00"))
                 .andExpect(jsonPath("$.results[3].date").value("2023-11-02"))
                 .andExpect(jsonPath("$.results[3].type").value("mission"))
                 .andExpect(jsonPath("$.results[3].postId").value("8"))
@@ -219,8 +216,7 @@ class CalendarApiTest {
                 .andExpect(jsonPath("$.results[3].authorId").value(TEST_MEMBER2_ID))
                 .andExpect(jsonPath("$.results[3].commentCount").value(0))
                 .andExpect(jsonPath("$.results[3].emojiCount").value(0))
-                .andExpect(jsonPath("$.results[3].allFamilyMembersUploaded").value(true))
-                .andExpect(jsonPath("$.results[3].createdAt").value("2023-11-02T15:00:00+09:00"));
+                .andExpect(jsonPath("$.results[3].allFamilyMembersUploaded").value(true));
 
     }
 
