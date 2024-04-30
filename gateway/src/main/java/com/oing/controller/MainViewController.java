@@ -26,6 +26,7 @@ public class MainViewController implements MainViewApi {
     private final PostService postService;
     private final MemberService memberService;
     private final MemberPickService memberPickService;
+    private final MemberController memberController;
     private final MemberBridge memberBridge;
     private final MissionBridge missionBridge;
     private final PostController postController;
@@ -164,13 +165,55 @@ public class MainViewController implements MainViewApi {
 
     @Override
     public FamilyMemberMonthlyRankingResponse getFamilyMemberMonthlyRanking(String loginMemberId, String loginFamilyId) {
-        // TODO: API Response Mocking 입니다.
+        List<PostRankerResponse> ranking = postController.getFamilyMembersMonthlySurvivalRanking(loginFamilyId).results().stream().toList();
 
-        FamilyMemberRankerResponse first = new FamilyMemberRankerResponse("https://static01.nyt.com/images/2016/09/28/us/28xp-pepefrog/28xp-pepefrog-superJumbo.jpg", "정신적 지주", 24);
-        FamilyMemberRankerResponse second = new FamilyMemberRankerResponse("https://static01.nyt.com/images/2016/09/28/us/28xp-pepefrog/28xp-pepefrog-superJumbo.jpg", "권순찬", 23);
+        Integer month = ZonedDateTime.now().getMonthValue();
+
+        FamilyMemberRankerResponse first = null;
+        if (ranking.size() >= 1) {
+            PostRankerResponse firstPostRanker = ranking.get(0);
+            MemberResponse firstMember = memberController.getMember(loginMemberId, loginFamilyId);
+            first = new FamilyMemberRankerResponse(
+                    firstMember.imageUrl(),
+                    firstMember.name(),
+                    firstPostRanker.postCount()
+            );
+        }
+
+        FamilyMemberRankerResponse second = null;
+        if (ranking.size() >= 2) {
+            PostRankerResponse secondPostRanker = ranking.get(1);
+            MemberResponse secondMember = memberController.getMember(loginMemberId, loginFamilyId);
+            second = new FamilyMemberRankerResponse(
+                    secondMember.imageUrl(),
+                    secondMember.name(),
+                    secondPostRanker.postCount()
+            );
+        }
+
         FamilyMemberRankerResponse third = null;
-        LocalDate mostRecentSurvivalPostDate = LocalDate.now().minusDays(1);
+        if (ranking.size() >= 3) {
+            PostRankerResponse thirdPostRanker = ranking.get(2);
+            MemberResponse thirdMember = memberController.getMember(loginMemberId, loginFamilyId);
+            third = new FamilyMemberRankerResponse(
+                    thirdMember.imageUrl(),
+                    thirdMember.name(),
+                    thirdPostRanker.postCount()
+            );
+        }
 
-        return new FamilyMemberMonthlyRankingResponse(4, first, second, third, mostRecentSurvivalPostDate);
+        PostResponse mostRecentPost = postController.fetchDailyFeeds(1, 1, null, null, "desc", PostType.SURVIVAL, loginMemberId, false).results().stream().toList().get(0);
+        LocalDate mostRecentSurvivalPostDate = null;
+        if (mostRecentPost != null) {
+            mostRecentSurvivalPostDate = mostRecentPost.createdAt().toLocalDate();
+        }
+
+        return new FamilyMemberMonthlyRankingResponse(
+                month,
+                first,
+                second,
+                third,
+                mostRecentSurvivalPostDate
+        );
     }
 }
