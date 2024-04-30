@@ -202,10 +202,10 @@ public class MainViewController implements MainViewApi {
             );
         }
 
-        PostResponse mostRecentPost = postController.fetchDailyFeeds(1, 1, null, null, "desc", PostType.SURVIVAL, loginMemberId, false).results().stream().toList().get(0);
+        List<PostResponse> mostRecentPosts = postController.fetchDailyFeeds(1, 1, null, null, "desc", PostType.SURVIVAL, loginMemberId, false).results().stream().toList();
         LocalDate mostRecentSurvivalPostDate = null;
-        if (mostRecentPost != null) {
-            mostRecentSurvivalPostDate = mostRecentPost.createdAt().toLocalDate();
+        if (!mostRecentPosts.isEmpty()) {
+            mostRecentSurvivalPostDate = mostRecentPosts.get(0).createdAt().toLocalDate();
         }
 
         return new FamilyMemberMonthlyRankingResponse(
