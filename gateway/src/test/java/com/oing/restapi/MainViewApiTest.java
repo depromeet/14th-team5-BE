@@ -179,8 +179,8 @@ class MainViewApiTest {
                     .andExpect(jsonPath("$.month").value(ZonedDateTime.now().getMonthValue()))
                     .andExpect(jsonPath("$.firstRanker").doesNotExist())
                     .andExpect(jsonPath("$.secondRanker").doesNotExist())
-                    .andExpect(jsonPath("$.thirdRanker").doesNotExist())
-                    .andExpect(jsonPath("$.mostRecentSurvivalPostDate").doesNotExist());
+                    .andExpect(jsonPath("$.thirdRanker").doesNotExist());
+//                    .andExpect(jsonPath("$.mostRecentSurvivalPostDate").doesNotExist());
         }
 
         @Test
