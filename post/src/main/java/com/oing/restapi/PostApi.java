@@ -177,4 +177,12 @@ public interface PostApi {
             @LoginFamilyId
             String loginFamilyId
     );
+
+    @Operation(summary = "가족구성원들의 생존신고 랭킹 조회", description = "가족구성원들의 생존신고 랭킹을 조회합니다.")
+    @GetMapping(value = "/ranking", params = {"type=SURVIVAL", "scope=FAMILY"})
+    ArrayResponse<PostRankerResponse> getFamilyMembersMonthlySurvivalRanking(
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
 }

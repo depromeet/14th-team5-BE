@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -89,6 +91,13 @@ public class CommentService {
             log.warn("Unauthorized access attempt: Member {} is attempting comment operation on post {}", memberId, comment.getPost().getId());
             throw new AuthorizationFailedException();
         }
+    }
+
+    public long countMonthlyCommentByMemberId(LocalDate date, String memberId) {
+        int year = date.getYear();
+        int month = date.getMonthValue();
+
+        return commentRepository.countMonthlyCommentByMemberId(year, month, memberId);
     }
 
     @EventListener

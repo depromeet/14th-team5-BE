@@ -25,4 +25,15 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .limit(size)
                 .fetchResults();
     }
+
+    @Override
+    public long countMonthlyCommentByMemberId(int year, int month, String memberId) {
+        return queryFactory
+                .select(comment.count())
+                .from(comment)
+                .where(comment.memberId.eq(memberId),
+                        comment.createdAt.year().eq(year),
+                        comment.createdAt.month().eq(month))
+                .fetchFirst();
+    }
 }
