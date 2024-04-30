@@ -8,6 +8,7 @@ import com.oing.util.security.LoginFamilyId;
 import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -179,6 +180,8 @@ public interface PostApi {
     );
 
     @Operation(summary = "가족구성원들의 생존신고 랭킹 조회", description = "가족구성원들의 생존신고 랭킹을 조회합니다.")
+    @Parameter(required = true, name = "type", description = "게시물 타입", example = "[SURVIVAL]")
+    @Parameter(required = true, name = "scope", description = "랭킹 범위", example = "[FAMILY]")
     @GetMapping(value = "/ranking", params = {"type=SURVIVAL", "scope=FAMILY"})
     ArrayResponse<PostRankerResponse> getFamilyMembersMonthlySurvivalRanking(
             @Parameter(hidden = true)
