@@ -148,7 +148,8 @@ public class PostController implements PostApi {
                         reactionService.countMonthlyReactionByMemberId(dateTime, familyMemberId)
 
                 ))
-                .sorted()
+                .filter(postRankerDTO -> postRankerDTO.getPostCount() > 0) // 게시글이 없는 경우 제외
+                .sorted() // 내부 정책에 따라 재정의한 DTO compareTo 메서드를 통해 정렬
                 .map(postRankerDTO -> new PostRankerResponse(
                         postRankerDTO.getMemberId(),
                         postRankerDTO.getPostCount().intValue())

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -36,6 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PostApiTest {
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private TokenGenerator tokenGenerator;
@@ -283,6 +286,48 @@ class PostApiTest {
                     .andExpect(jsonPath("$.results[1].memberId").value(TEST_MEMBER2_ID))
                     .andExpect(jsonPath("$.results[1].postCount").value(1))
                     .andExpect(jsonPath("$.results[2]").doesNotExist());
+        }
+
+        @Test
+        void 업로드된_게시물이_없을때는_빈_결과값을_반환한다() throws Exception {
+            // given
+
+            // when
+            ResultActions resultActions = mockMvc.perform(
+                    get("/v1/posts/ranking")
+                            .param("type", "SURVIVAL")
+                            .param("scope", "FAMILY")
+                            .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                            .contentType(MediaType.APPLICATION_JSON)
+            );
+
+            //then
+            resultActions
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.results").isEmpty());
+        }
+
+        @Test
+        void 금월에_업로드된_게시물이_없을때는_빈_결과값을_반환한다() throws Exception {
+            // given
+            jdbcTemplate.update("insert into post (post_id, member_id, family_id, mission_id, type, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                    "1", TEST_MEMBER1_ID, TEST_FAMILY_ID, 1, "SURVIVAL", "https://storage.com/images/1", 0, 0, "2023-11-01 14:00:00", "2023-11-02 14:00:00", "post1111", "1");
+            jdbcTemplate.update("insert into post (post_id, member_id, family_id, mission_id, type, post_img_url, comment_cnt, reaction_cnt, created_at, updated_at, content, post_img_key) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                    "2", TEST_MEMBER2_ID, TEST_FAMILY_ID, 2, "SURVIVAL", "https://storage.com/images/2", 0, 0, "2023-11-01 14:00:00", "2023-11-02 14:00:00", "post2222", "2");
+
+            // when
+            ResultActions resultActions = mockMvc.perform(
+                    get("/v1/posts/ranking")
+                            .param("type", "SURVIVAL")
+                            .param("scope", "FAMILY")
+                            .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                            .contentType(MediaType.APPLICATION_JSON)
+            );
+
+            //then
+            resultActions
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.results").isEmpty());
         }
 
         @Test
