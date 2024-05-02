@@ -3,6 +3,7 @@ package com.oing.service;
 import com.oing.domain.Mission;
 import com.oing.dto.request.CreateMissionRequest;
 import com.oing.dto.response.MissionResponse;
+import com.oing.exception.MissionNotFoundException;
 import com.oing.repository.MissionRepository;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
@@ -38,22 +39,14 @@ public class MissionService {
     }
 
     public Mission getMissionByMissionId(String missionId) {
-        // TODO: MissionService 의 Feature Mocking 입니다.
-        Mission mockMission = new Mission(missionId, "오늘의 기분을 나타내는 사진 찍기.");
-        return mockMission;
-
-        // TODO: Mocking 제거 시, 주석 해제
-//        return missionRepository.findById(missionId)
-//            .orElseThrow(MissionNotFoundException::new);
+        return missionRepository.findById(missionId)
+            .orElseThrow(MissionNotFoundException::new);
     }
 
     public MissionResponse getMissionByDate(LocalDate date) {
-        return new MissionResponse("1", "오늘의 기분을 나타내는 사진 찍기.");
+        Mission mission = dailyMissionHistoryService.getDailyMissionHistoryByDate(date).getMission();
 
-        // TODO: Mocking 제거 시, 주석 해제
-//        Mission mission = dailyMissionHistoryService.getDailyMissionHistoryByDate(date).getMission();
-//
-//        return MissionResponse.from(mission);
+        return MissionResponse.from(mission);
     }
 
     public Optional<Mission> getRandomMissionExcludingIds(List<String> excludedIds) {
