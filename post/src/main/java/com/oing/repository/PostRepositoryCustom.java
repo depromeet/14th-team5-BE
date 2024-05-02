@@ -24,7 +24,7 @@ public interface PostRepositoryCustom {
 
     boolean isCreatedSurvivalPostByMajority(LocalDate date, String familyId);
 
-    int countFamilyMembersByFamilyId(String familyId);
+    int countFamilyMembersByFamilyIdAtYesterday(String familyId);
 
     int countTodaySurvivalPostsByFamilyId(String familyId);
 }
