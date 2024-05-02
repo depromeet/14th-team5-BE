@@ -26,11 +26,18 @@ public class DailyMissionJob {
     public void registerDailyMission() {
         log.info("[DailyMissionRegistrationJob] 일일 미션 등록 시작");
 
-        List<String> recentDailyMissionIds = dailyMissionHistoryService.getRecentSevenDailyMissionIdsOrderByDateAsc();
-        Mission newDailyMission = missionService.getRandomMissionExcludingIds(recentDailyMissionIds)
-                .orElse(missionService.getMissionByMissionId(recentDailyMissionIds.get(0))); // 최근 7일 동안 등록된 일일 미션 제외했을 때, 미션이 없다면 가장 오래된 미션을 가져옴
+        try {
+            List<String> recentDailyMissionIds = dailyMissionHistoryService.getRecentSevenDailyMissionIdsOrderByDateAsc();
+            Mission newDailyMission = missionService.getRandomMissionExcludingIds(recentDailyMissionIds)
+                    .orElse(missionService.getMissionByMissionId(recentDailyMissionIds.get(0))); // 최근 7일 동안 등록된 일일 미션 제외했을 때, 미션이 없다면 가장 오래된 미션을 가져옴
 
-        DailyMissionHistoryResponse dailyMissionHistoryResponse = dailyMissionHistoryService.registerTodayDailyMission(newDailyMission);
-        log.info("[DailyMissionRegistrationJob] 일일 미션 등록 성공 - {}, registeredMissionId = {}", dailyMissionHistoryResponse.date(), dailyMissionHistoryResponse.missionId());
+            DailyMissionHistoryResponse dailyMissionHistoryResponse = dailyMissionHistoryService.registerTodayDailyMission(newDailyMission);
+            log.info("[DailyMissionRegistrationJob] 일일 미션 등록 성공 - {}, registeredMissionId = {}", dailyMissionHistoryResponse.date(), dailyMissionHistoryResponse.missionId());
+
+        } catch (IndexOutOfBoundsException e) {
+            log.error("[DailyMissionRegistrationJob] 일일 미션 등록 실패 - 등록된 미션이 없습니다.");
+        } catch (Exception e) {
+            log.error("[DailyMissionRegistrationJob] 일일 미션 등록 실패 - 스케줄링 배치에 알 수 없는 문제가 발생했습니다.");
+        }
     }
 }
