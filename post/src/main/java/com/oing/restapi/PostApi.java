@@ -146,7 +146,7 @@ public interface PostApi {
             String loginFamilyId
     );
 
-    @Operation(summary = "회원 미션 참여 가능 여부 응답 조회", description = "회원 미션 참여 가능 여부를 조회합니다.")
+    @Operation(summary = "가족 미션 키 획득 여부 응답 조회", description = "가족 미션 키 획득 여부를 조회합니다.")
     @GetMapping("/{memberId}/mission-available")
     MissionAvailableStatusResponse getMissionAvailableStatus(
             @PathVariable
