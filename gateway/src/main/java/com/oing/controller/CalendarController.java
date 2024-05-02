@@ -60,8 +60,8 @@ public class CalendarController implements CalendarApi {
 
     private List<DailyCalendarResponse> convertToDailyCalendarResponse(Collection<PostResponse> posts, String missionContent, boolean allFamilyMembersUploaded) {
         return posts.stream().map(post -> switch (PostType.fromString(post.type())) {
-            case MISSION -> new DailyCalendarResponse(post.createdAt().toLocalDate(), MISSION, post.postId(), post.imageUrl(), missionContent, allFamilyMembersUploaded);
-            case SURVIVAL -> new DailyCalendarResponse(post.createdAt().toLocalDate(), SURVIVAL, post.postId(), post.imageUrl(), null, allFamilyMembersUploaded);
+            case MISSION -> DailyCalendarResponse.of(post, missionContent, allFamilyMembersUploaded);
+            case SURVIVAL -> DailyCalendarResponse.of(post, null, allFamilyMembersUploaded);
         }).toList();
     }
 
