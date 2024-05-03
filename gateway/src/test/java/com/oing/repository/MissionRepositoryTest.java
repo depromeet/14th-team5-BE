@@ -1,7 +1,6 @@
 package com.oing.repository;
 
 import com.oing.config.QuerydslConfig;
-import com.oing.domain.DailyMissionHistory;
 import com.oing.domain.Mission;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -12,21 +11,19 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // application-test.yaml의 데이터베이스 설정을 적용하기 위해서 필수
-@ActiveProfiles("test")
 @Import(QuerydslConfig.class)
-public class DailyMissionHistoryRepositoryTest {
+public class MissionRepositoryTest {
 
     @Autowired
     private MissionRepository missionRepository;
-    @Autowired
-    private DailyMissionHistoryRepository dailyMissionHistoryRepository;
 
     private Mission testMission1;
     private Mission testMission2;
@@ -77,53 +74,33 @@ public class DailyMissionHistoryRepositoryTest {
 
 
     @Nested
-    class FindRecentDailyMissionIdsOrderByDateAsc {
+    class getRandomMissionExcludingIds {
+
         @Test
         void 정상_조회_테스트() {
             // given
-            dailyMissionHistoryRepository.save(DailyMissionHistory.builder()
-                    .date(LocalDate.of(2021, 10, 1))
-                    .mission(testMission5)
-                    .build());
-            dailyMissionHistoryRepository.save(DailyMissionHistory.builder()
-                    .date(LocalDate.of(2021, 10, 2))
-                    .mission(testMission6)
-                    .build());
-            dailyMissionHistoryRepository.save(DailyMissionHistory.builder()
-                    .date(LocalDate.of(2021, 10, 3))
-                    .mission(testMission7)
-                    .build());
-            dailyMissionHistoryRepository.save(DailyMissionHistory.builder()
-                    .date(LocalDate.of(2021, 10, 4))
-                    .mission(testMission1)
-                    .build());
-            dailyMissionHistoryRepository.save(DailyMissionHistory.builder()
-                    .date(LocalDate.of(2021, 10, 5))
-                    .mission(testMission2)
-                    .build());
-            dailyMissionHistoryRepository.save(DailyMissionHistory.builder()
-                    .date(LocalDate.of(2021, 10, 6))
-                    .mission(testMission3)
-                    .build());
-            dailyMissionHistoryRepository.save(DailyMissionHistory.builder()
-                    .date(LocalDate.of(2021, 10, 7))
-                    .mission(testMission4)
-                    .build());
+            List<String> excludingIds = List.of(testMission1.getId(), testMission2.getId(), testMission3.getId());
 
             // when
-            List<String> recentDailyMissionIds = dailyMissionHistoryRepository.findRecentDailyMissionIdsOrderByDateAsc(7);
+            Optional<Mission> randomMissionId = missionRepository.getRandomMissionExcludingIds(excludingIds);
 
             // then
-            assertThat(recentDailyMissionIds)
-                    .containsExactly(
-                            testMission5.getId(),
-                            testMission6.getId(),
-                            testMission7.getId(),
-                            testMission1.getId(),
-                            testMission2.getId(),
-                            testMission3.getId(),
-                            testMission4.getId()
-                    );
+            assertThat(randomMissionId).isPresent();
+            assertThat(randomMissionId.get().getId())
+                    .isNotIn(excludingIds)
+                    .isIn(testMission4.getId(), testMission5.getId(), testMission6.getId(), testMission7.getId());
+        }
+
+        @Test
+        void 아이디_파라미터_제외_테스트() {
+            // given
+            List<String> excludingIds = List.of(testMission1.getId(), testMission2.getId(), testMission3.getId(), testMission4.getId(), testMission5.getId(), testMission6.getId(), testMission7.getId());
+
+            // when
+            Optional<Mission> randomMissionId = missionRepository.getRandomMissionExcludingIds(excludingIds);
+
+            // then
+            assertThat(randomMissionId).isNotPresent();
         }
     }
 }
