@@ -171,5 +171,13 @@ public class DailyMissionJobTest {
             // when
             assertThatNoException().isThrownBy(() -> dailyMissionJob.registerDailyMission());
         }
+
+        @Test
+        void 중복된_미션이_생성시도경우_예외핸들링을_한다() {
+            // when
+            assertThatNoException().isThrownBy(() -> dailyMissionJob.registerDailyMission());
+            jdbcTemplate.update("UPDATE shedlock SET lock_until = locked_at WHERE name = 'DailyMissionRegistrationJob'");
+            assertThatNoException().isThrownBy(() -> dailyMissionJob.registerDailyMission());
+        }
     }
 }
