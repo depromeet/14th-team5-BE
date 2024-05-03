@@ -2,6 +2,7 @@ package com.oing.job;
 
 import com.oing.domain.Mission;
 import com.oing.dto.response.DailyMissionHistoryResponse;
+import com.oing.exception.DuplicatedDailyMissionHistoryException;
 import com.oing.service.DailyMissionHistoryService;
 import com.oing.service.MissionService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,9 @@ public class DailyMissionJob {
             log.info("[DailyMissionRegistrationJob] 일일 미션 등록 성공 - {}, registeredMissionId = {}", dailyMissionHistoryResponse.date(), dailyMissionHistoryResponse.missionId());
 
         } catch (IndexOutOfBoundsException e) {
-            log.error("[DailyMissionRegistrationJob] 일일 미션 등록 실패 - 등록된 미션이 없습니다.");
+            log.error("[DailyMissionRegistrationJob] 일일 미션 등록 실패 - 등록된 일일 미션이 없습니다.");
+        } catch (DuplicatedDailyMissionHistoryException e) {
+            log.error("[DailyMissionRegistrationJob] 일일 미션 등록 실패 - 이미 등록된 일일 미션이 존재합니다.");
         } catch (Exception e) {
             log.error("[DailyMissionRegistrationJob] 일일 미션 등록 실패 - 스케줄링 배치에 알 수 없는 문제가 발생했습니다.");
         }

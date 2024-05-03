@@ -4,6 +4,7 @@ import com.oing.domain.DailyMissionHistory;
 import com.oing.domain.Mission;
 import com.oing.dto.response.DailyMissionHistoryResponse;
 import com.oing.exception.DailyMissionHistoryNotFoundException;
+import com.oing.exception.DuplicatedDailyMissionHistoryException;
 import com.oing.repository.DailyMissionHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +34,15 @@ public class DailyMissionHistoryService {
         return DailyMissionHistoryResponse.from(dailyMissionHistory);
     }
 
-    public DailyMissionHistoryResponse registerTodayDailyMission(Mission mission) {
+    public DailyMissionHistoryResponse registerTodayDailyMission(Mission mission) throws DuplicatedDailyMissionHistoryException {
         LocalDate today = ZonedDateTime.now().toLocalDate();
-        log.info("Create today's daily mission history: {}, missionId = {}", today, mission.getId());
 
+        if (dailyMissionHistoryRepository.existsById(today)) {
+            log.error("Today's daily mission history already exists: {}", today);
+            throw new DuplicatedDailyMissionHistoryException();
+        }
+
+        log.info("Create today's daily mission : {}, missionId = {}", today, mission.getId());
         return createDailyMissionHistory(today, mission);
     }
 
