@@ -169,17 +169,17 @@ public class MainViewController implements MainViewApi {
 
         FamilyMemberRankerResponse first = null;
         if (ranking.size() >= 1) {
-            first = getFamilyMemberRankerResponse(ranking.get(1), loginFamilyId);
+            first = getFamilyMemberRankerResponse(ranking.get(0), loginFamilyId);
         }
 
         FamilyMemberRankerResponse second = null;
         if (ranking.size() >= 2) {
-            second = getFamilyMemberRankerResponse(ranking.get(2), loginFamilyId);
+            second = getFamilyMemberRankerResponse(ranking.get(1), loginFamilyId);
         }
 
         FamilyMemberRankerResponse third = null;
         if (ranking.size() >= 3) {
-            third = getFamilyMemberRankerResponse(ranking.get(3), loginFamilyId);
+            third = getFamilyMemberRankerResponse(ranking.get(2), loginFamilyId);
         }
 
         LocalDate mostRecentSurvivalPostDate = null;
