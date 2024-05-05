@@ -167,53 +167,42 @@ public class MainViewController implements MainViewApi {
     public FamilyMemberMonthlyRankingResponse getFamilyMemberMonthlyRanking(String loginMemberId, String loginFamilyId) {
         List<PostRankerResponse> ranking = postController.getFamilyMembersMonthlySurvivalRanking(loginFamilyId).results().stream().toList();
 
-        Integer month = ZonedDateTime.now().getMonthValue();
-
         FamilyMemberRankerResponse first = null;
         if (ranking.size() >= 1) {
-            PostRankerResponse firstPostRanker = ranking.get(0);
-            MemberResponse firstMember = memberController.getMember(loginMemberId, loginFamilyId);
-            first = new FamilyMemberRankerResponse(
-                    firstMember.imageUrl(),
-                    firstMember.name(),
-                    firstPostRanker.postCount()
-            );
+            first = getFamilyMemberRankerResponse(ranking.get(1), loginFamilyId);
         }
 
         FamilyMemberRankerResponse second = null;
         if (ranking.size() >= 2) {
-            PostRankerResponse secondPostRanker = ranking.get(1);
-            MemberResponse secondMember = memberController.getMember(loginMemberId, loginFamilyId);
-            second = new FamilyMemberRankerResponse(
-                    secondMember.imageUrl(),
-                    secondMember.name(),
-                    secondPostRanker.postCount()
-            );
+            second = getFamilyMemberRankerResponse(ranking.get(2), loginFamilyId);
         }
 
         FamilyMemberRankerResponse third = null;
         if (ranking.size() >= 3) {
-            PostRankerResponse thirdPostRanker = ranking.get(2);
-            MemberResponse thirdMember = memberController.getMember(loginMemberId, loginFamilyId);
-            third = new FamilyMemberRankerResponse(
-                    thirdMember.imageUrl(),
-                    thirdMember.name(),
-                    thirdPostRanker.postCount()
-            );
+            third = getFamilyMemberRankerResponse(ranking.get(3), loginFamilyId);
         }
 
-        List<PostResponse> mostRecentPosts = postController.fetchDailyFeeds(1, 1, null, null, "desc", PostType.SURVIVAL, loginMemberId, false).results().stream().toList();
         LocalDate mostRecentSurvivalPostDate = null;
+        List<PostResponse> mostRecentPosts = postController.fetchDailyFeeds(1, 1, null, null, "desc", PostType.SURVIVAL, loginMemberId, false).results().stream().toList();
         if (!mostRecentPosts.isEmpty()) {
             mostRecentSurvivalPostDate = mostRecentPosts.get(0).createdAt().toLocalDate();
         }
 
         return new FamilyMemberMonthlyRankingResponse(
-                month,
+                ZonedDateTime.now().getMonthValue(),
                 first,
                 second,
                 third,
                 mostRecentSurvivalPostDate
+        );
+    }
+
+    private FamilyMemberRankerResponse getFamilyMemberRankerResponse(PostRankerResponse postRankerResponse, String loginFamilyId) {
+        MemberResponse postRankerMember = memberController.getMember(postRankerResponse.memberId(), loginFamilyId);
+        return new FamilyMemberRankerResponse(
+                postRankerMember.imageUrl(),
+                postRankerMember.name(),
+                postRankerResponse.postCount()
         );
     }
 }
