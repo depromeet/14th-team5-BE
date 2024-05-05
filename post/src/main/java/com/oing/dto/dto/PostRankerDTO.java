@@ -21,17 +21,24 @@ public class PostRankerDTO implements Comparable<PostRankerDTO> {
     @Override
     public int compareTo(PostRankerDTO o) {
         // 1. postCount 내림차순
-        if (!this.postCount.equals(o.postCount)) return -1 * this.postCount.compareTo(o.postCount);
-        else {
-            // 2. commentCount 내림차순
-            if (!this.commentCount.equals(o.commentCount)) return -1 * this.commentCount.compareTo(o.commentCount);
-            else {
-                // 3. reactionCount 내림차순
-                if (!this.reactionCount.equals(o.reactionCount))
-                    return -1 * this.reactionCount.compareTo(o.reactionCount);
-                    // 4. memberId (가입날짜) 오름차순
-                else return this.memberId.compareTo(o.memberId);
-            }
+        int postCountCompare = Long.compare(this.postCount, o.postCount);
+        if (postCountCompare != 0) {
+            return -1 * postCountCompare;
         }
+
+        // 2. commentCount 내림차순
+        int commentCountCompare = Long.compare(this.commentCount, o.commentCount);
+        if (commentCountCompare != 0) {
+            return -1 * commentCountCompare;
+        }
+
+        // 3. reactionCount 내림차순
+        int reactionCountCompare = Long.compare(this.reactionCount, o.reactionCount);
+        if (reactionCountCompare != 0) {
+            return -1 * reactionCountCompare;
+        }
+
+        // 4. memberId (가입날짜) 오름차순
+        return this.memberId.compareTo(o.memberId);
     }
 }
