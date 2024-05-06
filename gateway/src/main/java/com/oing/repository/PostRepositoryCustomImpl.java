@@ -2,6 +2,7 @@ package com.oing.repository;
 
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -78,15 +79,15 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .fetchFirst();
     }
 
-    private BooleanExpression eqDate(LocalDate date) {
-        DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
-                "DATE({0})", post.createdAt);
-
-        return date == null ? null : createdAtDate.eq(date);
-    }
-
-    private BooleanExpression eqMemberId(String memberId) {
-        return memberId == null ? null : post.memberId.eq(memberId);
+    @Override
+    public long countMonthlyPostByMemberId(int year, int month, String memberId) {
+        return queryFactory
+                .select(post.count())
+                .from(post)
+                .where(post.memberId.eq(memberId),
+                        post.createdAt.year().eq(year),
+                        post.createdAt.month().eq(month))
+                .fetchFirst();
     }
 
     @Override
@@ -143,11 +144,32 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return count.intValue();
     }
 
-    private BooleanExpression isActiveMember() {
-        return member.deletedAt.isNull();
+    private BooleanExpression eqDate(LocalDate date) {
+        DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
+                "DATE({0})", post.createdAt);
+
+        return date == null ? null : createdAtDate.eq(date);
+    }
+
+    private BooleanBuilder eqMonth(LocalDate date) {
+        return date == null ? null : new BooleanBuilder()
+                .and(post.createdAt.year().eq(date.getYear()))
+                .and(post.createdAt.month().eq(date.getMonthValue()));
     }
 
     private DateTimeTemplate<LocalDate> dateExpr(DateTimePath<LocalDateTime> localDateTime) {
         return Expressions.dateTimeTemplate(LocalDate.class, "DATE({0})", localDateTime);
+    }
+
+    private BooleanExpression eqMemberId(String memberId) {
+        return memberId == null ? null : post.memberId.eq(memberId);
+    }
+
+    private BooleanExpression isActiveMember() {
+        return member.deletedAt.isNull();
+    }
+
+    private BooleanExpression eqPostType(PostType postType) {
+        return postType == null ? null : post.type.eq(postType);
     }
 }

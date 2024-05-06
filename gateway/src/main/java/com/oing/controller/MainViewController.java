@@ -26,6 +26,7 @@ public class MainViewController implements MainViewApi {
     private final PostService postService;
     private final MemberService memberService;
     private final MemberPickService memberPickService;
+    private final MemberController memberController;
     private final MemberBridge memberBridge;
     private final MissionBridge missionBridge;
     private final PostController postController;
@@ -164,13 +165,44 @@ public class MainViewController implements MainViewApi {
 
     @Override
     public FamilyMemberMonthlyRankingResponse getFamilyMemberMonthlyRanking(String loginMemberId, String loginFamilyId) {
-        // TODO: API Response Mocking 입니다.
+        List<PostRankerResponse> ranking = postController.getFamilyMembersMonthlySurvivalRanking(loginFamilyId).results().stream().toList();
 
-        FamilyMemberRankerResponse first = new FamilyMemberRankerResponse("https://static01.nyt.com/images/2016/09/28/us/28xp-pepefrog/28xp-pepefrog-superJumbo.jpg", "정신적 지주", 24);
-        FamilyMemberRankerResponse second = new FamilyMemberRankerResponse("https://static01.nyt.com/images/2016/09/28/us/28xp-pepefrog/28xp-pepefrog-superJumbo.jpg", "권순찬", 23);
+        FamilyMemberRankerResponse first = null;
+        if (ranking.size() >= 1) {
+            first = getFamilyMemberRankerResponse(ranking.get(0), loginFamilyId);
+        }
+
+        FamilyMemberRankerResponse second = null;
+        if (ranking.size() >= 2) {
+            second = getFamilyMemberRankerResponse(ranking.get(1), loginFamilyId);
+        }
+
         FamilyMemberRankerResponse third = null;
-        LocalDate mostRecentSurvivalPostDate = LocalDate.now().minusDays(1);
+        if (ranking.size() >= 3) {
+            third = getFamilyMemberRankerResponse(ranking.get(2), loginFamilyId);
+        }
 
-        return new FamilyMemberMonthlyRankingResponse(4, first, second, third, mostRecentSurvivalPostDate);
+        LocalDate mostRecentSurvivalPostDate = null;
+        List<PostResponse> mostRecentPosts = postController.fetchDailyFeeds(1, 1, null, null, "desc", PostType.SURVIVAL, loginMemberId, false).results().stream().toList();
+        if (!mostRecentPosts.isEmpty()) {
+            mostRecentSurvivalPostDate = mostRecentPosts.get(0).createdAt().toLocalDate();
+        }
+
+        return new FamilyMemberMonthlyRankingResponse(
+                ZonedDateTime.now().getMonthValue(),
+                first,
+                second,
+                third,
+                mostRecentSurvivalPostDate
+        );
+    }
+
+    private FamilyMemberRankerResponse getFamilyMemberRankerResponse(PostRankerResponse postRankerResponse, String loginFamilyId) {
+        MemberResponse postRankerMember = memberController.getMember(postRankerResponse.memberId(), loginFamilyId);
+        return new FamilyMemberRankerResponse(
+                postRankerMember.imageUrl(),
+                postRankerMember.name(),
+                postRankerResponse.postCount()
+        );
     }
 }

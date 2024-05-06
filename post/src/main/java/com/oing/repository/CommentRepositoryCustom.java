@@ -5,4 +5,6 @@ import com.querydsl.core.QueryResults;
 
 public interface CommentRepositoryCustom {
     QueryResults<Comment> searchPostComments(int page, int size, String postId, boolean asc);
+
+    long countMonthlyCommentByMemberId(int year, int month, String memberId);
 }
