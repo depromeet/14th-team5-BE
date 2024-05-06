@@ -42,7 +42,7 @@ public class PostServiceTest {
         String familyId = "1";
 
         //when
-        when(postRepository.countFamilyMembersByFamilyId(familyId)).thenReturn(1);
+        when(postRepository.countFamilyMembersByFamilyIdAtYesterday(familyId)).thenReturn(1);
         when(postRepository.countTodaySurvivalPostsByFamilyId(familyId)).thenReturn(0);
 
         //then

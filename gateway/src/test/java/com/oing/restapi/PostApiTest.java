@@ -70,7 +70,7 @@ class PostApiTest {
                         TEST_FAMILY_ID,
                         LocalDate.now(),
                         "", "", "",
-                        LocalDateTime.now()
+                        LocalDateTime.now().minusDays(1)
                 )
         );
         TEST_MEMBER1_TOKEN = tokenGenerator
@@ -82,7 +82,7 @@ class PostApiTest {
                         TEST_FAMILY_ID,
                         LocalDate.now(),
                         "", "", "",
-                        LocalDateTime.now()
+                        LocalDateTime.now().minusDays(1)
                 )
         );
         TEST_MEMBER2_TOKEN = tokenGenerator
