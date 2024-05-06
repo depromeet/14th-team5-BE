@@ -119,33 +119,13 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public boolean isCreatedSurvivalPostByMajority(LocalDate date, String familyId) {
-        long totalFamilyMembers = queryFactory
-                .select(member.count())
-                .from(member)
-                .where(member.familyId.eq(familyId)
-                        .and(isActiveMember()))
-                .fetchFirst();
-
-        long survivalPostCount = queryFactory
-                .select(post.count())
-                .from(post)
-                .where(
-                        post.familyId.eq(familyId),
-                        post.type.eq(PostType.SURVIVAL),
-                        dateExpr(post.createdAt).eq(date)
-                )
-                .fetchFirst();
-
-        return survivalPostCount >= totalFamilyMembers / 2;
-    }
-
-    @Override
-    public int countFamilyMembersByFamilyId(String familyId) {
+    public int countFamilyMembersByFamilyIdAtYesterday(String familyId) {
+        LocalDate today = ZonedDateTime.now().toLocalDate();
         Long count = queryFactory
                 .select(member.id.count())
                 .from(member)
                 .where(member.familyId.eq(familyId)
+                        .and(dateExpr(member.familyJoinAt).before(today))
                         .and(isActiveMember()))
                 .fetchFirst();
         return count.intValue();

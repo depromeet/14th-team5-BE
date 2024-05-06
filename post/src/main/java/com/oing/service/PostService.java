@@ -161,12 +161,15 @@ public class PostService {
         return postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, type, postDate);
     }
 
-    public boolean isCreatedSurvivalPostByMajority(LocalDate date, String familyId) {
-        return postRepository.isCreatedSurvivalPostByMajority(date, familyId);
+    public boolean isCreatedSurvivalPostByMajority(String familyId) {
+        int totalFamilyMembers = postRepository.countFamilyMembersByFamilyIdAtYesterday(familyId);
+        int survivalPostCount = postRepository.countTodaySurvivalPostsByFamilyId(familyId);
+
+        return survivalPostCount >= totalFamilyMembers / 2;
     }
 
     public int calculateRemainingSurvivalPostCountUntilMissionUnlocked(String familyId) {
-        int familyMemberCount = postRepository.countFamilyMembersByFamilyId(familyId);
+        int familyMemberCount = postRepository.countFamilyMembersByFamilyIdAtYesterday(familyId);
         int requiredSurvivalPostCount = familyMemberCount / 2;
         int todaySurvivalPostCount = postRepository.countTodaySurvivalPostsByFamilyId(familyId);
 
