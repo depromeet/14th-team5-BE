@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -72,6 +73,13 @@ public class ReactionService {
 
     public boolean isMemberPostReactionExists(Post post, String memberId, Emoji emoji) {
         return reactionRepository.existsByPostAndMemberIdAndEmoji(post, memberId, emoji);
+    }
+
+    public long countMonthlyReactionByMemberId(LocalDate date, String memberId) {
+        int year = date.getYear();
+        int month = date.getMonthValue();
+
+        return reactionRepository.countMonthlyReactionByMemberId(year, month, memberId);
     }
 
     @EventListener
