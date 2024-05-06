@@ -22,8 +22,6 @@ public interface PostRepositoryCustom {
 
     boolean existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(String memberId, String familyId, PostType type, LocalDate postDate);
 
-    boolean isCreatedSurvivalPostByMajority(LocalDate date, String familyId);
-
     int countFamilyMembersByFamilyIdAtYesterday(String familyId);
 
     int countTodaySurvivalPostsByFamilyId(String familyId);
