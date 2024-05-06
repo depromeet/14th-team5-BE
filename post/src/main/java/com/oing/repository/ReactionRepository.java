@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Lock;
 import java.util.List;
 import java.util.Optional;
 
-public interface ReactionRepository extends JpaRepository<Reaction, String> {
+public interface ReactionRepository extends JpaRepository<Reaction, String>, ReactionRepositoryCustom {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     boolean existsByPostAndMemberIdAndEmoji(Post post, String memberId, Emoji emoji);
 

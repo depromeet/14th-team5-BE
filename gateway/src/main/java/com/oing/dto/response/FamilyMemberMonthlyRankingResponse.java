@@ -12,13 +12,13 @@ public record FamilyMemberMonthlyRankingResponse(
         @Schema(description = "랭킹 기준 월")
         Integer month,
 
-        @Schema(description = "(응답모킹됨) 1등 랭커 Dto")
+        @Schema(description = "1등 랭커 Dto")
         FamilyMemberRankerResponse firstRanker,
 
-        @Schema(description = "(응답모킹됨) 2등 랭커 Dto")
+        @Schema(description = "2등 랭커 Dto")
         FamilyMemberRankerResponse secondRanker,
 
-        @Schema(description = "(응답모킹됨) 3등 랭커 Dto")
+        @Schema(description = "3등 랭커 Dto")
         FamilyMemberRankerResponse thirdRanker,
 
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

@@ -4,6 +4,7 @@ package com.oing.controller;
 import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
+import com.oing.dto.dto.PostRankerDTO;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.*;
@@ -11,14 +12,17 @@ import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.MissionPostAccessDeniedFamilyException;
 import com.oing.exception.MissionPostCreateAccessDeniedMemberException;
 import com.oing.restapi.PostApi;
+import com.oing.service.CommentService;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
+import com.oing.service.ReactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 /**
  * no5ing-server
@@ -32,6 +36,8 @@ import java.time.ZonedDateTime;
 public class PostController implements PostApi {
 
     private final PostService postService;
+    private final CommentService commentService;
+    private final ReactionService reactionService;
     private final MemberBridge memberBridge;
 
     @Override
@@ -128,6 +134,29 @@ public class PostController implements PostApi {
 
         int remainingSurvivalPostCount = postService.calculateRemainingSurvivalPostCountUntilMissionUnlocked(loginFamilyId);
         return new RemainingSurvivalPostCountResponse(remainingSurvivalPostCount);
+    }
+
+    @Override
+    public ArrayResponse<PostRankerResponse> getFamilyMembersMonthlySurvivalRanking(String loginFamilyId) {
+        List<String> familyMembersIds = memberBridge.getFamilyMembersIdsByFamilyId(loginFamilyId);
+        LocalDate dateTime = ZonedDateTime.now().toLocalDate();
+
+        List<PostRankerResponse> postRankerResponses = familyMembersIds.stream().map(familyMemberId -> new PostRankerDTO(
+                        familyMemberId,
+                        postService.countMonthlyPostByMemberId(dateTime, familyMemberId),
+                        commentService.countMonthlyCommentByMemberId(dateTime, familyMemberId),
+                        reactionService.countMonthlyReactionByMemberId(dateTime, familyMemberId)
+
+                ))
+                .filter(postRankerDTO -> postRankerDTO.getPostCount() > 0) // 게시글이 없는 경우 제외
+                .sorted() // 내부 정책에 따라 재정의한 DTO compareTo 메서드를 통해 정렬
+                .map(postRankerDTO -> new PostRankerResponse(
+                        postRankerDTO.getMemberId(),
+                        postRankerDTO.getPostCount().intValue())
+                )
+                .toList();
+
+        return ArrayResponse.of(postRankerResponses);
     }
 
     private void validateFamilyMember(String loginMemberId, String postId) {
