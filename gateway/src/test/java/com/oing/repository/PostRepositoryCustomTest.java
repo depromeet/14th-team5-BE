@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.oing.domain.PostType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -116,14 +117,14 @@ class PostRepositoryCustomTest {
     @Nested
     class findLatestPost {
         @Test
-        void 정상_조회_테스트() {
+        void 생존신고_게시물_정상_조회_테스트() {
             // given
             String familyId = testMember1.getFamilyId();
             LocalDateTime inclusiveStart = LocalDate.of(2023, 11, 1).atStartOfDay();
             LocalDateTime exclusiveEnd = LocalDate.of(2023, 11, 2).atStartOfDay();
 
             // when
-            Post post = postRepositoryCustomImpl.findLatestPost(inclusiveStart, exclusiveEnd, familyId);
+            Post post = postRepositoryCustomImpl.findLatestPost(inclusiveStart, exclusiveEnd, SURVIVAL, familyId);
 
             // then
             assertThat(post.getId()).isEqualTo("2");
@@ -137,7 +138,7 @@ class PostRepositoryCustomTest {
             LocalDateTime exclusiveEnd = LocalDate.of(2023, 11, 1).atStartOfDay();
 
             // when
-            Post post = postRepositoryCustomImpl.findLatestPost(inclusiveStart, exclusiveEnd, familyId);
+            Post post = postRepositoryCustomImpl.findLatestPost(inclusiveStart, exclusiveEnd, SURVIVAL, familyId);
 
             // then
             assertThat(post).isNull();
@@ -151,7 +152,7 @@ class PostRepositoryCustomTest {
             LocalDateTime exclusiveEnd = LocalDate.of(9999, 11, 4).atStartOfDay();
 
             // when
-            Post post = postRepositoryCustomImpl.findLatestPost(inclusiveStart, exclusiveEnd, familyId);
+            Post post = postRepositoryCustomImpl.findLatestPost(inclusiveStart, exclusiveEnd, SURVIVAL, familyId);
 
             // then
             assertThat(post).isNull();
@@ -165,7 +166,7 @@ class PostRepositoryCustomTest {
 
         // when
         boolean exists = postRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(testMember1.getId(),
-                testMember1.getFamilyId(), PostType.SURVIVAL, postDate);
+                testMember1.getFamilyId(), SURVIVAL, postDate);
 
         // then
         assertThat(exists).isTrue();
@@ -178,7 +179,7 @@ class PostRepositoryCustomTest {
 
         // when
         boolean exists = postRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(testMember1.getId(),
-                testMember1.getFamilyId(), PostType.SURVIVAL, postDate);
+                testMember1.getFamilyId(), SURVIVAL, postDate);
 
         // then
         assertThat(exists).isFalse();

@@ -185,7 +185,7 @@ public class MainViewController implements MainViewApi {
         LocalDate mostRecentSurvivalPostDate = null;
         LocalDate startOfMonth = ZonedDateTime.now().withDayOfMonth(1).toLocalDate();
         LocalDate tomorrow = ZonedDateTime.now().plusDays(1).toLocalDate();
-        PostResponse mostRecentPost = postController.findLatestPost(startOfMonth, tomorrow, loginFamilyId);
+        PostResponse mostRecentPost = postController.findLatestPost(startOfMonth, tomorrow, PostType.SURVIVAL, loginFamilyId);
         if (mostRecentPost != null) {
             mostRecentSurvivalPostDate = mostRecentPost.createdAt().toLocalDate();
         }

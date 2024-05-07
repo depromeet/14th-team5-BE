@@ -126,6 +126,10 @@ public interface PostApi {
             @Parameter(description = "조회 종료 날짜", example = "2023-12-05")
             LocalDate exclusiveEndDate,
 
+            @RequestParam
+            @Parameter(description = "게시물 타입", example = "SURVIVAL")
+            PostType type,
+
             @Parameter(hidden = true)
             @LoginFamilyId
             String loginFamilyId

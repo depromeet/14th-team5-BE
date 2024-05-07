@@ -54,11 +54,13 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public Post findLatestPost(LocalDateTime startDate, LocalDateTime endDate, String familyId) {
+    public Post findLatestPost(LocalDateTime startDate, LocalDateTime endDate, PostType postType, String familyId) {
         return queryFactory
                 .selectFrom(post)
-                .where(post.familyId.eq(familyId)
-                        .and(post.createdAt.between(startDate, endDate))
+                .where(
+                        post.type.eq(postType),
+                        post.familyId.eq(familyId),
+                        post.createdAt.between(startDate, endDate)
                 )
                 .orderBy(post.createdAt.desc())
                 .fetchFirst();
