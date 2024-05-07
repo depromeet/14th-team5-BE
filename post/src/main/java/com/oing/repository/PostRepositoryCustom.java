@@ -13,6 +13,8 @@ public interface PostRepositoryCustom {
 
     List<Post> findLatestPostOfEveryday(LocalDateTime startDate, LocalDateTime endDate, String familyId);
 
+    Post findLatestPost(LocalDateTime startDate, LocalDateTime endDate, String familyId);
+
     QueryResults<Post> searchPosts(int page, int size, LocalDate date, String memberId, String requesterMemberId,
                                    String familyId, boolean asc, PostType type);
 

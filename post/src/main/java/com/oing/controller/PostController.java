@@ -98,6 +98,13 @@ public class PostController implements PostApi {
     }
 
     @Override
+    public PostResponse getLatestPost(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, String loginFamilyId) {
+        Post latestPost = postService.findLatestPost(inclusiveStartDate, exclusiveEndDate, loginFamilyId);
+
+        return PostResponse.from(latestPost);
+    }
+
+    @Override
     public SurvivalUploadStatusResponse getSurvivalUploadStatus(String memberId, String loginMemberId, String loginFamilyId) {
         validateMemberId(loginMemberId, memberId);
 
