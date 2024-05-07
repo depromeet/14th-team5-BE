@@ -77,7 +77,7 @@ public class DailyMissionHistoryRepositoryTest {
 
 
     @Nested
-    class FindRecentDailyMissionIdsOrderByDateAsc {
+    class findRecentDailyMissionIdsOrderByDateAsc {
         @Test
         void 정상_조회_테스트() {
             // given
