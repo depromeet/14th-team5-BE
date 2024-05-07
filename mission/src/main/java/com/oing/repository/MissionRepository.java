@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface MissionRepository extends JpaRepository<Mission, String>  {
 
-    @Query(value = "SELECT * FROM mission WHERE mission_id NOT IN :excludedIds ORDER BY RAND() LIMIT 1", nativeQuery = true)
-    Optional<Mission> getRandomMissionExcludingIds(List<String> excludedIds);
+    @Query(value = "SELECT * FROM mission WHERE mission_id NOT IN :excludingMissionIds ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    Optional<Mission> findRandomMissionExcludingIds(List<String> excludingMissionIds);
 }

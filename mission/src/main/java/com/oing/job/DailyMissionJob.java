@@ -29,7 +29,7 @@ public class DailyMissionJob {
 
         try {
             List<String> recentDailyMissionIds = dailyMissionHistoryService.getRecentSevenDailyMissionIdsOrderByDateAsc();
-            Mission newDailyMission = missionService.getRandomMissionExcludingIds(recentDailyMissionIds)
+            Mission newDailyMission = missionService.findRandomMissionExcludingIds(recentDailyMissionIds)
                     .orElse(missionService.getMissionByMissionId(recentDailyMissionIds.get(0))); // 최근 7일 동안 등록된 일일 미션 제외했을 때, 미션이 없다면 가장 오래된 미션을 가져옴
 
             DailyMissionHistoryResponse dailyMissionHistoryResponse = dailyMissionHistoryService.registerTodayDailyMission(newDailyMission);

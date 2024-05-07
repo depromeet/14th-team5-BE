@@ -49,8 +49,8 @@ public class MissionService {
         return MissionResponse.from(mission);
     }
 
-    public Optional<Mission> getRandomMissionExcludingIds(List<String> excludedIds) {
-        return missionRepository.getRandomMissionExcludingIds(excludedIds);
+    public Optional<Mission> findRandomMissionExcludingIds(List<String> excludingMissionIds) {
+        return missionRepository.findRandomMissionExcludingIds(excludingMissionIds);
     }
 
     @Transactional

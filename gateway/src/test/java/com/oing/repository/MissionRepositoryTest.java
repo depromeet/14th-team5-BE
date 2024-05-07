@@ -82,7 +82,7 @@ public class MissionRepositoryTest {
             List<String> excludingIds = List.of(testMission1.getId(), testMission2.getId(), testMission3.getId());
 
             // when
-            Optional<Mission> randomMissionId = missionRepository.getRandomMissionExcludingIds(excludingIds);
+            Optional<Mission> randomMissionId = missionRepository.findRandomMissionExcludingIds(excludingIds);
 
             // then
             assertThat(randomMissionId).isPresent();
@@ -97,7 +97,7 @@ public class MissionRepositoryTest {
             List<String> excludingIds = List.of(testMission1.getId(), testMission2.getId(), testMission3.getId(), testMission4.getId(), testMission5.getId(), testMission6.getId(), testMission7.getId());
 
             // when
-            Optional<Mission> randomMissionId = missionRepository.getRandomMissionExcludingIds(excludingIds);
+            Optional<Mission> randomMissionId = missionRepository.findRandomMissionExcludingIds(excludingIds);
 
             // then
             assertThat(randomMissionId).isNotPresent();
