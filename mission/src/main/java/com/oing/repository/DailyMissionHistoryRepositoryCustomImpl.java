@@ -9,7 +9,6 @@ import java.util.List;
 import static com.oing.domain.QDailyMissionHistory.*;
 
 @RequiredArgsConstructor
-@Repository
 public class DailyMissionHistoryRepositoryCustomImpl implements DailyMissionHistoryRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
