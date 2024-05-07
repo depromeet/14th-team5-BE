@@ -8,7 +8,6 @@ import com.oing.util.security.LoginFamilyId;
 import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -115,8 +114,8 @@ public interface PostApi {
             String loginMemberId
     );
 
-    @Operation(summary = "가장 최근 게시물 조회", description = "특정 기간 안에서 가장 최근에 업로드된 게시물을 조회합니다.")
-    PostResponse getLatestPost(
+    @Operation(summary = "가장 최근 게시물 조회", description = "(결과가 없을시, null 반환)\n 특정 기간 안에서 가장 최근에 업로드된 게시물을 조회합니다.")
+    PostResponse findLatestPost(
             @RequestParam
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             @Parameter(description = "조회 시작 날짜", example = "2023-12-05")

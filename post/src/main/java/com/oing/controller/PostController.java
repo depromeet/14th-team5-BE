@@ -98,8 +98,9 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PostResponse getLatestPost(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, String loginFamilyId) {
+    public PostResponse findLatestPost(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, String loginFamilyId) {
         Post latestPost = postService.findLatestPost(inclusiveStartDate, exclusiveEndDate, loginFamilyId);
+        if (latestPost == null) return null;
 
         return PostResponse.from(latestPost);
     }
