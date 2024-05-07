@@ -75,6 +75,7 @@ public enum ErrorCode {
      */
     MISSION_NOT_FOUND("MI0001", "존재하지 않는 미션입니다."),
     DAILY_MISSION_HISTORY_NOT_FOUND("MI0002", "존재하지 않는 미션 히스토리입니다."),
+    DUPLICATED_DAILY_MISSION_HISTORY("MI0003", "이미 존재하는 미션 히스토리입니다."),
 
     /**
      * Deep Link Related Errors
