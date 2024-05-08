@@ -183,7 +183,7 @@ public class MainViewController implements MainViewApi {
         }
 
         LocalDate mostRecentSurvivalPostDate = null;
-        List<PostResponse> mostRecentPosts = postController.fetchDailyFeeds(1, 1, null, null, "desc", PostType.SURVIVAL, loginMemberId, false).results().stream().toList();
+        List<PostResponse> mostRecentPosts = postController.fetchDailyFeeds(1, 1, null, null, "desc", PostType.SURVIVAL, loginMemberId).results().stream().toList();
         if (!mostRecentPosts.isEmpty()) {
             mostRecentSurvivalPostDate = mostRecentPosts.get(0).createdAt().toLocalDate();
         }

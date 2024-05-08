@@ -47,13 +47,8 @@ public class PostController implements PostApi {
 
     @Override
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId,
-                                                            String sort, PostType type, String loginMemberId, boolean available) {
+                                                            String sort, PostType type, String loginMemberId) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
-
-        // TODO: 미션 게시물 접근 가능한 가족인지 검증하는 로직 필요 (프론트 요청으로 나중에 추가)
-        if (type == PostType.MISSION) {
-            validateMissionPostAccessFamily(available);
-        }
         PaginationDTO<Post> fetchResult = postService.searchMemberPost(
                 page, size, date, memberId, loginMemberId, familyId,
                 sort == null || sort.equalsIgnoreCase("ASC"), type
@@ -64,27 +59,24 @@ public class PostController implements PostApi {
                 .map(PostResponse::from);
     }
 
-    private void validateMissionPostAccessFamily(boolean available) {
-        if (!available) {
-            throw new MissionPostAccessDeniedFamilyException();
-        }
-    }
-
     @Override
-    public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId, boolean available) {
+    public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId) {
         log.info("Member {} is trying to create post", loginMemberId);
 
-        // TODO: 미션 게시물 업로드 가능한 사용자인지 검증하는 로직 필요 (프론트 요청으로 나중에 추가)
         if (type == PostType.MISSION) {
-            validateMissionPostCreateAccessMember(available);
+            validateMissionPostCreateAccessMember(loginFamilyId, loginMemberId);
         }
         Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);
         log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
         return PostResponse.from(savedPost);
     }
 
-    private void validateMissionPostCreateAccessMember(boolean available) {
-        if (!available) {
+    private void validateMissionPostCreateAccessMember(String loginFamilyId, String loginMemberId) {
+        if (!postService.isCreatedSurvivalPostByMajority(loginFamilyId)) {
+            throw new MissionPostAccessDeniedFamilyException();
+        }
+
+        if (!postService.isCreatedSurvivalPostToday(loginMemberId, loginFamilyId)) {
             throw new MissionPostCreateAccessDeniedMemberException();
         }
     }

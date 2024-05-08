@@ -182,4 +182,9 @@ public class PostService {
 
         return postRepository.countMonthlyPostByMemberId(year, month, memberId);
     }
+
+    public boolean isCreatedSurvivalPostToday(String memberId, String familyId) {
+        LocalDate today = ZonedDateTime.now().toLocalDate();
+        return postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, today);
+    }
 }

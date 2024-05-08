@@ -41,8 +41,8 @@ public class CalendarController implements CalendarApi {
         List<DailyCalendarResponse> dailyCalendarResponses = new ArrayList<>();
         LocalDate date = LocalDate.parse(yearMonthDay, DateTimeFormatter.ISO_DATE);
 
-        Collection<PostResponse> survivalPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", SURVIVAL, loginMemberId, true).results();
-        Collection<PostResponse> missionPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", MISSION, loginMemberId, true).results();
+        Collection<PostResponse> survivalPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", SURVIVAL, loginMemberId).results();
+        Collection<PostResponse> missionPosts = postController.fetchDailyFeeds(1, 10, date, null, "ASC", MISSION, loginMemberId).results();
         String missionContent = missionBridge.getContentByDate(date);
         boolean allFamilyMembersUploaded = getAllFamilyMembersUploaded(survivalPosts, loginFamilyId);
 
