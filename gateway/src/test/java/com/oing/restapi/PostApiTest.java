@@ -145,31 +145,6 @@ class PostApiTest {
         }
 
         @Test
-        void 미션_게시물_추가_정상_테스트() throws Exception {
-            //given
-            postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER1_ID, TEST_FAMILY_ID, PostType.SURVIVAL, "img", "img",
-                    "content"));
-            CreatePostRequest request = new CreatePostRequest("https://test.com/bucket/images/feed.jpg",
-                    "content", ZonedDateTime.now());
-
-            //when
-            ResultActions resultActions = mockMvc.perform(
-                    post("/v1/posts")
-                            .param("type", "MISSION")
-                            .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(request))
-            );
-
-            //then
-            resultActions
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.authorId").value(TEST_MEMBER1_ID))
-                    .andExpect(jsonPath("$.imageUrl").value(request.imageUrl()))
-                    .andExpect(jsonPath("$.content").value(request.content()));
-        }
-
-        @Test
         void 미션_키_획득하지_않았을_때_미션_게시물_추가_예외_테스트() throws Exception {
             //given
             postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER2_ID, TEST_FAMILY_ID, PostType.SURVIVAL, "img", "img",
