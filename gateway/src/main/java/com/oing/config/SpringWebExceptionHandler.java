@@ -4,9 +4,7 @@ import com.google.common.io.CharStreams;
 import com.oing.component.SentryGateway;
 import com.oing.domain.ErrorReportDTO;
 import com.oing.dto.response.ErrorResponse;
-import com.oing.exception.TokenNotValidException;
-import com.oing.exception.DomainException;
-import com.oing.exception.ErrorCode;
+import com.oing.exception.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -104,6 +102,17 @@ public class SpringWebExceptionHandler {
         return ResponseEntity
                 .status(UNAUTHORIZED)
                 .body(ErrorResponse.of(ErrorCode.TOKEN_AUTHENTICATION_FAILED));
+    }
+
+    @ExceptionHandler({MissionPostAccessDeniedFamilyException.class, MissionPostCreateAccessDeniedMemberException.class})
+    ResponseEntity<ErrorResponse> handleMissionPostAccessDeniedException(HttpServletRequest request, DomainException exception) {
+
+        log.warn("[MissionPostAccessDeniedException]", exception);
+        sentryGateway.captureException(exception, WARNING, request, FORBIDDEN);
+
+        return ResponseEntity
+                .status(FORBIDDEN)
+                .body(ErrorResponse.of(exception.getErrorCode()));
     }
 
     @ExceptionHandler(IOException.class)
