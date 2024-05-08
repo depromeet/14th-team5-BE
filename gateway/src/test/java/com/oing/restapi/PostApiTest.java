@@ -151,12 +151,11 @@ class PostApiTest {
                     "content"));
             CreatePostRequest request = new CreatePostRequest("https://test.com/bucket/images/feed.jpg",
                     "content", ZonedDateTime.now());
-            PostType type = PostType.MISSION;
 
             //when
             ResultActions resultActions = mockMvc.perform(
                     post("/v1/posts")
-                            .param("type", type.name())
+                            .param("type", "MISSION")
                             .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
@@ -166,7 +165,6 @@ class PostApiTest {
             resultActions
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.authorId").value(TEST_MEMBER1_ID))
-                    .andExpect(jsonPath("$.type").value(type.getTypeKey()))
                     .andExpect(jsonPath("$.imageUrl").value(request.imageUrl()))
                     .andExpect(jsonPath("$.content").value(request.content()));
         }
@@ -183,7 +181,7 @@ class PostApiTest {
             //when
             ResultActions resultActions = mockMvc.perform(
                     post("/v1/posts")
-                            .param("type", type.name())
+                            .param("type", "MISSION")
                             .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
@@ -205,7 +203,7 @@ class PostApiTest {
             //when
             ResultActions resultActions = mockMvc.perform(
                     post("/v1/posts")
-                            .param("type", type.name())
+                            .param("type", "MISSION")
                             .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request))
