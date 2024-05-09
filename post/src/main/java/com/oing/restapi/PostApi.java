@@ -1,10 +1,9 @@
 package com.oing.restapi;
 
+import com.oing.domain.PostType;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
-import com.oing.dto.response.PaginationResponse;
-import com.oing.dto.response.PostResponse;
-import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.dto.response.*;
 import com.oing.util.security.LoginFamilyId;
 import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
@@ -66,6 +65,10 @@ public interface PostApi {
             @Parameter(description = "정렬 방식", example = "DESC | ASC")
             String sort,
 
+            @RequestParam(required = false, defaultValue = "SURVIVAL")
+            @Parameter(description = "게시물 타입", example = "SURVIVAL")
+            PostType type,
+
             @Parameter(hidden = true)
             @LoginMemberId
             String loginMemberId
@@ -77,6 +80,10 @@ public interface PostApi {
             @Valid
             @RequestBody
             CreatePostRequest request,
+
+            @RequestParam(required = false, defaultValue = "SURVIVAL")
+            @Parameter(description = "게시물 타입", example = "SURVIVAL")
+            PostType type,
 
             @Parameter(hidden = true)
             @LoginFamilyId
@@ -97,5 +104,100 @@ public interface PostApi {
             @Parameter(hidden = true)
             @LoginMemberId
             String loginMemberId
+    );
+
+    @Operation(summary = "가장 최근 게시물 조회", description = "(결과가 없을시, null 반환)\n 특정 기간 안에서 가장 최근에 업로드된 게시물을 조회합니다.")
+    PostResponse findLatestPost(
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            @Parameter(description = "조회 시작 날짜", example = "2023-12-05")
+            LocalDate inclusiveStartDate,
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            @Parameter(description = "조회 종료 날짜", example = "2023-12-05")
+            LocalDate exclusiveEndDate,
+
+            @RequestParam
+            @Parameter(description = "게시물 타입", example = "SURVIVAL")
+            PostType type,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
+
+    @Operation(summary = "회원 생존신고 게시글 업로드 여부 응답 조회", description = "회원 생존신고 게시글 업로드 여부를 조회합니다.")
+    @GetMapping("/{memberId}/survival-uploaded")
+    SurvivalUploadStatusResponse getSurvivalUploadStatus(
+            @PathVariable
+            @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            String memberId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
+
+    @Operation(summary = "회원 미션 게시글 업로드 여부 응답 조회", description = "회원 미션 게시글 업로드 여부를 조회합니다.")
+    @GetMapping("/{memberId}/mission-uploaded")
+    MissionUploadStatusResponse getMissionUploadStatus(
+            @PathVariable
+            @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            String memberId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
+
+    @Operation(summary = "가족 미션 키 획득 여부 응답 조회", description = "가족 미션 키 획득 여부를 조회합니다.")
+    @GetMapping("/{memberId}/mission-available")
+    MissionAvailableStatusResponse getMissionAvailableStatus(
+            @PathVariable
+            @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            String memberId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
+
+    @Operation(summary = "미션 키 획득까지 남은 생존신고 업로드 수", description = "미션 키 획득까지 남은 생존신고 업로드 수를 조회합니다.")
+    @GetMapping("/{memberId}/remaining-survival-count")
+    RemainingSurvivalPostCountResponse getRemainingSurvivalPostCount(
+            @PathVariable
+            @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+            String memberId,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
+
+    @Operation(summary = "가족구성원들의 생존신고 랭킹 조회", description = "가족구성원들의 생존신고 랭킹을 조회합니다.")
+    @Parameter(required = true, name = "type", description = "게시물 타입", example = "[SURVIVAL]")
+    @Parameter(required = true, name = "scope", description = "랭킹 범위", example = "[FAMILY]")
+    @GetMapping(value = "/ranking", params = {"type=SURVIVAL", "scope=FAMILY"})
+    ArrayResponse<PostRankerResponse> getFamilyMembersMonthlySurvivalRanking(
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
     );
 }

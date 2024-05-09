@@ -5,4 +5,4 @@ include 'member'
 include 'common'
 include 'family'
 include 'post'
-
+include 'mission'

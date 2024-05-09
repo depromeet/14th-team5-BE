@@ -3,20 +3,26 @@ package com.oing.controller;
 
 import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
+import com.oing.domain.PostType;
+import com.oing.dto.dto.PostRankerDTO;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
-import com.oing.dto.response.PaginationResponse;
-import com.oing.dto.response.PostResponse;
-import com.oing.dto.response.PreSignedUrlResponse;
+import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
+import com.oing.exception.MissionPostAccessDeniedFamilyException;
+import com.oing.exception.MissionPostCreateAccessDeniedMemberException;
 import com.oing.restapi.PostApi;
+import com.oing.service.CommentService;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
+import com.oing.service.ReactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.List;
 
 /**
  * no5ing-server
@@ -30,6 +36,8 @@ import java.time.LocalDate;
 public class PostController implements PostApi {
 
     private final PostService postService;
+    private final CommentService commentService;
+    private final ReactionService reactionService;
     private final MemberBridge memberBridge;
 
     @Override
@@ -39,10 +47,11 @@ public class PostController implements PostApi {
 
     @Override
     public PaginationResponse<PostResponse> fetchDailyFeeds(Integer page, Integer size, LocalDate date, String memberId,
-                                                            String sort, String loginMemberId) {
+                                                            String sort, PostType type, String loginMemberId) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
         PaginationDTO<Post> fetchResult = postService.searchMemberPost(
-                page, size, date, memberId, loginMemberId, familyId, sort == null || sort.equalsIgnoreCase("ASC")
+                page, size, date, memberId, loginMemberId, familyId,
+                sort == null || sort.equalsIgnoreCase("ASC"), type
         );
 
         return PaginationResponse
@@ -51,13 +60,25 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PostResponse createPost(CreatePostRequest request, String loginFamilyId, String loginMemberId) {
+    public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId) {
         log.info("Member {} is trying to create post", loginMemberId);
 
-        Post savedPost = postService.createMemberPost(request, loginMemberId, loginFamilyId);
+        if (type == PostType.MISSION) {
+            validateMissionPostCreateAccessMember(loginFamilyId, loginMemberId);
+        }
+        Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);
         log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
-
         return PostResponse.from(savedPost);
+    }
+
+    private void validateMissionPostCreateAccessMember(String loginFamilyId, String loginMemberId) {
+        if (!postService.isCreatedSurvivalPostByMajority(loginFamilyId)) {
+            throw new MissionPostAccessDeniedFamilyException();
+        }
+
+        if (!postService.isCreatedSurvivalPostToday(loginMemberId, loginFamilyId)) {
+            throw new MissionPostCreateAccessDeniedMemberException();
+        }
     }
 
     @Override
@@ -68,11 +89,87 @@ public class PostController implements PostApi {
         return PostResponse.from(memberPostProjection);
     }
 
+    @Override
+    public PostResponse findLatestPost(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, PostType postType, String loginFamilyId) {
+        Post latestPost = postService.findLatestPost(inclusiveStartDate, exclusiveEndDate, postType, loginFamilyId);
+        if (latestPost == null) return null;
+
+        return PostResponse.from(latestPost);
+    }
+
+    @Override
+    public SurvivalUploadStatusResponse getSurvivalUploadStatus(String memberId, String loginMemberId, String loginFamilyId) {
+        validateMemberId(loginMemberId, memberId);
+
+        if (postService.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, loginFamilyId, PostType.SURVIVAL, LocalDate.now())) {
+            return new SurvivalUploadStatusResponse(true);
+        }
+        return new SurvivalUploadStatusResponse(false);
+    }
+
+    @Override
+    public MissionUploadStatusResponse getMissionUploadStatus(String memberId, String loginMemberId, String loginFamilyId) {
+        validateMemberId(loginMemberId, memberId);
+
+        if (postService.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, loginFamilyId, PostType.MISSION, LocalDate.now())) {
+            return new MissionUploadStatusResponse(true);
+        }
+        return new MissionUploadStatusResponse(false);
+    }
+
+    @Override
+    public MissionAvailableStatusResponse getMissionAvailableStatus(String memberId, String loginMemberId, String loginFamilyId) {
+        validateMemberId(loginMemberId, memberId);
+
+        if (postService.isCreatedSurvivalPostByMajority(loginFamilyId)) {
+            return new MissionAvailableStatusResponse(true);
+        }
+        return new MissionAvailableStatusResponse(false);
+    }
+
+    @Override
+    public RemainingSurvivalPostCountResponse getRemainingSurvivalPostCount(String memberId, String loginMemberId, String loginFamilyId) {
+        validateMemberId(loginMemberId, memberId);
+
+        int remainingSurvivalPostCount = postService.calculateRemainingSurvivalPostCountUntilMissionUnlocked(loginFamilyId);
+        return new RemainingSurvivalPostCountResponse(remainingSurvivalPostCount);
+    }
+
+    @Override
+    public ArrayResponse<PostRankerResponse> getFamilyMembersMonthlySurvivalRanking(String loginFamilyId) {
+        List<String> familyMembersIds = memberBridge.getFamilyMembersIdsByFamilyId(loginFamilyId);
+        LocalDate dateTime = ZonedDateTime.now().toLocalDate();
+
+        List<PostRankerResponse> postRankerResponses = familyMembersIds.stream().map(familyMemberId -> new PostRankerDTO(
+                        familyMemberId,
+                        postService.countMonthlyPostByMemberId(dateTime, familyMemberId),
+                        commentService.countMonthlyCommentByMemberId(dateTime, familyMemberId),
+                        reactionService.countMonthlyReactionByMemberId(dateTime, familyMemberId)
+
+                ))
+                .filter(postRankerDTO -> postRankerDTO.getPostCount() > 0) // 게시글이 없는 경우 제외
+                .sorted() // 내부 정책에 따라 재정의한 DTO compareTo 메서드를 통해 정렬
+                .map(postRankerDTO -> new PostRankerResponse(
+                        postRankerDTO.getMemberId(),
+                        postRankerDTO.getPostCount().intValue())
+                )
+                .toList();
+
+        return ArrayResponse.of(postRankerResponses);
+    }
+
     private void validateFamilyMember(String loginMemberId, String postId) {
         String postFamilyId = postService.getMemberPostById(postId).getFamilyId();
         String loginFamilyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
         if (!postFamilyId.equals(loginFamilyId)) {
             log.warn("Unauthorized access attempt: Member {} is attempting to access post {}", loginMemberId, postId);
+            throw new AuthorizationFailedException();
+        }
+    }
+
+    private void validateMemberId(String loginMemberId, String memberId) {
+        if (!loginMemberId.equals(memberId)) {
+            log.warn("Unauthorized access attempt: Member {} is attempting to access post", loginMemberId);
             throw new AuthorizationFailedException();
         }
     }

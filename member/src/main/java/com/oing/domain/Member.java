@@ -1,10 +1,12 @@
 package com.oing.domain;
 
+import com.oing.exception.InvalidMemberNameLengthException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

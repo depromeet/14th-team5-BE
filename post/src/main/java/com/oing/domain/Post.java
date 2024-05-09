@@ -28,6 +28,13 @@ public class Post extends BaseAuditEntity {
     @Column(name = "family_id", columnDefinition = "CHAR(26)", nullable = false)
     private String familyId;
 
+    @Column(name = "mission_id", columnDefinition = "CHAR(26)")
+    private String missionId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private PostType type;
+
     @Column(name = "post_img_url", nullable = false)
     private String postImgUrl;
 
@@ -55,11 +62,27 @@ public class Post extends BaseAuditEntity {
     @OneToMany(mappedBy = "post")
     private List<RealEmoji> realEmojis = new ArrayList<>();
 
-    public Post(String id, String memberId, String familyId, String postImgUrl, String postImgKey, String content) {
+    public Post(String id, String memberId, String familyId, PostType type, String postImgUrl, String postImgKey, String content) {
         validateContent(content);
         this.id = id;
         this.memberId = memberId;
         this.familyId = familyId;
+        this.type = type;
+        this.postImgUrl = postImgUrl;
+        this.postImgKey = postImgKey;
+        this.content = content;
+        this.commentCnt = 0;
+        this.reactionCnt = 0;
+        this.realEmojiCnt = 0;
+    }
+
+    public Post(String id, String memberId, String familyId, String missionId, PostType type, String postImgUrl, String postImgKey, String content) {
+        validateContent(content);
+        this.id = id;
+        this.memberId = memberId;
+        this.familyId = familyId;
+        this.missionId = missionId;
+        this.type = type;
         this.postImgUrl = postImgUrl;
         this.postImgKey = postImgKey;
         this.content = content;

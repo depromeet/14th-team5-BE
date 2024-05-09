@@ -2,9 +2,11 @@ package com.oing.service;
 
 import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
+import com.oing.domain.PostType;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
-import com.oing.exception.DuplicatePostUploadException;
+import com.oing.exception.DuplicateMissionPostUploadException;
+import com.oing.exception.DuplicateSurvivalPostUploadException;
 import com.oing.exception.InvalidUploadTimeException;
 import com.oing.exception.PostNotFoundException;
 import com.oing.repository.PostRepository;
@@ -32,6 +34,7 @@ public class PostService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final IdentityGenerator identityGenerator;
     private final PreSignedUrlGenerator preSignedUrlGenerator;
+    private final MissionBridge missionBridge;
 
     @Transactional
     public PreSignedUrlResponse requestPresignedUrl(String loginMemberId, String imageName) {
@@ -43,29 +46,61 @@ public class PostService {
     }
 
     @Transactional
-    public Post createMemberPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
+    public Post createMemberPost(CreatePostRequest request, PostType type, String loginMemberId, String loginFamilyId) {
+        return switch (type) {
+            case SURVIVAL -> createSurvivalPost(request, loginMemberId, loginFamilyId);
+            case MISSION -> createMissionPost(request, loginMemberId, loginFamilyId);
+        };
+    }
+
+    public Post createSurvivalPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
         ZonedDateTime uploadTime = request.uploadTime();
-        validateUserHasNotCreatedPostToday(loginMemberId, loginFamilyId, uploadTime);
+        validateUserHasNotCreatedPostToday(loginMemberId, loginFamilyId, PostType.SURVIVAL, uploadTime);
         validateUploadTime(loginMemberId, uploadTime);
 
-        Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId,
+        Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, PostType.SURVIVAL,
                 request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), request.content());
         return postRepository.save(post);
     }
 
-    private void validateUserHasNotCreatedPostToday(String memberId, String familyId, ZonedDateTime uploadTime) {
+    public Post createMissionPost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
+        ZonedDateTime uploadTime = request.uploadTime();
+        validateUserHasNotCreatedPostToday(loginMemberId, loginFamilyId, PostType.MISSION, uploadTime);
+        validateUploadTime(loginMemberId, uploadTime);
+        String missionId = missionBridge.getTodayMissionId();
+
+        Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, missionId, PostType.MISSION,
+                request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), request.content());
+        return postRepository.save(post);
+    }
+
+    private void validateUserHasNotCreatedPostToday(String memberId, String familyId, PostType type, ZonedDateTime uploadTime) {
         LocalDate today = uploadTime.toLocalDate();
-        if (postRepository.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, today)) {
-            log.warn("Member {} has already created a post today", memberId);
-            throw new DuplicatePostUploadException();
+        switch (type) {
+            case SURVIVAL -> validateUserHasNotCreatedSurvivalPostToday(memberId, familyId, today);
+            case MISSION -> validateUserHasNotCreatedMissionPostToday(memberId, familyId, today);
+        }
+    }
+
+    private void validateUserHasNotCreatedSurvivalPostToday(String memberId, String familyId, LocalDate today) {
+        if (postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, today)) {
+            log.warn("Member {} has already created a survival post today {}", memberId, today);
+            throw new DuplicateSurvivalPostUploadException();
+        }
+    }
+
+    private void validateUserHasNotCreatedMissionPostToday(String memberId, String familyId, LocalDate today) {
+        if (postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.MISSION, today)) {
+            log.warn("Member {} has already created a mission post today {}", memberId, today);
+            throw new DuplicateMissionPostUploadException();
         }
     }
 
     private void validateUploadTime(String memberId, ZonedDateTime uploadTime) {
         ZonedDateTime serverTime = ZonedDateTime.now();
 
-        ZonedDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(12, 0));
-        ZonedDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(12, 0));
+        ZonedDateTime lowerBound = serverTime.minusDays(1).with(LocalTime.of(10, 0));
+        ZonedDateTime upperBound = serverTime.plusDays(1).with(LocalTime.of(10, 0));
 
         if (uploadTime.isBefore(lowerBound) || uploadTime.isAfter(upperBound)) {
             log.warn("Member {} is attempting to upload a post at an invalid time", memberId);
@@ -81,13 +116,26 @@ public class PostService {
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
-    public PaginationDTO<Post> searchMemberPost(int page, int size, LocalDate date, String memberId, String requesterMemberId, String familyId, boolean asc) {
-        QueryResults<Post> results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc);
-        int totalPage = (int) Math.ceil((double) results.getTotal() / size);
-        return new PaginationDTO<>(
-                totalPage,
-                results.getResults()
-        );
+    public Post findLatestPost(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, PostType postType, String loginFamilyId) {
+        return postRepository.findLatestPost(inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay(), postType, loginFamilyId);
+    }
+
+    public PaginationDTO<Post> searchMemberPost(int page, int size, LocalDate date, String memberId, String requesterMemberId,
+                                                String familyId, boolean asc, PostType type) {
+        QueryResults<Post> results = null;
+        int totalPage = 0;
+
+        switch (type) {
+            case SURVIVAL -> {
+                results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, type);
+                totalPage = (int) Math.ceil((double) results.getTotal() / size);
+            }
+            case MISSION -> {
+                results = postRepository.searchPosts(page, size, date, memberId, requesterMemberId, familyId, asc, type);
+                totalPage = (int) Math.ceil((double) results.getTotal() / size);
+            }
+        }
+        return new PaginationDTO<>(totalPage, results.getResults());
     }
 
     public List<Post> findAllByFamilyIdAndCreatedAtBetween(String familyId, LocalDate startDate, LocalDate endDate) {
@@ -113,7 +161,34 @@ public class PostService {
         return postRepository.existsByFamilyIdAndCreatedAt(familyId, postDate);
     }
 
-    public boolean existsByMemberIdAndFamilyIdAndCreatedAt(String memberId, String familyId, LocalDate postDate) {
-        return postRepository.existsByMemberIdAndFamilyIdAndCreatedAt(memberId, familyId, postDate);
+    public boolean existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(String memberId, String familyId, PostType type, LocalDate postDate) {
+        return postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, type, postDate);
+    }
+
+    public boolean isCreatedSurvivalPostByMajority(String familyId) {
+        int totalFamilyMembers = postRepository.countFamilyMembersByFamilyIdAtYesterday(familyId);
+        int survivalPostCount = postRepository.countTodaySurvivalPostsByFamilyId(familyId);
+
+        return survivalPostCount >= totalFamilyMembers / 2;
+    }
+
+    public int calculateRemainingSurvivalPostCountUntilMissionUnlocked(String familyId) {
+        int familyMemberCount = postRepository.countFamilyMembersByFamilyIdAtYesterday(familyId);
+        int requiredSurvivalPostCount = familyMemberCount / 2;
+        int todaySurvivalPostCount = postRepository.countTodaySurvivalPostsByFamilyId(familyId);
+
+        return Math.max(requiredSurvivalPostCount - todaySurvivalPostCount, 0);
+    }
+
+    public long countMonthlyPostByMemberId(LocalDate date, String memberId) {
+        int year = date.getYear();
+        int month = date.getMonthValue();
+
+        return postRepository.countMonthlyPostByMemberId(year, month, memberId);
+    }
+
+    public boolean isCreatedSurvivalPostToday(String memberId, String familyId) {
+        LocalDate today = ZonedDateTime.now().toLocalDate();
+        return postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, today);
     }
 }

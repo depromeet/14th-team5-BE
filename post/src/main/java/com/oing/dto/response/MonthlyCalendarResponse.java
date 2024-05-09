@@ -6,8 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
-@Schema(description = "캘린더 응답")
-public record CalendarResponse(
+@Schema(description = "월간 캘린더 응답")
+public record MonthlyCalendarResponse(
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         @Parameter(description = "오늘의 날짜", example = "2023-12-05")
         LocalDate date,

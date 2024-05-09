@@ -42,12 +42,11 @@ public class MemberDeviceService {
         return true;
     }
 
-    @Transactional
     public List<String> getFcmTokensByMemberId(String memberId) {
         return memberDeviceRepository.findAllByMemberId(memberId)
                 .stream()
                 .map(MemberDevice::getFcmToken)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional

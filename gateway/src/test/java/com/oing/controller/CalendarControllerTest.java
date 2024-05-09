@@ -2,8 +2,9 @@ package com.oing.controller;
 
 import com.oing.domain.Member;
 import com.oing.domain.Post;
+import com.oing.domain.PostType;
 import com.oing.dto.response.ArrayResponse;
-import com.oing.dto.response.CalendarResponse;
+import com.oing.dto.response.MonthlyCalendarResponse;
 import com.oing.service.MemberService;
 import com.oing.service.PostService;
 import com.oing.util.OptimizedImageUrlGenerator;
@@ -59,7 +60,7 @@ class CalendarControllerTest {
 
 
     @Test
-    void 월별_캘린더_조회_테스트() {
+    void 월간_캘린더_조회_테스트() {
         // Given
         String yearMonth = "2023-11";
         String familyId = testMember1.getFamilyId();
@@ -70,6 +71,7 @@ class CalendarControllerTest {
                 "1",
                 testMember1.getId(),
                 familyId,
+                PostType.SURVIVAL,
                 "post.com/1",
                 "1",
                 "test1"
@@ -79,6 +81,7 @@ class CalendarControllerTest {
                 "2",
                 testMember2.getId(),
                 familyId,
+                PostType.SURVIVAL,
                 "post.com/2",
                 "2",
                 "test2"
@@ -88,6 +91,7 @@ class CalendarControllerTest {
                 "3",
                 testMember1.getId(),
                 familyId,
+                PostType.SURVIVAL,
                 "post.com/3",
                 "3",
                 "test3"
@@ -97,6 +101,7 @@ class CalendarControllerTest {
                 "4",
                 testMember2.getId(),
                 familyId,
+                PostType.SURVIVAL,
                 "post.com/4",
                 "4",
                 "test4"
@@ -106,11 +111,11 @@ class CalendarControllerTest {
         when(postService.findLatestPostOfEveryday(startDate, endDate, familyId)).thenReturn(representativePosts);
 
         // When
-        ArrayResponse<CalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, familyId);
+        ArrayResponse<MonthlyCalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, familyId);
 
         // Then
         assertThat(weeklyCalendar.results())
-                .extracting(CalendarResponse::representativePostId)
+                .extracting(MonthlyCalendarResponse::representativePostId)
                 .containsExactly("1", "2", "3", "4");
     }
 }

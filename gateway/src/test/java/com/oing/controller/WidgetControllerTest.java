@@ -2,6 +2,7 @@ package com.oing.controller;
 
 import com.oing.domain.Member;
 import com.oing.domain.Post;
+import com.oing.domain.PostType;
 import com.oing.dto.response.SingleRecentPostWidgetResponse;
 import com.oing.service.MemberService;
 import com.oing.service.PostService;
@@ -61,6 +62,7 @@ class WidgetControllerTest {
             "testPost1",
             testMember1.getId(),
             "1",
+            PostType.SURVIVAL,
             "post.com/1",
             "1",
             "testPost"
@@ -74,7 +76,7 @@ class WidgetControllerTest {
         String familyId = testMember1.getFamilyId();
 
         when(postService.findLatestPostOfEveryday(LocalDate.parse(date), LocalDate.parse(date).plusDays(1), familyId)).thenReturn(List.of(testPost1));
-        when(memberService.findMemberById(testPost1.getMemberId())).thenReturn(testMember1);
+        when(memberService.getMemberByMemberId(testPost1.getMemberId())).thenReturn(testMember1);
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testMember1.getProfileImgUrl())).thenReturn(testMember1.getProfileImgUrl());
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testPost1.getPostImgUrl())).thenReturn(testPost1.getPostImgUrl());
 
@@ -105,7 +107,7 @@ class WidgetControllerTest {
         String familyId = testMember1.getFamilyId();
 
         when(postService.findLatestPostOfEveryday(LocalDate.now(), LocalDate.now().plusDays(1), familyId)).thenReturn(List.of(testPost1));
-        when(memberService.findMemberById(testPost1.getMemberId())).thenReturn(testMember1);
+        when(memberService.getMemberByMemberId(testPost1.getMemberId())).thenReturn(testMember1);
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testMember1.getProfileImgUrl())).thenReturn(testMember1.getProfileImgUrl());
         when(optimizedImageUrlGenerator.getKBImageUrlGenerator(testPost1.getPostImgUrl())).thenReturn(testPost1.getPostImgUrl());
 

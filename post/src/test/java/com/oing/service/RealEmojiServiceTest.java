@@ -1,9 +1,6 @@
 package com.oing.service;
 
-import com.oing.domain.Emoji;
-import com.oing.domain.MemberRealEmoji;
-import com.oing.domain.Post;
-import com.oing.domain.RealEmoji;
+import com.oing.domain.*;
 import com.oing.dto.request.PostRealEmojiRequest;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.RealEmojiAlreadyExistsException;
@@ -44,7 +41,7 @@ public class RealEmojiServiceTest {
         //given
         String memberId = "1";
         String familyId = "1";
-        Post post = new Post("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
+        Post post = new Post("1", memberId, familyId, PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
@@ -69,7 +66,7 @@ public class RealEmojiServiceTest {
         String memberId = "1";
         String familyId = "1";
         String otherFamilyId = "2";
-        Post post = new Post("1", otherFamilyId, otherFamilyId, "https://oing.com/post.jpg", "post.jpg",
+        Post post = new Post("1", otherFamilyId, otherFamilyId, PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
@@ -88,7 +85,7 @@ public class RealEmojiServiceTest {
         //given
         String memberId = "1";
         String familyId = "1";
-        Post post = new Post("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
+        Post post = new Post("1", memberId, familyId, PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1",  memberId, familyId, Emoji.EMOJI_1,
                 "https://oing.com/emoji.jpg", "emoji.jpg");
@@ -109,7 +106,7 @@ public class RealEmojiServiceTest {
         //given
         String memberId = "1";
         String familyId = "1";
-        Post post = new Post("1", memberId, familyId, "https://oing.com/post.jpg", "post.jpg",
+        Post post = new Post("1", memberId, familyId, PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");
@@ -129,7 +126,7 @@ public class RealEmojiServiceTest {
         //given
         String memberId = "1";
         String familyId = "1";
-        Post post = new Post("1", memberId, familyId,"https://oing.com/post.jpg", "post.jpg",
+        Post post = new Post("1", memberId, familyId, PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
         MemberRealEmoji memberRealEmoji = new MemberRealEmoji("1", memberId, familyId,
                 Emoji.EMOJI_1, "https://oing.com/emoji.jpg", "emoji.jpg");

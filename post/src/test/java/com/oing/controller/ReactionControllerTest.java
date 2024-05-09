@@ -2,6 +2,7 @@ package com.oing.controller;
 
 import com.oing.domain.Emoji;
 import com.oing.domain.Post;
+import com.oing.domain.PostType;
 import com.oing.domain.Reaction;
 import com.oing.dto.request.PostReactionRequest;
 import com.oing.dto.response.PostReactionMemberResponse;
@@ -37,7 +38,7 @@ public class ReactionControllerTest {
     void 게시물_리액션_생성_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", "1", "1", "1");
+        Post post = new Post("1", memberId, "1", PostType.SURVIVAL, "1", "1", "1");
         Reaction reaction = new Reaction("1", post, memberId, Emoji.EMOJI_1);
         when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
@@ -54,7 +55,7 @@ public class ReactionControllerTest {
     void 게시물_리액션_삭제_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", "1", "1", "1");
+        Post post = new Post("1", memberId, "1", PostType.SURVIVAL, "1", "1", "1");
         when(postService.getMemberPostById(post.getId())).thenReturn(post);
 
         //when
@@ -69,7 +70,7 @@ public class ReactionControllerTest {
     void 리액션_남긴_멤버_조회_테스트() {
         //given
         String memberId = "1";
-        Post post = new Post("1", memberId, "1", "1", "1", "1");
+        Post post = new Post("1", memberId, "1", PostType.SURVIVAL, "1", "1", "1");
         List<Reaction> mockReactions = Arrays.asList(
                 new Reaction("1", post, memberId, Emoji.EMOJI_1),
                 new Reaction("2", post, memberId, Emoji.EMOJI_2)
