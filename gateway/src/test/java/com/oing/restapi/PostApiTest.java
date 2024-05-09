@@ -26,6 +26,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
+import static com.oing.exception.ErrorCode.MISSION_POST_ACCESS_DENIED_FAMILY;
+import static com.oing.exception.ErrorCode.MISSION_POST_CREATE_ACCESS_DENIED_MEMBER;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -118,26 +120,75 @@ class PostApiTest {
                 .andExpect(jsonPath("$.url").exists());
     }
 
-    @Test
-    void 게시물_추가_테스트() throws Exception {
-        //given
-        CreatePostRequest request = new CreatePostRequest("https://test.com/bucket/images/feed.jpg",
-                "content", ZonedDateTime.now());
+    @Nested
+    class createPost {
+        @Test
+        void 생존신고_게시물_추가_테스트() throws Exception {
+            //given
+            CreatePostRequest request = new CreatePostRequest("https://test.com/bucket/images/feed.jpg",
+                    "content", ZonedDateTime.now());
 
-        //when
-        ResultActions resultActions = mockMvc.perform(
-                post("/v1/posts")
-                        .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-        );
+            //when
+            ResultActions resultActions = mockMvc.perform(
+                    post("/v1/posts")
+                            .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
+            );
 
-        //then
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.authorId").value(TEST_MEMBER1_ID))
-                .andExpect(jsonPath("$.imageUrl").value(request.imageUrl()))
-                .andExpect(jsonPath("$.content").value(request.content()));
+            //then
+            resultActions
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.authorId").value(TEST_MEMBER1_ID))
+                    .andExpect(jsonPath("$.imageUrl").value(request.imageUrl()))
+                    .andExpect(jsonPath("$.content").value(request.content()));
+        }
+
+        @Test
+        void 미션_키_획득하지_않았을_때_미션_게시물_추가_예외_테스트() throws Exception {
+            //given
+            postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER2_ID, TEST_FAMILY_ID, PostType.SURVIVAL, "img", "img",
+                    "content"));
+            CreatePostRequest request = new CreatePostRequest("https://test.com/bucket/images/feed.jpg",
+                    "content", ZonedDateTime.now());
+            PostType type = PostType.MISSION;
+
+            //when
+            ResultActions resultActions = mockMvc.perform(
+                    post("/v1/posts")
+                            .param("type", "MISSION")
+                            .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
+            );
+
+            //then
+            resultActions
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value(MISSION_POST_CREATE_ACCESS_DENIED_MEMBER.getMessage()));
+        }
+
+        @Test
+        void 미션_키는_획득했으나_해당_회원이_생존신고_하지_않았을_때_미션_게시물_추가_예외_테스트() throws Exception {
+            //given
+            CreatePostRequest request = new CreatePostRequest("https://test.com/bucket/images/feed.jpg",
+                    "content", ZonedDateTime.now());
+            PostType type = PostType.MISSION;
+
+            //when
+            ResultActions resultActions = mockMvc.perform(
+                    post("/v1/posts")
+                            .param("type", "MISSION")
+                            .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
+            );
+
+            //then
+            resultActions
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.message").value(MISSION_POST_ACCESS_DENIED_FAMILY.getMessage()));
+        }
     }
 
     @Test

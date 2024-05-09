@@ -1,12 +1,6 @@
 package com.oing.service;
 
-import com.oing.domain.Emoji;
-import com.oing.domain.Post;
-import com.oing.domain.PostType;
-import com.oing.domain.Reaction;
-import com.oing.dto.request.PostReactionRequest;
 import com.oing.repository.PostRepository;
-import com.oing.repository.ReactionRepository;
 import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
 import org.junit.jupiter.api.Test;
@@ -17,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,5 +42,18 @@ public class PostServiceTest {
 
         //then
         assertEquals(0, postService.calculateRemainingSurvivalPostCountUntilMissionUnlocked(familyId));
+    }
+
+    @Test
+    void 미션_키_획득_여부_조회_테스트() {
+        //given
+        String familyId = "1";
+
+        //when
+        when(postRepository.countFamilyMembersByFamilyIdAtYesterday(familyId)).thenReturn(4);
+        when(postRepository.countTodaySurvivalPostsByFamilyId(familyId)).thenReturn(3);
+
+        //then
+        assertTrue(postService.isCreatedSurvivalPostByMajority(familyId));
     }
 }
