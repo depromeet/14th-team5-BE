@@ -104,7 +104,7 @@ class MainViewApiTest {
 
 
     @Nested
-    class 금월의_가족구성원_월간_랭킹_조회 {
+    class getFamilyMemberMonthlyRanking {
         @Test
         void 정상_조회() throws Exception {
             // given
