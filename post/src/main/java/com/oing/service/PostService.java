@@ -116,6 +116,10 @@ public class PostService {
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }
 
+    public Post findLatestPost(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, PostType postType, String loginFamilyId) {
+        return postRepository.findLatestPost(inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay(), postType, loginFamilyId);
+    }
+
     public PaginationDTO<Post> searchMemberPost(int page, int size, LocalDate date, String memberId, String requesterMemberId,
                                                 String familyId, boolean asc, PostType type) {
         QueryResults<Post> results = null;
