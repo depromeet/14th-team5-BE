@@ -93,28 +93,6 @@ public class SpringWebExceptionHandler {
                 .body(ErrorResponse.of(ErrorCode.TOKEN_EXPIRED));
     }
 
-    @ExceptionHandler(TokenNotValidException.class)
-    ResponseEntity<ErrorResponse> handleTokenNotValidException(HttpServletRequest request, TokenNotValidException exception) {
-
-        log.warn("[TokenNotValidException]", exception);
-        sentryGateway.captureException(exception, WARNING, request, UNAUTHORIZED);
-
-        return ResponseEntity
-                .status(UNAUTHORIZED)
-                .body(ErrorResponse.of(ErrorCode.TOKEN_AUTHENTICATION_FAILED));
-    }
-
-    @ExceptionHandler({MissionPostAccessDeniedFamilyException.class, MissionPostCreateAccessDeniedMemberException.class})
-    ResponseEntity<ErrorResponse> handleMissionPostAccessDeniedException(HttpServletRequest request, DomainException exception) {
-
-        log.warn("[MissionPostAccessDeniedException]", exception);
-        sentryGateway.captureException(exception, WARNING, request, FORBIDDEN);
-
-        return ResponseEntity
-                .status(FORBIDDEN)
-                .body(ErrorResponse.of(exception.getErrorCode()));
-    }
-
     @ExceptionHandler(IOException.class)
     ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
 

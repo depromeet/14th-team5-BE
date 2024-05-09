@@ -164,7 +164,7 @@ class PostApiTest {
 
             //then
             resultActions
-                    .andExpect(status().isForbidden())
+                    .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.message").value(MISSION_POST_CREATE_ACCESS_DENIED_MEMBER.getMessage()));
         }
 
@@ -186,7 +186,7 @@ class PostApiTest {
 
             //then
             resultActions
-                    .andExpect(status().isForbidden())
+                    .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.message").value(MISSION_POST_ACCESS_DENIED_FAMILY.getMessage()));
         }
     }
