@@ -6,6 +6,7 @@ import com.oing.domain.Member;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.oing.domain.PostType.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -112,6 +114,51 @@ class PostRepositoryCustomTest {
                 .containsExactly("2", "4");
     }
 
+    @Nested
+    class findLatestPost {
+        @Test
+        void 생존신고_게시물_정상_조회_테스트() {
+            // given
+            String familyId = testMember1.getFamilyId();
+            LocalDateTime inclusiveStart = LocalDate.of(2023, 11, 1).atStartOfDay();
+            LocalDateTime exclusiveEnd = LocalDate.of(2023, 11, 2).atStartOfDay();
+
+            // when
+            Post post = postRepositoryCustomImpl.findLatestPost(inclusiveStart, exclusiveEnd, SURVIVAL, familyId);
+
+            // then
+            assertThat(post.getId()).isEqualTo("2");
+        }
+
+        @Test
+        void 시작날짜는_포함하고_종료날짜는_포함하지_않는다() {
+            // given
+            String familyId = testMember1.getFamilyId();
+            LocalDateTime inclusiveStart = LocalDate.of(2023, 11, 1).atStartOfDay();
+            LocalDateTime exclusiveEnd = LocalDate.of(2023, 11, 1).atStartOfDay();
+
+            // when
+            Post post = postRepositoryCustomImpl.findLatestPost(inclusiveStart, exclusiveEnd, SURVIVAL, familyId);
+
+            // then
+            assertThat(post).isNull();
+        }
+
+        @Test
+        void 해당_날짜에_게시글이_없는_경우_null을_반환한다() {
+            // given
+            String familyId = testMember1.getFamilyId();
+            LocalDateTime inclusiveStart = LocalDate.of(9999, 11, 3).atStartOfDay();
+            LocalDateTime exclusiveEnd = LocalDate.of(9999, 11, 4).atStartOfDay();
+
+            // when
+            Post post = postRepositoryCustomImpl.findLatestPost(inclusiveStart, exclusiveEnd, SURVIVAL, familyId);
+
+            // then
+            assertThat(post).isNull();
+        }
+    }
+
     @Test
     void 특정_날짜에_게시글이_존재하는지_확인한다() {
         // given
@@ -119,7 +166,7 @@ class PostRepositoryCustomTest {
 
         // when
         boolean exists = postRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(testMember1.getId(),
-                testMember1.getFamilyId(), PostType.SURVIVAL, postDate);
+                testMember1.getFamilyId(), SURVIVAL, postDate);
 
         // then
         assertThat(exists).isTrue();
@@ -132,7 +179,7 @@ class PostRepositoryCustomTest {
 
         // when
         boolean exists = postRepositoryCustomImpl.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(testMember1.getId(),
-                testMember1.getFamilyId(), PostType.SURVIVAL, postDate);
+                testMember1.getFamilyId(), SURVIVAL, postDate);
 
         // then
         assertThat(exists).isFalse();

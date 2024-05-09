@@ -51,7 +51,19 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 ))
                 .orderBy(post.createdAt.asc())
                 .fetch();
+    }
 
+    @Override
+    public Post findLatestPost(LocalDateTime startDate, LocalDateTime endDate, PostType postType, String familyId) {
+        return queryFactory
+                .selectFrom(post)
+                .where(
+                        post.type.eq(postType),
+                        post.familyId.eq(familyId),
+                        post.createdAt.between(startDate, endDate)
+                )
+                .orderBy(post.createdAt.desc())
+                .fetchFirst();
     }
 
     @Override
