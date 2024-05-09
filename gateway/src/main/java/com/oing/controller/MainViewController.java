@@ -183,9 +183,11 @@ public class MainViewController implements MainViewApi {
         }
 
         LocalDate mostRecentSurvivalPostDate = null;
-        List<PostResponse> mostRecentPosts = postController.fetchDailyFeeds(1, 1, null, null, "desc", PostType.SURVIVAL, loginMemberId).results().stream().toList();
-        if (!mostRecentPosts.isEmpty()) {
-            mostRecentSurvivalPostDate = mostRecentPosts.get(0).createdAt().toLocalDate();
+        LocalDate startOfMonth = ZonedDateTime.now().withDayOfMonth(1).toLocalDate();
+        LocalDate tomorrow = ZonedDateTime.now().plusDays(1).toLocalDate();
+        PostResponse mostRecentPost = postController.findLatestPost(startOfMonth, tomorrow, PostType.SURVIVAL, loginFamilyId);
+        if (mostRecentPost != null) {
+            mostRecentSurvivalPostDate = mostRecentPost.createdAt().toLocalDate();
         }
 
         return new FamilyMemberMonthlyRankingResponse(

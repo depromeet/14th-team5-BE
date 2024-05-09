@@ -106,6 +106,27 @@ public interface PostApi {
             String loginMemberId
     );
 
+    @Operation(summary = "가장 최근 게시물 조회", description = "(결과가 없을시, null 반환)\n 특정 기간 안에서 가장 최근에 업로드된 게시물을 조회합니다.")
+    PostResponse findLatestPost(
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            @Parameter(description = "조회 시작 날짜", example = "2023-12-05")
+            LocalDate inclusiveStartDate,
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            @Parameter(description = "조회 종료 날짜", example = "2023-12-05")
+            LocalDate exclusiveEndDate,
+
+            @RequestParam
+            @Parameter(description = "게시물 타입", example = "SURVIVAL")
+            PostType type,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
+
     @Operation(summary = "회원 생존신고 게시글 업로드 여부 응답 조회", description = "회원 생존신고 게시글 업로드 여부를 조회합니다.")
     @GetMapping("/{memberId}/survival-uploaded")
     SurvivalUploadStatusResponse getSurvivalUploadStatus(
