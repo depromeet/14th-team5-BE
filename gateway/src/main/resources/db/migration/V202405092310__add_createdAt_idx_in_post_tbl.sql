@@ -1,0 +1,1 @@
+ALTER TABLE post ADD INDEX post_idx2 (created_at);
