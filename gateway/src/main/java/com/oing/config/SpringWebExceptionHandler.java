@@ -93,6 +93,17 @@ public class SpringWebExceptionHandler {
                 .body(ErrorResponse.of(ErrorCode.TOKEN_EXPIRED));
     }
 
+    @ExceptionHandler(TokenNotValidException.class)
+    ResponseEntity<ErrorResponse> handleTokenNotValidException(HttpServletRequest request, TokenNotValidException exception) {
+
+        log.warn("[TokenNotValidException]", exception);
+        sentryGateway.captureException(exception, WARNING, request, UNAUTHORIZED);
+
+        return ResponseEntity
+                .status(UNAUTHORIZED)
+                .body(ErrorResponse.of(ErrorCode.TOKEN_AUTHENTICATION_FAILED));
+    }
+
     @ExceptionHandler(IOException.class)
     ResponseEntity<ErrorResponse> handleClientCancelException(HttpServletRequest request, IOException exception) {
 
