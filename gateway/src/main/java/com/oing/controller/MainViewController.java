@@ -95,8 +95,8 @@ public class MainViewController implements MainViewApi {
                     if (member == null) {
                         return new MainPagePickerResponse(
                                 pickMember.getFromMemberId(),
-                                "UNKNOWN",
-                                "UNKNOWN"
+                                null,
+                                null
                         );
                     }
                     return new MainPagePickerResponse(
@@ -121,7 +121,7 @@ public class MainViewController implements MainViewApi {
                     return new MainPageFeedResponse(
                             post.getId(),
                             post.getPostImgUrl(),
-                            member != null ? member.name() : "UNKNOWN",
+                            member != null ? member.name() : null,
                             post.getCreatedAt().atZone(ZoneId.systemDefault())
                     );
                 }).toList(),
@@ -131,7 +131,7 @@ public class MainViewController implements MainViewApi {
                     return new MainPageFeedResponse(
                             post.getId(),
                             post.getPostImgUrl(),
-                            member != null ? member.name() : "UNKNOWN",
+                            member != null ? member.name() : null,
                             post.getCreatedAt().atZone(ZoneId.systemDefault())
                     );
                 }).toList()
