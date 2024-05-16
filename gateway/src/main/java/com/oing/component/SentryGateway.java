@@ -53,11 +53,11 @@ public class SentryGateway {
 
         request.setMethod(servletRequest.getMethod());
 
-        if (!servletRequest.getRequestURL().isEmpty()) {
+        if (servletRequest.getRequestURL() != null && !servletRequest.getRequestURL().isEmpty()) {
             request.setUrl(servletRequest.getRequestURL().toString());
         }
 
-        if (!servletRequest.getQueryString().isEmpty()) {
+        if (servletRequest.getQueryString() != null && !servletRequest.getQueryString().isEmpty()) {
             request.setQueryString(servletRequest.getQueryString());
         }
 
@@ -65,7 +65,7 @@ public class SentryGateway {
             request.setData(getBody(servletRequest));
         }
 
-        if (!servletRequest.getParameterMap().isEmpty()) {
+        if (servletRequest.getParameterMap() != null && !servletRequest.getParameterMap().isEmpty()) {
             Map<String, String> parameterMap = new HashMap<>();
             for (String key : servletRequest.getParameterMap().keySet()) {
                 parameterMap.put(key, servletRequest.getParameter(key));
