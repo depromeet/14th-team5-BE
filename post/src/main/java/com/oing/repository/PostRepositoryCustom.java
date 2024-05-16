@@ -11,6 +11,8 @@ import java.util.List;
 public interface PostRepositoryCustom {
     List<String> getMemberIdsPostedToday(LocalDate date);
 
+    List<Post> findLatestPostOfEveryday(LocalDateTime startDate, LocalDateTime endDate, String familyId);
+
     List<Post> findOldestPostOfEveryday(LocalDateTime startDate, LocalDateTime endDate, String familyId);
 
     Post findLatestPost(LocalDateTime startDate, LocalDateTime endDate, PostType postType, String familyId);

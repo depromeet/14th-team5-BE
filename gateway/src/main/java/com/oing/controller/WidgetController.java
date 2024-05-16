@@ -32,7 +32,7 @@ public class WidgetController implements WidgetApi {
         LocalDate endDate = startDate.plusDays(1);
 
 
-        List<Post> latestPosts = postService.findOldestPostOfEveryday(startDate, endDate, loginFamilyId);
+        List<Post> latestPosts = postService.findLatestPostOfEveryday(startDate, endDate, loginFamilyId);
         if (latestPosts.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

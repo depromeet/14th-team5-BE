@@ -102,10 +102,23 @@ class PostRepositoryCustomTest {
 
 
     @Test
-    void 각_날짜에서_가장_마지막으로_업로드된_게시글을_조회한다() {
+    void 각_날짜에서_가장_과거에_업로드된_게시글을_조회한다() {
         // When
         String familyId = testMember1.getFamilyId();
         List<Post> posts = postRepositoryCustomImpl.findOldestPostOfEveryday(LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0), familyId);
+
+        // Then
+        assertThat(posts)
+                .extracting(Post::getId)
+                .containsExactly("1", "4");
+    }
+
+
+    @Test
+    void 각_날짜에서_가장_최근에_업로드된_게시글을_조회한다() {
+        // When
+        String familyId = testMember1.getFamilyId();
+        List<Post> posts = postRepositoryCustomImpl.findLatestPostOfEveryday(LocalDateTime.of(2023, 11, 1, 0, 0, 0), LocalDateTime.of(2023, 12, 1, 0, 0, 0), familyId);
 
         // Then
         assertThat(posts)
