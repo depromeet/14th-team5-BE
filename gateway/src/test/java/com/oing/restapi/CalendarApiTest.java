@@ -314,8 +314,8 @@ class CalendarApiTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].date").value("2023-11-02"))
-                .andExpect(jsonPath("$.results[0].representativePostId").value("2"))
-                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
+                .andExpect(jsonPath("$.results[0].representativePostId").value("1"))
+                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/1" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(true))
                 .andExpect(jsonPath("$.results[1].date").value("2023-11-03"))
                 .andExpect(jsonPath("$.results[1].representativePostId").value("4"))
@@ -354,8 +354,8 @@ class CalendarApiTest {
                 .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/0" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(true))
                 .andExpect(jsonPath("$.results[1].date").value("2023-11-02"))
-                .andExpect(jsonPath("$.results[1].representativePostId").value("2"))
-                .andExpect(jsonPath("$.results[1].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
+                .andExpect(jsonPath("$.results[1].representativePostId").value("1"))
+                .andExpect(jsonPath("$.results[1].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/1" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.results[1].allFamilyMembersUploaded").value(true))
                 .andExpect(jsonPath("$.results[2].date").value("2023-11-03"))
                 .andExpect(jsonPath("$.results[2].representativePostId").value("3"))
@@ -403,8 +403,8 @@ class CalendarApiTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.results[0].date").value("2023-11-02"))
-                .andExpect(jsonPath("$.results[0].representativePostId").value("2"))
-                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/2" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
+                .andExpect(jsonPath("$.results[0].representativePostId").value("1"))
+                .andExpect(jsonPath("$.results[0].representativeThumbnailUrl").value(imageOptimizerCdn + "/images/1" + OptimizedImageUrlProvider.THUMBNAIL_OPTIMIZER_QUERY_STRING))
                 .andExpect(jsonPath("$.results[0].allFamilyMembersUploaded").value(false));
     }
 
