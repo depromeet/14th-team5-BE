@@ -112,6 +112,10 @@ public class PostService {
         return postRepository.findLatestPostOfEveryday(inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay(), familyId);
     }
 
+    public List<Post> findOldestPostOfEveryday(LocalDate inclusiveStartDate, LocalDate exclusiveEndDate, String familyId) {
+        return postRepository.findOldestPostOfEveryday(inclusiveStartDate.atStartOfDay(), exclusiveEndDate.atStartOfDay(), familyId);
+    }
+
     public Post getMemberPostById(String postId) {
         return postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
     }

@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static com.oing.domain.PostType.*;
 import static com.oing.domain.QMember.member;
 import static com.oing.domain.QPost.post;
 
@@ -45,8 +46,30 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                         JPAExpressions
                                 .select(post.id.max())
                                 .from(post)
-                                .where(post.familyId.eq(familyId)
-                                        .and(post.createdAt.between(startDate, endDate)))
+                                .where(
+                                        post.familyId.eq(familyId),
+                                        post.type.eq(SURVIVAL),
+                                        post.createdAt.between(startDate, endDate)
+                                )
+                                .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, post.createdAt))
+                ))
+                .orderBy(post.createdAt.asc())
+                .fetch();
+    }
+
+    @Override
+    public List<Post> findOldestPostOfEveryday(LocalDateTime startDate, LocalDateTime endDate, String familyId) {
+        return queryFactory
+                .selectFrom(post)
+                .where(post.id.in(
+                        JPAExpressions
+                                .select(post.id.min())
+                                .from(post)
+                                .where(
+                                        post.familyId.eq(familyId),
+                                        post.type.eq(SURVIVAL),
+                                        post.createdAt.between(startDate, endDate)
+                                )
                                 .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, post.createdAt))
                 ))
                 .orderBy(post.createdAt.asc())
@@ -150,7 +173,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .select(post.id.count())
                 .from(post)
                 .where(post.familyId.eq(familyId),
-                        post.type.eq(PostType.SURVIVAL),
+                        post.type.eq(SURVIVAL),
                         dateExpr(post.createdAt).eq(today))
                 .fetchFirst();
         return count.intValue();

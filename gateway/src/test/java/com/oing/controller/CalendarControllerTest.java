@@ -108,7 +108,7 @@ class CalendarControllerTest {
         );
         ReflectionTestUtils.setField(testPost4, "createdAt", LocalDateTime.of(2023, 11, 9, 13, 0));
         List<Post> representativePosts = List.of(testPost1, testPost2, testPost3, testPost4);
-        when(postService.findLatestPostOfEveryday(startDate, endDate, familyId)).thenReturn(representativePosts);
+        when(postService.findOldestPostOfEveryday(startDate, endDate, familyId)).thenReturn(representativePosts);
 
         // When
         ArrayResponse<MonthlyCalendarResponse> weeklyCalendar = calendarController.getMonthlyCalendar(yearMonth, familyId);

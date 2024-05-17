@@ -1,6 +1,7 @@
 package com.oing.component;
 
 import com.oing.config.properties.WebProperties;
+import io.sentry.IScope;
 import io.sentry.Scope;
 import io.sentry.Sentry;
 import io.sentry.SentryLevel;
@@ -39,7 +40,7 @@ public class SentryGateway {
     }
 
     // 잘못된 디폴트 값으로 혼란을 야기시키는 태그들을 제거합니다.
-    private void removeDefaultTags(Scope scope) {
+    private void removeDefaultTags(IScope scope) {
         scope.removeTag("client_os");
         scope.removeTag("environment");
         scope.removeTag("runtime");
@@ -47,16 +48,16 @@ public class SentryGateway {
         scope.removeTag("server_name");
     }
 
-    private void setRequestHttp(Scope scope, HttpServletRequest servletRequest, HttpStatus statusCode) {
+    private void setRequestHttp(IScope scope, HttpServletRequest servletRequest, HttpStatus statusCode) {
         Request request = new Request();
 
         request.setMethod(servletRequest.getMethod());
 
-        if (!servletRequest.getRequestURL().isEmpty()) {
+        if (servletRequest.getRequestURL() != null && !servletRequest.getRequestURL().isEmpty()) {
             request.setUrl(servletRequest.getRequestURL().toString());
         }
 
-        if (!servletRequest.getQueryString().isEmpty()) {
+        if (servletRequest.getQueryString() != null && !servletRequest.getQueryString().isEmpty()) {
             request.setQueryString(servletRequest.getQueryString());
         }
 
@@ -64,7 +65,7 @@ public class SentryGateway {
             request.setData(getBody(servletRequest));
         }
 
-        if (!servletRequest.getParameterMap().isEmpty()) {
+        if (servletRequest.getParameterMap() != null && !servletRequest.getParameterMap().isEmpty()) {
             Map<String, String> parameterMap = new HashMap<>();
             for (String key : servletRequest.getParameterMap().keySet()) {
                 parameterMap.put(key, servletRequest.getParameter(key));
@@ -101,7 +102,7 @@ public class SentryGateway {
         }
     }
 
-    private void setRequestUser(Scope scope, HttpServletRequest request) {
+    private void setRequestUser(IScope scope, HttpServletRequest request) {
         String appVersion = request.getHeader(webProperties.headerNames().appVersionHeader());
         String platform = request.getHeader(webProperties.headerNames().platformHeader());
         scope.setTag("client_os.name", platform);
