@@ -73,7 +73,7 @@ public class CalendarController implements CalendarApi {
         LocalDate startDate = LocalDate.parse(yearMonth + "-01"); // yyyy-MM-dd 패턴으로 파싱
         LocalDate endDate = startDate.plusMonths(1);
 
-        List<Post> daysLatestPosts = postService.findLatestPostOfEveryday(startDate, endDate, familyId);
+        List<Post> daysLatestPosts = postService.findOldestPostOfEveryday(startDate, endDate, familyId);
         List<MonthlyCalendarResponse> monthlyCalendarResponses = convertToMonthlyCalendarResponse(daysLatestPosts, familyId);
         return new ArrayResponse<>(monthlyCalendarResponses);
     }
