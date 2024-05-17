@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import static com.oing.domain.PostType.*;
 import static com.oing.domain.QMember.member;
 import static com.oing.domain.QPost.post;
 
@@ -92,13 +93,16 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     @Override
-    public long countMonthlyPostByMemberId(int year, int month, String memberId) {
+    public long countMonthlySurvivalPostByMemberId(int year, int month, String memberId) {
         return queryFactory
                 .select(post.count())
                 .from(post)
-                .where(post.memberId.eq(memberId),
+                .where(
+                        post.type.eq(SURVIVAL),
+                        post.memberId.eq(memberId),
                         post.createdAt.year().eq(year),
-                        post.createdAt.month().eq(month))
+                        post.createdAt.month().eq(month)
+                )
                 .fetchFirst();
     }
 
@@ -150,7 +154,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .select(post.id.count())
                 .from(post)
                 .where(post.familyId.eq(familyId),
-                        post.type.eq(PostType.SURVIVAL),
+                        post.type.eq(SURVIVAL),
                         dateExpr(post.createdAt).eq(today))
                 .fetchFirst();
         return count.intValue();

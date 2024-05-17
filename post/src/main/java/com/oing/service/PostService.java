@@ -180,11 +180,11 @@ public class PostService {
         return Math.max(requiredSurvivalPostCount - todaySurvivalPostCount, 0);
     }
 
-    public long countMonthlyPostByMemberId(LocalDate date, String memberId) {
+    public long countMonthlySurvivalPostByMemberId(LocalDate date, String memberId) {
         int year = date.getYear();
         int month = date.getMonthValue();
 
-        return postRepository.countMonthlyPostByMemberId(year, month, memberId);
+        return postRepository.countMonthlySurvivalPostByMemberId(year, month, memberId);
     }
 
     public boolean isCreatedSurvivalPostToday(String memberId, String familyId) {

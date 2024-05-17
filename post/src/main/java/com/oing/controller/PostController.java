@@ -142,7 +142,7 @@ public class PostController implements PostApi {
 
         List<PostRankerResponse> postRankerResponses = familyMembersIds.stream().map(familyMemberId -> new PostRankerDTO(
                         familyMemberId,
-                        postService.countMonthlyPostByMemberId(dateTime, familyMemberId),
+                        postService.countMonthlySurvivalPostByMemberId(dateTime, familyMemberId),
                         commentService.countMonthlyCommentByMemberId(dateTime, familyMemberId),
                         reactionService.countMonthlyReactionByMemberId(dateTime, familyMemberId)
 
