@@ -22,7 +22,7 @@ public interface PostRepositoryCustom {
 
     long countMonthlyPostByFamilyId(int year, int month, String familyId);
 
-    long countMonthlyPostByMemberId(int year, int month, String memberId);
+    long countMonthlySurvivalPostByMemberId(int year, int month, String memberId);
 
     boolean existsByFamilyIdAndCreatedAt(String familyId, LocalDate postDate);
 
