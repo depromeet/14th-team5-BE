@@ -46,6 +46,7 @@ app:
       - /error
       - /v1/links/*
       - /v1/me/app-version
+      - /v1/admin/dashboard/**
     version-check-whitelists:
       - /actuator/**
       - /swagger-ui.html
