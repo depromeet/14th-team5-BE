@@ -105,23 +105,32 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     @Override
     public long countMonthlyPostByFamilyId(int year, int month, String familyId) {
+        LocalDateTime from = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime to = from.plusMonths(1).minusDays(1);
+
         return queryFactory
                 .select(post.count())
                 .from(post)
-                .where(post.familyId.eq(familyId),
-                        post.createdAt.year().eq(year),
-                        post.createdAt.month().eq(month))
+                .where(
+                        post.familyId.eq(familyId),
+                        post.createdAt.between(from, to)
+                )
                 .fetchFirst();
     }
 
     @Override
-    public long countMonthlyPostByMemberId(int year, int month, String memberId) {
+    public long countMonthlySurvivalPostByMemberId(int year, int month, String memberId) {
+        LocalDateTime from = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime to = from.plusMonths(1).minusDays(1);
+
         return queryFactory
                 .select(post.count())
                 .from(post)
-                .where(post.memberId.eq(memberId),
-                        post.createdAt.year().eq(year),
-                        post.createdAt.month().eq(month))
+                .where(
+                        post.type.eq(SURVIVAL),
+                        post.memberId.eq(memberId),
+                        post.createdAt.between(from, to)
+                )
                 .fetchFirst();
     }
 
