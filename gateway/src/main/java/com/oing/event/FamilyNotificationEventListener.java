@@ -57,29 +57,31 @@ public class FamilyNotificationEventListener {
                         .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
                         .build();
                 fcmNotificationService.sendMulticastMessage(multicastMessage);
-            }
 
-            if (post.getType() == PostType.SURVIVAL &&
-                    memberPostService.isNewPostMadeMissionUnlocked(familyId)) {
-                // 방금 막 미션이 언락 되었다면..
-                HashSet<String> missionTargetFcmTokens = new HashSet<>();
-                for (String familyMemberId : familyMemberIds) {
-                    missionTargetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(familyMemberId));
+                if(memberPostService.isNewPostMadeMissionUnlocked(familyId)) {
+                    sendMissionUnlockedMessages(familyMemberIds);
                 }
-
-                MulticastMessage missionUnlockedMessage = MulticastMessage.builder()
-                        .setNotification(
-                                FCMNotificationUtil.buildNotification("열쇠를 획득해 미션 잠금이 해제되었어요!",
-                                        "사진 한 장을 더 찍을 수 있어요.")
-                        )
-                        .addAllTokens(missionTargetFcmTokens)
-                        .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
-                        .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
-                        .build();
-                fcmNotificationService.sendMulticastMessage(missionUnlockedMessage);
             }
-
         }
+    }
+
+    private void sendMissionUnlockedMessages(List<String> familyMemberIds) {
+        // 방금 막 미션이 언락 되었다면..
+        HashSet<String> missionTargetFcmTokens = new HashSet<>();
+        for (String familyMemberId : familyMemberIds) {
+            missionTargetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(familyMemberId));
+        }
+
+        MulticastMessage missionUnlockedMessage = MulticastMessage.builder()
+                .setNotification(
+                        FCMNotificationUtil.buildNotification("열쇠를 획득해 미션 잠금이 해제되었어요!",
+                                "사진 한 장을 더 찍을 수 있어요.")
+                )
+                .addAllTokens(missionTargetFcmTokens)
+                .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
+                .build();
+        fcmNotificationService.sendMulticastMessage(missionUnlockedMessage);
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
