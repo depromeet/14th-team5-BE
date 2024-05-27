@@ -43,19 +43,21 @@ public class FamilyNotificationEventListener {
             }
 
             if(targetFcmTokens.isEmpty()) return;
-            MulticastMessage multicastMessage = MulticastMessage.builder()
-                    .setNotification(
-                            FCMNotificationUtil.buildNotification("삐삐",
-                                    String.format("%s님이 생존신고를 완료했어요.", author.getName()))
-                    )
-                    .putData("aosDeepLink", "post/view/" + post.getId())
-                    .putData("iosDeepLink", "post/view/" + post.getId() + "?openComment=false&dateOfPost="
-                            + post.getCreatedAt().toLocalDate().toString())
-                    .addAllTokens(targetFcmTokens)
-                    .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
-                    .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
-                    .build();
-            fcmNotificationService.sendMulticastMessage(multicastMessage);
+            if(post.getType() == PostType.SURVIVAL) {
+                MulticastMessage multicastMessage = MulticastMessage.builder()
+                        .setNotification(
+                                FCMNotificationUtil.buildNotification("삐삐",
+                                        String.format("%s님이 생존신고를 완료했어요.", author.getName()))
+                        )
+                        .putData("aosDeepLink", "post/view/" + post.getId())
+                        .putData("iosDeepLink", "post/view/" + post.getId() + "?openComment=false&dateOfPost="
+                                + post.getCreatedAt().toLocalDate().toString())
+                        .addAllTokens(targetFcmTokens)
+                        .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                        .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
+                        .build();
+                fcmNotificationService.sendMulticastMessage(multicastMessage);
+            }
 
             if (post.getType() == PostType.SURVIVAL &&
                     memberPostService.isNewPostMadeMissionUnlocked(familyId)) {
