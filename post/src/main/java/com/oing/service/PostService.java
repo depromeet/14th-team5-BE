@@ -176,6 +176,13 @@ public class PostService {
         return survivalPostCount >= totalFamilyMembers / 2;
     }
 
+    public boolean isNewPostMadeMissionUnlocked(String familyId) {
+        int totalFamilyMembers = postRepository.countFamilyMembersByFamilyIdAtYesterday(familyId);
+        int survivalPostCount = postRepository.countTodaySurvivalPostsByFamilyId(familyId);
+        return ((survivalPostCount - 1) < totalFamilyMembers / 2) // 방금 글 올리기 전에는 조건 만족 X but,
+                && (survivalPostCount >= totalFamilyMembers / 2); //올리고 나서는 조건 만족
+    }
+
     public int calculateRemainingSurvivalPostCountUntilMissionUnlocked(String familyId) {
         int familyMemberCount = postRepository.countFamilyMembersByFamilyIdAtYesterday(familyId);
         int requiredSurvivalPostCount = familyMemberCount / 2;

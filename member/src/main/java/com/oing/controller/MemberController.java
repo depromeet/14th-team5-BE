@@ -54,7 +54,7 @@ public class MemberController implements MemberApi {
     @Override
     public MemberResponse getMember(String memberId, String loginFamilyId) {
         validateFamilyMember(memberId, loginFamilyId);
-        
+
         Member member = memberService.getMemberByMemberId(memberId);
         return MemberResponse.of(member);
     }
@@ -118,7 +118,7 @@ public class MemberController implements MemberApi {
         List<String> tokens = memberDeviceService.getFcmTokensByMemberId(toMember.getId());
         if (!tokens.isEmpty()) {
             Notification notification = FCMNotificationUtil
-                    .buildNotification(String.format("%s님, 살아있나요?", toMember.getName()),
+                    .buildNotification(String.format("%s님, 바쁘신가요?", toMember.getName()),
                         String.format("%s님이 당신의 생존을 궁금해해요.", fromMember.getName()));
             MulticastMessage message = MulticastMessage.builder()
                     .setNotification(notification)

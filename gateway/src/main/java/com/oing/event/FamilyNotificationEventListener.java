@@ -4,9 +4,11 @@ import com.google.firebase.messaging.MulticastMessage;
 import com.oing.domain.Comment;
 import com.oing.domain.Member;
 import com.oing.domain.Post;
+import com.oing.domain.PostType;
 import com.oing.service.FCMNotificationService;
 import com.oing.service.MemberDeviceService;
 import com.oing.service.MemberService;
+import com.oing.service.PostService;
 import com.oing.util.FCMNotificationUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class FamilyNotificationEventListener {
     public final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final FCMNotificationService fcmNotificationService;
+    private final PostService memberPostService;
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -40,20 +43,45 @@ public class FamilyNotificationEventListener {
             }
 
             if(targetFcmTokens.isEmpty()) return;
-            MulticastMessage multicastMessage = MulticastMessage.builder()
-                    .setNotification(
-                            FCMNotificationUtil.buildNotification("삐삐",
-                                    String.format("%s님이 생존신고를 완료했어요.", author.getName()))
-                    )
-                    .putData("aosDeepLink", "post/view/" + post.getId())
-                    .putData("iosDeepLink", "post/view/" + post.getId() + "?openComment=false&dateOfPost="
-                            + post.getCreatedAt().toLocalDate().toString())
-                    .addAllTokens(targetFcmTokens)
-                    .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
-                    .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
-                    .build();
-            fcmNotificationService.sendMulticastMessage(multicastMessage);
+            if(post.getType() == PostType.SURVIVAL) {
+                MulticastMessage multicastMessage = MulticastMessage.builder()
+                        .setNotification(
+                                FCMNotificationUtil.buildNotification("삐삐",
+                                        String.format("%s님이 생존신고를 완료했어요.", author.getName()))
+                        )
+                        .putData("aosDeepLink", "post/view/" + post.getId())
+                        .putData("iosDeepLink", "post/view/" + post.getId() + "?openComment=false&dateOfPost="
+                                + post.getCreatedAt().toLocalDate().toString())
+                        .addAllTokens(targetFcmTokens)
+                        .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                        .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
+                        .build();
+                fcmNotificationService.sendMulticastMessage(multicastMessage);
+
+                if(memberPostService.isNewPostMadeMissionUnlocked(familyId)) {
+                    sendMissionUnlockedMessages(familyMemberIds);
+                }
+            }
         }
+    }
+
+    private void sendMissionUnlockedMessages(List<String> familyMemberIds) {
+        // 방금 막 미션이 언락 되었다면..
+        HashSet<String> missionTargetFcmTokens = new HashSet<>();
+        for (String familyMemberId : familyMemberIds) {
+            missionTargetFcmTokens.addAll(memberDeviceService.getFcmTokensByMemberId(familyMemberId));
+        }
+
+        MulticastMessage missionUnlockedMessage = MulticastMessage.builder()
+                .setNotification(
+                        FCMNotificationUtil.buildNotification("열쇠를 획득해 미션 잠금이 해제되었어요!",
+                                "사진 한 장을 더 찍을 수 있어요.")
+                )
+                .addAllTokens(missionTargetFcmTokens)
+                .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
+                .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
+                .build();
+        fcmNotificationService.sendMulticastMessage(missionUnlockedMessage);
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
