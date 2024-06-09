@@ -25,6 +25,7 @@ public record FamilyInviteDeepLinkResponse(
         @Schema(description = "전체 가족 구성원 수", example = "5")
         Integer familyMembersCount,
 
+
         @Schema(description = "초대자 이름", example = "김철수")
         String inviterName,
 

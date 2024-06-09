@@ -8,6 +8,7 @@ import com.oing.restapi.FamilyInviteViewApi;
 import com.oing.service.FamilyBridge;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostBridge;
+import com.oing.restapi.MeApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
@@ -22,10 +23,10 @@ public class FamilyInviteViewController implements FamilyInviteViewApi {
     private final FamilyBridge familyBridge;
     private final PostBridge postBridge;
     private final MemberController memberController;
+    private final MeApi meApi;
 
     @Override
     public FamilyInviteDeepLinkResponse getFamilyInviteLinkDetails(String linkId, String loginMemberId) {
-
         boolean isRequesterJoinedFamily = true;
         MemberResponse me = memberController.getMemberNullable(loginMemberId);
         if (me.familyId() == null) {

@@ -43,4 +43,16 @@ public class DeepLinkService {
                 .findById(linkId)
                 .orElseThrow(LinkNotValidException::new);
     }
+
+    public DeepLink getFamilyInviteLink(String linkId) {
+        DeepLink deepLink = deepLinkRepository
+                .findById(linkId)
+                .orElseThrow(LinkNotValidException::new);
+
+        if (!deepLink.getType().equals(DeepLinkType.FAMILY_REGISTRATION)) {
+            throw new LinkNotValidException();
+        }
+
+        return deepLink;
+    }
 }
