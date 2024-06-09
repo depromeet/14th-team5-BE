@@ -48,7 +48,6 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                                 .from(post)
                                 .where(
                                         post.familyId.eq(familyId),
-                                        post.type.eq(SURVIVAL),
                                         post.createdAt.between(startDate, endDate)
                                 )
                                 .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, post.createdAt))
@@ -67,7 +66,6 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                                 .from(post)
                                 .where(
                                         post.familyId.eq(familyId),
-                                        post.type.eq(SURVIVAL),
                                         post.createdAt.between(startDate, endDate)
                                 )
                                 .groupBy(Expressions.dateOperation(LocalDate.class, Ops.DateTimeOps.DATE, post.createdAt))
