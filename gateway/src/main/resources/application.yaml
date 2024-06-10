@@ -47,6 +47,7 @@ app:
       - /v1/links/*
       - /v1/me/app-version
       - /v1/admin/dashboard/**
+      - /v1/view/family-invite/**
     version-check-whitelists:
       - /actuator/**
       - /swagger-ui.html
@@ -55,6 +56,7 @@ app:
       - /v3/api-docs
       - /error
       - /v1/links/**
+      - /v1/view/family-invite/**
     url-no-logging:
       - /swagger-ui.html
       - /swagger-ui/**
