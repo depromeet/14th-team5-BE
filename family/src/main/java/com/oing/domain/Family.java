@@ -17,12 +17,16 @@ public class Family extends BaseEntity {
     @Column(name = "family_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
 
+    @Column(name = "family_name", columnDefinition = "CHAR(10)")
+    private String familyName;
+
     @Column(name = "score", nullable = false)
     private Integer score = 0;
 
 
-    public Family(String id) {
+    public Family(String id, String familyName) {
         this.id = id;
+        this.familyName = familyName;
     }
 
     public static final int NEW_POST_SCORE = 20;
