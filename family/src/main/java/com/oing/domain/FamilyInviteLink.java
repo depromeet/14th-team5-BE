@@ -32,6 +32,9 @@ public class FamilyInviteLink extends BaseEntity implements SerializableDeepLink
 
     @Override
     public Map<String, String> serialize() {
-        return Map.of("familyId", familyId);
+        return Map.of(
+                "familyId", familyId,
+                "memberId", memberId
+        );
     }
 }
