@@ -24,4 +24,6 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     List<Member> findAllByDeletedAtIsNull();
 
     boolean existsByIdAndDeletedAtNotNull(String memberId);
+
+    String findNameById(String memberId);
 }

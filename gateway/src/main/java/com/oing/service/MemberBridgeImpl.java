@@ -57,4 +57,9 @@ public class MemberBridgeImpl implements MemberBridge {
                 .map(Member::getId)
                 .toList();
     }
+
+    @Override
+    public String getMemberNameByMemberId(String memberId) {
+        return memberRepository.findNameById(memberId);
+    }
 }
