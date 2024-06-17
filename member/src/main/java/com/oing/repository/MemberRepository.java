@@ -25,5 +25,5 @@ public interface MemberRepository extends JpaRepository<Member, String> {
 
     boolean existsByIdAndDeletedAtNotNull(String memberId);
 
-    String findNameById(String memberId);
+    int countByFamilyIdAndDeletedAtIsNull(String familyId);
 }

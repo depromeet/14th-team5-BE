@@ -60,6 +60,20 @@ public class MemberBridgeImpl implements MemberBridge {
 
     @Override
     public String getMemberNameByMemberId(String memberId) {
-        return memberRepository.findNameById(memberId);
+        return memberRepository.findById(memberId)
+                .map(Member::getName)
+                .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Override
+    public List<String> getFamilyMemberProfileImgUrlsByFamilyId(String familyId) {
+        return memberRepository.findAllByFamilyIdAndDeletedAtIsNull(familyId).stream()
+                .map(Member::getProfileImgUrl)
+                .toList();
+    }
+
+    @Override
+    public int getFamilyMemberCountByFamilyId(String familyId) {
+        return memberRepository.countByFamilyIdAndDeletedAtIsNull(familyId);
     }
 }
