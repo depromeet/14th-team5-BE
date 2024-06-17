@@ -8,4 +8,6 @@ package com.oing.service;
  */
 public interface PostBridge {
     boolean isUploadedToday(String familyId, String memberId);
+
+    int countSurvivalPostsByFamilyId(String familyId);
 }

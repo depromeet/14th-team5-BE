@@ -23,4 +23,9 @@ public class PostBridgeImpl implements PostBridge {
         LocalDate today = LocalDate.now();
         return postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, today);
     }
+
+    @Override
+    public int countSurvivalPostsByFamilyId(String familyId) {
+        return postRepository.countSurvivalPostsByFamilyId(familyId);
+    }
 }
