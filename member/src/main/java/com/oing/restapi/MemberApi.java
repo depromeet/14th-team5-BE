@@ -52,6 +52,8 @@ public interface MemberApi {
             String loginFamilyId
     );
 
+    MemberResponse getMemberNullable(String memberId);
+
     @Operation(summary = "회원 프로필 사진 S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
     @PostMapping("/image-upload-request")
     PreSignedUrlResponse requestPresignedUrl(

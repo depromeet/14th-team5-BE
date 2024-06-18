@@ -35,4 +35,12 @@ public interface MemberBridge {
     boolean isDeletedMember(String memberId);
 
     List<String> getFamilyMembersIdsByFamilyId(String familyId);
+
+    String getMemberNameByMemberId(String memberId);
+
+    List<String> getFamilyMemberNamesByFamilyId(String familyId);
+
+    List<String> getFamilyMemberProfileImgUrlsByFamilyId(String familyId);
+
+    int getFamilyMemberCountByFamilyId(String familyId);
 }

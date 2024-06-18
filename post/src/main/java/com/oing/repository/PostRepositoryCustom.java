@@ -31,4 +31,6 @@ public interface PostRepositoryCustom {
     int countFamilyMembersByFamilyIdAtYesterday(String familyId);
 
     int countTodaySurvivalPostsByFamilyId(String familyId);
+
+    int countSurvivalPostsByFamilyId(String familyId);
 }

@@ -13,7 +13,6 @@ import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.PickFailedAlreadyUploadedException;
 import com.oing.restapi.MemberApi;
-import com.oing.service.MemberService;
 import com.oing.service.*;
 import com.oing.util.FCMNotificationUtil;
 import com.oing.util.PreSignedUrlGenerator;
@@ -22,8 +21,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 
-import static com.oing.exception.ErrorCode.UNAUTHORIZED_MEMBER_USED;
 import java.util.List;
+
+import static com.oing.exception.ErrorCode.UNAUTHORIZED_MEMBER_USED;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,8 +32,6 @@ public class MemberController implements MemberApi {
     private final MemberPickService memberPickService;
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
-    private final MemberQuitReasonService memberQuitReasonService;
-
     private final PreSignedUrlGenerator preSignedUrlGenerator;
     private final PostBridge postBridge;
     private final FCMNotificationService fcmNotificationService;
@@ -56,6 +54,16 @@ public class MemberController implements MemberApi {
         validateFamilyMember(memberId, loginFamilyId);
 
         Member member = memberService.getMemberByMemberId(memberId);
+        return MemberResponse.of(member);
+    }
+
+    // 가족 링크 초대 정보 조회 API에서 사용되는 메서드
+    @Override
+    public MemberResponse getMemberNullable(String memberId) {
+        Member member = memberService.getMemberByMemberIdOrNull(memberId);
+        if (member == null) {
+            return new MemberResponse(null, null, null, null, null, null);
+        }
         return MemberResponse.of(member);
     }
 
