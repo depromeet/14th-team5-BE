@@ -84,7 +84,7 @@ class PostRepositoryCustomTest {
     @BeforeEach
     void setup() {
         // Family & Members
-        familyRepository.save(new Family("testFamily"));
+        familyRepository.save(new Family("testFamily", null));
         memberRepository.save(testMember1);
         memberRepository.save(testMember2);
         memberRepository.save(testMember3);

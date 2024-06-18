@@ -14,7 +14,7 @@ import java.util.List;
  * Date: 2023/11/27
  * Time: 11:52 AM
  */
-public interface MemberRepository extends JpaRepository<Member, String> {
+public interface MemberRepository extends JpaRepository<Member, String>, MemberRepositoryCustom {
     List<Member> findAllByFamilyIdAndDeletedAtIsNull(String familyId);
 
     Page<Member> findAllByFamilyIdAndDeletedAtIsNull(String familyId, PageRequest pageRequest);
@@ -24,4 +24,6 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     List<Member> findAllByDeletedAtIsNull();
 
     boolean existsByIdAndDeletedAtNotNull(String memberId);
+
+    int countByFamilyIdAndDeletedAtIsNull(String familyId);
 }

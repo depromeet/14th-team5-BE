@@ -13,6 +13,9 @@ public record FamilyInviteDeepLinkResponse(
         @Schema(description = "가족 명", example = "사랑하는 우리가족")
         String familyName,
 
+        @Schema(description = "대표 가족구성원 닉네임", example = "미밍이")
+        List<String> familyMemberNames,
+
         @Schema(description = "대표 가족구성원 프로필 이미지 URL", example = "https://asset.no5ing.kr/member/profile/ab3fde93ee")
         List<String> familyMembersProfileImageUrls,
 
