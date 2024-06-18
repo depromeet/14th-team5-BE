@@ -27,8 +27,14 @@ public class FamilyInviteLink extends BaseEntity implements SerializableDeepLink
     @Column(name = "family_id", columnDefinition = "CHAR(26)", nullable = false)
     private String familyId;
 
+    @Column(name = "member_id", columnDefinition = "CHAR(26)", nullable = false)
+    private String memberId;
+
     @Override
     public Map<String, String> serialize() {
-        return Map.of("familyId", familyId);
+        return Map.of(
+                "familyId", familyId,
+                "memberId", memberId
+        );
     }
 }

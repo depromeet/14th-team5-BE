@@ -68,6 +68,12 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
+    public Member getMemberByMemberIdOrNull(String memberId) {
+        return memberRepository
+                .findById(memberId)
+                .orElse(null);
+    }
+
     public String getFamilyIdByMemberId(String memberId) {
         Member member = getMemberByMemberId(memberId);
         if (member.getFamilyId() == null) {

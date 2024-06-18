@@ -57,4 +57,26 @@ public class MemberBridgeImpl implements MemberBridge {
                 .map(Member::getId)
                 .toList();
     }
+
+    @Override
+    public String getMemberNameByMemberId(String memberId) {
+        return memberRepository.findById(memberId)
+                .map(Member::getName)
+                .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Override
+    public List<String> getFamilyMemberNamesByFamilyId(String familyId) {
+        return memberRepository.findFamilyMemberNamesByFamilyId(familyId);
+    }
+
+    @Override
+    public List<String> getFamilyMemberProfileImgUrlsByFamilyId(String familyId) {
+        return memberRepository.findFamilyMemberProfileImgUrlsByFamilyId(familyId);
+    }
+
+    @Override
+    public int getFamilyMemberCountByFamilyId(String familyId) {
+        return memberRepository.countByFamilyIdAndDeletedAtIsNull(familyId);
+    }
 }

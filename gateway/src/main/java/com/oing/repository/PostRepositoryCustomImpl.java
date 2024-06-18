@@ -186,6 +186,17 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return count.intValue();
     }
 
+    @Override
+    public int countSurvivalPostsByFamilyId(String familyId) {
+        Long count = queryFactory
+                .select(post.id.count())
+                .from(post)
+                .where(post.familyId.eq(familyId),
+                        post.type.eq(SURVIVAL))
+                .fetchFirst();
+        return count.intValue();
+    }
+
     private BooleanExpression eqDate(LocalDate date) {
         DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
                 "DATE({0})", post.createdAt);

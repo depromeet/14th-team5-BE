@@ -10,5 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Time: 7:17 PM
  */
 public interface FamilyInviteLinkRepository extends JpaRepository<FamilyInviteLink, String> {
-    public FamilyInviteLink findByFamilyId(String familyId);
+    public FamilyInviteLink findByFamilyIdAndMemberId(String familyId, String memberId);
 }

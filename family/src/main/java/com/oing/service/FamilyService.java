@@ -24,7 +24,7 @@ public class FamilyService {
 
     @Transactional
     public Family createFamily() {
-        Family family = new Family(identityGenerator.generateIdentity());
+        Family family = new Family(identityGenerator.generateIdentity(), null);
         return familyRepository.save(family);
     }
 

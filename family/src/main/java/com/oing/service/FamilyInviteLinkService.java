@@ -26,7 +26,7 @@ public class FamilyInviteLinkService implements DeepLinkDetailService<FamilyInvi
 
     @Override
     public FamilyInviteLink findPriorDeepLinkDetails(FamilyInviteLink details) {
-        return familyInviteLinkRepository.findByFamilyId(details.getFamilyId());
+        return familyInviteLinkRepository.findByFamilyIdAndMemberId(details.getFamilyId(), details.getMemberId());
     }
 
     @Override

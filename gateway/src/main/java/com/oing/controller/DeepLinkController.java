@@ -51,21 +51,21 @@ public class DeepLinkController implements DeepLinkApi {
     @Transactional
     @Override
     public DeepLinkResponse createFamilyDeepLink(
-            String familyId, String loginFamilyId
+            String familyId, String loginFamilyId, String loginMemberId
     ) {
         String linkId = deepLinkService.generateNewDeepLinkId();
 
         // 내 가족 외의 딥링크를 생성하려는 경우
         if (!Objects.equals(loginFamilyId, familyId)) throw new AuthorizationFailedException();
 
-        FamilyInviteLink newInviteLink = new FamilyInviteLink(linkId, familyId);
+        FamilyInviteLink newInviteLink = new FamilyInviteLink(linkId, familyId, loginMemberId);
         FamilyInviteLink familyInviteLink = familyDeepLinkService.findPriorDeepLinkDetails(newInviteLink);
         if (familyInviteLink != null) {
             return getLinkDetails(familyInviteLink.getLinkId());
         }
         newInviteLink = familyDeepLinkService.storeDeepLinkDetails(newInviteLink);
 
-        DeepLink deepLink = deepLinkService.createDeepLink(linkId, DeepLinkType.FAMILY_REGISTRATION);
+        DeepLink deepLink = deepLinkService.createDeepLink(linkId, DeepLinkType.FAMILY_REGISTRATION, loginMemberId, loginFamilyId);
         return new DeepLinkResponse(
                 deepLink.getLinkId(),
                 generateLink(deepLink.getLinkId()),

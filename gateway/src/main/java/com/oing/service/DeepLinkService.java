@@ -32,11 +32,10 @@ public class DeepLinkService {
     }
 
     @Transactional
-    public DeepLink createDeepLink(String linkId, DeepLinkType type) {
-        DeepLink newDeepLink = new DeepLink(linkId, type);
+    public DeepLink createDeepLink(String linkId, DeepLinkType type, String memberId, String familyId) {
+        DeepLink newDeepLink = new DeepLink(linkId, type, memberId, familyId);
         return deepLinkRepository.save(newDeepLink);
     }
-
 
     @Transactional
     public DeepLink getDeepLink(String linkId) {
