@@ -66,10 +66,13 @@ public class MemberBridgeImpl implements MemberBridge {
     }
 
     @Override
+    public List<String> getFamilyMemberNamesByFamilyId(String familyId) {
+        return memberRepository.findFamilyMemberNamesByFamilyId(familyId);
+    }
+
+    @Override
     public List<String> getFamilyMemberProfileImgUrlsByFamilyId(String familyId) {
-        return memberRepository.findAllByFamilyIdAndDeletedAtIsNull(familyId).stream()
-                .map(Member::getProfileImgUrl)
-                .toList();
+        return memberRepository.findFamilyMemberProfileImgUrlsByFamilyId(familyId);
     }
 
     @Override

@@ -38,6 +38,8 @@ public interface MemberBridge {
 
     String getMemberNameByMemberId(String memberId);
 
+    List<String> getFamilyMemberNamesByFamilyId(String familyId);
+
     List<String> getFamilyMemberProfileImgUrlsByFamilyId(String familyId);
 
     int getFamilyMemberCountByFamilyId(String familyId);

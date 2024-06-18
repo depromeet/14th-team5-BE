@@ -35,6 +35,7 @@ public class FamilyInviteViewController implements FamilyInviteViewApi {
         DeepLinkResponse deepLinkResponse = deepLinkApi.getLinkDetails(linkId);
         String familyId = deepLinkResponse.getDetails().get("familyId");
         String familyName = familyBridge.findFamilyNameByFamilyId(familyId);
+        List<String> familyMemberNames = memberBridge.getFamilyMemberNamesByFamilyId(familyId);
         List<String> familyMemberProfileImgUrls = memberBridge.getFamilyMemberProfileImgUrlsByFamilyId(familyId);
         int familyMemberCount = memberBridge.getFamilyMemberCountByFamilyId(familyId);
         int extraFamilyMemberCount;
@@ -51,6 +52,7 @@ public class FamilyInviteViewController implements FamilyInviteViewApi {
         return new FamilyInviteDeepLinkResponse (
                 familyId,
                 familyName,
+                familyMemberNames,
                 familyMemberProfileImgUrls,
                 extraFamilyMemberCount,
                 familyMemberCount,
