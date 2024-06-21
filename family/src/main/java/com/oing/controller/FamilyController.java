@@ -1,6 +1,7 @@
 package com.oing.controller;
 
 import com.oing.domain.Family;
+import com.oing.dto.request.UpdateFamilyNameRequest;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.FamilyApi;
@@ -26,6 +27,16 @@ public class FamilyController implements FamilyApi {
         }
 
         Family family = familyService.getFamilyById(familyId);
+        return FamilyResponse.of(family);
+    }
+
+    @Override
+    public FamilyResponse updateFamilyName(String familyId, String loginFamilyId, String loginMemberId, UpdateFamilyNameRequest request) {
+        if (!familyId.equals(loginFamilyId)) {
+            throw new AuthorizationFailedException();
+        }
+
+        Family family = familyService.updateFamilyName(familyId, loginMemberId, request.familyName());
         return FamilyResponse.of(family);
     }
 }

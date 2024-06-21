@@ -24,7 +24,7 @@ public class FamilyService {
 
     @Transactional
     public Family createFamily() {
-        Family family = new Family(identityGenerator.generateIdentity(), null);
+        Family family = new Family(identityGenerator.generateIdentity(), null, null);
         return familyRepository.save(family);
     }
 
@@ -56,5 +56,12 @@ public class FamilyService {
 
         // score 를 통한 순위를 통해 전체 가족들 중 상위 백분율 계산 (1%에 가까울수록 고순위)
         return familyScoreBridge.calculateFamilyTopPercentage(rank, familiesCount);
+    }
+
+    @Transactional
+    public Family updateFamilyName(String familyId, String loginMemberId, String familyName) {
+        Family family = getFamilyById(familyId);
+        family.updateFamilyName(familyName, loginMemberId);
+        return family;
     }
 }

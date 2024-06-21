@@ -68,7 +68,7 @@ class FamilyScoreEventListenerTest {
 
     @BeforeEach
     void setUp() {
-        familyRepository.save(new Family(testMember1.getFamilyId(), null));
+        familyRepository.save(new Family(testMember1.getFamilyId(), null, null));
         memberRepository.save(testMember1);
         memberRepository.save(testMember2);
     }

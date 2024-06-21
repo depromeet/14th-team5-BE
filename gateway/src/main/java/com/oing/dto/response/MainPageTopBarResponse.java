@@ -13,6 +13,9 @@ public record MainPageTopBarResponse(
         @Schema(description = "멤버ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
         String memberId,
 
+        @Schema(description = "가족 이름", example = "미밍이네")
+        String familyName,
+
         @Schema(description = "이미지 URL", example = "https://no5ing.com/image/01HGW2N7EHJVJ4CJ999RRS2E97")
         String imageUrl,
 
