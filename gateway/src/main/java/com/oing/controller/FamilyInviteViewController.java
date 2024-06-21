@@ -23,13 +23,12 @@ public class FamilyInviteViewController implements FamilyInviteViewApi {
     private final FamilyBridge familyBridge;
     private final PostBridge postBridge;
     private final MemberController memberController;
-    private final MeApi meApi;
 
     @Override
     public FamilyInviteDeepLinkResponse getFamilyInviteLinkDetails(String linkId, String loginMemberId) {
         boolean isRequesterJoinedFamily = true;
         MemberResponse me = memberController.getMemberNullable(loginMemberId);
-        if (me.familyId() == null) {
+        if (me.familyId() == null || me.memberId() == null) {
             isRequesterJoinedFamily = false;
         }
 
