@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.security.InvalidParameterException;
+
 @Entity(name = "family")
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -20,13 +22,17 @@ public class Family extends BaseEntity {
     @Column(name = "family_name", columnDefinition = "CHAR(10)")
     private String familyName;
 
+    @Column(name = "family_name_editor_id", columnDefinition = "CHAR(26)")
+    private String familyNameEditorId;
+
     @Column(name = "score", nullable = false)
     private Integer score = 0;
 
 
-    public Family(String id, String familyName) {
+    public Family(String id, String familyName, String familyNameEditorId) {
         this.id = id;
         this.familyName = familyName;
+        this.familyNameEditorId = familyNameEditorId;
     }
 
     public static final int NEW_POST_SCORE = 20;
@@ -85,5 +91,22 @@ public class Family extends BaseEntity {
 
     public void resetScore() {
         this.score = 0;
+    }
+
+    public void updateFamilyName(String familyName, String loginFamilyId) {
+        if (familyName == null) {
+            this.familyName = null;
+            this.familyNameEditorId = null;
+        } else {
+            validateFamilyName(familyName);
+            this.familyName = familyName;
+            this.familyNameEditorId = loginFamilyId;
+        }
+    }
+
+    private void validateFamilyName(String familyName) {
+        if ((familyName.codePoints().count() > 10) || familyName.isBlank()) {
+            throw new InvalidParameterException();
+        }
     }
 }
