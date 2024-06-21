@@ -30,6 +30,7 @@ public class MainViewController implements MainViewApi {
     private final MemberBridge memberBridge;
     private final MissionBridge missionBridge;
     private final PostController postController;
+    private final FamilyBridge familyBridge;
 
     private static final int PAGE_FETCH_SIZE = 1000;
 
@@ -75,10 +76,12 @@ public class MainViewController implements MainViewApi {
                 .isMeMissionUploadedToday();
         int leftUploadCountUntilMissionUnlock = postController.getRemainingSurvivalPostCount(loginMemberId, loginMemberId, familyId)
                 .leftUploadCountUntilMissionUnlock();
+        String familyName = familyBridge.findFamilyNameByFamilyId(familyId);
 
         return new DaytimePageResponse(
                 members.stream().sorted(comparator).map((member) -> new MainPageTopBarResponse(
                         member.memberId(),
+                        familyName,
                         member.imageUrl(),
                         String.valueOf(member.name().charAt(0)),
                         member.name(),
@@ -143,8 +146,10 @@ public class MainViewController implements MainViewApi {
     public NighttimePageResponse getNighttimePage(String loginMemberId, String loginFamilyId) {
         Page<FamilyMemberProfileResponse> members = memberService.getFamilyMembersProfilesByFamilyId(loginFamilyId, 1, PAGE_FETCH_SIZE);
         LocalDate today = ZonedDateTime.now().toLocalDate();
+        String familyName = familyBridge.findFamilyNameByFamilyId(loginFamilyId);
         List<MainPageTopBarResponse> mainPageTopBarResponses = members.stream().map((member) -> new MainPageTopBarResponse(
                 member.memberId(),
+                familyName,
                 member.imageUrl(),
                 String.valueOf(member.name().charAt(0)),
                 member.name(),
