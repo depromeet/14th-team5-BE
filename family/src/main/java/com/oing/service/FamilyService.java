@@ -60,7 +60,7 @@ public class FamilyService {
 
     @Transactional
     public Family updateFamilyName(String familyId, String loginMemberId, String familyName) {
-        Family family = getFamilyByIdWithLock(familyId);
+        Family family = getFamilyById(familyId);
         family.updateFamilyName(familyName, loginMemberId);
         return family;
     }
