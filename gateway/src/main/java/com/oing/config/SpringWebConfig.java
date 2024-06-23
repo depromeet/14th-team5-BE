@@ -58,7 +58,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://bibbi.app", "https://no5ing.kr", "https://dev.no5ing.kr")
+                .allowedOrigins("https://bibbi.app", "https://no5ing.kr", "https://dev.api.no5ing.kr", "https://link.no5ing.kr", "https://link.bibbi.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("Authorization", "Content-Type")
                 .allowCredentials(true)
