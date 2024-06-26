@@ -49,14 +49,6 @@ public class Family extends BaseEntity {
         subtractScore(NEW_POST_SCORE);
     }
 
-    public void addAllFamilyMembersPostsUploadedScore() {
-        addScore(ALL_FAMILY_MEMBERS_POSTS_UPLOADED_SCORE);
-    }
-
-    public void subtractAllFamilyMembersPostsUploadedScore() {
-        subtractScore(ALL_FAMILY_MEMBERS_POSTS_UPLOADED_SCORE);
-    }
-
     public void addNewCommentScore() {
         addScore(NEW_COMMENT_SCORE);
     }
