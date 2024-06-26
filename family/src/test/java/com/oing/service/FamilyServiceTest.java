@@ -51,9 +51,9 @@ public class FamilyServiceTest {
     }
 
     @Test
-    void 열_자_초과_가족_이름_수정_예외_검증() {
+    void 아홉_자_초과_가족_이름_수정_예외_검증() {
         // given
-        String newName = "wrong-length-name";
+        String newName = "wrong-length-nam";
         String memberId = "1";
         String familyId = "1";
 

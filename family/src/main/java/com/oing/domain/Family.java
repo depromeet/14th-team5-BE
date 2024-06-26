@@ -19,7 +19,7 @@ public class Family extends BaseEntity {
     @Column(name = "family_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
 
-    @Column(name = "family_name", columnDefinition = "CHAR(10)")
+    @Column(name = "family_name", columnDefinition = "CHAR(9)")
     private String familyName;
 
     @Column(name = "family_name_editor_id", columnDefinition = "CHAR(26)")
@@ -105,7 +105,7 @@ public class Family extends BaseEntity {
     }
 
     private void validateFamilyName(String familyName) {
-        if ((familyName.codePoints().count() > 10) || familyName.isBlank()) {
+        if ((familyName.codePoints().count() > 9) || familyName.isBlank()) {
             throw new InvalidParameterException();
         }
     }
