@@ -86,14 +86,11 @@ public class Family extends BaseEntity {
     }
 
     public void updateFamilyName(String familyName, String loginFamilyId) {
-        if (familyName == null) {
-            this.familyName = null;
-            this.familyNameEditorId = null;
-        } else {
+        if (familyName != null) {
             validateFamilyName(familyName);
-            this.familyName = familyName;
-            this.familyNameEditorId = loginFamilyId;
         }
+        this.familyName = familyName;
+        this.familyNameEditorId = loginFamilyId;
     }
 
     private void validateFamilyName(String familyName) {
