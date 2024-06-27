@@ -85,12 +85,12 @@ public class Family extends BaseEntity {
         this.score = 0;
     }
 
-    public void updateFamilyName(String familyName, String loginFamilyId) {
+    public void updateFamilyName(String familyName, String familyNameEditorId) {
         if (familyName != null) {
             validateFamilyName(familyName);
         }
         this.familyName = familyName;
-        this.familyNameEditorId = loginFamilyId;
+        this.familyNameEditorId = familyNameEditorId;
     }
 
     private void validateFamilyName(String familyName) {
