@@ -35,6 +35,14 @@ public interface MeApi {
             String loginMemberId
     );
 
+    @Operation(summary = "내 가족 정보 조회", description = "내 가족 정보를 조회합니다.")
+    @GetMapping("/family-info")
+    FamilyResponse getMyFamily(
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
+    );
+
     @Operation(summary = "FCM 토큰 등록", description = "FCM 토큰을 등록합니다.")
     @PostMapping("/fcm")
     DefaultResponse registerFcmToken(
