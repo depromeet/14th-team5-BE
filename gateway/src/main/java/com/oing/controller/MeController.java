@@ -43,9 +43,8 @@ public class MeController implements MeApi {
     }
 
     @Override
-    public FamilyResponse getMyFamily(String loginMemberId) {
-        Member member = memberService.getMemberByMemberId(loginMemberId);
-        Family family = familyService.getFamilyById(member.getFamilyId());
+    public FamilyResponse getMyFamily(String loginFamilyId) {
+        Family family = familyService.getFamilyById(loginFamilyId);
         return FamilyResponse.of(family);
     }
 

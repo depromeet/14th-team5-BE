@@ -7,6 +7,7 @@ import com.oing.dto.response.AppVersionResponse;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.FamilyResponse;
 import com.oing.dto.response.MemberResponse;
+import com.oing.util.security.LoginFamilyId;
 import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,8 +40,8 @@ public interface MeApi {
     @GetMapping("/family-info")
     FamilyResponse getMyFamily(
             @Parameter(hidden = true)
-            @LoginMemberId
-            String loginMemberId
+            @LoginFamilyId
+            String loginFamilyId
     );
 
     @Operation(summary = "FCM 토큰 등록", description = "FCM 토큰을 등록합니다.")
