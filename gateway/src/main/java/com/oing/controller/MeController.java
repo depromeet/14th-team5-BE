@@ -43,6 +43,13 @@ public class MeController implements MeApi {
     }
 
     @Override
+    public FamilyResponse getMyFamily(String loginMemberId) {
+        Member member = memberService.getMemberByMemberId(loginMemberId);
+        Family family = familyService.getFamilyById(member.getFamilyId());
+        return FamilyResponse.of(family);
+    }
+
+    @Override
     public DefaultResponse registerFcmToken(
             AddFcmTokenRequest request, String loginMemberId
     ) {
