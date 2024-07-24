@@ -46,7 +46,7 @@ jobs:
 
       - name: 이미지 태그 변경 후 배포하기
         run: |
-          cd modules/${{ inputs.service-name }}/overlays/${{ inputs.overlay-name }}
+          cd ${{ inputs.service-name }}/overlays/${{ inputs.overlay-name }}
           kustomize edit set image ${{ inputs.default-image-name }}=${{ inputs.image-name }}:${{ inputs.image-tag }}
           cat kustomization.yaml
           git config --local user.email "action@github.com"
