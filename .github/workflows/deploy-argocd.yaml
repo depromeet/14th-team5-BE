@@ -1,0 +1,56 @@
+name: ArgoCD로 배포하기
+on:
+  workflow_call:
+    inputs:
+      argocd-repo-name:
+        required: true
+        type: string
+      overlay-name:
+        required: true
+        type: string
+      service-name:
+        required: true
+        type: string
+      default-image-name:
+        required: true
+        type: string
+      image-name:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+      image-tag:
+        required: true
+        type: string
+    secrets:
+      PAT_TOKEN:
+        required: true
+
+jobs:
+  build:
+    runs-on: [ ubuntu-latest ]
+    name: ArgoCD로 배포하기
+
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: GitHub 에서 레포 받아오기
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.argocd-repo-name }}
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Kustomize 설정하기
+        uses: imranismail/setup-kustomize@v2
+
+      - name: 이미지 태그 변경 후 배포하기
+        run: |
+          cd modules/${{ inputs.service-name }}/overlays/${{ inputs.overlay-name }}
+          kustomize edit set image ${{ inputs.default-image-name }}=${{ inputs.image-name }}:${{ inputs.image-tag }}
+          cat kustomization.yaml
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "release(${{ inputs.service-name }}): 자동배포 ${{ inputs.image-name }}:${{ inputs.image-tag }}"
+          git config pull.rebase true
+          git pull && git push -u origin main
