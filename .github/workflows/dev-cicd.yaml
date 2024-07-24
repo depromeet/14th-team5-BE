@@ -69,19 +69,17 @@ jobs:
   call-deploy-workflow:
     if: github.event_name == 'push'
     needs: [ prepare-variables, call-build-workflow ]
-    name: AWS ECS 배포
-    uses: ./.github/workflows/deploy-ecs.yaml
+    name: ArgoCD로 배포하기
+    uses: ./.github/workflows/deploy-argocd.yaml
     permissions:
-      id-token: write
-      contents: read
+      contents: write
     with:
+      argocd-repo-name: bibbi-team/bibbi-argocd-manifest
+      overlay-name: ${{ needs.prepare-variables.outputs.spring-profile }}
+      service-name: bibbi-backend-api
+      image-name: bibbi-backend-api-dev
+      image-tag: ${{ needs.prepare-variables.outputs.image-tag }}
       environment: development
-      ecs-service: ${{ needs.prepare-variables.outputs.ecs-service }}
-      ecs-cluster: ${{ needs.prepare-variables.outputs.ecs-cluster }}
-      ecr-task-definition: ${{ needs.prepare-variables.outputs.ecr-task-definition }}
-      image-url: ${{ needs.call-build-workflow.outputs.image-url }}
+      default-image-name: no5ing/bibbi-backend-api
     secrets:
-      AWS_ASSUME_ROLE_ARN: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
-      AWS_ECR_REGISTRY_URL: ${{ secrets.AWS_ECR_REGISTRY_URL }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
