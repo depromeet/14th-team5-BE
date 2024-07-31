@@ -52,19 +52,17 @@ jobs:
     if: github.event_name == 'push'
     needs: [ prepare-variables ]
     name: 이미지 빌드
-    uses: ./.github/workflows/build-ecr.yaml
+    uses: ./.github/workflows/build-dockerhub.yaml
     permissions:
       id-token: write
       contents: read
     with:
-      ecr-repository-name: ${{ needs.prepare-variables.outputs.ecr-repository-name }}
+      image-name: no5ing/bibbi-backend-api
       image-tag: ${{ needs.prepare-variables.outputs.image-tag }}
       spring-profile: ${{ needs.prepare-variables.outputs.spring-profile }}
     secrets:
-      AWS_ASSUME_ROLE_ARN: ${{ secrets.AWS_ASSUME_ROLE_ARN }}
-      AWS_ECR_REGISTRY_URL: ${{ secrets.AWS_ECR_REGISTRY_URL }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_PROD_AUTH_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKER_PASSWORD }}
 
   call-deploy-workflow:
     if: github.event_name == 'push'
