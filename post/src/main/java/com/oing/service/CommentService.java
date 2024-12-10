@@ -81,7 +81,7 @@ public class CommentService {
 
     private void validateFamilyMember(String memberId, Post post) {
         if (!memberBridge.isInSameFamily(memberId, post.getMemberId())) {
-            log.warn("Unauthorized access attempt: Member {} is attempting reaction operation on post {}", memberId, post.getId());
+            log.warn("Unauthorized access attempt: Member {} is attempting comment operation on post {}", memberId, post.getId());
             throw new AuthorizationFailedException();
         }
     }
