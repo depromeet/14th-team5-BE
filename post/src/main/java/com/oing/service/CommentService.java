@@ -1,8 +1,8 @@
 package com.oing.service;
 
 import com.oing.domain.Comment;
-import com.oing.domain.Post;
 import com.oing.domain.PaginationDTO;
+import com.oing.domain.Post;
 import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.MemberPostCommentNotFoundException;
@@ -17,6 +17,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -104,5 +105,9 @@ public class CommentService {
     public void deleteAllWhenPostDelete(DeletePostEvent event) {
         Post post = event.post();
         commentRepository.deleteAllByPostId(post.getId());
+    }
+
+    public List<Comment> getPostComments(String postId) {
+        return commentRepository.findByPostId(postId);
     }
 }
