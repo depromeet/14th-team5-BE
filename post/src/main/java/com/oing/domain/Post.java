@@ -80,6 +80,7 @@ public class Post extends BaseAuditEntity {
         this.commentCnt = 0;
         this.reactionCnt = 0;
         this.realEmojiCnt = 0;
+        this.voiceCommentCnt = 0;
     }
 
     public Post(String id, String memberId, String familyId, String missionId, PostType type, String postImgUrl, String postImgKey, String content) {
@@ -95,6 +96,7 @@ public class Post extends BaseAuditEntity {
         this.commentCnt = 0;
         this.reactionCnt = 0;
         this.realEmojiCnt = 0;
+        this.voiceCommentCnt = 0;
     }
 
     private void validateContent(String content) {
