@@ -1,7 +1,6 @@
 package com.oing.service;
 
 import com.oing.domain.Comment;
-import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
 import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.exception.AuthorizationFailedException;
@@ -9,7 +8,6 @@ import com.oing.exception.MemberPostCommentNotFoundException;
 import com.oing.repository.CommentRepository;
 import com.oing.service.event.DeletePostEvent;
 import com.oing.util.IdentityGenerator;
-import com.querydsl.core.QueryResults;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,16 +66,6 @@ public class CommentService {
 
         if (!comment.getPost().getId().equals(postId)) throw new MemberPostCommentNotFoundException();
         return comment;
-    }
-
-    public PaginationDTO<Comment> searchPostComments(int page, int size, String postId, boolean asc) {
-        QueryResults<Comment> results = commentRepository
-                .searchPostComments(page, size, postId, asc);
-        int totalPage = (int) Math.ceil((double) results.getTotal() / size);
-        return new PaginationDTO<>(
-                totalPage,
-                results.getResults()
-        );
     }
 
     private void validateFamilyMember(String memberId, Post post) {

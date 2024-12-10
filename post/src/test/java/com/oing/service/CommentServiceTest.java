@@ -2,7 +2,6 @@ package com.oing.service;
 
 import com.oing.domain.Comment;
 import com.oing.domain.Post;
-import com.oing.domain.PaginationDTO;
 import com.oing.domain.PostType;
 import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.dto.request.UpdatePostCommentRequest;
@@ -10,14 +9,13 @@ import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.MemberPostCommentNotFoundException;
 import com.oing.repository.CommentRepository;
 import com.oing.util.IdentityGenerator;
-import com.querydsl.core.QueryResults;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,7 +70,7 @@ public class CommentServiceTest {
     }
 
     @Test
-    void 게시물_삭제_테스트() {
+    void 게시물_댓글_삭제_테스트() {
         //given
         String memberId = "1";
         Post post = new Post("1", memberId, "1", PostType.SURVIVAL, "1", "1", "1");
@@ -176,37 +174,18 @@ public class CommentServiceTest {
     }
 
     @Test
-    void 게시물_댓글_검색_테스트() {
-        //given
-        Post post = new Post(
-                "1",
-                "1",
-                "1",
-                PostType.SURVIVAL,
-                "1",
-                "1",
-                "1"
-        );
-        Comment comment = new Comment(
-                "1",
-                post,
-                "1",
-                "1"
-        );
-        int page = 1;
-        int size = 5;
-        when(commentRepository.searchPostComments(
-                page,
-                size,
-                post.getId(),
-                true
-        )).thenReturn(new QueryResults<>(Lists.newArrayList(comment), (long)size, 1L, 1L));
+    void 게시물_댓글_리스트_조회_테스트() {
+        // given
+        String memberId = "1";
+        Post post = new Post("1", memberId, "1", PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
+                "안녕.오잉.");
+        Comment comment = new Comment("1", post, "1", "hihi");
+        when(commentRepository.findByPostId("1")).thenReturn(List.of(comment));
 
-        //when
-        PaginationDTO<Comment> memberPostComment1 = commentService
-                .searchPostComments(page, size, post.getId(), true);
+        // when
+        List<Comment> comments = commentService.getPostComments("1");
 
-        //then
-        //nothing
+        // then
+        assertEquals(1, comments.size());
     }
 }
