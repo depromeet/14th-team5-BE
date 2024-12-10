@@ -32,7 +32,7 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     @Override
     public PreSignedUrlResponse getFeedPreSignedUrl(String imageName) {
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest("feed",
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGenerateImagePreSignedUrlRequest("feed",
                 imageName);
 
         return new PreSignedUrlResponse(generatePreSignedUrl(generatePresignedUrlRequest));
@@ -40,7 +40,7 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
     @Override
     public PreSignedUrlResponse getProfileImagePreSignedUrl(String imageName) {
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest("profile",
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGenerateImagePreSignedUrlRequest("profile",
                 imageName);
 
         return new PreSignedUrlResponse(generatePreSignedUrl(generatePresignedUrlRequest));
@@ -48,7 +48,7 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
     @Override
     public PreSignedUrlResponse getRealEmojiPreSignedUrl(String imageName) {
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest("real-emoji",
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGenerateImagePreSignedUrlRequest("real-emoji",
                 imageName);
 
         return new PreSignedUrlResponse(generatePreSignedUrl(generatePresignedUrlRequest));
@@ -56,7 +56,7 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
 
     @Override
     public PreSignedUrlResponse getVoiceCommentPreSignedUrl(String fileName) {
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest("voice-comment",
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGenerateAudioPreSignedUrlRequest("voice-comment",
                 fileName);
 
         return new PreSignedUrlResponse(generatePreSignedUrl(generatePresignedUrlRequest));
@@ -73,11 +73,18 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
         return preSignedUrl;
     }
 
-    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String directory, String imageName) {
+    private GeneratePresignedUrlRequest getGenerateImagePreSignedUrlRequest(String directory, String imageName) {
         String savedImageName = generateUniqueImageName(imageName);
         String savedImagePath = "images" + "/" + directory + "/" + savedImageName;
 
         return getPreSignedUrlRequest(bucket, savedImagePath);
+    }
+
+    private GeneratePresignedUrlRequest getGenerateAudioPreSignedUrlRequest(String directory, String fileName) {
+        String savedFileName = generateUniqueImageName(fileName);
+        String savedFilePath = "audios" + "/" + directory + "/" + savedFileName;
+
+        return getPreSignedUrlRequest(bucket, savedFilePath);
     }
 
     private GeneratePresignedUrlRequest getPreSignedUrlRequest(String bucket, String imageName) {
