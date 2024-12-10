@@ -5,6 +5,7 @@ import com.oing.dto.request.UpdatePostCommentRequest;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostCommentResponse;
+import com.oing.dto.response.PostCommentResponseV2;
 import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -73,7 +74,7 @@ public interface CommentApi {
 
     @Operation(summary = "게시물 댓글 조회", description = "게시물에 달린 댓글을 조회합니다.")
     @GetMapping
-    PaginationResponse<PostCommentResponse> getPostComments(
+    PaginationResponse<PostCommentResponseV2> getPostComments(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String postId,
@@ -96,5 +97,4 @@ public interface CommentApi {
             @LoginMemberId
             String loginMemberId
     );
-
 }
