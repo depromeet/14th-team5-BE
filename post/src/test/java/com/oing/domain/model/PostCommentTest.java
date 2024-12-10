@@ -24,7 +24,7 @@ public class PostCommentTest {
         String commentId = "sampleCommentId";
         String commentContents = "sampleCommentContents";
         Post post = new Post(postId, memberId, familyId, null, PostType.SURVIVAL, imageUrl, imageKey, content, 0,
-                0, 0, null, null, null);
+                0, 0, 0, null, null, null, null);
 
         // When
         Comment comment = new Comment(commentId, post, memberId, commentContents);
