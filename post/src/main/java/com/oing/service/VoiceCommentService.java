@@ -33,7 +33,7 @@ public class VoiceCommentService {
     public PreSignedUrlResponse requestPresignedUrl(String loginMemberId, String fileName) {
         log.info("Member {} is trying to request voice-comment Pre-Signed URL", loginMemberId);
 
-        PreSignedUrlResponse response = preSignedUrlGenerator.getFeedPreSignedUrl(fileName);
+        PreSignedUrlResponse response = preSignedUrlGenerator.getVoiceCommentPreSignedUrl(fileName);
         log.info("Voice-comment Pre-Signed URL has been generated for member {}: {}", loginMemberId, response.url());
         return response;
     }
