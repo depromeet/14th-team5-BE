@@ -1,9 +1,11 @@
 package com.oing.restapi;
 
 import com.oing.dto.request.CreatePostCommentRequest;
+import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostCommentResponseV2;
+import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +19,18 @@ import org.springframework.web.bind.annotation.*;
 @Valid
 @RequestMapping("/v1/posts/{postId}/voice-comments")
 public interface VoiceCommentApi {
+    @Operation(summary = "음성 댓글 S3 Presigned Url 요청", description = "S3 Presigned Url을 요청합니다.")
+    @PostMapping("/audio-file-upload-request")
+    PreSignedUrlResponse requestPresignedUrl(
+            @Valid
+            @RequestBody
+            PreSignedUrlRequest request,
+
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
+    );
+
     @Operation(summary = "게시물 음성 댓글 추가", description = "게시물에 음성 댓글을 추가합니다.")
     @PostMapping
     PostCommentResponseV2 createPostVoiceComment(
