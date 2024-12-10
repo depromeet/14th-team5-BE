@@ -53,6 +53,9 @@ public class Post extends BaseAuditEntity {
     @Column(name = "real_emoji_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int realEmojiCnt;
 
+    @Column(name = "voice_comment_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private int voiceCommentCnt;
+
     @OneToMany(mappedBy = "post")
     private List<Comment> comments = new ArrayList<>();
 
@@ -61,6 +64,9 @@ public class Post extends BaseAuditEntity {
 
     @OneToMany(mappedBy = "post")
     private List<RealEmoji> realEmojis = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<VoiceComment> voiceComments = new ArrayList<>();
 
     public Post(String id, String memberId, String familyId, PostType type, String postImgUrl, String postImgKey, String content) {
         validateContent(content);
@@ -126,5 +132,16 @@ public class Post extends BaseAuditEntity {
     public void removeComment(Comment comment) {
         this.comments.remove(comment);
         this.commentCnt = this.comments.size();
+    }
+
+    public VoiceComment addVoiceComment(VoiceComment voiceComment) {
+        this.voiceComments.add(voiceComment);
+        this.voiceCommentCnt = this.voiceComments.size();
+        return voiceComment;
+    }
+
+    public void removeVoiceComment(VoiceComment voiceComment) {
+        this.voiceComments.remove(voiceComment);
+        this.voiceCommentCnt = this.voiceComments.size();
     }
 }
