@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -96,5 +97,12 @@ public class VoiceCommentService {
 
     public List<VoiceComment> getPostVoiceComments(String postId) {
         return voiceCommentRepository.findByPostId(postId);
+    }
+
+    public long countMonthlyVoiceCommentByMemberId(LocalDate date, String memberId) {
+        int year = date.getYear();
+        int month = date.getMonthValue();
+
+        return voiceCommentRepository.countMonthlyVoiceCommentByMemberId(year, month, memberId);
     }
 }

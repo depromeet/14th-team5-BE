@@ -12,10 +12,7 @@ import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.MissionPostAccessDeniedFamilyException;
 import com.oing.exception.MissionPostCreateAccessDeniedMemberException;
 import com.oing.restapi.PostApi;
-import com.oing.service.CommentService;
-import com.oing.service.MemberBridge;
-import com.oing.service.PostService;
-import com.oing.service.ReactionService;
+import com.oing.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -37,6 +34,7 @@ public class PostController implements PostApi {
 
     private final PostService postService;
     private final CommentService commentService;
+    private final VoiceCommentService voiceCommentService;
     private final ReactionService reactionService;
     private final MemberBridge memberBridge;
 
@@ -143,7 +141,7 @@ public class PostController implements PostApi {
         List<PostRankerResponse> postRankerResponses = familyMembersIds.stream().map(familyMemberId -> new PostRankerDTO(
                         familyMemberId,
                         postService.countMonthlySurvivalPostByMemberId(dateTime, familyMemberId),
-                        commentService.countMonthlyCommentByMemberId(dateTime, familyMemberId),
+                        commentService.countMonthlyCommentByMemberId(dateTime, familyMemberId) + voiceCommentService.countMonthlyVoiceCommentByMemberId(dateTime, familyMemberId),
                         reactionService.countMonthlyReactionByMemberId(dateTime, familyMemberId)
 
                 ))

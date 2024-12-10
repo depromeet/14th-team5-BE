@@ -47,7 +47,7 @@ public record PostResponse(
                 post.getMemberId(),
                 post.getType().getTypeKey(),
                 post.getMissionId(),
-                post.getCommentCnt(),
+                post.getCommentCnt() + post.getVoiceCommentCnt(),
                 post.getReactionCnt() + post.getRealEmojiCnt(),
                 post.getPostImgUrl(),
                 post.getContent(),
