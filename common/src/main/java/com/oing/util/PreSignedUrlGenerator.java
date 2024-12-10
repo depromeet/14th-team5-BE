@@ -9,5 +9,7 @@ public interface PreSignedUrlGenerator {
 
     PreSignedUrlResponse getRealEmojiPreSignedUrl(String imageName);
 
+    PreSignedUrlResponse getVoiceCommentPreSignedUrl(String fileName);
+
     String extractImageKey(String imageUrl);
 }
