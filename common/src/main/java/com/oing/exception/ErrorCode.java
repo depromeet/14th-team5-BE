@@ -57,6 +57,11 @@ public enum ErrorCode {
     POST_COMMENT_NOT_FOUND("CM0001", "존재하지 않는 댓글입니다."),
 
     /**
+     * Voice-Comment Related Errors
+     */
+    VOICE_COMMENT_NOT_FOUND("VC0001", "존재하지 않는 음성 댓글입니다."),
+
+    /**
      * Family Related Errors
      */
     FAMILY_NOT_FOUND("FM0001", "존재하지 않는 가족입니다."),
