@@ -25,7 +25,7 @@ public class PostReactionTest {
         String reactionId = "sampleCommentId";
         Emoji emoji = Emoji.EMOJI_1;
         Post post = new Post(postId, memberId, familyId, null, PostType.SURVIVAL, imageUrl, imageKey, content, 0,
-                0, 0, null, null, null);
+                0, 0, 0, null, null, null, null);
 
         // When
         Reaction reaction = new Reaction(reactionId, post, memberId, emoji);

@@ -23,7 +23,7 @@ public class PostTest {
 
         // When
         Post post = new Post(postId, memberId, familyId, null, PostType.SURVIVAL, imageUrl, imageKey, content, 0,
-                0, 0, null, null, null);
+                0, 0, 0, null, null, null, null);
 
         // Then
         assertNotNull(post);
