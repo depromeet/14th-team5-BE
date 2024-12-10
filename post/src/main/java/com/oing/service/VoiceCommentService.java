@@ -1,6 +1,5 @@
 package com.oing.service;
 
-import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
 import com.oing.domain.VoiceComment;
 import com.oing.dto.request.CreatePostCommentRequest;
@@ -10,7 +9,6 @@ import com.oing.exception.MemberVoiceCommentNotFoundException;
 import com.oing.repository.VoiceCommentRepository;
 import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
-import com.querydsl.core.QueryResults;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,16 +81,6 @@ public class VoiceCommentService {
             log.warn("Unauthorized access attempt: Member {} is attempting voice-comment operation on post {}", memberId, voiceComment.getPost().getId());
             throw new AuthorizationFailedException();
         }
-    }
-
-    public PaginationDTO<VoiceComment> searchPostVoiceComments(Integer page, Integer size, String postId, boolean asc) {
-        QueryResults<VoiceComment> results = voiceCommentRepository
-                .searchPostVoiceComments(page, size, postId, asc);
-        int totalPage = (int) Math.ceil((double) results.getTotal() / size);
-        return new PaginationDTO<>(
-                totalPage,
-                results.getResults()
-        );
     }
 
     public List<VoiceComment> getPostVoiceComments(String postId) {
