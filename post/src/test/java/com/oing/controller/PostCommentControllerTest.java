@@ -1,17 +1,16 @@
 package com.oing.controller;
 
 import com.google.common.collect.Lists;
-import com.oing.domain.Comment;
-import com.oing.domain.PaginationDTO;
-import com.oing.domain.Post;
-import com.oing.domain.PostType;
+import com.oing.domain.*;
 import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.dto.request.UpdatePostCommentRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostCommentResponse;
+import com.oing.dto.response.PostCommentResponseV2;
 import com.oing.service.CommentService;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
+import com.oing.service.VoiceCommentService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,6 +33,8 @@ public class PostCommentControllerTest {
     private PostService postService;
     @Mock
     private CommentService commentService;
+    @Mock
+    private VoiceCommentService voiceCommentService;
     @Mock
     private MemberBridge memberBridge;
 
@@ -115,27 +116,32 @@ public class PostCommentControllerTest {
                 "1",
                 "1"
         ));
+        VoiceComment voiceComment = spy(new VoiceComment(
+                "1",
+                post,
+                "1",
+                "1"
+        ));
         int page = 1;
         int size = 10;
         String postId = "1";
         boolean asc = true;
         List<Comment> comments = Lists.newArrayList(comment);
+        List<VoiceComment> voiceComments = Lists.newArrayList(voiceComment);
         when(postService.getMemberPostById("1")).thenReturn(post);
         when(memberBridge.isInSameFamily("1", "1")).thenReturn(true);
         when(comment.getCreatedAt()).thenReturn(LocalDateTime.now());
-        when(commentService.searchPostComments(page, size, postId, asc))
-                .thenReturn(new PaginationDTO(
-                        5,
-                        comments
-                ));
+        when(voiceComment.getCreatedAt()).thenReturn(LocalDateTime.now());
+        when(commentService.getPostComments(postId)).thenReturn(comments);
+        when(voiceCommentService.getPostVoiceComments(postId)).thenReturn(voiceComments);
 
         //when
-        PaginationResponse<PostCommentResponse> responses = commentController
+        PaginationResponse<PostCommentResponseV2> responses = commentController
                 .getPostComments(postId, page, size, "ASC", "1");
 
         //then
-        assertEquals(responses.results().size(), comments.size());
-        assertEquals(responses.currentPage(), page);
-        assertEquals(responses.itemPerPage(), size);
+        assertEquals(comments.size()+voiceComments.size(), responses.results().size());
+        assertEquals(page, responses.currentPage());
+        assertEquals(size, responses.itemPerPage());
     }
 }
