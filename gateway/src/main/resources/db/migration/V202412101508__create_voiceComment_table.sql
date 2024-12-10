@@ -12,3 +12,5 @@ CREATE TABLE `voice_comment`
     PRIMARY KEY (`voice_comment_id`)
 ) DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci comment '게시물음성댓글';
+
+ALTER TABLE `post` ADD COLUMN `voice_comment_cnt` INTEGER NOT NULL DEFAULT 0;
