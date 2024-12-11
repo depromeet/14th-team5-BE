@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -95,7 +96,6 @@ public class CommentController implements CommentApi {
         List<PostCommentResponseV2> textComments = comments.stream()
                 .map(this::mapToTextComment)
                 .toList();
-
         List<PostCommentResponseV2> voiceCommentResponses = voiceComments.stream()
                 .map(this::mapToVoiceComment)
                 .toList();
@@ -131,7 +131,7 @@ public class CommentController implements CommentApi {
         );
     }
 
-    private Comparator<? super PostCommentResponseV2> getCommentComparator(String sort) {
+    private Comparator<PostCommentResponseV2> getCommentComparator(String sort) {
         return (c1, c2) -> {
             if (sort == null || sort.equalsIgnoreCase("ASC")) {
                 return c1.commentId().compareTo(c2.commentId());
@@ -144,9 +144,17 @@ public class CommentController implements CommentApi {
     private PaginationResponse<PostCommentResponseV2> paginateComments(List<PostCommentResponseV2> comments, Integer page, Integer size) {
         int total = comments.size();
         int totalPage = (int) Math.ceil((double) total / size);
+        if (page > totalPage) {
+            // 데이터가 없는 페이지 요청 시 빈 목록 반환
+            return PaginationResponse.of(
+                    new PaginationDTO<>(totalPage, Collections.emptyList()),
+                    page,
+                    size
+            );
+        }
+
         int start = (page - 1) * size;
         int end = Math.min(start + size, total);
-
         List<PostCommentResponseV2> paginatedComments = comments.subList(start, end);
         PaginationDTO<PostCommentResponseV2> paginationDTO = new PaginationDTO<>(totalPage, paginatedComments);
 
