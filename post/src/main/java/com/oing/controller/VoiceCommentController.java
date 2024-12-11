@@ -46,7 +46,7 @@ public class VoiceCommentController implements VoiceCommentApi {
                 CommentType.VOICE,
                 postId,
                 loginMemberId,
-                "앱 버전 업데이트 후에 확인할 수 있는 댓글이에요",
+                null,
                 savedVoiceComment.getAudioUrl(),
                 ZonedDateTime.now()
         );
