@@ -13,6 +13,7 @@ import com.oing.service.CommentService;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
 import com.oing.service.VoiceCommentService;
+import com.oing.util.Paginator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Controller;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -142,21 +142,8 @@ public class CommentController implements CommentApi {
     }
 
     private PaginationResponse<PostCommentResponseV2> paginateComments(List<PostCommentResponseV2> comments, Integer page, Integer size) {
-        int total = comments.size();
-        int totalPage = (int) Math.ceil((double) total / size);
-        if (page > totalPage) {
-            // 데이터가 없는 페이지 요청 시 빈 목록 반환
-            return PaginationResponse.of(
-                    new PaginationDTO<>(totalPage, Collections.emptyList()),
-                    page,
-                    size
-            );
-        }
-
-        int start = (page - 1) * size;
-        int end = Math.min(start + size, total);
-        List<PostCommentResponseV2> paginatedComments = comments.subList(start, end);
-        PaginationDTO<PostCommentResponseV2> paginationDTO = new PaginationDTO<>(totalPage, paginatedComments);
+        Paginator<PostCommentResponseV2> paginator = new Paginator<>(comments, size);
+        PaginationDTO<PostCommentResponseV2> paginationDTO = paginator.getPage(page);
 
         return PaginationResponse.of(paginationDTO, page, size);
     }
