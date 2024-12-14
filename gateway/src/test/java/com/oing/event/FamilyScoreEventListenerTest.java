@@ -38,6 +38,9 @@ class FamilyScoreEventListenerTest {
     private CommentRepository commentRepository;
 
     @Autowired
+    private VoiceCommentRepository voiceCommentRepository;
+
+    @Autowired
     private ReactionRepository reactionRepository;
 
     @Autowired
@@ -208,6 +211,80 @@ class FamilyScoreEventListenerTest {
         await().atMost(5, SECONDS).until(() -> {
             Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
             return newScore.equals(originScore - (NEW_COMMENT_SCORE * 2));
+        });
+    }
+
+    @Test
+    void 새로운_음성댓글이_달리면_가족_점수를_더한다() {
+        // given
+        Post post = postRepository.save(new Post(
+                "1",
+                testMember1.getId(),
+                testMember1.getFamilyId(),
+                PostType.SURVIVAL,
+                "https://storage.com/images/1",
+                "images/1",
+                "1"
+        ));
+
+        int originScore = NEW_POST_SCORE;
+
+        // when
+        voiceCommentRepository.save(new VoiceComment(
+                "1",
+                post,
+                testMember1.getId(),
+                "https://storage.com/audios/1"
+        ));
+        voiceCommentRepository.save(new VoiceComment(
+                "2",
+                post,
+                testMember1.getId(),
+                "https://storage.com/audios/2"
+        ));
+
+        // then
+        await().atMost(5, SECONDS).until(() -> {
+            Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
+            return newScore.equals(originScore + NEW_VOICE_COMMENT_SCORE * 2);
+        });
+    }
+
+    @Test
+    void 음성댓글이_지워지면_가족_점수를_뺀다() {
+        // given
+        Post post = postRepository.save(new Post(
+                "1",
+                testMember1.getId(),
+                testMember1.getFamilyId(),
+                PostType.SURVIVAL,
+                "https://storage.com/images/1",
+                "images/1",
+                "1"
+        ));
+        voiceCommentRepository.save(new VoiceComment(
+                "1",
+                post,
+                testMember1.getId(),
+                "https://storage.com/audios/1"
+        ));
+        voiceCommentRepository.save(new VoiceComment(
+                "2",
+                post,
+                testMember1.getId(),
+                "https://storage.com/audios/2"
+        ));
+
+        int originScore = NEW_POST_SCORE + (NEW_VOICE_COMMENT_SCORE * 2);
+
+        // when
+        voiceCommentRepository.deleteById("1");
+        voiceCommentRepository.deleteById("2");
+
+        // then
+        await().atMost(5, SECONDS).until(() -> {
+            Integer newScore = familyRepository.findById(testMember1.getFamilyId()).get().getScore();
+            return newScore.equals(originScore - (NEW_VOICE_COMMENT_SCORE * 2));
         });
     }
 
