@@ -38,6 +38,7 @@ public class Family extends BaseEntity {
     public static final int NEW_POST_SCORE = 20;
     public static final int ALL_FAMILY_MEMBERS_POSTS_UPLOADED_SCORE = 50;
     public static final int NEW_COMMENT_SCORE = 5;
+    public static final int NEW_VOICE_COMMENT_SCORE = 5;
     public static final int NEW_REACTION_SCORE = 1;
     public static final int NEW_REAL_EMOJI_SCORE = 3;
 
@@ -56,6 +57,10 @@ public class Family extends BaseEntity {
     public void subtractNewCommentScore() {
         subtractScore(NEW_COMMENT_SCORE);
     }
+
+    public void addNewVoiceCommentScore() {addScore(NEW_VOICE_COMMENT_SCORE);}
+
+    public void subtractNewVoiceCommentScore() {subtractScore(NEW_VOICE_COMMENT_SCORE);}
 
     public void addNewReactionScore() {
         addScore(NEW_REACTION_SCORE);
