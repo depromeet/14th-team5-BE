@@ -68,7 +68,6 @@ public class CommentController implements CommentApi {
     }
 
     @Override
-    @Transactional
     public PaginationResponse<PostCommentResponseV2> getPostComments(String postId, Integer page, Integer size, String sort,
                                                                      String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
