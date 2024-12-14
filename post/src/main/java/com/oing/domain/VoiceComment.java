@@ -13,6 +13,7 @@ import lombok.*;
         @Index(name = "voice_comment_idx2", columnList = "member_id")
 })
 @Entity(name = "voice_comment")
+@EntityListeners(VoiceCommentEntityListener.class)
 public class VoiceComment extends BaseAuditEntity {
     @Id
     @Column(name = "voice_comment_id", columnDefinition = "CHAR(26)", nullable = false)
