@@ -70,6 +70,32 @@ public class FamilyScoreEventListener {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void onPostVoiceCommentCreatedEvent(VoiceCommentCreatedEvent voiceCommentCreatedEvent) {
+        log.info("Event of uploading Voice-comment({}) by Member({}) listened, adding family score",
+                voiceCommentCreatedEvent.getVoiceCommentId(), voiceCommentCreatedEvent.getMemberId());
+
+        String familyId = memberBridge.getFamilyIdByMemberId(voiceCommentCreatedEvent.getMemberId());
+        familyService.getFamilyByIdWithLock(familyId).addNewVoiceCommentScore();
+
+        log.info("Uploading Voice-comment({}) score of Family({}) added", voiceCommentCreatedEvent.getVoiceCommentId(), familyId);
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void onPostVoiceCommentDeletedEvent(VoiceCommentCreatedEvent voiceCommentCreatedEvent) {
+        log.info("Event of Voice-comment({}) deleted by Member({}) listened, subtracting family score",
+                voiceCommentCreatedEvent.getVoiceCommentId(), voiceCommentCreatedEvent.getMemberId());
+
+        String familyId = memberBridge.getFamilyIdByMemberId(voiceCommentCreatedEvent.getMemberId());
+        familyService.getFamilyByIdWithLock(familyId).subtractNewVoiceCommentScore();
+
+        log.info("Deleting Voice-comment({}) score of Family({}) subtracted", voiceCommentCreatedEvent.getVoiceCommentId(), familyId);
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void onPostReactionCreatedEvent(ReactionCreatedEvent reactionCreatedEvent) {
         log.info("Event of uploading Reaction({}) by Member({}) listened, adding family score", reactionCreatedEvent.getReactionId(), reactionCreatedEvent.getMemberId());
 
