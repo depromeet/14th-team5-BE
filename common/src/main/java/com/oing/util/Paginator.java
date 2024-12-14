@@ -4,6 +4,7 @@ import com.oing.domain.PaginationDTO;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class Paginator<T> {
     private final List<T> items;
@@ -13,7 +14,7 @@ public class Paginator<T> {
         if (pageSize <= 0) {
             throw new IllegalArgumentException("Page size must be greater than 0.");
         }
-        this.items = items != null ? items : Collections.emptyList();
+        this.items = Optional.ofNullable(items).orElse(Collections.emptyList());
         this.pageSize = pageSize;
     }
 
