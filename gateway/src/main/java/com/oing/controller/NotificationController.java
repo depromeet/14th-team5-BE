@@ -1,5 +1,6 @@
 package com.oing.controller;
 
+import com.oing.domain.ProfileStyle;
 import com.oing.dto.response.NotificationResponse;
 import com.oing.restapi.NotificationApi;
 import org.springframework.stereotype.Controller;
@@ -15,8 +16,11 @@ public class NotificationController implements NotificationApi {
                 new NotificationResponse(
                         "01HGW2N7EHJVJ4CJ999RRS2E97",
                         "https://..",
+                        ProfileStyle.NONE,
                         "우리 가족 모두가 생존신고를 완료했어요",
                         "우리 가족 모두가 생존신고를 완료했어요",
+                        "https://..",
+                        "https://..",
                         ZonedDateTime.now()
                 )
         );
