@@ -12,7 +12,7 @@ public record CreateUserNotificationHistoryDTO(
         String title,
 
         @NotBlank
-        @Schema(description = "알림 sodyd", example = "우와~ 맛있겠다!!")
+        @Schema(description = "알림 내용", example = "우와~ 맛있겠다!!")
         String content,
 
         @Schema(description = "AOS 딥링크", example = "post/view/123?openComment=true")

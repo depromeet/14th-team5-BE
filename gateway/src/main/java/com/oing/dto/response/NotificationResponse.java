@@ -1,8 +1,10 @@
 package com.oing.dto.response;
 
 import com.oing.domain.ProfileStyle;
+import com.oing.domain.UserNotificationHistory;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Schema(description = "알림 응답")
@@ -31,4 +33,16 @@ public record NotificationResponse(
         @Schema(description = "알림 생성 시간", example = "2023-12-23T01:53:21.577347+09:00")
         ZonedDateTime createdAt
 ) {
+    public static NotificationResponse of(UserNotificationHistory userNotificationHistory, String senderProfileImageUrl, ProfileStyle profileStyle) {
+        return new NotificationResponse(
+                userNotificationHistory.getId(),
+                senderProfileImageUrl,
+                profileStyle,
+                userNotificationHistory.getTitle(),
+                userNotificationHistory.getContent(),
+                userNotificationHistory.getIosDeepLink(),
+                userNotificationHistory.getAosDeepLink(),
+                userNotificationHistory.getCreatedAt().atZone(ZoneId.systemDefault())
+        );
+    }
 }

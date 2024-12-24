@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "알림 조회 API", description = "알림 조회 관련 API")
+@Tag(name = "유저 알림 이력 API", description = "유저의 알림 이력 관련 API")
 @RestController
 @RequestMapping("/v1/notifications")
-public interface NotificationApi {
-    @Operation(summary = "현재 보여져야할 알림 조회")
+public interface UserNotificationHistoryApi {
+
+    @Operation(summary = "현재 보여져야할 알림 조회", description = "로그인 된 유저의 최근 한 달 동안의 알림 이력을 조회한다.")
     @GetMapping
-    List<NotificationResponse> getNotifications(
+    List<NotificationResponse> getMyRecentNotifications(
             @Parameter(hidden = true)
             @LoginMemberId
             String loginMemberId
