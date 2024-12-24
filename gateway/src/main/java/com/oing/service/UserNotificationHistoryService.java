@@ -91,6 +91,20 @@ public class UserNotificationHistoryService {
         );
     }
 
+    @Transactional
+    public void appendAppNewVersionReleasedNotiHistory(List<String> allActiveMemberIds) {
+        allActiveMemberIds.forEach(activeMemberId -> createUserNotificationHistory(
+                new CreateUserNotificationHistoryDTO(
+                        "삐삐의 새로운 버전이 출시되었어요!",
+                        "지금 바로 업데이트 해주세요!",
+                        null,
+                        null,
+                        "99999999999999999999999998", // 99999999999999999999999998 : NOTICE 계정
+                        activeMemberId
+                )) // TODO : 신버전 다운로드 딥링크 주소 필요
+        );
+    }
+
     private UserNotificationHistory createUserNotificationHistory(CreateUserNotificationHistoryDTO createUserNotificationHistoryDTO) {
         return userNotificationHistoryRepository.save(
                 createUserNotificationHistoryDTO.toEntity(identityGenerator.generateIdentity()));
