@@ -37,9 +37,4 @@ public class Comment extends BaseComment {
     public String getContent() {
         return content;
     }
-
-    @Override
-    public String getPostId() {
-        return post.getId();
-    }
 }

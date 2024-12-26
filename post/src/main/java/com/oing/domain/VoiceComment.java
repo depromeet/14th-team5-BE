@@ -37,9 +37,4 @@ public class VoiceComment extends BaseComment {
     public String getContent() {
         return audioUrl;
     }
-
-    @Override
-    public String getPostId() {
-        return post.getId();
-    }
 }

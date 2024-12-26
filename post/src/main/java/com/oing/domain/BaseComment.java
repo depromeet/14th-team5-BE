@@ -9,7 +9,6 @@ public abstract class BaseComment extends BaseAuditEntity {
     public abstract String getContent();
     public abstract String getMemberId();
     public abstract String getId();
-    public abstract String getPostId();
 
     public static Comparator<BaseComment> getComparator(String sort) {
         if (sort == null || sort.equalsIgnoreCase("ASC")) {
