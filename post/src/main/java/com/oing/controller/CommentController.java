@@ -21,7 +21,6 @@ import org.springframework.stereotype.Controller;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -73,15 +72,16 @@ public class CommentController implements CommentApi {
         Post post = postService.getMemberPostById(postId);
         validateAuthorization(loginMemberId, post);
 
-        List<Comment> comments = commentService.getPostComments(postId);
-        List<VoiceComment> voiceComments = voiceCommentService.getPostVoiceComments(postId);
-
-        // 댓글과 음성 댓글 통합 및 정렬
-        List<PostCommentResponseV2> combinedComments = combineComments(comments, voiceComments);
-        combinedComments.sort(getCommentComparator(sort));
+        List<BaseComment> comments = new ArrayList<>();
+        comments.addAll(commentService.getPostComments(postId));
+        comments.addAll(voiceCommentService.getPostVoiceComments(postId));
+        comments.sort(BaseComment.getComparator(sort));
 
         // 페이징 처리
-        return paginateComments(combinedComments, page, size);
+        List<PostCommentResponseV2> response = comments.stream()
+                .map(comment -> mapToPostCommentResponse(comment, postId))
+                .toList();
+        return paginateComments(response, page, size);
     }
 
     private void validateAuthorization(String loginMemberId, Post post) {
@@ -91,53 +91,15 @@ public class CommentController implements CommentApi {
         }
     }
 
-    private List<PostCommentResponseV2> combineComments(List<Comment> comments, List<VoiceComment> voiceComments) {
-        List<PostCommentResponseV2> textComments = comments.stream()
-                .map(this::mapToTextComment)
-                .toList();
-        List<PostCommentResponseV2> voiceCommentResponses = voiceComments.stream()
-                .map(this::mapToVoiceComment)
-                .toList();
-
-        List<PostCommentResponseV2> combinedComments = new ArrayList<>();
-        combinedComments.addAll(textComments);
-        combinedComments.addAll(voiceCommentResponses);
-
-        return combinedComments;
-    }
-
-    private PostCommentResponseV2 mapToTextComment(Comment comment) {
+    private PostCommentResponseV2 mapToPostCommentResponse(BaseComment baseComment, String postId) {
         return new PostCommentResponseV2(
-                comment.getId(),
-                CommentType.TEXT,
-                comment.getPost().getId(),
-                comment.getMemberId(),
-                comment.getContent(),
-                null,
-                comment.getCreatedAt().atZone(ZoneId.systemDefault())
+                baseComment.getId(),
+                baseComment instanceof Comment ? CommentType.TEXT : CommentType.VOICE,
+                postId,
+                baseComment.getMemberId(),
+                baseComment.getContent(),
+                baseComment.getCreatedAt().atZone(ZoneId.systemDefault())
         );
-    }
-
-    private PostCommentResponseV2 mapToVoiceComment(VoiceComment voiceComment) {
-        return new PostCommentResponseV2(
-                voiceComment.getId(),
-                CommentType.VOICE,
-                voiceComment.getPost().getId(),
-                voiceComment.getMemberId(),
-                null,
-                voiceComment.getAudioUrl(),
-                voiceComment.getCreatedAt().atZone(ZoneId.systemDefault())
-        );
-    }
-
-    private Comparator<PostCommentResponseV2> getCommentComparator(String sort) {
-        return (c1, c2) -> {
-            if (sort == null || sort.equalsIgnoreCase("ASC")) {
-                return c1.commentId().compareTo(c2.commentId());
-            } else {
-                return c2.commentId().compareTo(c1.commentId());
-            }
-        };
     }
 
     private PaginationResponse<PostCommentResponseV2> paginateComments(List<PostCommentResponseV2> comments, Integer page, Integer size) {
