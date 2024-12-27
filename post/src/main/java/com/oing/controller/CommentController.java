@@ -92,16 +92,12 @@ public class CommentController implements CommentApi {
     }
 
     private PostCommentResponseV2 mapToPostCommentResponse(BaseComment baseComment, String postId) {
-        String content = baseComment instanceof Comment ? baseComment.getContent() : null;
-        String audioUrl = baseComment instanceof VoiceComment ? baseComment.getContent() : null;
-
         return new PostCommentResponseV2(
                 baseComment.getId(),
                 baseComment instanceof Comment ? CommentType.TEXT : CommentType.VOICE,
                 postId,
                 baseComment.getMemberId(),
-                content,
-                audioUrl,
+                baseComment.getContent(),
                 baseComment.getCreatedAt().atZone(ZoneId.systemDefault())
         );
     }
