@@ -23,8 +23,8 @@ public class UserNotificationHistoryService {
     private final IdentityGenerator identityGenerator;
 
     @Transactional
-    public void appendMissionUnlockedNotiHistory(List<String> receiverFamilyMemberIds) {
-        receiverFamilyMemberIds.forEach(receiverFamilyMemberId -> createUserNotificationHistory(
+    public List<UserNotificationHistory> appendMissionUnlockedNotiHistory(List<String> receiverFamilyMemberIds) {
+        return receiverFamilyMemberIds.stream().map(receiverFamilyMemberId -> createUserNotificationHistory(
                 new CreateUserNotificationHistoryDTO(
                         "우리 가족 모두가 생존신고를 완료했어요!",
                         "이제 미션 사진을 업로드할 수 있어요",
@@ -33,12 +33,12 @@ public class UserNotificationHistoryService {
                         "99999999999999999999999999", // 99999999999999999999999999 : SYSTEM 계정
                         receiverFamilyMemberId
                 )) // TODO : 메인화면 딥링크 주소 필요
-        );
+        ).toList();
     }
 
     @Transactional
-    public void appendCommentNotiHistory(String senderName, String comment, String senderMemberId, String receiverMemberId, String aosDeepLink, String iosDeepLink) {
-        createUserNotificationHistory(
+    public UserNotificationHistory appendCommentNotiHistory(String senderName, String comment, String senderMemberId, String receiverMemberId, String aosDeepLink, String iosDeepLink) {
+        return createUserNotificationHistory(
                 new CreateUserNotificationHistoryDTO(
                         String.format("%s님이 내 생존신고에 댓글을 달았어요", senderName),
                         comment,
@@ -46,12 +46,13 @@ public class UserNotificationHistoryService {
                         iosDeepLink,
                         senderMemberId,
                         receiverMemberId
-                ));
+                )
+        );
     }
 
     @Transactional
-    public void appendNextWeekBirthdayNotiHistory(String senderName, String senderMemberId, List<String> receiverMemberIds) {
-        receiverMemberIds.forEach(receiverMemberId -> createUserNotificationHistory(
+    public List<UserNotificationHistory> appendNextWeekBirthdayNotiHistory(String senderName, String senderMemberId, List<String> receiverMemberIds) {
+        return receiverMemberIds.stream().map(receiverMemberId -> createUserNotificationHistory(
                 new CreateUserNotificationHistoryDTO(
                         String.format("일주일 뒤 %s님의 생일이에요!", senderName),
                         "잊고 계신건 아니겠죠??",
@@ -60,12 +61,12 @@ public class UserNotificationHistoryService {
                         senderMemberId,
                         receiverMemberId
                 )) // TODO : 메인화면 딥링크 주소 필요
-        );
+        ).toList();
     }
 
     @Transactional
-    public void appendTomorrowBirthdayNotiHistory(String senderName, String senderMemberId, List<String> receiverMemberIds) {
-        receiverMemberIds.forEach(receiverMemberId -> createUserNotificationHistory(
+    public List<UserNotificationHistory> appendTomorrowBirthdayNotiHistory(String senderName, String senderMemberId, List<String> receiverMemberIds) {
+        return receiverMemberIds.stream().map(receiverMemberId -> createUserNotificationHistory(
                 new CreateUserNotificationHistoryDTO(
                         String.format("내일 %s님의 생일이에요!", senderName),
                         "잊고 계신건 아니겠죠??",
@@ -74,12 +75,12 @@ public class UserNotificationHistoryService {
                         senderMemberId,
                         receiverMemberId
                 )) // TODO : 메인화면 딥링크 주소 필요
-        );
+        ).toList();
     }
 
     @Transactional
-    public void appendTodayBirthdayNotiHistory(String senderName, String senderMemberId, List<String> receiverMemberIds) {
-        receiverMemberIds.forEach(receiverMemberId -> createUserNotificationHistory(
+    public List<UserNotificationHistory> appendTodayBirthdayNotiHistory(String senderName, String senderMemberId, List<String> receiverMemberIds) {
+        return receiverMemberIds.stream().map(receiverMemberId -> createUserNotificationHistory(
                 new CreateUserNotificationHistoryDTO(
                         String.format("오늘 %s님의 생일이에요!", senderName),
                         String.format("모두 %s님의 생일을 축하해주세요!", senderName),
@@ -88,12 +89,12 @@ public class UserNotificationHistoryService {
                         senderMemberId,
                         receiverMemberId
                 )) // TODO : 메인화면 딥링크 주소 필요
-        );
+        ).toList();
     }
 
     @Transactional
-    public void appendAppNewVersionReleasedNotiHistory(List<String> allActiveMemberIds) {
-        allActiveMemberIds.forEach(activeMemberId -> createUserNotificationHistory(
+    public List<UserNotificationHistory> appendAppNewVersionReleasedNotiHistory(List<String> allActiveMemberIds) {
+        return allActiveMemberIds.stream().map(activeMemberId -> createUserNotificationHistory(
                 new CreateUserNotificationHistoryDTO(
                         "삐삐의 새로운 버전이 출시되었어요!",
                         "지금 바로 업데이트 해주세요!",
@@ -102,7 +103,7 @@ public class UserNotificationHistoryService {
                         "99999999999999999999999998", // 99999999999999999999999998 : NOTICE 계정
                         activeMemberId
                 )) // TODO : 신버전 다운로드 딥링크 주소 필요
-        );
+        ).toList();
     }
 
     private UserNotificationHistory createUserNotificationHistory(CreateUserNotificationHistoryDTO createUserNotificationHistoryDTO) {
