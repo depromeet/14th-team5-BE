@@ -14,7 +14,7 @@ import lombok.*;
 })
 @Entity(name = "voice_comment")
 @EntityListeners(VoiceCommentEntityListener.class)
-public class VoiceComment extends BaseAuditEntity {
+public class VoiceComment extends BaseComment {
     @Id
     @Column(name = "voice_comment_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
@@ -31,5 +31,10 @@ public class VoiceComment extends BaseAuditEntity {
 
     public void setAudioUrl(String audioUrl) {
         this.audioUrl = audioUrl;
+    }
+
+    @Override
+    public String getContent() {
+        return audioUrl;
     }
 }

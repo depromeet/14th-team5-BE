@@ -14,7 +14,7 @@ import lombok.*;
 })
 @Entity(name = "comment")
 @EntityListeners(CommentEntityListener.class)
-public class Comment extends BaseAuditEntity {
+public class Comment extends BaseComment {
     @Id
     @Column(name = "comment_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
@@ -31,5 +31,10 @@ public class Comment extends BaseAuditEntity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public String getContent() {
+        return content;
     }
 }
