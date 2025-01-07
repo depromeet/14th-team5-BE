@@ -3,7 +3,6 @@ package com.oing.controller;
 import com.oing.domain.CommentType;
 import com.oing.domain.Post;
 import com.oing.domain.VoiceComment;
-import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.dto.request.CreatePostVoiceCommentRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.DefaultResponse;
