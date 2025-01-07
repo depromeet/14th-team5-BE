@@ -2,7 +2,7 @@ package com.oing.service;
 
 import com.oing.domain.Post;
 import com.oing.domain.VoiceComment;
-import com.oing.dto.request.CreatePostCommentRequest;
+import com.oing.dto.request.CreatePostVoiceCommentRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.exception.MemberVoiceCommentNotFoundException;
@@ -37,14 +37,14 @@ public class VoiceCommentService {
     }
 
     @Transactional
-    public VoiceComment saveVoiceComment(Post post, CreatePostCommentRequest request, String loginMemberId) {
+    public VoiceComment saveVoiceComment(Post post, CreatePostVoiceCommentRequest request, String loginMemberId) {
         validateFamilyMember(loginMemberId, post);
 
         VoiceComment voiceComment = new VoiceComment(
                 identityGenerator.generateIdentity(),
                 post,
                 loginMemberId,
-                request.content()
+                request.fileUrl()
         );
         VoiceComment savedVoiceComment = voiceCommentRepository.save(voiceComment);
         post.addVoiceComment(savedVoiceComment);
