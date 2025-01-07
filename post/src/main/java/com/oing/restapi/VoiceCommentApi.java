@@ -1,6 +1,6 @@
 package com.oing.restapi;
 
-import com.oing.dto.request.CreatePostCommentRequest;
+import com.oing.dto.request.CreatePostVoiceCommentRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PostCommentResponseV2;
@@ -38,7 +38,7 @@ public interface VoiceCommentApi {
 
             @Valid
             @RequestBody
-            CreatePostCommentRequest request,
+            CreatePostVoiceCommentRequest request,
 
             @Parameter(hidden = true)
             @LoginMemberId

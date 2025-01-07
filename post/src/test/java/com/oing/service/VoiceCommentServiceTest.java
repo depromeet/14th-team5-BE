@@ -3,7 +3,7 @@ package com.oing.service;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
 import com.oing.domain.VoiceComment;
-import com.oing.dto.request.CreatePostCommentRequest;
+import com.oing.dto.request.CreatePostVoiceCommentRequest;
 import com.oing.repository.VoiceCommentRepository;
 import com.oing.util.IdentityGenerator;
 import com.oing.util.PreSignedUrlGenerator;
@@ -42,7 +42,7 @@ public class VoiceCommentServiceTest {
         String familyId = "1";
         Post post = new Post("1", memberId, familyId, PostType.SURVIVAL, "https://oing.com/post.jpg", "post.jpg",
                 "안녕.오잉.");
-        CreatePostCommentRequest request = new CreatePostCommentRequest("1");
+        CreatePostVoiceCommentRequest request = new CreatePostVoiceCommentRequest("1");
         VoiceComment comment = new VoiceComment("1", null, "1", "https://oing.com/audio.mp3");
 
         when(memberBridge.isInSameFamily(memberId, post.getMemberId())).thenReturn(true);
