@@ -28,8 +28,8 @@ public class MemberNotificationHistoryService {
                 new CreateUserNotificationHistoryDTO(
                         "우리 가족 모두가 생존신고를 완료했어요!",
                         "이제 미션 사진을 업로드할 수 있어요",
-                        null,
-                        null,
+                        "main?openMission=true",
+                        "main?openMission=true",
                         "99999999999999999999999999", // 99999999999999999999999999 : SYSTEM 계정
                         receiverFamilyMemberId
                 )) // TODO : 메인화면 딥링크 주소 필요
@@ -56,8 +56,8 @@ public class MemberNotificationHistoryService {
                 new CreateUserNotificationHistoryDTO(
                         String.format("일주일 뒤 %s님의 생일이에요!", senderName),
                         "잊고 계신건 아니겠죠??",
-                        null,
-                        null,
+                        "main/profile/" + senderMemberId,
+                        "main/profile/" + senderMemberId,
                         senderMemberId,
                         receiverMemberId
                 )) // TODO : 메인화면 딥링크 주소 필요
@@ -70,8 +70,8 @@ public class MemberNotificationHistoryService {
                 new CreateUserNotificationHistoryDTO(
                         String.format("내일 %s님의 생일이에요!", senderName),
                         "잊고 계신건 아니겠죠??",
-                        null,
-                        null,
+                        "main/profile/" + senderMemberId,
+                        "main/profile/" + senderMemberId,
                         senderMemberId,
                         receiverMemberId
                 )) // TODO : 메인화면 딥링크 주소 필요
@@ -84,8 +84,8 @@ public class MemberNotificationHistoryService {
                 new CreateUserNotificationHistoryDTO(
                         String.format("오늘 %s님의 생일이에요!", senderName),
                         String.format("모두 %s님의 생일을 축하해주세요!", senderName),
-                        null,
-                        null,
+                        "main/profile/" + senderMemberId,
+                        "main/profile/" + senderMemberId,
                         senderMemberId,
                         receiverMemberId
                 )) // TODO : 메인화면 딥링크 주소 필요
@@ -98,8 +98,8 @@ public class MemberNotificationHistoryService {
                 new CreateUserNotificationHistoryDTO(
                         "삐삐의 새로운 버전이 출시되었어요!",
                         "지금 바로 업데이트 해주세요!",
-                        null,
-                        null,
+                        "store/bibbi",
+                        "store/bibbi",
                         "99999999999999999999999998", // 99999999999999999999999998 : NOTICE 계정
                         activeMemberId
                 )) // TODO : 신버전 다운로드 딥링크 주소 필요
