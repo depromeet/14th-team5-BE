@@ -1,9 +1,9 @@
 package com.oing.service;
 
+import com.oing.domain.MemberNotificationHistory;
 import com.oing.domain.ProfileStyle;
-import com.oing.domain.UserNotificationHistory;
 import com.oing.dto.response.NotificationResponse;
-import com.oing.repository.UserNotificationHistoryRepository;
+import com.oing.repository.MemberNotificationHistoryRepository;
 import com.oing.util.IdentityGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,13 +23,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserNotificationHistoryServiceTest {
+class MemberNotificationHistoryServiceTest {
 
     @InjectMocks
-    private UserNotificationHistoryService userNotificationHistoryService;
+    private MemberNotificationHistoryService memberNotificationHistoryService;
 
     @Mock
-    private UserNotificationHistoryRepository userNotificationHistoryRepository;
+    private MemberNotificationHistoryRepository memberNotificationHistoryRepository;
 
     @Mock
     private MemberBridge memberBridge;
@@ -43,11 +43,11 @@ class UserNotificationHistoryServiceTest {
         List<String> receiverFamilyMemberIds = List.of("receiver1", "receiver2");
 
         // when
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendMissionUnlockedNotiHistory(receiverFamilyMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendMissionUnlockedNotiHistory(receiverFamilyMemberIds);
 
         // then
         assertEquals(2, result.size());
-        verify(userNotificationHistoryRepository, times(2)).save(any(UserNotificationHistory.class));
+        verify(memberNotificationHistoryRepository, times(2)).save(any(MemberNotificationHistory.class));
     }
 
     @Test
@@ -56,10 +56,10 @@ class UserNotificationHistoryServiceTest {
         List<String> receiverFamilyMemberIds = List.of("receiver1");
 
         // when
-        userNotificationHistoryService.appendMissionUnlockedNotiHistory(receiverFamilyMemberIds);
-        ArgumentCaptor<UserNotificationHistory> captor = ArgumentCaptor.forClass(UserNotificationHistory.class);
-        verify(userNotificationHistoryRepository).save(captor.capture());
-        UserNotificationHistory savedNotification = captor.getValue();
+        memberNotificationHistoryService.appendMissionUnlockedNotiHistory(receiverFamilyMemberIds);
+        ArgumentCaptor<MemberNotificationHistory> captor = ArgumentCaptor.forClass(MemberNotificationHistory.class);
+        verify(memberNotificationHistoryRepository).save(captor.capture());
+        MemberNotificationHistory savedNotification = captor.getValue();
 
         // then
         assertEquals("우리 가족 모두가 생존신고를 완료했어요!", savedNotification.getTitle());
@@ -76,11 +76,11 @@ class UserNotificationHistoryServiceTest {
         List<String> receiverFamilyMemberIds = Collections.emptyList();
 
         // when
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendMissionUnlockedNotiHistory(receiverFamilyMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendMissionUnlockedNotiHistory(receiverFamilyMemberIds);
 
         // then
         assertTrue(result.isEmpty());
-        verify(userNotificationHistoryRepository, never()).save(any(UserNotificationHistory.class));
+        verify(memberNotificationHistoryRepository, never()).save(any(MemberNotificationHistory.class));
     }
 
     @Test
@@ -94,11 +94,11 @@ class UserNotificationHistoryServiceTest {
         String iosDeepLink = "post/view/123?openComment=true&dateOfPost=2024-12-24";
 
         // when
-        userNotificationHistoryService.appendCommentNotiHistory(senderName, comment, senderMemberId, receiverMemberId, aosDeepLink, iosDeepLink);
+        memberNotificationHistoryService.appendCommentNotiHistory(senderName, comment, senderMemberId, receiverMemberId, aosDeepLink, iosDeepLink);
 
-        ArgumentCaptor<UserNotificationHistory> captor = ArgumentCaptor.forClass(UserNotificationHistory.class);
-        verify(userNotificationHistoryRepository).save(captor.capture());
-        UserNotificationHistory savedNotification = captor.getValue();
+        ArgumentCaptor<MemberNotificationHistory> captor = ArgumentCaptor.forClass(MemberNotificationHistory.class);
+        verify(memberNotificationHistoryRepository).save(captor.capture());
+        MemberNotificationHistory savedNotification = captor.getValue();
 
         // then
         assertEquals(String.format("%s님이 내 생존신고에 댓글을 달았어요", senderName), savedNotification.getTitle());
@@ -117,11 +117,11 @@ class UserNotificationHistoryServiceTest {
         List<String> receiverMemberIds = List.of("receiver1", "receiver2");
 
         // when
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendNextWeekBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendNextWeekBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
 
         // then
         assertEquals(2, result.size());
-        verify(userNotificationHistoryRepository, times(2)).save(any(UserNotificationHistory.class));
+        verify(memberNotificationHistoryRepository, times(2)).save(any(MemberNotificationHistory.class));
     }
 
     @Test
@@ -132,11 +132,11 @@ class UserNotificationHistoryServiceTest {
         String receiverMemberId = "receiver1";
 
         // when
-        userNotificationHistoryService.appendNextWeekBirthdayNotiHistory(senderName, senderMemberId, List.of(receiverMemberId));
+        memberNotificationHistoryService.appendNextWeekBirthdayNotiHistory(senderName, senderMemberId, List.of(receiverMemberId));
 
-        ArgumentCaptor<UserNotificationHistory> captor = ArgumentCaptor.forClass(UserNotificationHistory.class);
-        verify(userNotificationHistoryRepository).save(captor.capture());
-        UserNotificationHistory savedNotification = captor.getValue();
+        ArgumentCaptor<MemberNotificationHistory> captor = ArgumentCaptor.forClass(MemberNotificationHistory.class);
+        verify(memberNotificationHistoryRepository).save(captor.capture());
+        MemberNotificationHistory savedNotification = captor.getValue();
 
         // then
         assertEquals(String.format("일주일 뒤 %s님의 생일이에요!", senderName), savedNotification.getTitle());
@@ -155,11 +155,11 @@ class UserNotificationHistoryServiceTest {
         List<String> receiverMemberIds = Collections.emptyList();
 
         // when
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendNextWeekBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendNextWeekBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
 
         // then
         assertTrue(result.isEmpty());
-        verify(userNotificationHistoryRepository, never()).save(any(UserNotificationHistory.class));
+        verify(memberNotificationHistoryRepository, never()).save(any(MemberNotificationHistory.class));
     }
 
     @Test
@@ -170,11 +170,11 @@ class UserNotificationHistoryServiceTest {
         List<String> receiverMemberIds = List.of("receiver1", "receiver2");
 
         // when
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendTomorrowBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendTomorrowBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
 
         // then
         assertEquals(2, result.size());
-        verify(userNotificationHistoryRepository, times(2)).save(any(UserNotificationHistory.class));
+        verify(memberNotificationHistoryRepository, times(2)).save(any(MemberNotificationHistory.class));
     }
 
     @Test
@@ -185,11 +185,11 @@ class UserNotificationHistoryServiceTest {
         String receiverMemberId = "receiver1";
 
         // when
-        userNotificationHistoryService.appendTomorrowBirthdayNotiHistory(senderName, senderMemberId, List.of(receiverMemberId));
+        memberNotificationHistoryService.appendTomorrowBirthdayNotiHistory(senderName, senderMemberId, List.of(receiverMemberId));
 
-        ArgumentCaptor<UserNotificationHistory> captor = ArgumentCaptor.forClass(UserNotificationHistory.class);
-        verify(userNotificationHistoryRepository).save(captor.capture());
-        UserNotificationHistory savedNotification = captor.getValue();
+        ArgumentCaptor<MemberNotificationHistory> captor = ArgumentCaptor.forClass(MemberNotificationHistory.class);
+        verify(memberNotificationHistoryRepository).save(captor.capture());
+        MemberNotificationHistory savedNotification = captor.getValue();
 
         // then
         assertEquals(String.format("내일 %s님의 생일이에요!", senderName), savedNotification.getTitle());
@@ -208,11 +208,11 @@ class UserNotificationHistoryServiceTest {
         List<String> receiverMemberIds = Collections.emptyList();
 
         // when
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendTomorrowBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendTomorrowBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
 
         // then
         assertTrue(result.isEmpty());
-        verify(userNotificationHistoryRepository, never()).save(any(UserNotificationHistory.class));
+        verify(memberNotificationHistoryRepository, never()).save(any(MemberNotificationHistory.class));
     }
 
     @Test
@@ -223,11 +223,11 @@ class UserNotificationHistoryServiceTest {
         List<String> receiverMemberIds = List.of("receiver1", "receiver2");
 
         // when
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendTodayBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendTodayBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
 
         // then
         assertEquals(2, result.size());
-        verify(userNotificationHistoryRepository, times(2)).save(any(UserNotificationHistory.class));
+        verify(memberNotificationHistoryRepository, times(2)).save(any(MemberNotificationHistory.class));
     }
 
     @Test
@@ -238,11 +238,11 @@ class UserNotificationHistoryServiceTest {
         String receiverMemberId = "receiver1";
 
         // when
-        userNotificationHistoryService.appendTodayBirthdayNotiHistory(senderName, senderMemberId, List.of(receiverMemberId));
+        memberNotificationHistoryService.appendTodayBirthdayNotiHistory(senderName, senderMemberId, List.of(receiverMemberId));
 
-        ArgumentCaptor<UserNotificationHistory> captor = ArgumentCaptor.forClass(UserNotificationHistory.class);
-        verify(userNotificationHistoryRepository).save(captor.capture());
-        UserNotificationHistory savedNotification = captor.getValue();
+        ArgumentCaptor<MemberNotificationHistory> captor = ArgumentCaptor.forClass(MemberNotificationHistory.class);
+        verify(memberNotificationHistoryRepository).save(captor.capture());
+        MemberNotificationHistory savedNotification = captor.getValue();
 
         // then
         assertEquals(String.format("오늘 %s님의 생일이에요!", senderName), savedNotification.getTitle());
@@ -261,11 +261,11 @@ class UserNotificationHistoryServiceTest {
         List<String> receiverMemberIds = Collections.emptyList();
 
         // when
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendTodayBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendTodayBirthdayNotiHistory(senderName, senderMemberId, receiverMemberIds);
 
         // then
         assertTrue(result.isEmpty());
-        verify(userNotificationHistoryRepository, never()).save(any(UserNotificationHistory.class));
+        verify(memberNotificationHistoryRepository, never()).save(any(MemberNotificationHistory.class));
     }
 
     @Test
@@ -274,22 +274,22 @@ class UserNotificationHistoryServiceTest {
         List<String> allActiveMemberIds = List.of("activeMember1", "activeMember2");
 
         // when
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendAppNewVersionReleasedNotiHistory(allActiveMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendAppNewVersionReleasedNotiHistory(allActiveMemberIds);
 
         // then
         assertEquals(2, result.size());
-        verify(userNotificationHistoryRepository, times(2)).save(any(UserNotificationHistory.class));
+        verify(memberNotificationHistoryRepository, times(2)).save(any(MemberNotificationHistory.class));
     }
 
     @Test
     void 신버전_출시_알림_이력_적재_테스트_데이터정합성() {
         List<String> allActiveMemberIds = List.of("activeMember1");
 
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendAppNewVersionReleasedNotiHistory(allActiveMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendAppNewVersionReleasedNotiHistory(allActiveMemberIds);
 
-        ArgumentCaptor<UserNotificationHistory> captor = ArgumentCaptor.forClass(UserNotificationHistory.class);
-        verify(userNotificationHistoryRepository).save(captor.capture());
-        UserNotificationHistory savedNotification = captor.getValue();
+        ArgumentCaptor<MemberNotificationHistory> captor = ArgumentCaptor.forClass(MemberNotificationHistory.class);
+        verify(memberNotificationHistoryRepository).save(captor.capture());
+        MemberNotificationHistory savedNotification = captor.getValue();
 
         assertEquals("삐삐의 새로운 버전이 출시되었어요!", savedNotification.getTitle());
         assertEquals("지금 바로 업데이트 해주세요!", savedNotification.getContent());
@@ -305,11 +305,11 @@ class UserNotificationHistoryServiceTest {
         List<String> allActiveMemberIds = Collections.emptyList();
 
         // when
-        List<UserNotificationHistory> result = userNotificationHistoryService.appendAppNewVersionReleasedNotiHistory(allActiveMemberIds);
+        List<MemberNotificationHistory> result = memberNotificationHistoryService.appendAppNewVersionReleasedNotiHistory(allActiveMemberIds);
 
         // then
         assertTrue(result.isEmpty());
-        verify(userNotificationHistoryRepository, never()).save(any(UserNotificationHistory.class));
+        verify(memberNotificationHistoryRepository, never()).save(any(MemberNotificationHistory.class));
     }
 
     @Test
@@ -317,7 +317,7 @@ class UserNotificationHistoryServiceTest {
         // given
         String memberId = "member1";
         LocalDateTime oneMonthAgo = LocalDate.now().minusMonths(1).atStartOfDay();
-        UserNotificationHistory notificationHistory = UserNotificationHistory.builder()
+        MemberNotificationHistory notificationHistory = com.oing.domain.MemberNotificationHistory.builder()
                 .title("title")
                 .content("content")
                 .aosDeepLink("aosDeepLink")
@@ -327,13 +327,13 @@ class UserNotificationHistoryServiceTest {
                 .build();
         notificationHistory.setCreatedAt(LocalDateTime.now());
 
-        when(userNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo))
+        when(memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo))
                 .thenReturn(List.of(notificationHistory));
         when(memberBridge.isBirthDayMember("sender1")).thenReturn(false);
         when(memberBridge.getMemberProfileImgUrlByMemberId("sender1")).thenReturn("http://example.com/profile.jpg");
 
         // when
-        List<NotificationResponse> results = userNotificationHistoryService.getRecentUserNotifications(memberId);
+        List<NotificationResponse> results = memberNotificationHistoryService.getRecentUserNotifications(memberId);
         NotificationResponse result = results.get(0);
 
         // then
@@ -351,7 +351,7 @@ class UserNotificationHistoryServiceTest {
         // given
         String memberId = "member1";
         LocalDateTime oneMonthAgo = LocalDate.now().minusMonths(1).atStartOfDay();
-        UserNotificationHistory notificationHistory = UserNotificationHistory.builder()
+        MemberNotificationHistory notificationHistory = com.oing.domain.MemberNotificationHistory.builder()
                 .title("title")
                 .content("content")
                 .aosDeepLink("aosDeepLink")
@@ -361,13 +361,13 @@ class UserNotificationHistoryServiceTest {
                 .build();
         notificationHistory.setCreatedAt(LocalDateTime.now());
 
-        when(userNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo))
+        when(memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo))
                 .thenReturn(List.of(notificationHistory));
         when(memberBridge.isBirthDayMember("sender1")).thenReturn(true);
         when(memberBridge.getMemberProfileImgUrlByMemberId("sender1")).thenReturn("http://example.com/profile.jpg");
 
         // when
-        List<NotificationResponse> results = userNotificationHistoryService.getRecentUserNotifications(memberId);
+        List<NotificationResponse> results = memberNotificationHistoryService.getRecentUserNotifications(memberId);
         NotificationResponse result = results.get(0);
 
         // then
@@ -386,11 +386,11 @@ class UserNotificationHistoryServiceTest {
         String memberId = "member1";
         LocalDateTime oneMonthAgo = LocalDate.now().minusMonths(1).atStartOfDay();
 
-        when(userNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo))
+        when(memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo))
                 .thenReturn(Collections.emptyList());
 
         // when
-        List<NotificationResponse> result = userNotificationHistoryService.getRecentUserNotifications(memberId);
+        List<NotificationResponse> result = memberNotificationHistoryService.getRecentUserNotifications(memberId);
 
         // then
         assertTrue(result.isEmpty());

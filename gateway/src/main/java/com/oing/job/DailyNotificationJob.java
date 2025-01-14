@@ -36,7 +36,7 @@ public class DailyNotificationJob {
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final PostService postService;
-    private final UserNotificationHistoryService userNotificationHistoryService;
+    private final MemberNotificationHistoryService memberNotificationHistoryService;
 
     @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Seoul") // 12:00 PM
     @SchedulerLock(name = "DailyPreUploadNotificationSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
@@ -88,7 +88,7 @@ public class DailyNotificationJob {
             List<String> receiverMemberIds = memberService.getFamilyMembersIdsByFamilyId(sender.getFamilyId());
             receiverMemberIds.remove(sender.getId());
 
-            userNotificationHistoryService.appendNextWeekBirthdayNotiHistory(sender.getName(), sender.getId(), receiverMemberIds);
+            memberNotificationHistoryService.appendNextWeekBirthdayNotiHistory(sender.getName(), sender.getId(), receiverMemberIds);
         });
     }
 
@@ -102,7 +102,7 @@ public class DailyNotificationJob {
             List<String> receiverMemberIds = memberService.getFamilyMembersIdsByFamilyId(sender.getFamilyId());
             receiverMemberIds.remove(sender.getId());
 
-            userNotificationHistoryService.appendTomorrowBirthdayNotiHistory(sender.getName(), sender.getId(), receiverMemberIds);
+            memberNotificationHistoryService.appendTomorrowBirthdayNotiHistory(sender.getName(), sender.getId(), receiverMemberIds);
         });
     }
 
@@ -116,7 +116,7 @@ public class DailyNotificationJob {
             List<String> receiverMemberIds = memberService.getFamilyMembersIdsByFamilyId(sender.getFamilyId());
             receiverMemberIds.remove(sender.getId());
 
-            userNotificationHistoryService.appendTodayBirthdayNotiHistory(sender.getName(), sender.getId(), receiverMemberIds);
+            memberNotificationHistoryService.appendTodayBirthdayNotiHistory(sender.getName(), sender.getId(), receiverMemberIds);
         });
     }
 

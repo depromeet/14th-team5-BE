@@ -26,7 +26,7 @@ public class FamilyNotificationEventListener {
     private final MemberDeviceService memberDeviceService;
     private final FCMNotificationService fcmNotificationService;
     private final PostService memberPostService;
-    private final UserNotificationHistoryService userNotificationHistoryService;
+    private final MemberNotificationHistoryService memberNotificationHistoryService;
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -65,7 +65,7 @@ public class FamilyNotificationEventListener {
     }
 
     private void onMissionUnlockedEvent(List<String> familyMemberIds) {
-        userNotificationHistoryService.appendMissionUnlockedNotiHistory(familyMemberIds);
+        memberNotificationHistoryService.appendMissionUnlockedNotiHistory(familyMemberIds);
         sendMissionUnlockedMessages(familyMemberIds);
     }
 
@@ -102,7 +102,7 @@ public class FamilyNotificationEventListener {
             if (!postAuthorId.equals(comment.getMemberId())) { //내가 내 게시물에 단 댓글이 아니라면
 
                 // 알림 이력 적재
-                userNotificationHistoryService.appendCommentNotiHistory(
+                memberNotificationHistoryService.appendCommentNotiHistory(
                         author.getName(), comment.getContent(), comment.getMemberId(), postAuthorId, aosDeepLink, iosDeepLink
                 );
 

@@ -1,6 +1,6 @@
 -- 알림 이력 테이블
-CREATE TABLE user_notification_history (
-   user_notification_history_id CHAR(26) NOT NULL,
+CREATE TABLE member_notification_history (
+   member_notification_history_id CHAR(26) NOT NULL,
    title VARCHAR(255) NOT NULL,
    content VARCHAR(255) NOT NULL,
    aos_deep_link VARCHAR(255),
@@ -8,9 +8,9 @@ CREATE TABLE user_notification_history (
    sender_member_id CHAR(26) NOT NULL,
    receiver_member_id CHAR(26) NOT NULL,
    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Assuming BaseEntity adds created_at
-   PRIMARY KEY (user_notification_history_id),
-   INDEX user_notification_history_idx1 (sender_member_id),
-   INDEX user_notification_history_idx2 (receiver_member_id)
+   PRIMARY KEY (member_notification_history_id),
+   INDEX member_notification_history_idx1 (sender_member_id),
+   INDEX member_notification_history_idx2 (receiver_member_id)
 );
 
 -- 시스템용 계정 생성

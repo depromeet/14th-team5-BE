@@ -1,6 +1,6 @@
 package com.oing.dto.request;
 
-import com.oing.domain.UserNotificationHistory;
+import com.oing.domain.MemberNotificationHistory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -29,8 +29,8 @@ public record CreateUserNotificationHistoryDTO(
         @Schema(description = "알림 수신자 유저 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
         String receiverMemberId
 ) {
-        public UserNotificationHistory toEntity(String id) {
-                return UserNotificationHistory.builder()
+        public MemberNotificationHistory toEntity(String id) {
+                return com.oing.domain.MemberNotificationHistory.builder()
                         .id(id)
                         .title(title)
                         .content(content)

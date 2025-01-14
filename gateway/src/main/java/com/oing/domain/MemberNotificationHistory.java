@@ -6,18 +6,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "user_notification_history")
+@Entity(name = "member_notification_history")
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
 @Builder
 @Table(indexes = {
-        @Index(name = "user_notification_history_idx1", columnList = "sender_member_id"),
-        @Index(name = "user_notification_history_idx2", columnList = "receiver_member_id")
+        @Index(name = "member_notification_history_idx1", columnList = "sender_member_id"),
+        @Index(name = "member_notification_history_idx2", columnList = "receiver_member_id")
 })
-public class UserNotificationHistory extends BaseEntity {
+public class MemberNotificationHistory extends BaseEntity {
     @Id
-    @Column(name = "user_notification_history_id", columnDefinition = "CHAR(26)", nullable = false)
+    @Column(name = "member_notification_history_id", columnDefinition = "CHAR(26)", nullable = false)
     private String id;
 
     @Column(name = "title", nullable = false)
