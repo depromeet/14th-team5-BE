@@ -16,7 +16,7 @@ public record NotificationResponse(
         String senderProfileImageUrl,
 
         @Schema(description = "발송자 프로필 스타일", example = "BIRTHDAY")
-        ProfileStyle sencerProfileStyle,
+        ProfileStyle senderProfileStyle,
 
         @Schema(description = "알림 제목", example = "우리 가족 모두가 생존신고를 완료했어요")
         String title,

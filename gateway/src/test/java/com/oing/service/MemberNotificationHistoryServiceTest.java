@@ -338,7 +338,7 @@ class MemberNotificationHistoryServiceTest {
 
         // then
         assertEquals(1, results.size());
-        assertEquals(ProfileStyle.NONE, result.sencerProfileStyle());
+        assertEquals(ProfileStyle.NONE, result.senderProfileStyle());
         assertEquals("http://example.com/profile.jpg", result.senderProfileImageUrl());
         assertEquals("title", result.title());
         assertEquals("content", result.content());
@@ -372,7 +372,7 @@ class MemberNotificationHistoryServiceTest {
 
         // then
         assertEquals(1, results.size());
-        assertEquals(ProfileStyle.BIRTHDAY, result.sencerProfileStyle());
+        assertEquals(ProfileStyle.BIRTHDAY, result.senderProfileStyle());
         assertEquals("http://example.com/profile.jpg", result.senderProfileImageUrl());
         assertEquals("title", result.title());
         assertEquals("content", result.content());
