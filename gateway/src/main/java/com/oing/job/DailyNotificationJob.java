@@ -78,7 +78,7 @@ public class DailyNotificationJob {
         }
     }
 
-    @Scheduled(cron = "0 0 13 * * *", zone = "Asia/Seoul") // 1:00 PM
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 00:00(24:00)
     @SchedulerLock(name = "NextWeekBirthdayNotificationSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void sendNextWeekBirthdayNotification() {
         LocalDate nextWeek = LocalDate.now().plusWeeks(1);
@@ -92,7 +92,7 @@ public class DailyNotificationJob {
         });
     }
 
-    @Scheduled(cron = "0 0 13 * * *", zone = "Asia/Seoul") // 1:00 PM
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 00:00(24:00)
     @SchedulerLock(name = "TomorrowBirthdayNotificationSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void sendTomorrowBirthdayNotification() {
         LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -106,7 +106,7 @@ public class DailyNotificationJob {
         });
     }
 
-    @Scheduled(cron = "0 0 13 * * *", zone = "Asia/Seoul") // 1:00 PM
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul") // 00:00(24:00)
     @SchedulerLock(name = "TodayBirthdayNotificationSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void sendTodayBirthdayNotification() {
         LocalDate today = LocalDate.now();
