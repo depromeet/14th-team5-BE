@@ -95,8 +95,8 @@ public class DailyNotificationJob {
     @Scheduled(cron = "0 0 13 * * *", zone = "Asia/Seoul") // 1:00 PM
     @SchedulerLock(name = "TomorrowBirthdayNotificationSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void sendTomorrowBirthdayNotification() {
-        LocalDate nextWeek = LocalDate.now().plusWeeks(1);
-        List<Member> birthdayMembers = memberService.findBirthdayMembersByDate(nextWeek);
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        List<Member> birthdayMembers = memberService.findBirthdayMembersByDate(tomorrow);
 
         birthdayMembers.forEach(sender -> {
             List<String> receiverMemberIds = memberService.getFamilyMembersIdsByFamilyId(sender.getFamilyId());
@@ -109,8 +109,8 @@ public class DailyNotificationJob {
     @Scheduled(cron = "0 0 13 * * *", zone = "Asia/Seoul") // 1:00 PM
     @SchedulerLock(name = "TodayBirthdayNotificationSchedule", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void sendTodayBirthdayNotification() {
-        LocalDate nextWeek = LocalDate.now().plusWeeks(1);
-        List<Member> birthdayMembers = memberService.findBirthdayMembersByDate(nextWeek);
+        LocalDate today = LocalDate.now();
+        List<Member> birthdayMembers = memberService.findBirthdayMembersByDate(today);
 
         birthdayMembers.forEach(sender -> {
             List<String> receiverMemberIds = memberService.getFamilyMembersIdsByFamilyId(sender.getFamilyId());
