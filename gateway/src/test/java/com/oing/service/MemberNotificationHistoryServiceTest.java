@@ -64,8 +64,8 @@ class MemberNotificationHistoryServiceTest {
         // then
         assertEquals("우리 가족 모두가 생존신고를 완료했어요!", savedNotification.getTitle());
         assertEquals("이제 미션 사진을 업로드할 수 있어요", savedNotification.getContent());
-        assertNull(savedNotification.getAosDeepLink()); // TODO : 메인화면 딥링크 주소 필요
-        assertNull(savedNotification.getIosDeepLink());
+        assertEquals("main?openMission=true", savedNotification.getAosDeepLink());
+        assertEquals("main?openMission=true", savedNotification.getIosDeepLink());
         assertEquals("99999999999999999999999999", savedNotification.getSenderMemberId()); // 99999999999999999999999999 : SYSTEM 계정
         assertEquals("receiver1", savedNotification.getReceiverMemberId());
     }
@@ -141,8 +141,8 @@ class MemberNotificationHistoryServiceTest {
         // then
         assertEquals(String.format("일주일 뒤 %s님의 생일이에요!", senderName), savedNotification.getTitle());
         assertEquals("잊고 계신건 아니겠죠??", savedNotification.getContent());
-        assertNull(savedNotification.getAosDeepLink()); // TODO : 메인화면 딥링크 주소 필요
-        assertNull(savedNotification.getIosDeepLink());
+        assertEquals("main/profile/" + senderMemberId, savedNotification.getAosDeepLink());
+        assertEquals("main/profile/" + senderMemberId, savedNotification.getIosDeepLink());
         assertEquals(senderMemberId, savedNotification.getSenderMemberId());
         assertEquals(receiverMemberId, savedNotification.getReceiverMemberId());
     }
@@ -194,8 +194,8 @@ class MemberNotificationHistoryServiceTest {
         // then
         assertEquals(String.format("내일 %s님의 생일이에요!", senderName), savedNotification.getTitle());
         assertEquals("잊고 계신건 아니겠죠??", savedNotification.getContent());
-        assertNull(savedNotification.getAosDeepLink()); // TODO : 메인화면 딥링크 주소 필요
-        assertNull(savedNotification.getIosDeepLink());
+        assertEquals("main/profile/" + senderMemberId, savedNotification.getAosDeepLink());
+        assertEquals("main/profile/" + senderMemberId, savedNotification.getIosDeepLink());
         assertEquals(senderMemberId, savedNotification.getSenderMemberId());
         assertEquals(receiverMemberId, savedNotification.getReceiverMemberId());
     }
@@ -247,8 +247,8 @@ class MemberNotificationHistoryServiceTest {
         // then
         assertEquals(String.format("오늘 %s님의 생일이에요!", senderName), savedNotification.getTitle());
         assertEquals(String.format("모두 %s님의 생일을 축하해주세요!", senderName), savedNotification.getContent());
-        assertNull(savedNotification.getAosDeepLink()); // TODO : 메인화면 딥링크 주소 필요
-        assertNull(savedNotification.getIosDeepLink());
+        assertEquals("main/profile/" + senderMemberId, savedNotification.getAosDeepLink());
+        assertEquals("main/profile/" + senderMemberId, savedNotification.getIosDeepLink());
         assertEquals(senderMemberId, savedNotification.getSenderMemberId());
         assertEquals(receiverMemberId, savedNotification.getReceiverMemberId());
     }
@@ -293,8 +293,8 @@ class MemberNotificationHistoryServiceTest {
 
         assertEquals("삐삐의 새로운 버전이 출시되었어요!", savedNotification.getTitle());
         assertEquals("지금 바로 업데이트 해주세요!", savedNotification.getContent());
-        assertNull(savedNotification.getAosDeepLink()); // TODO : 메인화면 딥링크 주소 필요
-        assertNull(savedNotification.getIosDeepLink());
+        assertEquals("store/bibbi", savedNotification.getAosDeepLink());
+        assertEquals("store/bibbi", savedNotification.getIosDeepLink());
         assertEquals("99999999999999999999999998", savedNotification.getSenderMemberId()); // 99999999999999999999999998 : NOTICE 계정
         assertEquals("activeMember1", savedNotification.getReceiverMemberId());
     }
