@@ -6,7 +6,6 @@ import com.oing.dto.request.UpdatePostCommentRequest;
 import com.oing.dto.response.DefaultResponse;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostCommentResponse;
-import com.oing.dto.response.PostCommentResponseV2;
 import com.oing.exception.AuthorizationFailedException;
 import com.oing.restapi.CommentApi;
 import com.oing.service.CommentService;
@@ -40,7 +39,14 @@ public class CommentController implements CommentApi {
 
         Comment savedComment = commentService.savePostComment(post, request, loginMemberId);
         log.info("Member {} has created post comment {}", loginMemberId, savedComment.getId());
-        return PostCommentResponse.from(savedComment);
+        return new PostCommentResponse(
+                savedComment.getId(),
+                CommentType.TEXT,
+                postId,
+                savedComment.getMemberId(),
+                savedComment.getContent(),
+                savedComment.getCreatedAt().atZone(ZoneId.systemDefault())
+        );
     }
 
     @Override
@@ -63,11 +69,18 @@ public class CommentController implements CommentApi {
         Comment updatedComment = commentService.updateMemberPostComment(postId, commentId,
                 request.content(), loginMemberId);
         log.info("Member {} has updated post comment {}", loginMemberId, commentId);
-        return PostCommentResponse.from(updatedComment);
+        return new PostCommentResponse(
+                updatedComment.getId(),
+                CommentType.TEXT,
+                postId,
+                updatedComment.getMemberId(),
+                updatedComment.getContent(),
+                updatedComment.getCreatedAt().atZone(ZoneId.systemDefault())
+        );
     }
 
     @Override
-    public PaginationResponse<PostCommentResponseV2> getPostComments(String postId, Integer page, Integer size, String sort,
+    public PaginationResponse<PostCommentResponse> getPostComments(String postId, Integer page, Integer size, String sort,
                                                                      String loginMemberId) {
         Post post = postService.getMemberPostById(postId);
         validateAuthorization(loginMemberId, post);
@@ -78,7 +91,7 @@ public class CommentController implements CommentApi {
         comments.sort(BaseComment.getComparator(sort));
 
         // 페이징 처리
-        List<PostCommentResponseV2> response = comments.stream()
+        List<PostCommentResponse> response = comments.stream()
                 .map(comment -> mapToPostCommentResponse(comment, postId))
                 .toList();
         return paginateComments(response, page, size);
@@ -91,8 +104,8 @@ public class CommentController implements CommentApi {
         }
     }
 
-    private PostCommentResponseV2 mapToPostCommentResponse(BaseComment baseComment, String postId) {
-        return new PostCommentResponseV2(
+    private PostCommentResponse mapToPostCommentResponse(BaseComment baseComment, String postId) {
+        return new PostCommentResponse(
                 baseComment.getId(),
                 baseComment instanceof Comment ? CommentType.TEXT : CommentType.VOICE,
                 postId,
@@ -102,9 +115,9 @@ public class CommentController implements CommentApi {
         );
     }
 
-    private PaginationResponse<PostCommentResponseV2> paginateComments(List<PostCommentResponseV2> comments, Integer page, Integer size) {
-        Paginator<PostCommentResponseV2> paginator = new Paginator<>(comments, size);
-        PaginationDTO<PostCommentResponseV2> paginationDTO = paginator.getPage(page);
+    private PaginationResponse<PostCommentResponse> paginateComments(List<PostCommentResponse> comments, Integer page, Integer size) {
+        Paginator<PostCommentResponse> paginator = new Paginator<>(comments, size);
+        PaginationDTO<PostCommentResponse> paginationDTO = paginator.getPage(page);
 
         return PaginationResponse.of(paginationDTO, page, size);
     }
