@@ -1,5 +1,5 @@
 package com.oing.domain;
 
-public enum NotificationStyle {
+public enum ProfileStyle {
     BIRTHDAY, NONE;
 }

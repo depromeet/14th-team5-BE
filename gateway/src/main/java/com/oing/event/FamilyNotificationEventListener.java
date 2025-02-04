@@ -5,10 +5,7 @@ import com.oing.domain.Comment;
 import com.oing.domain.Member;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
-import com.oing.service.FCMNotificationService;
-import com.oing.service.MemberDeviceService;
-import com.oing.service.MemberService;
-import com.oing.service.PostService;
+import com.oing.service.*;
 import com.oing.util.FCMNotificationUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +21,12 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class FamilyNotificationEventListener {
+
     public final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final FCMNotificationService fcmNotificationService;
     private final PostService memberPostService;
+    private final MemberNotificationHistoryService memberNotificationHistoryService;
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -59,10 +58,15 @@ public class FamilyNotificationEventListener {
                 fcmNotificationService.sendMulticastMessage(multicastMessage);
 
                 if(memberPostService.isNewPostMadeMissionUnlocked(familyId)) {
-                    sendMissionUnlockedMessages(familyMemberIds);
+                    onMissionUnlockedEvent(familyMemberIds);
                 }
             }
         }
+    }
+
+    private void onMissionUnlockedEvent(List<String> familyMemberIds) {
+        memberNotificationHistoryService.appendMissionUnlockedNotiHistory(familyMemberIds);
+        sendMissionUnlockedMessages(familyMemberIds);
     }
 
     private void sendMissionUnlockedMessages(List<String> familyMemberIds) {
@@ -91,8 +95,18 @@ public class FamilyNotificationEventListener {
             Post sourcePost = comment.getPost();
             String postAuthorId = sourcePost.getMemberId(); //게시물 작성자 ID
             Member author = memberService.getMemberByMemberId(comment.getMemberId()); //댓글 작성자
+            String aosDeepLink = "post/view/" + sourcePost.getId() + "?openComment=true"; //트리거된 게시글의 댓글창 딥링크
+            String iosDeepLink = "post/view/" + sourcePost.getId() + "?openComment=true&dateOfPost=" + sourcePost.getCreatedAt().toLocalDate().toString();
 
+            // 댓글이 달린 게시물 작성자 알림
             if (!postAuthorId.equals(comment.getMemberId())) { //내가 내 게시물에 단 댓글이 아니라면
+
+                // 알림 이력 적재
+                memberNotificationHistoryService.appendCommentNotiHistory(
+                        author.getName(), comment.getContent(), comment.getMemberId(), postAuthorId, aosDeepLink, iosDeepLink
+                );
+
+                // FCM 알림 발송
                 List<String> targetFcmTokens = memberDeviceService.getFcmTokensByMemberId(postAuthorId);
                 if(!targetFcmTokens.isEmpty()) {
                     MulticastMessage multicastMessage = MulticastMessage.builder()
@@ -101,17 +115,18 @@ public class FamilyNotificationEventListener {
                                             String.format("%s님이 내 피드에 남긴 댓글", author.getName()),
                                             String.format("\"%s\"", comment.getContent()))
                             )
-                            .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
-                            .putData("iosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true&dateOfPost="
-                                    + sourcePost.getCreatedAt().toLocalDate().toString())
+                            .putData("aosDeepLink", aosDeepLink)
+                            .putData("iosDeepLink", iosDeepLink)
                             .addAllTokens(targetFcmTokens)
                             .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                             .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
                             .build();
                     fcmNotificationService.sendMulticastMessage(multicastMessage);
                 }
+
             }
 
+            // 게시물 댓글 연관자들 알림
             Set<String> relatedMemberIds =
                     sourcePost.getComments().stream().map(Comment::getMemberId).collect(Collectors.toSet());
             relatedMemberIds.remove(comment.getMemberId()); // 댓글 단 사람은 제외
@@ -123,15 +138,15 @@ public class FamilyNotificationEventListener {
             }
 
             if (targetFcmTokens.isEmpty()) return;
+            // FCM 알림 발송
             MulticastMessage multicastMessage = MulticastMessage.builder()
                     .setNotification(
                             FCMNotificationUtil.buildNotification(
                                     String.format("%s님의 댓글", author.getName()),
                                     String.format("\"%s\"", comment.getContent()))
                     )
-                    .putData("aosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true")
-                    .putData("iosDeepLink", "post/view/" + sourcePost.getId() + "?openComment=true&dateOfPost="
-                            + sourcePost.getCreatedAt().toLocalDate().toString())
+                    .putData("aosDeepLink", aosDeepLink)
+                    .putData("iosDeepLink", iosDeepLink)
                     .addAllTokens(targetFcmTokens)
                     .setApnsConfig(FCMNotificationUtil.buildApnsConfig())
                     .setAndroidConfig(FCMNotificationUtil.buildAndroidConfig())
