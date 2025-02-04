@@ -6,7 +6,7 @@ import com.oing.domain.VoiceComment;
 import com.oing.dto.request.CreatePostVoiceCommentRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.DefaultResponse;
-import com.oing.dto.response.PostCommentResponseV2;
+import com.oing.dto.response.PostCommentResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.restapi.VoiceCommentApi;
 import com.oing.service.PostService;
@@ -33,7 +33,7 @@ public class VoiceCommentController implements VoiceCommentApi {
 
     @Override
     @Transactional
-    public PostCommentResponseV2 createPostVoiceComment(String postId,
+    public PostCommentResponse createPostVoiceComment(String postId,
                                                         CreatePostVoiceCommentRequest request, String loginMemberId) {
         log.info("Member {} is trying to create voice-comment", loginMemberId);
         Post post = postService.getMemberPostById(postId);
@@ -41,7 +41,7 @@ public class VoiceCommentController implements VoiceCommentApi {
         VoiceComment savedVoiceComment = voiceCommentService.saveVoiceComment(post, request, loginMemberId);
         log.info("Member {} has created voice-comment {}", loginMemberId, savedVoiceComment.getId());
 
-        return new PostCommentResponseV2(
+        return new PostCommentResponse(
                 savedVoiceComment.getId(),
                 CommentType.VOICE,
                 postId,
