@@ -3,7 +3,7 @@ package com.oing.restapi;
 import com.oing.dto.request.CreatePostVoiceCommentRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.DefaultResponse;
-import com.oing.dto.response.PostCommentResponseV2;
+import com.oing.dto.response.PostCommentResponse;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +31,7 @@ public interface VoiceCommentApi {
 
     @Operation(summary = "게시물 음성 댓글 추가", description = "게시물에 음성 댓글을 추가합니다.")
     @PostMapping
-    PostCommentResponseV2 createPostVoiceComment(
+    PostCommentResponse createPostVoiceComment(
             @Parameter(description = "게시물 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             @PathVariable
             String postId,
