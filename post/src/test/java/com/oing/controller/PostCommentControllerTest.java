@@ -6,7 +6,6 @@ import com.oing.dto.request.CreatePostCommentRequest;
 import com.oing.dto.request.UpdatePostCommentRequest;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostCommentResponse;
-import com.oing.dto.response.PostCommentResponseV2;
 import com.oing.service.CommentService;
 import com.oing.service.MemberBridge;
 import com.oing.service.PostService;
@@ -136,7 +135,7 @@ public class PostCommentControllerTest {
         when(voiceCommentService.getPostVoiceComments(postId)).thenReturn(voiceComments);
 
         //when
-        PaginationResponse<PostCommentResponseV2> responses = commentController
+        PaginationResponse<PostCommentResponse> responses = commentController
                 .getPostComments(postId, page, size, "ASC", "1");
 
         //then
