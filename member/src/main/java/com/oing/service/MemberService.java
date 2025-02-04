@@ -129,6 +129,10 @@ public class MemberService {
         return memberRepository.findAllByDeletedAtIsNull();
     }
 
+    public List<Member> findBirthdayMembersByDate(LocalDate date) {
+        return memberRepository.findAllByDayOfBirthAndDeletedAtIsNull(date);
+    }
+
 
     @Transactional
     public Member updateMemberProfileImageUrl(String memberId, String profileImageUrl) {

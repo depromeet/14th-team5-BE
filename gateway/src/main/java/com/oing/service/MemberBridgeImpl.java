@@ -8,7 +8,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * no5ing-server
@@ -19,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class MemberBridgeImpl implements MemberBridge {
+
     private final MemberRepository memberRepository;
 
     @Override
@@ -52,6 +55,14 @@ public class MemberBridgeImpl implements MemberBridge {
     }
 
     @Override
+    public boolean isBirthDayMember(String memberId) {
+        Optional<Member> memberOptional = memberRepository.findById(memberId);
+        if (memberOptional.isEmpty()) throw new MemberNotFoundException();
+
+        return memberOptional.get().getDayOfBirth().equals(LocalDate.now());
+    }
+
+    @Override
     public List<String> getFamilyMembersIdsByFamilyId(String familyId) {
         return memberRepository.findAllByFamilyIdAndDeletedAtIsNull(familyId).stream()
                 .map(Member::getId)
@@ -73,6 +84,13 @@ public class MemberBridgeImpl implements MemberBridge {
     @Override
     public List<String> getFamilyMemberProfileImgUrlsByFamilyId(String familyId) {
         return memberRepository.findFamilyMemberProfileImgUrlsByFamilyId(familyId);
+    }
+
+    @Override
+    public String getMemberProfileImgUrlByMemberId(String memberId) {
+        return memberRepository.findById(memberId)
+                .map(Member::getProfileImgUrl)
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Override
