@@ -34,6 +34,8 @@ public interface MemberBridge {
      */
     boolean isDeletedMember(String memberId);
 
+    boolean isBirthDayMember(String memberId);
+
     List<String> getFamilyMembersIdsByFamilyId(String familyId);
 
     String getMemberNameByMemberId(String memberId);
@@ -41,6 +43,8 @@ public interface MemberBridge {
     List<String> getFamilyMemberNamesByFamilyId(String familyId);
 
     List<String> getFamilyMemberProfileImgUrlsByFamilyId(String familyId);
+
+    String getMemberProfileImgUrlByMemberId(String memberId);
 
     int getFamilyMemberCountByFamilyId(String familyId);
 }
