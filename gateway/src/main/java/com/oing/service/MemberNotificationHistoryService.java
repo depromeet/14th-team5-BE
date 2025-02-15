@@ -123,9 +123,10 @@ public class MemberNotificationHistoryService {
                         senderProfileStyle = ProfileStyle.BIRTHDAY;
                     }
 
-                    String senderProfileImageUrl = memberBridge.getMemberProfileImgUrlByMemberId(userNotificationHistory.getSenderMemberId());
+                    String senderMemberId = userNotificationHistory.getSenderMemberId();
+                    String senderProfileImageUrl = memberBridge.getMemberProfileImgUrlByMemberId(senderMemberId);
 
-                    return NotificationResponse.of(userNotificationHistory, senderProfileImageUrl, senderProfileStyle);
+                    return NotificationResponse.of(userNotificationHistory, senderMemberId, senderProfileImageUrl, senderProfileStyle);
 
                 })
                 .toList();

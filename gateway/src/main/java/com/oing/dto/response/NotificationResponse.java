@@ -12,6 +12,9 @@ public record NotificationResponse(
         @Schema(description = "노티 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
         String notificationId,
 
+        @Schema(description = "발송자 memberId", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
+        String senderMemberId,
+
         @Schema(description = "발송자 프로필 이미지 url", example = "https://..")
         String senderProfileImageUrl,
 
@@ -33,9 +36,10 @@ public record NotificationResponse(
         @Schema(description = "알림 생성 시간", example = "2023-12-23T01:53:21.577347+09:00")
         ZonedDateTime createdAt
 ) {
-    public static NotificationResponse of(MemberNotificationHistory memberNotificationHistory, String senderProfileImageUrl, ProfileStyle profileStyle) {
+    public static NotificationResponse of(MemberNotificationHistory memberNotificationHistory, String senderMemberId, String senderProfileImageUrl, ProfileStyle profileStyle) {
         return new NotificationResponse(
                 memberNotificationHistory.getId(),
+                senderMemberId,
                 senderProfileImageUrl,
                 profileStyle,
                 memberNotificationHistory.getTitle(),
