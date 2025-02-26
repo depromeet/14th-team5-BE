@@ -112,7 +112,7 @@ public class CommentController implements CommentApi {
                 baseComment instanceof Comment ? CommentType.TEXT : CommentType.VOICE,
                 postId,
                 baseComment.getMemberId(),
-                baseComment instanceof Comment ? baseComment.getContent() : null,
+                baseComment instanceof Comment ? baseComment.getContent() : "현재 버전에서는 확인할 수 없는 댓글입니다.",
                 baseComment instanceof VoiceComment ? baseComment.getContent() : null,
                 baseComment.getCreatedAt().atZone(ZoneId.systemDefault())
         );
