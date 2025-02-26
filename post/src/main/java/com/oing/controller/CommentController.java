@@ -45,6 +45,7 @@ public class CommentController implements CommentApi {
                 postId,
                 savedComment.getMemberId(),
                 savedComment.getContent(),
+                null,
                 savedComment.getCreatedAt().atZone(ZoneId.systemDefault())
         );
     }
@@ -75,6 +76,7 @@ public class CommentController implements CommentApi {
                 postId,
                 updatedComment.getMemberId(),
                 updatedComment.getContent(),
+                null,
                 updatedComment.getCreatedAt().atZone(ZoneId.systemDefault())
         );
     }
@@ -110,7 +112,8 @@ public class CommentController implements CommentApi {
                 baseComment instanceof Comment ? CommentType.TEXT : CommentType.VOICE,
                 postId,
                 baseComment.getMemberId(),
-                baseComment.getContent(),
+                baseComment instanceof Comment ? baseComment.getContent() : null,
+                baseComment instanceof VoiceComment ? baseComment.getContent() : null,
                 baseComment.getCreatedAt().atZone(ZoneId.systemDefault())
         );
     }

@@ -22,6 +22,9 @@ public record PostCommentResponse(
         @Schema(description = "피드 게시물 내용", example = "정말 환상적인 하루였네요!")
         String comment,
 
+        @Schema(description = "음성 파일 URL", example = "https://asset.no5ing.kr/post/01HGW2N7EHEEE7")
+        String voiceUrl,
+
         @Schema(description = "댓글 작성 시간", example = "2023-12-23T01:53:21.577347+09:00")
         ZonedDateTime createdAt
 ) {
