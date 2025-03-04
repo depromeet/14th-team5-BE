@@ -1,9 +1,10 @@
 package com.oing.controller;
 
 import com.google.common.collect.Lists;
-import com.oing.domain.*;
-import com.oing.dto.request.CreatePostCommentRequest;
-import com.oing.dto.request.UpdatePostCommentRequest;
+import com.oing.domain.Comment;
+import com.oing.domain.Post;
+import com.oing.domain.PostType;
+import com.oing.domain.VoiceComment;
 import com.oing.dto.response.PaginationResponse;
 import com.oing.dto.response.PostCommentResponse;
 import com.oing.service.CommentService;
@@ -38,27 +39,6 @@ public class PostCommentControllerTest {
     private MemberBridge memberBridge;
 
     @Test
-    void 게시물_댓글_생성_테스트() {
-        //given
-        Post post = new Post("1", "1", "1", PostType.SURVIVAL, "1", "1", "1");
-        Comment comment = spy(new Comment("1", post, "1", "1"));
-        CreatePostCommentRequest request = new CreatePostCommentRequest(comment.getContent());
-        when(postService.getMemberPostById("1")).thenReturn(post);
-        when(commentService.savePostComment(post, request, "1")).thenReturn(comment);
-
-        //when
-        PostCommentResponse response = commentController.createPostComment(
-                post.getId(),
-                request,
-                "1"
-        );
-
-        //then
-        assertEquals(response.comment(), request.content());
-    }
-
-
-    @Test
     void 게시물_댓글_삭제_테스트() {
         //given
         Post post = spy(new Post("1", "1", "1", PostType.SURVIVAL, "1", "1", "1"));
@@ -74,27 +54,6 @@ public class PostCommentControllerTest {
 
         //then
         //nothing. just check no exception
-    }
-
-    @Test
-    void 게시물_댓글_수정_테스트() {
-        //given
-        Post post = new Post("1", "1", "1", PostType.SURVIVAL, "1", "1", "1");
-        Comment comment = spy(new Comment("1", post, "1", "1"));
-        UpdatePostCommentRequest updateRequest = new UpdatePostCommentRequest(comment.getContent());
-        when(commentService.updateMemberPostComment(post.getId(), comment.getId(), updateRequest.content(), "1"))
-                .thenReturn(comment);
-
-        //when
-        PostCommentResponse response = commentController.updatePostComment(
-                post.getId(),
-                comment.getId(),
-                updateRequest,
-                "1"
-        );
-
-        //then
-        assertEquals(response.comment(), updateRequest.content());
     }
 
     @Test

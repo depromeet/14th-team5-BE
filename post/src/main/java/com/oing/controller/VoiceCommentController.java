@@ -46,6 +46,7 @@ public class VoiceCommentController implements VoiceCommentApi {
                 CommentType.VOICE,
                 postId,
                 loginMemberId,
+                null,
                 savedVoiceComment.getAudioUrl(),
                 ZonedDateTime.now()
         );
