@@ -8,9 +8,7 @@ import com.oing.repository.MemberNotificationHistoryRepository;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,17 +20,6 @@ public class MemberNotificationHistoryService {
     private final MemberNotificationHistoryRepository memberNotificationHistoryRepository;
     private final MemberBridge memberBridge;
     private final IdentityGenerator identityGenerator;
-    private static final String SYSTEM_MEMBER_ID = "99999999999999999999999999";
-
-    @Value("${cloud.ncp.end-point}")
-    private String endPoint;
-
-    @Value("${cloud.ncp.storage.bucket}")
-    private String bucket;
-
-    private String getSystemMemberProfileImgUrl() {
-        return String.format("%s/%s/images/admin/oing.png", endPoint, bucket);
-    }
 
     @Transactional
     public List<MemberNotificationHistory> appendMissionUnlockedNotiHistory(List<String> receiverFamilyMemberIds) {
@@ -136,13 +123,8 @@ public class MemberNotificationHistoryService {
                         senderProfileStyle = ProfileStyle.BIRTHDAY;
                     }
 
-                    if (SYSTEM_MEMBER_ID.equals(senderMemberId)) {
-                        return NotificationResponse.of(userNotificationHistory, senderMemberId, getSystemMemberProfileImgUrl(), senderProfileStyle);
-                    }
-
                     String senderProfileImageUrl = memberBridge.getMemberProfileImgUrlByMemberId(senderMemberId);
                     return NotificationResponse.of(userNotificationHistory, senderMemberId, senderProfileImageUrl, senderProfileStyle);
-
                 })
                 .toList();
     }
