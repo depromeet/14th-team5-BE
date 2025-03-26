@@ -8,6 +8,7 @@ import com.oing.repository.MemberNotificationHistoryRepository;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +22,17 @@ public class MemberNotificationHistoryService {
     private final MemberNotificationHistoryRepository memberNotificationHistoryRepository;
     private final MemberBridge memberBridge;
     private final IdentityGenerator identityGenerator;
+    private static final String SYSTEM_MEMBER_ID = "99999999999999999999999999";
+
+    @Value("${cloud.ncp.end-point}")
+    private String endPoint;
+
+    @Value("${cloud.ncp.storage.bucket}")
+    private String bucket;
+
+    private String getSystemMemberProfileImgUrl() {
+        return String.format("%s/%s/images/admin/oing.png", endPoint, bucket);
+    }
 
     @Transactional
     public List<MemberNotificationHistory> appendMissionUnlockedNotiHistory(List<String> receiverFamilyMemberIds) {
@@ -118,14 +130,17 @@ public class MemberNotificationHistoryService {
         return memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo)
                 .stream()
                 .map(userNotificationHistory -> {
+                    String senderMemberId = userNotificationHistory.getSenderMemberId();
                     ProfileStyle senderProfileStyle = ProfileStyle.NONE;
                     if (memberBridge.isBirthDayMember(userNotificationHistory.getSenderMemberId())) {
                         senderProfileStyle = ProfileStyle.BIRTHDAY;
                     }
 
-                    String senderMemberId = userNotificationHistory.getSenderMemberId();
-                    String senderProfileImageUrl = memberBridge.getMemberProfileImgUrlByMemberId(senderMemberId);
+                    if (SYSTEM_MEMBER_ID.equals(senderMemberId)) {
+                        return NotificationResponse.of(userNotificationHistory, senderMemberId, getSystemMemberProfileImgUrl(), senderProfileStyle);
+                    }
 
+                    String senderProfileImageUrl = memberBridge.getMemberProfileImgUrlByMemberId(senderMemberId);
                     return NotificationResponse.of(userNotificationHistory, senderMemberId, senderProfileImageUrl, senderProfileStyle);
 
                 })
