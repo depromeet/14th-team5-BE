@@ -31,6 +31,9 @@ public record DaytimePageResponse(
         List<MainPageFeedResponse> survivalFeeds,
 
         @Schema(description = "미션 피드 목록")
-        List<MainPageFeedResponse> missionFeeds
+        List<MainPageFeedResponse> missionFeeds,
+
+        @Schema(description = "최신 알림 id")
+        String latestNotificationId
 ) {
 }
