@@ -31,6 +31,7 @@ public class MainViewController implements MainViewApi {
     private final MissionBridge missionBridge;
     private final PostController postController;
     private final FamilyBridge familyBridge;
+    private final MemberNotificationHistoryService memberNotificationHistoryService;
 
     private static final int PAGE_FETCH_SIZE = 1000;
 
@@ -137,7 +138,9 @@ public class MainViewController implements MainViewApi {
                             member != null ? member.name() : null,
                             post.getCreatedAt().atZone(ZoneId.systemDefault())
                     );
-                }).toList()
+                }).toList(),
+
+                memberNotificationHistoryService.findLatestNotificationIdByMemberId(loginMemberId)
         );
     }
 
@@ -163,7 +166,8 @@ public class MainViewController implements MainViewApi {
 
         return new NighttimePageResponse(
                 mainPageTopBarResponses,
-                familyMemberMonthlyRanking
+                familyMemberMonthlyRanking,
+                memberNotificationHistoryService.findLatestNotificationIdByMemberId(loginMemberId)
         );
     }
 

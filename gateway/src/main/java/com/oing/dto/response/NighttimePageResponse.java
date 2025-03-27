@@ -10,6 +10,9 @@ public record NighttimePageResponse(
         List<MainPageTopBarResponse> topBarElements,
 
         @Schema(description = "금월의 가족 구성원 월간 랭킹")
-        FamilyMemberMonthlyRankingResponse familyMemberMonthlyRanking
+        FamilyMemberMonthlyRankingResponse familyMemberMonthlyRanking,
+
+        @Schema(description = "최신 알림 id")
+        String latestNotificationId
 ) {
 }
