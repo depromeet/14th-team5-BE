@@ -128,4 +128,9 @@ public class MemberNotificationHistoryService {
                 })
                 .toList();
     }
+
+    public String findLatestNotificationIdByMemberId(String memberId) {
+        return memberNotificationHistoryRepository.findLatestNotificationIdByReceiverMemberId(memberId)
+                .orElse(null);
+    }
 }
