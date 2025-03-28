@@ -14,12 +14,6 @@ dependencies {
     implementation project(':post')
     implementation project(':mission')
 
-    jacocoAggregation project(':common')
-    jacocoAggregation project(':member')
-    jacocoAggregation project(':family')
-    jacocoAggregation project(':post')
-    jacocoAggregation project(':mission')
-
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
     implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
