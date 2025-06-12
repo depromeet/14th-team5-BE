@@ -365,7 +365,7 @@ class MemberNotificationHistoryServiceTest {
                 .aosDeepLink("aosDeepLink")
                 .iosDeepLink("iosDeepLink")
                 .senderMemberId("sender1")
-                .receiverMemberId(memberId)  // receiverId도 맞춰주세요
+                .receiverMemberId(memberId)
                 .build();
         notificationHistory.setCreatedAt(LocalDateTime.now());
 
