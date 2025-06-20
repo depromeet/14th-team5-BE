@@ -11,6 +11,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -323,17 +326,22 @@ class MemberNotificationHistoryServiceTest {
                 .aosDeepLink("aosDeepLink")
                 .iosDeepLink("iosDeepLink")
                 .senderMemberId("sender1")
-                .receiverMemberId("receiver1")
+                .receiverMemberId(memberId)  // receiverMemberId가 memberId와 같아야 조회가 맞음
                 .build();
         notificationHistory.setCreatedAt(LocalDateTime.now());
 
-        when(memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo))
-                .thenReturn(List.of(notificationHistory));
+        Pageable pageable = Pageable.unpaged(); // 혹은 원하는 Pageable 객체 생성
+        Page<MemberNotificationHistory> page = new PageImpl<>(List.of(notificationHistory), pageable, 1);
+
+        when(memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfterOrderByCreatedAtDesc(
+                eq(memberId), eq(oneMonthAgo), any(Pageable.class)))
+                .thenReturn(page);
+
         when(memberBridge.isBirthDayMember("sender1")).thenReturn(false);
         when(memberBridge.getMemberProfileImgUrlByMemberId("sender1")).thenReturn("http://example.com/profile.jpg");
 
         // when
-        List<NotificationResponse> results = memberNotificationHistoryService.getRecentUserNotifications(memberId);
+        List<NotificationResponse> results = memberNotificationHistoryService.getRecentUserNotifications(memberId, 0, 10);
         NotificationResponse result = results.get(0);
 
         // then
@@ -357,17 +365,22 @@ class MemberNotificationHistoryServiceTest {
                 .aosDeepLink("aosDeepLink")
                 .iosDeepLink("iosDeepLink")
                 .senderMemberId("sender1")
-                .receiverMemberId("receiver1")
+                .receiverMemberId(memberId)
                 .build();
         notificationHistory.setCreatedAt(LocalDateTime.now());
 
-        when(memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo))
-                .thenReturn(List.of(notificationHistory));
+        Pageable pageable = Pageable.unpaged();
+        Page<MemberNotificationHistory> page = new PageImpl<>(List.of(notificationHistory), pageable, 1);
+
+        when(memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfterOrderByCreatedAtDesc(
+                eq(memberId), eq(oneMonthAgo), any(Pageable.class)))
+                .thenReturn(page);
+
         when(memberBridge.isBirthDayMember("sender1")).thenReturn(true);
         when(memberBridge.getMemberProfileImgUrlByMemberId("sender1")).thenReturn("http://example.com/profile.jpg");
 
         // when
-        List<NotificationResponse> results = memberNotificationHistoryService.getRecentUserNotifications(memberId);
+        List<NotificationResponse> results = memberNotificationHistoryService.getRecentUserNotifications(memberId, 0, 10);
         NotificationResponse result = results.get(0);
 
         // then
@@ -386,11 +399,15 @@ class MemberNotificationHistoryServiceTest {
         String memberId = "member1";
         LocalDateTime oneMonthAgo = LocalDate.now().minusMonths(1).atStartOfDay();
 
-        when(memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo))
-                .thenReturn(Collections.emptyList());
+        Pageable pageable = Pageable.unpaged();
+        Page<MemberNotificationHistory> emptyPage = new PageImpl<>(Collections.emptyList(), pageable, 0);
+
+        when(memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfterOrderByCreatedAtDesc(
+                eq(memberId), eq(oneMonthAgo), any(Pageable.class)))
+                .thenReturn(emptyPage);
 
         // when
-        List<NotificationResponse> result = memberNotificationHistoryService.getRecentUserNotifications(memberId);
+        List<NotificationResponse> result = memberNotificationHistoryService.getRecentUserNotifications(memberId, 0, 10);
 
         // then
         assertTrue(result.isEmpty());

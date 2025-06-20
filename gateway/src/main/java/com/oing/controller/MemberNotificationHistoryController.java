@@ -15,7 +15,7 @@ public class MemberNotificationHistoryController implements MemberNotificationHi
     private final MemberNotificationHistoryService memberNotificationHistoryService;
 
     @Override
-    public List<NotificationResponse> getMyRecentNotifications(String loginMemberId) {
-        return memberNotificationHistoryService.getRecentUserNotifications(loginMemberId);
+    public List<NotificationResponse> getMyRecentNotifications(String loginMemberId, int page, int size) {
+        return memberNotificationHistoryService.getRecentUserNotifications(loginMemberId, page, size);
     }
 }
