@@ -8,6 +8,8 @@ import com.oing.repository.MemberNotificationHistoryRepository;
 import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -110,16 +112,18 @@ public class MemberNotificationHistoryService {
                 createUserNotificationHistoryDTO.toEntity(identityGenerator.generateIdentity()));
     }
 
-    public List<NotificationResponse> getRecentUserNotifications(String memberId) {
+    public List<NotificationResponse> getRecentUserNotifications(String memberId, int page, int size) {
         // 최근 한 달간의 알림 내역 조회
         LocalDateTime oneMonthAgo = LocalDate.now().minusMonths(1).atStartOfDay();
+        Pageable pageable = PageRequest.of(page, size);
 
-        return memberNotificationHistoryRepository.findByReceiverMemberIdAndCreatedAtAfter(memberId, oneMonthAgo)
+        return memberNotificationHistoryRepository
+                .findByReceiverMemberIdAndCreatedAtAfterOrderByCreatedAtDesc(memberId, oneMonthAgo, pageable)
                 .stream()
                 .map(userNotificationHistory -> {
                     String senderMemberId = userNotificationHistory.getSenderMemberId();
                     ProfileStyle senderProfileStyle = ProfileStyle.NONE;
-                    if (memberBridge.isBirthDayMember(userNotificationHistory.getSenderMemberId())) {
+                    if (memberBridge.isBirthDayMember(senderMemberId)) {
                         senderProfileStyle = ProfileStyle.BIRTHDAY;
                     }
 
