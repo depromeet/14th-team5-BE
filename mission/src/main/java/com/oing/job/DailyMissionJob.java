@@ -33,7 +33,7 @@ public class DailyMissionJob {
         try {
             List<String> recentDailyMissionIds = dailyMissionHistoryService.getRecentSevenDailyMissionIdsOrderByDateAsc();
             Mission newDailyMission;
-            try{
+            try {
                 newDailyMission = missionService.generateDailyMissionWithLLM();
                 applicationEventPublisher.publishEvent(new DailyMissionRegisteredEvent(newDailyMission, null));
             } catch(Exception e) {
