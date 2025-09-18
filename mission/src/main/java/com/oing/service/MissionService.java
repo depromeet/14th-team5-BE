@@ -9,11 +9,14 @@ import com.oing.util.IdentityGenerator;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -24,6 +27,7 @@ public class MissionService {
     private final DailyMissionHistoryService dailyMissionHistoryService;
 
     private final IdentityGenerator identityGenerator;
+    private final ChatClient chatClient;
 
 
     public MissionResponse createMission(CreateMissionRequest request) {
@@ -51,6 +55,28 @@ public class MissionService {
 
     public Optional<Mission> findRandomMissionExcludingIds(List<String> excludingMissionIds) {
         return missionRepository.findRandomMissionExcludingIds(excludingMissionIds);
+    }
+
+    public Mission generateDailyMissionWithLLM() {
+        List<String> recentMissionIds = dailyMissionHistoryService.getRecentSevenDailyMissionIdsOrderByDateAsc();
+        String recentMissionContent = missionRepository.findAllById(recentMissionIds)
+                .stream()
+                .map(Mission::getContent)
+                .map(s -> "- " + s)
+                .collect(Collectors.joining("\n"));
+
+        String missionContent = chatClient.prompt()
+                .system(template -> template.text(new ClassPathResource("prompt/generate-mission.system.st"))
+                        .param("current_date", LocalDate.now().toString()))
+                .user(recentMissionContent)
+                .call().content();
+
+        Mission mission = Mission.builder()
+                .id(identityGenerator.generateIdentity())
+                .content(missionContent)
+                .build();
+
+        return missionRepository.save(mission);
     }
 
     @Transactional
