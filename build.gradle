@@ -11,7 +11,7 @@ repositories {
 subprojects {
     group = 'com.oing'
     version = '0.0.1-SNAPSHOT'
-    sourceCompatibility = '17'
+    sourceCompatibility = '21'
 
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'

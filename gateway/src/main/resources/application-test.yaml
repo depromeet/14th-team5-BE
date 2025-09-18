@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:~/oing;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    url: jdbc:h2:~/oing2;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
     username: sa
     password: ''
   flyway:
@@ -16,6 +16,9 @@ spring:
         format_sql: false
         dialect: org.hibernate.dialect.MySQL8Dialect
     database-platform: org.hibernate.dialect.MySQL8Dialect
+  ai:
+    openai:
+      api-key: temp
 
 app:
   external-urls:
