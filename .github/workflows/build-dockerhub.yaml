@@ -36,10 +36,10 @@ jobs:
       - name: GitHub 에서 레포 받아오기
         uses: actions/checkout@v3
 
-      - name: JDK17 준비하기
+      - name: JDK21 준비하기
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Docker Hub 로그인하기
