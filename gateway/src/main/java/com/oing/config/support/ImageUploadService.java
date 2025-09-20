@@ -27,7 +27,7 @@ public class ImageUploadService implements ImageUploadUtil {
     @Override
     public String uploadImage(byte[] imageBytes) {
         String uniqueImageName = identityGenerator.generateIdentity() + ".png";
-        String imagePath = "images/ai/generated/" + uniqueImageName;
+        String imagePath = "images/ai/" + uniqueImageName;
 
         try (InputStream inputStream = new ByteArrayInputStream(imageBytes)) {
             ObjectMetadata metadata = new ObjectMetadata();

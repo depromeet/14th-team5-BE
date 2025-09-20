@@ -36,17 +36,16 @@ public class OpenAIImageTransformerImpl implements OpenAIImageTransformer {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(apiKey);
 
-            String systemPrompt = "You are an AI assistant that describes images for image generation purposes. " +
-                    "Ensure that all people and animals are wearing traditional Korean Hanbok. " +
-                    "Provide detailed description only for faces, including gender and hairstyle, " +
-                    "while keeping the rest of the body and background minimal and unobtrusive. " +
+            // 이미지 분석 프롬프트: 한복, 추석, 얼굴/헤어스타일 강조 등 구체적인 지시 추가
+            String systemPrompt = "Crucially, all people and animals in the image **must be wearing traditional Korean Hanbok**. You are an AI assistant that describes images in detail for image generation purposes. " +
+                    "Provide a very detailed and sharp description only for faces, including gender and hairstyle, " +
                     "Include Chuseok festival elements such as songpyeon, lanterns, autumn foliage, and traditional decorations, " +
-                    "but do not describe them in detail. " +
+                    "but do not describe them in excessive detail. " +
                     "Use soft, natural lighting without harsh reflections or artificial shine. " +
                     "Avoid overly glossy or plastic-like textures on clothing and skin. " +
                     "Colors should be warm and natural, not oversaturated. " +
-                    "Generate a high-resolution image capturing the warmth, festivity, and natural atmosphere of Chuseok, " +
-                    "with Hanbok appearance emphasized and the scene looking natural and elegant.";
+                    "Generate a high-resolution image capturing the warmth, and natural atmosphere of Chuseok, " +
+                    "with Hanbok appearance emphasized and the scene looking natural. Ensure your description avoids any sensitive or inappropriate content.";
 
             String body = "{\n" +
                     "  \"model\": \"gpt-4.1-mini\",\n" +
