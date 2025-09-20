@@ -11,4 +11,5 @@ public interface PostRepository extends JpaRepository<Post, String>, PostReposit
 
     List<Post> findAllByFamilyIdAndCreatedAtBetween(String familyId, LocalDateTime startDateTime, LocalDateTime endDateTime);
     Integer countByMemberIdAndFamilyIdAndType(String memberId, String familyId, PostType type);
+    Integer countByFamilyIdAndType(String loginFamilyId, PostType postType);
 }

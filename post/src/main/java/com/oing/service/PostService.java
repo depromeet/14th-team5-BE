@@ -227,4 +227,12 @@ public class PostService {
         LocalDate today = ZonedDateTime.now().toLocalDate();
         return postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, today);
     }
+
+    public int countPostByMemberIdAndFamilyIdAndPostType(String loginMemberId, String loginFamilyId, PostType postType) {
+        return postRepository.countByMemberIdAndFamilyIdAndType(loginMemberId, loginFamilyId, postType);
+    }
+
+    public int countPostByFamilyIdAndPostType(String loginFamilyId, PostType postType) {
+        return postRepository.countByFamilyIdAndType(loginFamilyId, postType);
+    }
 }

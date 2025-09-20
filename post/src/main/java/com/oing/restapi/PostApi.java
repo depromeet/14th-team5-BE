@@ -75,7 +75,7 @@ public interface PostApi {
     );
 
     @Operation(summary = "AI 이미지 게시물 조회", description = "AI 이미지 게시물 목록을 조회합니다. 조회 기준은 생성 순서입니다.")
-    @GetMapping
+    @GetMapping("/ai-images")
     PaginationResponse<PostResponse> fetchAiImagePosts(
             @RequestParam(required = false, defaultValue = "1")
             @Parameter(description = "가져올 현재 페이지", example = "1")
@@ -91,13 +91,37 @@ public interface PostApi {
             @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             String memberId,
 
-            @RequestParam(required = false)
-            @Parameter(description = "정렬 방식", example = "DESC | ASC")
-            String sort,
-
             @Parameter(hidden = true)
             @LoginMemberId
-            String loginMemberId
+            String loginMemberId,
+
+            @RequestParam(required = false)
+            @Parameter(description = "정렬 방식", example = "DESC | ASC")
+            String sort
+    );
+
+    @Operation(summary = "AI 이미지 게시글 총 개수 조회", description = "AI 이미지 게시글 총 개수를 조회합니다.")
+    @GetMapping("/ai-images/count")
+    AiImageCountResponse getAiImagePostCount(
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
+
+    @Operation(summary = "개인 AI 이미지 시도 가능 횟수 조회", description = "로그인한 멤버의 남은 AI 이미지 생성 시도 가능 횟수를 조회합니다.")
+    @GetMapping("/ai-images/remaining")
+    AiImageCountResponse getRemainingAiImageCount(
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
     );
 
     @Operation(summary = "게시물 생성", description = "게시물을 생성합니다.")

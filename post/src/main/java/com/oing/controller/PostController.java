@@ -58,7 +58,7 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PaginationResponse<PostResponse> fetchAiImagePosts(Integer page, Integer size, String memberId, String sort, String loginMemberId) {
+    public PaginationResponse<PostResponse> fetchAiImagePosts(Integer page, Integer size, String memberId, String loginMemberId, String sort) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
         PaginationDTO<Post> fetchResult = postService.searchMemberAiImagePost(
                 page, size, memberId, loginMemberId, familyId,
@@ -68,6 +68,12 @@ public class PostController implements PostApi {
         return PaginationResponse
                 .of(fetchResult, page, size)
                 .map(PostResponse::from);
+    }
+
+    @Override
+    public AiImageCountResponse getAiImagePostCount(String loginMemberId, String loginFamilyId) {
+        int aiImageCount = postService.countPostByFamilyIdAndPostType(loginFamilyId, PostType.AI_IMAGE);
+        return new AiImageCountResponse(aiImageCount);
     }
 
     @Override
@@ -144,6 +150,12 @@ public class PostController implements PostApi {
 
         int remainingSurvivalPostCount = postService.calculateRemainingSurvivalPostCountUntilMissionUnlocked(loginFamilyId);
         return new RemainingSurvivalPostCountResponse(remainingSurvivalPostCount);
+    }
+
+    @Override
+    public AiImageCountResponse getRemainingAiImageCount(String loginMemberId, String loginFamilyId) {
+        int aiImageCount = postService.countPostByMemberIdAndFamilyIdAndPostType(loginMemberId, loginFamilyId, PostType.AI_IMAGE);
+        return new AiImageCountResponse(3 - aiImageCount);
     }
 
     @Override
