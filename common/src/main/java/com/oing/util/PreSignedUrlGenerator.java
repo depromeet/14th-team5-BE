@@ -11,5 +11,9 @@ public interface PreSignedUrlGenerator {
 
     PreSignedUrlResponse getVoiceCommentPreSignedUrl(String fileName);
 
+    PreSignedUrlResponse getOriginalImagePreSignedUrl(String imageName);
+
+    PreSignedUrlResponse getAiGeneratedImagePreSignedUrl(String imageName);
+
     String extractImageKey(String imageUrl);
 }
