@@ -1,5 +1,5 @@
 package com.oing.util;
 
 public interface ImageUploadUtil {
-    String uploadImage(String generatedImageUrl);
+    String uploadImage(byte[] imageBytes);
 }

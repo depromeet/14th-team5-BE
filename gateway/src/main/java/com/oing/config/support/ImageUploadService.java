@@ -10,10 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 @Service
 @RequiredArgsConstructor
@@ -27,45 +25,23 @@ public class ImageUploadService implements ImageUploadUtil {
     private final IdentityGenerator identityGenerator;
 
     @Override
-    public String uploadImage(String generatedImageUrl) {
+    public String uploadImage(byte[] imageBytes) {
         String uniqueImageName = identityGenerator.generateIdentity() + ".png";
-        String imagePath = "images/ai-image/generated/" + uniqueImageName;
+        String imagePath = "images/ai/generated/" + uniqueImageName;
 
-        try {
-            log.info("Generated image upload 시작 - URL: {}", generatedImageUrl);
+        try (InputStream inputStream = new ByteArrayInputStream(imageBytes)) {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("image/png");
+            metadata.setContentLength(imageBytes.length);
 
-            URL url = new URL(generatedImageUrl);
-            URLConnection connection = url.openConnection();
+            amazonS3Client.putObject(new PutObjectRequest(bucket, imagePath, inputStream, metadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
 
-            try (InputStream inputStream = connection.getInputStream()) {
-                ObjectMetadata metadata = new ObjectMetadata();
-                metadata.setContentType("image/png");
-                if (connection.getContentLength() > 0) {
-                    metadata.setContentLength(connection.getContentLength());
-                }
+            return buildObjectStorageUrl(imagePath);
 
-                PutObjectRequest putObjectRequest = new PutObjectRequest(
-                        bucket,
-                        imagePath,
-                        inputStream,
-                        metadata
-                ).withCannedAcl(CannedAccessControlList.PublicRead);
-
-                amazonS3Client.putObject(putObjectRequest);
-
-                // NCP Object Storage URL 생성 (기존 패턴과 동일하게)
-                String uploadedImageUrl = buildObjectStorageUrl(imagePath);
-
-                log.info("Generated image upload 성공 - NCP URL: {}", uploadedImageUrl);
-                return uploadedImageUrl;
-            }
-
-        } catch (IOException e) {
-            log.error("Generated image upload 실패: {}", e.getMessage(), e);
-            throw new RuntimeException("이미지 업로드에 실패했습니다: " + e.getMessage(), e);
         } catch (Exception e) {
-            log.error("예상치 못한 오류 발생: {}", e.getMessage(), e);
-            throw new RuntimeException("이미지 처리 중 오류가 발생했습니다: " + e.getMessage(), e);
+            log.error("이미지 업로드 실패: {}", e.getMessage(), e);
+            throw new RuntimeException("이미지 업로드 실패: " + e.getMessage(), e);
         }
     }
 
