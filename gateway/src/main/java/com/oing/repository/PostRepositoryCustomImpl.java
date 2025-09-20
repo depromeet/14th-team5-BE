@@ -197,6 +197,20 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return count.intValue();
     }
 
+    @Override
+    public QueryResults<Post> searchAiImagePosts(Integer page, Integer size, String memberId, String requesterMemberId,
+                                                 String familyId, boolean asc) {
+        return queryFactory
+                .select(post)
+                .from(post)
+                .leftJoin(member).on(post.memberId.eq(member.id))
+                .where(post.familyId.eq(familyId), eqMemberId(memberId), post.type.eq(AI_IMAGE))
+                .orderBy(asc ? post.id.asc() : post.id.desc())
+                .offset((long) (page - 1) * size)
+                .limit(size)
+                .fetchResults();
+    }
+
     private BooleanExpression eqDate(LocalDate date) {
         DateTimeTemplate<LocalDate> createdAtDate = Expressions.dateTimeTemplate(LocalDate.class,
                 "DATE({0})", post.createdAt);

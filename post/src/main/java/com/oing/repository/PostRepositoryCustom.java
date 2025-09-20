@@ -33,4 +33,6 @@ public interface PostRepositoryCustom {
     int countTodaySurvivalPostsByFamilyId(String familyId);
 
     int countSurvivalPostsByFamilyId(String familyId);
+
+    QueryResults<Post> searchAiImagePosts(Integer page, Integer size, String memberId, String requesterMemberId, String familyId, boolean asc);
 }

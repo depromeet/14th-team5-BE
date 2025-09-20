@@ -157,6 +157,16 @@ public class PostService {
         return new PaginationDTO<>(totalPage, results.getResults());
     }
 
+    public PaginationDTO<Post> searchMemberAiImagePost(Integer page, Integer size, String memberId,
+                                                       String requesterMemberId, String familyId, boolean asc) {
+        QueryResults<Post> results = null;
+        int totalPage = 0;
+
+        results = postRepository.searchAiImagePosts(page, size, memberId, requesterMemberId, familyId, asc);
+        totalPage = (int) Math.ceil((double) results.getTotal() / size);
+        return new PaginationDTO<>(totalPage, results.getResults());
+    }
+
     public List<Post> findAllByFamilyIdAndCreatedAtBetween(String familyId, LocalDate startDate, LocalDate endDate) {
         return postRepository.findAllByFamilyIdAndCreatedAtBetween(familyId, startDate.atStartOfDay(), endDate.atStartOfDay());
     }

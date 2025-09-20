@@ -58,6 +58,19 @@ public class PostController implements PostApi {
     }
 
     @Override
+    public PaginationResponse<PostResponse> fetchAiImagePosts(Integer page, Integer size, String memberId, String sort, String loginMemberId) {
+        String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
+        PaginationDTO<Post> fetchResult = postService.searchMemberAiImagePost(
+                page, size, memberId, loginMemberId, familyId,
+                sort == null || sort.equalsIgnoreCase("ASC")
+        );
+
+        return PaginationResponse
+                .of(fetchResult, page, size)
+                .map(PostResponse::from);
+    }
+
+    @Override
     public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId) {
         log.info("Member {} is trying to create post", loginMemberId);
 
