@@ -13,7 +13,5 @@ public interface PreSignedUrlGenerator {
 
     PreSignedUrlResponse getOriginalImagePreSignedUrl(String imageName);
 
-    PreSignedUrlResponse getAiGeneratedImagePreSignedUrl(String imageName);
-
     String extractImageKey(String imageUrl);
 }
