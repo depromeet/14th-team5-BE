@@ -17,7 +17,6 @@ public class AiImageController implements AiImageApi {
     @Override
     public AiImageResponse convertImage(MultipartFile image, String loginMemberId) {
         try {
-            log.info("AI 이미지 변환 요청 - Member: {}", loginMemberId);
             return aiImageService.convertImage(image, loginMemberId);
         } catch (RuntimeException e) {
             log.error("AI 이미지 변환 실패 - Member: {}, Error: {}", loginMemberId, e.getMessage());

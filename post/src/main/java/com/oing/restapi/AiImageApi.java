@@ -1,8 +1,6 @@
 package com.oing.restapi;
 
-import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.AiImageResponse;
-import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.util.security.LoginMemberId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

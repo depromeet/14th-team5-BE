@@ -37,7 +37,7 @@ public class AiImageService {
             String ncpImageUrl = imageUploadUtil.uploadImage(generatedImageBytes);
             log.info("AI 이미지 변환 완료 - Member: {}, 변환 이미지: {}", loginMemberId, ncpImageUrl);
 
-            return new AiImageResponse(ncpImageUrl, file.getOriginalFilename());
+            return new AiImageResponse(ncpImageUrl);
         } catch (Exception e) {
             log.error("AI 이미지 변환 실패 - Member: {}, Error: {}", loginMemberId, e.getMessage(), e);
             throw new RuntimeException("AI 이미지 변환에 실패했습니다: " + e.getMessage(), e);
