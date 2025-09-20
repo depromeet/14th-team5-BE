@@ -5,10 +5,7 @@ import com.oing.domain.Post;
 import com.oing.domain.PostType;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
-import com.oing.exception.DuplicateMissionPostUploadException;
-import com.oing.exception.DuplicateSurvivalPostUploadException;
-import com.oing.exception.InvalidUploadTimeException;
-import com.oing.exception.PostNotFoundException;
+import com.oing.exception.*;
 import com.oing.repository.PostRepository;
 import com.oing.service.event.DeletePostEvent;
 import com.oing.util.IdentityGenerator;
@@ -50,6 +47,7 @@ public class PostService {
         return switch (type) {
             case SURVIVAL -> createSurvivalPost(request, loginMemberId, loginFamilyId);
             case MISSION -> createMissionPost(request, loginMemberId, loginFamilyId);
+            case AI_IMAGE -> createAiImagePost(request, loginMemberId, loginFamilyId);
         };
     }
 
@@ -74,6 +72,13 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    private Post createAiImagePost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
+        validateAiImagePostLimit(loginMemberId, loginFamilyId);
+        Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, null, PostType.AI_IMAGE,
+                request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), null);
+        return postRepository.save(post);
+    }
+
     private void validateUserHasNotCreatedPostToday(String memberId, String familyId, PostType type, ZonedDateTime uploadTime) {
         LocalDate today = uploadTime.toLocalDate();
         switch (type) {
@@ -93,6 +98,16 @@ public class PostService {
         if (postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.MISSION, today)) {
             log.warn("Member {} has already created a mission post today {}", memberId, today);
             throw new DuplicateMissionPostUploadException();
+        }
+    }
+
+    private void validateAiImagePostLimit(String memberId, String familyId) {
+        long aiImagePostCount = postRepository.countByMemberIdAndFamilyIdAndType(
+                memberId, familyId, PostType.AI_IMAGE
+        );
+        if (aiImagePostCount >= 3) {
+            log.warn("Member {} has already created 3 AI image posts in total", memberId);
+            throw new AiImagePostLimitExceededException();
         }
     }
 
