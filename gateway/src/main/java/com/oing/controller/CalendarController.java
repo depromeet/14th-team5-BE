@@ -62,6 +62,7 @@ public class CalendarController implements CalendarApi {
         return posts.stream().map(post -> switch (PostType.fromString(post.type())) {
             case MISSION -> DailyCalendarResponse.of(post, missionContent, allFamilyMembersUploaded);
             case SURVIVAL -> DailyCalendarResponse.of(post, null, allFamilyMembersUploaded);
+            default -> null;
         }).toList();
     }
 
