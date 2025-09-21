@@ -100,21 +100,9 @@ public interface PostApi {
             String sort
     );
 
-    @Operation(summary = "AI 이미지 게시글 총 개수 조회", description = "AI 이미지 게시글 총 개수를 조회합니다.")
+    @Operation(summary = "가족이 올린 AI 이미지 총 개수 및 AI 이미지 생성 가능 횟수 조회", description = "가족이 올린 AI 이미지 총 개수 및 AI 이미지 생성 가능 횟수를 조회합니다.")
     @GetMapping("/ai-images/count")
-    AiImageCountResponse getAiImagePostCount(
-            @Parameter(hidden = true)
-            @LoginMemberId
-            String loginMemberId,
-
-            @Parameter(hidden = true)
-            @LoginFamilyId
-            String loginFamilyId
-    );
-
-    @Operation(summary = "개인 AI 이미지 시도 가능 횟수 조회", description = "로그인한 멤버의 남은 AI 이미지 생성 시도 가능 횟수를 조회합니다.")
-    @GetMapping("/ai-images/remaining")
-    AiImageCountResponse getRemainingAiImageCount(
+    AiImageCountResponse getFamilyAiImagePostAndRemainingCount(
             @Parameter(hidden = true)
             @LoginMemberId
             String loginMemberId,
