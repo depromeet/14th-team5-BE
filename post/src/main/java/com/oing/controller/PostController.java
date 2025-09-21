@@ -71,9 +71,11 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public AiImageCountResponse getAiImagePostCount(String loginMemberId, String loginFamilyId) {
-        int aiImageCount = postService.countPostByFamilyIdAndPostType(loginFamilyId, PostType.AI_IMAGE);
-        return new AiImageCountResponse(aiImageCount);
+    public AiImageCountResponse getFamilyAiImagePostAndRemainingCount(String loginMemberId, String loginFamilyId) {
+        int familyAiImageCount = postService.countPostByFamilyIdAndPostType(loginFamilyId, PostType.AI_IMAGE);
+        int availableAiImageCount = postService.countPostByMemberIdAndFamilyIdAndPostType(loginMemberId, loginFamilyId, PostType.AI_IMAGE);
+
+        return new AiImageCountResponse(familyAiImageCount, 3 - availableAiImageCount);
     }
 
     @Override
@@ -150,12 +152,6 @@ public class PostController implements PostApi {
 
         int remainingSurvivalPostCount = postService.calculateRemainingSurvivalPostCountUntilMissionUnlocked(loginFamilyId);
         return new RemainingSurvivalPostCountResponse(remainingSurvivalPostCount);
-    }
-
-    @Override
-    public AiImageCountResponse getRemainingAiImageCount(String loginMemberId, String loginFamilyId) {
-        int aiImageCount = postService.countPostByMemberIdAndFamilyIdAndPostType(loginMemberId, loginFamilyId, PostType.AI_IMAGE);
-        return new AiImageCountResponse(3 - aiImageCount);
     }
 
     @Override
