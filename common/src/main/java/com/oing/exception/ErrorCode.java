@@ -35,6 +35,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND("MB0001", "찾을 수 없는 회원입니다."),
     MEMBER_ALREADY_EXISTS("MB0002", "이미 존재하는 회원입니다."),
     INVALID_MEMBER_NAME_LENGTH("MB0003", "회원 이름의 길이가 유효하지 않습니다."),
+
     /**
      * Post Related Errors
      */
@@ -44,6 +45,7 @@ public enum ErrorCode {
     DUPLICATE_MISSION_POST_UPLOAD("PO0004", "이미 미션 게시글을 업로드했습니다."),
     MISSION_POST_ACCESS_DENIED_FAMILY("PO0005", "미션 게시글 기능에 접근할 수 없는 가족입니다."),
     MISSION_POST_CREATE_ACCESS_DENIED_MEMBER("PO0006", "미션 게시글 업로드 권한이 없는 회원입니다."),
+    AI_IMAGE_POST_LIMIT_EXCEEDED("PO0007", "AI 이미지 게시글 업로드 한도를 초과했습니다."),
 
     /**
      * Emoji Related Errors
