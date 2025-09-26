@@ -23,6 +23,11 @@ spring:
   ai:
     openai:
       api-key: ${OPENAI_API_KEY:apikey}
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
 app:
   oauth:
     google-client-id: ${GOOGLE_CLIENT_ID}
