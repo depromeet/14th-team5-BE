@@ -200,15 +200,29 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     @Override
     public QueryResults<Post> searchAiImagePosts(Integer page, Integer size, String memberId, String requesterMemberId,
                                                  String familyId, boolean asc) {
-        return queryFactory
-                .select(post)
-                .from(post)
+        long offset = (long) (page - 1) * size;
+
+        List<Post> content = queryFactory
+                .selectFrom(post)
                 .leftJoin(member).on(post.memberId.eq(member.id))
                 .where(post.familyId.eq(familyId), eqMemberId(memberId), post.type.eq(AI_IMAGE))
                 .orderBy(asc ? post.id.asc() : post.id.desc())
-                .offset((long) (page - 1) * size)
+                .offset(offset)
                 .limit(size)
-                .fetchResults();
+                .fetch();
+
+        Long total = queryFactory
+                .select(post.count())
+                .from(post)
+                .where(post.familyId.eq(familyId), eqMemberId(memberId), post.type.eq(AI_IMAGE))
+                .fetchOne();
+
+        return new QueryResults<>(
+                content,
+                (long) size,
+                offset,
+                total != null ? total : 0L
+        );
     }
 
     private BooleanExpression eqDate(LocalDate date) {
