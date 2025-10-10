@@ -15,8 +15,9 @@ public class DailyMissionHistoryRepositoryCustomImpl implements DailyMissionHist
     @Override
     public List<String> findRecentDailyMissionIdsOrderByDateAsc(long count) {
         return queryFactory
-                .selectDistinct(dailyMissionHistory.mission.id)
+                .select(dailyMissionHistory.mission.id)
                 .from(dailyMissionHistory)
+                .groupBy(dailyMissionHistory.mission.id)
                 .orderBy(dailyMissionHistory.date.asc())
                 .limit(count)
                 .fetch();
