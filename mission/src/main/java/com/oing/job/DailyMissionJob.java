@@ -25,7 +25,7 @@ public class DailyMissionJob {
     private final ApplicationEventPublisher applicationEventPublisher;
 
 
-    @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul") // 매일 01시
+    @Scheduled(cron = "0 40 1 * * *", zone = "Asia/Seoul") // 매일 01시
     @SchedulerLock(name = "DailyMissionRegistrationJob", lockAtMostFor = "PT30S", lockAtLeastFor = "PT30S")
     public void registerDailyMission() {
         log.info("[DailyMissionRegistrationJob] 일일 미션 등록 시작");
