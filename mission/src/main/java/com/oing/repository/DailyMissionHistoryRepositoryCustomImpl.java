@@ -17,8 +17,7 @@ public class DailyMissionHistoryRepositoryCustomImpl implements DailyMissionHist
         return queryFactory
                 .select(dailyMissionHistory.mission.id)
                 .from(dailyMissionHistory)
-                .groupBy(dailyMissionHistory.mission.id)
-                .orderBy(dailyMissionHistory.date.asc())
+                .orderBy(dailyMissionHistory.date.desc())
                 .limit(count)
                 .fetch();
     }
