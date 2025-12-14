@@ -1,5 +1,6 @@
 package com.oing.service;
 
+import com.oing.domain.AiPostType;
 import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
@@ -43,11 +44,11 @@ public class PostService {
     }
 
     @Transactional
-    public Post createMemberPost(CreatePostRequest request, PostType type, String loginMemberId, String loginFamilyId) {
+    public Post createMemberPost(CreatePostRequest request, PostType type, AiPostType aiPostType, String loginMemberId, String loginFamilyId) {
         return switch (type) {
             case SURVIVAL -> createSurvivalPost(request, loginMemberId, loginFamilyId);
             case MISSION -> createMissionPost(request, loginMemberId, loginFamilyId);
-            case AI_IMAGE -> createAiImagePost(request, loginMemberId, loginFamilyId);
+            case AI_IMAGE -> createAiImagePost(request, aiPostType, loginMemberId, loginFamilyId);
         };
     }
 
@@ -72,10 +73,10 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    private Post createAiImagePost(CreatePostRequest request, String loginMemberId, String loginFamilyId) {
-        validateAiImagePostLimit(loginMemberId, loginFamilyId);
+    private Post createAiImagePost(CreatePostRequest request, AiPostType aiPostType, String loginMemberId, String loginFamilyId) {
+        validateAiImagePostLimit(loginMemberId, loginFamilyId, aiPostType);
         Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, null, PostType.AI_IMAGE,
-                request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), null);
+                aiPostType, request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), null);
         return postRepository.save(post);
     }
 
@@ -101,12 +102,15 @@ public class PostService {
         }
     }
 
-    private void validateAiImagePostLimit(String memberId, String familyId) {
-        long aiImagePostCount = postRepository.countByMemberIdAndFamilyIdAndType(
-                memberId, familyId, PostType.AI_IMAGE
-        );
-        if (aiImagePostCount >= 3) {
-            log.warn("Member {} has already created 3 AI image posts in total", memberId);
+    private void validateAiImagePostLimit(String memberId, String familyId, AiPostType aiPostType) {
+        long count =
+                postRepository.countByMemberIdAndFamilyIdAndTypeAndAiPostType(
+                        memberId,
+                        familyId,
+                        PostType.AI_IMAGE,
+                        aiPostType
+                );
+        if (count >= 3) {
             throw new AiImagePostLimitExceededException();
         }
     }
@@ -157,12 +161,12 @@ public class PostService {
         return new PaginationDTO<>(totalPage, results.getResults());
     }
 
-    public PaginationDTO<Post> searchMemberAiImagePost(Integer page, Integer size, String memberId,
-                                                       String requesterMemberId, String familyId, boolean asc) {
+    public PaginationDTO<Post> searchMemberAiImagePost(Integer page, Integer size, String memberId, String requesterMemberId,
+                                                       String familyId, AiPostType aiPostType, boolean asc) {
         QueryResults<Post> results = null;
         int totalPage = 0;
 
-        results = postRepository.searchAiImagePosts(page, size, memberId, requesterMemberId, familyId, asc);
+        results = postRepository.searchAiImagePosts(page, size, memberId, requesterMemberId, familyId, aiPostType, asc);
         totalPage = (int) Math.ceil((double) results.getTotal() / size);
         return new PaginationDTO<>(totalPage, results.getResults());
     }
@@ -228,11 +232,27 @@ public class PostService {
         return postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, today);
     }
 
-    public int countPostByMemberIdAndFamilyIdAndPostType(String loginMemberId, String loginFamilyId, PostType postType) {
-        return postRepository.countByMemberIdAndFamilyIdAndType(loginMemberId, loginFamilyId, postType);
+    public int countAiImagePostByFamilyAndAiPostType(
+            String familyId,
+            AiPostType aiPostType
+    ) {
+        return postRepository.countByFamilyIdAndTypeAndAiPostType(
+                familyId,
+                PostType.AI_IMAGE,
+                aiPostType
+        );
     }
 
-    public int countPostByFamilyIdAndPostType(String loginFamilyId, PostType postType) {
-        return postRepository.countByFamilyIdAndType(loginFamilyId, postType);
+    public int countAiImagePostByMemberAndFamilyAndAiPostType(
+            String memberId,
+            String familyId,
+            AiPostType aiPostType
+    ) {
+        return postRepository.countByMemberIdAndFamilyIdAndTypeAndAiPostType(
+                memberId,
+                familyId,
+                PostType.AI_IMAGE,
+                aiPostType
+        );
     }
 }

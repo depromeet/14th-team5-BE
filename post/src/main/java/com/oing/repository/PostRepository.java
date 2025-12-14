@@ -1,5 +1,6 @@
 package com.oing.repository;
 
+import com.oing.domain.AiPostType;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,6 +11,6 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, String>, PostRepositoryCustom {
 
     List<Post> findAllByFamilyIdAndCreatedAtBetween(String familyId, LocalDateTime startDateTime, LocalDateTime endDateTime);
-    Integer countByMemberIdAndFamilyIdAndType(String memberId, String familyId, PostType type);
-    Integer countByFamilyIdAndType(String loginFamilyId, PostType postType);
+    Integer countByFamilyIdAndTypeAndAiPostType(String familyId, PostType type, AiPostType aiPostType);
+    Integer countByMemberIdAndFamilyIdAndTypeAndAiPostType(String memberId, String familyId, PostType type, AiPostType aiPostType);
 }

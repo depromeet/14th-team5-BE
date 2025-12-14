@@ -1,5 +1,6 @@
 package com.oing.repository;
 
+import com.oing.domain.AiPostType;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
 import com.querydsl.core.BooleanBuilder;
@@ -199,13 +200,13 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     @Override
     public QueryResults<Post> searchAiImagePosts(Integer page, Integer size, String memberId, String requesterMemberId,
-                                                 String familyId, boolean asc) {
+                                                 String familyId, AiPostType aiPostType, boolean asc) {
         long offset = (long) (page - 1) * size;
 
         List<Post> content = queryFactory
                 .selectFrom(post)
                 .leftJoin(member).on(post.memberId.eq(member.id))
-                .where(post.familyId.eq(familyId), eqMemberId(memberId), post.type.eq(AI_IMAGE))
+                .where(post.familyId.eq(familyId), eqMemberId(memberId), post.type.eq(AI_IMAGE), post.aiPostType.eq(aiPostType))
                 .orderBy(asc ? post.id.asc() : post.id.desc())
                 .offset(offset)
                 .limit(size)
@@ -214,7 +215,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         Long total = queryFactory
                 .select(post.count())
                 .from(post)
-                .where(post.familyId.eq(familyId), eqMemberId(memberId), post.type.eq(AI_IMAGE))
+                .where(post.familyId.eq(familyId), eqMemberId(memberId), post.type.eq(AI_IMAGE), post.aiPostType.eq(aiPostType))
                 .fetchOne();
 
         return new QueryResults<>(
