@@ -165,9 +165,9 @@ class WidgetApiTest {
                 "testPos3",
                 ZonedDateTime.now()
         );
-        postService.createMemberPost(request1, PostType.SURVIVAL, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request2, PostType.SURVIVAL, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request3, PostType.SURVIVAL, TEST_MEMBER3.getId(), "something_other");
+        postService.createMemberPost(request1, PostType.SURVIVAL, null, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request2, PostType.SURVIVAL, null, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request3, PostType.SURVIVAL, null, TEST_MEMBER3.getId(), "something_other");
 
 
         // when & then
@@ -229,9 +229,9 @@ class WidgetApiTest {
                 "testPos3",
                 ZonedDateTime.now()
         );
-        postService.createMemberPost(request1, PostType.SURVIVAL, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request2, PostType.SURVIVAL, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
-        postService.createMemberPost(request3, PostType.SURVIVAL, TEST_MEMBER3.getId(), "something_other");
+        postService.createMemberPost(request1, PostType.SURVIVAL, null, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request2, PostType.SURVIVAL, null, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
+        postService.createMemberPost(request3, PostType.SURVIVAL, null, TEST_MEMBER3.getId(), "something_other");
 
 
         // when & then
