@@ -46,6 +46,7 @@ public enum ErrorCode {
     MISSION_POST_ACCESS_DENIED_FAMILY("PO0005", "미션 게시글 기능에 접근할 수 없는 가족입니다."),
     MISSION_POST_CREATE_ACCESS_DENIED_MEMBER("PO0006", "미션 게시글 업로드 권한이 없는 회원입니다."),
     AI_IMAGE_POST_LIMIT_EXCEEDED("PO0007", "AI 이미지 게시글 업로드 한도를 초과했습니다."),
+    MISSING_AI_POST_TYPE("PO0008", "AI_IMAGE 타입 게시물에는 aiPostType이 필수입니다."),
 
     /**
      * Emoji Related Errors

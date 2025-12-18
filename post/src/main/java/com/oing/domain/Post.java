@@ -35,6 +35,10 @@ public class Post extends BaseAuditEntity {
     @Column(name = "type", nullable = false)
     private PostType type;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ai_post_type")
+    private AiPostType aiPostType;
+
     @Column(name = "post_img_url", nullable = false)
     private String postImgUrl;
 
@@ -97,6 +101,19 @@ public class Post extends BaseAuditEntity {
         this.reactionCnt = 0;
         this.realEmojiCnt = 0;
         this.voiceCommentCnt = 0;
+    }
+
+    public Post(String id, String memberId, String familyId, String missionId, PostType type, AiPostType aiPostType, String postImgUrl, String postImgKey, String content) {
+        validateContent(content);
+        this.id = id;
+        this.memberId = memberId;
+        this.familyId = familyId;
+        this.missionId = missionId;
+        this.type = type;
+        this.aiPostType = aiPostType;
+        this.postImgUrl = postImgUrl;
+        this.postImgKey = postImgKey;
+        this.content = content;
     }
 
     private void validateContent(String content) {

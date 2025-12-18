@@ -1,5 +1,6 @@
 package com.oing.repository;
 
+import com.oing.domain.AiPostType;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
 import com.querydsl.core.QueryResults;
@@ -34,5 +35,5 @@ public interface PostRepositoryCustom {
 
     int countSurvivalPostsByFamilyId(String familyId);
 
-    QueryResults<Post> searchAiImagePosts(Integer page, Integer size, String memberId, String requesterMemberId, String familyId, boolean asc);
+    QueryResults<Post> searchAiImagePosts(Integer page, Integer size, String memberId, String requesterMemberId, String familyId, AiPostType aiPostType, boolean asc);
 }
