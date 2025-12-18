@@ -1,6 +1,7 @@
 package com.oing.controller;
 
 
+import com.oing.domain.AiPostType;
 import com.oing.domain.PaginationDTO;
 import com.oing.domain.Post;
 import com.oing.domain.PostType;
@@ -9,6 +10,7 @@ import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
 import com.oing.dto.response.*;
 import com.oing.exception.AuthorizationFailedException;
+import com.oing.exception.MissingAiPostTypeException;
 import com.oing.exception.MissionPostAccessDeniedFamilyException;
 import com.oing.exception.MissionPostCreateAccessDeniedMemberException;
 import com.oing.restapi.PostApi;
@@ -58,10 +60,10 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public PaginationResponse<PostResponse> fetchAiImagePosts(Integer page, Integer size, String memberId, String loginMemberId, String sort) {
+    public PaginationResponse<PostResponse> fetchAiImagePosts(Integer page, Integer size, String memberId, AiPostType aiPostType, String loginMemberId, String sort) {
         String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
         PaginationDTO<Post> fetchResult = postService.searchMemberAiImagePost(
-                page, size, memberId, loginMemberId, familyId,
+                page, size, memberId, loginMemberId, familyId, aiPostType,
                 sort == null || sort.equalsIgnoreCase("ASC")
         );
 
@@ -71,21 +73,28 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public AiImageCountResponse getFamilyAiImagePostAndRemainingCount(String loginMemberId, String loginFamilyId) {
-        int familyAiImageCount = postService.countPostByFamilyIdAndPostType(loginFamilyId, PostType.AI_IMAGE);
-        int availableAiImageCount = postService.countPostByMemberIdAndFamilyIdAndPostType(loginMemberId, loginFamilyId, PostType.AI_IMAGE);
-
-        return new AiImageCountResponse(familyAiImageCount, 3 - availableAiImageCount);
+    public AiImageCountResponse getFamilyAiImagePostAndRemainingCount(
+            String loginMemberId,
+            String loginFamilyId,
+            AiPostType aiPostType
+    ) {
+        int familyAiImageCount = postService.countAiImagePostByFamilyAndAiPostType(loginFamilyId, aiPostType);
+        int memberAiImageCount = postService.countAiImagePostByMemberAndFamilyAndAiPostType(loginMemberId, loginFamilyId, aiPostType);
+        return new AiImageCountResponse(familyAiImageCount, 3 - memberAiImageCount);
     }
 
     @Override
-    public PostResponse createPost(CreatePostRequest request, PostType type, String loginFamilyId, String loginMemberId) {
+    public PostResponse createPost(CreatePostRequest request, PostType type, AiPostType aiPostType, String loginFamilyId, String loginMemberId) {
         log.info("Member {} is trying to create post", loginMemberId);
 
+        if (type == PostType.AI_IMAGE && aiPostType == null) {
+            throw new MissingAiPostTypeException();
+        }
         if (type == PostType.MISSION) {
             validateMissionPostCreateAccessMember(loginFamilyId, loginMemberId);
         }
-        Post savedPost = postService.createMemberPost(request, type, loginMemberId, loginFamilyId);
+
+        Post savedPost = postService.createMemberPost(request, type, aiPostType, loginMemberId, loginFamilyId);
         log.info("Member {} has created post {}", loginMemberId, savedPost.getId());
         return PostResponse.from(savedPost);
     }
