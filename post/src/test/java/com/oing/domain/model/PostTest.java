@@ -22,7 +22,7 @@ public class PostTest {
         String content = "밥 맛있다!";
 
         // When
-        Post post = new Post(postId, memberId, familyId, null, PostType.SURVIVAL, imageUrl, imageKey, content, 0,
+        Post post = new Post(postId, memberId, familyId, null, PostType.SURVIVAL, null, imageUrl, imageKey, content, 0,
                 0, 0, 0, null, null, null, null);
 
         // Then

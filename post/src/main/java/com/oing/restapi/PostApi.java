@@ -1,5 +1,6 @@
 package com.oing.restapi;
 
+import com.oing.domain.AiPostType;
 import com.oing.domain.PostType;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.request.PreSignedUrlRequest;
@@ -91,6 +92,10 @@ public interface PostApi {
             @Parameter(description = "대상 사용자 ID", example = "01HGW2N7EHJVJ4CJ999RRS2E97")
             String memberId,
 
+            @RequestParam
+            @Parameter(description = "AI 이미지 타입", example = "CHRISTMAS_2025")
+            AiPostType aiPostType,
+
             @Parameter(hidden = true)
             @LoginMemberId
             String loginMemberId,
@@ -109,7 +114,11 @@ public interface PostApi {
 
             @Parameter(hidden = true)
             @LoginFamilyId
-            String loginFamilyId
+            String loginFamilyId,
+
+            @RequestParam
+            @Parameter(description = "AI 이미지 타입", example = "CHRISTMAS_2025")
+            AiPostType aiPostType
     );
 
     @Operation(summary = "게시물 생성", description = "게시물을 생성합니다.")
@@ -122,6 +131,13 @@ public interface PostApi {
             @RequestParam(required = false, defaultValue = "SURVIVAL")
             @Parameter(description = "게시물 타입", example = "SURVIVAL")
             PostType type,
+
+            @RequestParam(required = false)
+            @Parameter(
+                    description = "AI 게시물 타입 (type=AI_IMAGE일 때 필수)",
+                    example = "CHRISTMAS_2025"
+            )
+            AiPostType aiPostType,
 
             @Parameter(hidden = true)
             @LoginFamilyId

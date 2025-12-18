@@ -36,16 +36,19 @@ public class OpenAIImageTransformerImpl implements OpenAIImageTransformer {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(apiKey);
 
-            // 이미지 분석 프롬프트: 한복, 추석, 얼굴/헤어스타일 강조 등 구체적인 지시 추가
-            String systemPrompt = "Crucially, all people and animals in the image **must be wearing traditional Korean Hanbok**. You are an AI assistant that describes images in detail for image generation purposes. " +
-                    "Provide a very detailed and sharp description only for faces, including gender and hairstyle, " +
-                    "Include Chuseok festival elements such as songpyeon, lanterns, autumn foliage, and traditional decorations, " +
-                    "but do not describe them in excessive detail. " +
-                    "Use soft, natural lighting without harsh reflections or artificial shine. " +
-                    "Avoid overly glossy or plastic-like textures on clothing and skin. " +
-                    "Colors should be warm and natural, not oversaturated. " +
-                    "Generate a high-resolution image capturing the warmth, and natural atmosphere of Chuseok, " +
-                    "with Hanbok appearance emphasized and the scene looking natural. Ensure your description avoids any sensitive or inappropriate content.";
+            // 이미지 분석 프롬프트: 크리스마스, 겨울 분위기, 얼굴/헤어스타일 강조 등 구체적인 지시 추가
+            String systemPrompt =
+                    "Crucially, all people and animals in the image **must be wearing festive Christmas-themed clothing**, " +
+                            "such as cozy winter sweaters, scarves, or classic holiday outfits. You are an AI assistant that describes images in detail for image generation purposes. " +
+                            "Provide a very detailed and sharp description only for faces, including gender and hairstyle, " +
+                            "Include Christmas elements such as decorated Christmas trees, ornaments, warm lights, snow, candles, and wrapped gifts, " +
+                            "but do not describe them in excessive detail. " +
+                            "Use soft, warm, ambient lighting typical of a cozy winter evening, avoiding harsh reflections or artificial shine. " +
+                            "Avoid overly glossy or plastic-like textures on clothing and skin. " +
+                            "Colors should be warm and balanced, not oversaturated, with a gentle winter palette. " +
+                            "Generate a high-resolution image capturing the warmth, coziness, and joyful atmosphere of Christmas, " +
+                            "with festive clothing emphasized and the scene looking natural and emotionally warm. " +
+                            "Ensure your description avoids any sensitive or inappropriate content.";
 
             String body = "{\n" +
                     "  \"model\": \"gpt-4.1-mini\",\n" +
