@@ -22,6 +22,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -254,5 +256,16 @@ public class PostService {
                 PostType.AI_IMAGE,
                 aiPostType
         );
+    }
+
+    public Map<AiPostType, List<Post>> findAllAiImagePostsByFamilyGroupedByType(String familyId) {
+        List<Post> allAiImagePosts = postRepository.findAllByFamilyIdAndTypeOrderByCreatedAtDesc(
+                familyId,
+                PostType.AI_IMAGE
+        );
+
+        return allAiImagePosts.stream()
+                .filter(post -> post.getAiPostType() != null)
+                .collect(Collectors.groupingBy(Post::getAiPostType));
     }
 }
