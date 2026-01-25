@@ -105,6 +105,14 @@ public interface PostApi {
             String sort
     );
 
+    @Operation(summary = "AI 이미지 게시물 그룹화 조회", description = "가족의 AI 이미지 게시물을 타입별로 그룹화하여 모두 조회합니다.")
+    @GetMapping("/ai-images/grouped")
+    GroupedAiImagePostsResponse fetchGroupedAiImagePosts(
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId
+    );
+
     @Operation(summary = "가족이 올린 AI 이미지 총 개수 및 AI 이미지 생성 가능 횟수 조회", description = "가족이 올린 AI 이미지 총 개수 및 AI 이미지 생성 가능 횟수를 조회합니다.")
     @GetMapping("/ai-images/count")
     AiImageCountResponse getFamilyAiImagePostAndRemainingCount(
