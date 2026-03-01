@@ -23,8 +23,6 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * no5ing-server
@@ -199,23 +197,6 @@ public class PostController implements PostApi {
                 .toList();
 
         return ArrayResponse.of(postRankerResponses);
-    }
-
-    @Override
-    public GroupedAiImagePostsResponse fetchGroupedAiImagePosts(String loginMemberId) {
-        String familyId = memberBridge.getFamilyIdByMemberId(loginMemberId);
-        Map<AiPostType, List<Post>> groupedPosts = postService.findAllAiImagePostsByFamilyGroupedByType(familyId);
-
-        List<AiPostTypeGroupResponse> groups = groupedPosts.entrySet().stream()
-                .map(entry -> AiPostTypeGroupResponse.of(
-                        entry.getKey().getTypeKey(),
-                        entry.getValue().stream()
-                                .map(PostResponse::from)
-                                .collect(Collectors.toList())
-                ))
-                .collect(Collectors.toList());
-
-        return GroupedAiImagePostsResponse.of(groups);
     }
 
     private void validateFamilyMember(String loginMemberId, String postId) {
