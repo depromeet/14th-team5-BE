@@ -234,6 +234,12 @@ public class PostService {
         return postRepository.existsByMemberIdAndFamilyIdAndTypeAndCreatedAt(memberId, familyId, PostType.SURVIVAL, today);
     }
 
+    public String getAiThemeImageUrl(AiPostType aiPostType) {
+        return preSignedUrlGenerator.getObjectUrl(
+                String.format("source/ai-themes/%s.png", aiPostType.getTypeKey())
+        );
+    }
+
     public int countAiImagePostByFamilyAndAiPostType(
             String familyId,
             AiPostType aiPostType
