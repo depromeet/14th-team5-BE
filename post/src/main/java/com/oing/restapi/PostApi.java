@@ -113,6 +113,18 @@ public interface PostApi {
             String loginMemberId
     );
 
+    @Operation(summary = "AI 이미지 타입 정보 조회", description = "모든 AI 이미지 타입의 정보와 가족별 게시물 수를 조회합니다.")
+    @GetMapping("/ai-images/types")
+    ArrayResponse<AiPostTypeInfoResponse> getAiPostTypeInfos(
+            @Parameter(hidden = true)
+            @LoginMemberId
+            String loginMemberId,
+
+            @Parameter(hidden = true)
+            @LoginFamilyId
+            String loginFamilyId
+    );
+
     @Operation(summary = "가족이 올린 AI 이미지 총 개수 및 AI 이미지 생성 가능 횟수 조회", description = "가족이 올린 AI 이미지 총 개수 및 AI 이미지 생성 가능 횟수를 조회합니다.")
     @GetMapping("/ai-images/count")
     AiImageCountResponse getFamilyAiImagePostAndRemainingCount(
