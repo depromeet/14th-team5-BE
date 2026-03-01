@@ -29,6 +29,9 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     @Value("${cloud.ncp.storage.bucket}")
     private String bucket;
 
+    @Value("${cloud.ncp.end-point}")
+    private String endPoint;
+
     @Override
     public PreSignedUrlResponse getFeedPreSignedUrl(String imageName) {
 
@@ -105,6 +108,11 @@ public class S3PreSignedUrlProvider implements PreSignedUrlGenerator {
     private String generateUniqueImageName(String imageName) {
         String ext = imageName.substring(imageName.lastIndexOf("."));
         return identityGenerator.generateIdentity() + ext;
+    }
+
+    @Override
+    public String getObjectUrl(String objectPath) {
+        return String.format("%s/%s/%s", endPoint, bucket, objectPath);
     }
 
     @Override

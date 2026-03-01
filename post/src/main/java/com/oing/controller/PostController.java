@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -72,6 +73,18 @@ public class PostController implements PostApi {
         return PaginationResponse
                 .of(fetchResult, page, size)
                 .map(PostResponse::from);
+    }
+
+    @Override
+    public ArrayResponse<AiPostTypeInfoResponse> getAiPostTypeInfos(String loginMemberId, String loginFamilyId) {
+        List<AiPostTypeInfoResponse> responses = Arrays.stream(AiPostType.values())
+                .map(type -> AiPostTypeInfoResponse.of(
+                        type,
+                        postService.getAiThemeImageUrl(type),
+                        postService.countAiImagePostByFamilyAndAiPostType(loginFamilyId, type)
+                ))
+                .toList();
+        return ArrayResponse.of(responses);
     }
 
     @Override
