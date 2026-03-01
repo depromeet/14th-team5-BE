@@ -105,15 +105,6 @@ public interface PostApi {
             String sort
     );
 
-    @Deprecated
-    @Operation(summary = "AI 이미지 게시물 그룹화 조회", description = "가족의 AI 이미지 게시물을 타입별로 그룹화하여 모두 조회합니다.", deprecated = true)
-    @GetMapping("/ai-images/grouped")
-    GroupedAiImagePostsResponse fetchGroupedAiImagePosts(
-            @Parameter(hidden = true)
-            @LoginMemberId
-            String loginMemberId
-    );
-
     @Operation(summary = "AI 이미지 타입 정보 조회", description = "모든 AI 이미지 타입의 정보와 가족별 게시물 수를 조회합니다.")
     @GetMapping("/ai-images/types")
     ArrayResponse<AiPostTypeInfoResponse> getAiPostTypeInfos(
