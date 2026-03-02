@@ -23,7 +23,7 @@ public class PostCommentTest {
         String content = "밥 맛있다!";
         String commentId = "sampleCommentId";
         String commentContents = "sampleCommentContents";
-        Post post = new Post(postId, memberId, familyId, null, PostType.SURVIVAL, null, imageUrl, imageKey, content, 0,
+        Post post = new Post(postId, memberId, familyId, null, PostType.SURVIVAL, null, imageUrl, imageKey, content, null, 0,
                 0, 0, 0, null, null, null, null);
 
         // When
