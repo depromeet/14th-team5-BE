@@ -1,9 +1,6 @@
 package com.oing.service;
 
-import com.oing.domain.AiPostType;
-import com.oing.domain.PaginationDTO;
-import com.oing.domain.Post;
-import com.oing.domain.PostType;
+import com.oing.domain.*;
 import com.oing.dto.request.CreatePostRequest;
 import com.oing.dto.response.PreSignedUrlResponse;
 import com.oing.exception.*;
@@ -59,6 +56,7 @@ public class PostService {
 
         Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, PostType.SURVIVAL,
                 request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), request.content());
+        post.setLocation(extractLocation(request));
         return postRepository.save(post);
     }
 
@@ -70,6 +68,7 @@ public class PostService {
 
         Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, missionId, PostType.MISSION,
                 request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), request.content());
+        post.setLocation(extractLocation(request));
         return postRepository.save(post);
     }
 
@@ -77,7 +76,15 @@ public class PostService {
         validateAiImagePostLimit(loginMemberId, loginFamilyId, aiPostType);
         Post post = new Post(identityGenerator.generateIdentity(), loginMemberId, loginFamilyId, null, PostType.AI_IMAGE,
                 aiPostType, request.imageUrl(), preSignedUrlGenerator.extractImageKey(request.imageUrl()), null);
+        post.setLocation(extractLocation(request));
         return postRepository.save(post);
+    }
+
+    private Location extractLocation(CreatePostRequest request) {
+        if (request.latitude() == null && request.longitude() == null && request.address() == null) {
+            return null;
+        }
+        return new Location(request.latitude(), request.longitude(), request.address());
     }
 
     private void validateUserHasNotCreatedPostToday(String memberId, String familyId, PostType type, ZonedDateTime uploadTime) {

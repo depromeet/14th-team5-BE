@@ -153,17 +153,20 @@ class WidgetApiTest {
         CreatePostRequest request1 = new CreatePostRequest(
                 "https://storage.com/bucket/images/1",
                 "testPos1",
-                ZonedDateTime.now()
+                ZonedDateTime.now(),
+                null, null, null
         );
         CreatePostRequest request2 = new CreatePostRequest(
                 "https://storage.com/bucket/images/2",
                 "testPos2",
-                ZonedDateTime.now()
+                ZonedDateTime.now(),
+                null, null, null
         );
         CreatePostRequest request3 = new CreatePostRequest(
                 "https://storage.com/bucket/images/3",
                 "testPos3",
-                ZonedDateTime.now()
+                ZonedDateTime.now(),
+                null, null, null
         );
         postService.createMemberPost(request1, PostType.SURVIVAL, null, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
         postService.createMemberPost(request2, PostType.SURVIVAL, null, TEST_MEMBER2.getId(), TEST_FAMILY_ID);
@@ -217,17 +220,20 @@ class WidgetApiTest {
         CreatePostRequest request1 = new CreatePostRequest(
                 "https://storage.com/bucket/images/1",
                 "testPos1",
-                ZonedDateTime.now()
+                ZonedDateTime.now(),
+                null, null, null
         );
         CreatePostRequest request2 = new CreatePostRequest(
                 "https://storage.com/bucket/images/2",
                 "testPos2",
-                ZonedDateTime.now()
+                ZonedDateTime.now(),
+                null, null, null
         );
         CreatePostRequest request3 = new CreatePostRequest(
                 "https://storage.com/bucket/images/3",
                 "testPos3",
-                ZonedDateTime.now()
+                ZonedDateTime.now(),
+                null, null, null
         );
         postService.createMemberPost(request1, PostType.SURVIVAL, null, TEST_MEMBER1.getId(), TEST_FAMILY_ID);
         postService.createMemberPost(request2, PostType.SURVIVAL, null, TEST_MEMBER2.getId(), TEST_FAMILY_ID);

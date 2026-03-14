@@ -48,6 +48,9 @@ public class Post extends BaseAuditEntity {
     @Column(name = "content")
     private String content;
 
+    @Embedded
+    private Location location;
+
     @Column(name = "comment_cnt", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int commentCnt;
 
@@ -114,6 +117,10 @@ public class Post extends BaseAuditEntity {
         this.postImgUrl = postImgUrl;
         this.postImgKey = postImgKey;
         this.content = content;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     private void validateContent(String content) {

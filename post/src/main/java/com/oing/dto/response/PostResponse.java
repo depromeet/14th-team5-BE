@@ -1,5 +1,6 @@
 package com.oing.dto.response;
 
+import com.oing.domain.Location;
 import com.oing.domain.Post;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -39,9 +40,19 @@ public record PostResponse(
         String content,
 
         @Schema(description = "피드 작성 시간", example = "2023-12-23T01:53:21.577347+09:00")
-        ZonedDateTime createdAt
+        ZonedDateTime createdAt,
+
+        @Schema(description = "위도", example = "37.5665")
+        Double latitude,
+
+        @Schema(description = "경도", example = "126.9780")
+        Double longitude,
+
+        @Schema(description = "주소", example = "서울특별시 중구 세종대로 110")
+        String address
 ) {
     public static PostResponse from(Post post) {
+        Location location = post.getLocation();
         return new PostResponse(
                 post.getId(),
                 post.getMemberId(),
@@ -51,7 +62,10 @@ public record PostResponse(
                 post.getReactionCnt() + post.getRealEmojiCnt(),
                 post.getPostImgUrl(),
                 post.getContent(),
-                post.getCreatedAt().atZone(ZoneId.systemDefault())
+                post.getCreatedAt().atZone(ZoneId.systemDefault()),
+                location != null ? location.getLatitude() : null,
+                location != null ? location.getLongitude() : null,
+                location != null ? location.getAddress() : null
         );
     }
 }

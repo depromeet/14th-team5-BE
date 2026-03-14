@@ -28,7 +28,7 @@ public class PostFeedResponseTest {
 
         // When
         PostResponse postFeedResponse = new PostResponse(postId, authorId, PostType.SURVIVAL.getTypeKey(), null, commentCount, emojiCount, imageUrl,
-                content, createdAt);
+                content, createdAt, null, null, null);
 
         // Then
         assertNotNull(postFeedResponse);
