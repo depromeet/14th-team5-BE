@@ -22,6 +22,15 @@ public record CreatePostRequest(
 
         @NotNull
         @Schema(description = "피드 게시물 작성 시간", example = "2021-12-05T12:30:00.000+09:00")
-        ZonedDateTime uploadTime
+        ZonedDateTime uploadTime,
+
+        @Schema(description = "위도", example = "37.5665")
+        Double latitude,
+
+        @Schema(description = "경도", example = "126.9780")
+        Double longitude,
+
+        @Schema(description = "주소", example = "서울특별시 중구 세종대로 110")
+        String address
 ) {
 }

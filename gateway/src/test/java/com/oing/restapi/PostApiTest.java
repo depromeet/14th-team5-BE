@@ -126,7 +126,7 @@ class PostApiTest {
         void 생존신고_게시물_추가_테스트() throws Exception {
             //given
             CreatePostRequest request = new CreatePostRequest("https://test.com/bucket/images/feed.jpg",
-                    "content", ZonedDateTime.now());
+                    "content", ZonedDateTime.now(), null, null, null);
 
             //when
             ResultActions resultActions = mockMvc.perform(
@@ -145,12 +145,37 @@ class PostApiTest {
         }
 
         @Test
+        void 주소_데이터_포함_게시물_추가_테스트() throws Exception {
+            //given
+            CreatePostRequest request = new CreatePostRequest("https://test.com/bucket/images/feed.jpg",
+                    "content", ZonedDateTime.now(), 37.5665, 126.9780, "서울특별시 중구 세종대로 110");
+
+            //when
+            ResultActions resultActions = mockMvc.perform(
+                    post("/v1/posts")
+                            .header("X-AUTH-TOKEN", TEST_MEMBER1_TOKEN)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request))
+            );
+
+            //then
+            resultActions
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.authorId").value(TEST_MEMBER1_ID))
+                    .andExpect(jsonPath("$.imageUrl").value(request.imageUrl()))
+                    .andExpect(jsonPath("$.content").value(request.content()))
+                    .andExpect(jsonPath("$.latitude").value(37.5665))
+                    .andExpect(jsonPath("$.longitude").value(126.9780))
+                    .andExpect(jsonPath("$.address").value("서울특별시 중구 세종대로 110"));
+        }
+
+        @Test
         void 미션_키_획득하지_않았을_때_미션_게시물_추가_예외_테스트() throws Exception {
             //given
             postRepository.save(new Post(TEST_POST_ID, TEST_MEMBER2_ID, TEST_FAMILY_ID, PostType.SURVIVAL, "img", "img",
                     "content"));
             CreatePostRequest request = new CreatePostRequest("https://test.com/bucket/images/feed.jpg",
-                    "content", ZonedDateTime.now());
+                    "content", ZonedDateTime.now(), null, null, null);
             PostType type = PostType.MISSION;
 
             //when
@@ -172,7 +197,7 @@ class PostApiTest {
         void 미션_키는_획득했으나_해당_회원이_생존신고_하지_않았을_때_미션_게시물_추가_예외_테스트() throws Exception {
             //given
             CreatePostRequest request = new CreatePostRequest("https://test.com/bucket/images/feed.jpg",
-                    "content", ZonedDateTime.now());
+                    "content", ZonedDateTime.now(), null, null, null);
             PostType type = PostType.MISSION;
 
             //when
