@@ -10,6 +10,9 @@ public record AiPostTypeInfoResponse(
         @Schema(description = "AI 게시물 타입", example = "CHRISTMAS_2025")
         String aiPostType,
 
+        @Schema(description = "AI 게시물 테마", example = "CHRISTMAS")
+        String aiPostTheme,
+
         @Schema(description = "AI 게시물 타입 이미지 URL")
         String imageUrl,
 
@@ -25,6 +28,7 @@ public record AiPostTypeInfoResponse(
     public static AiPostTypeInfoResponse of(AiPostType aiPostType, String imageUrl, int postCount) {
         return new AiPostTypeInfoResponse(
                 aiPostType.getTypeKey(),
+                aiPostType.getTheme(),
                 imageUrl,
                 aiPostType.getStartDate(),
                 aiPostType.getEndDate(),
