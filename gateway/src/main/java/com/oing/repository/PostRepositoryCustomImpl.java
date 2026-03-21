@@ -250,8 +250,4 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     private BooleanExpression isActiveMember() {
         return member.deletedAt.isNull();
     }
-
-    private BooleanExpression eqPostType(PostType postType) {
-        return postType == null ? null : post.type.eq(postType);
-    }
 }
