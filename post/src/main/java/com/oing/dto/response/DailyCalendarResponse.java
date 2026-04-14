@@ -25,6 +25,12 @@ public record DailyCalendarResponse(
         @Schema(description = "게시물 내용", example = "맛있는 밥!")
         String postContent,
 
+        @Schema(description = "위도", example = "37.5665")
+        Double latitude,
+
+        @Schema(description = "경도", example = "126.9780")
+        Double longitude,
+
         @Schema(description = "미션 내용 (생존신고 게시글이라면 null 반환)", example = "오늘의 기분을 나타내는 사진 찍기.")
         String missionContent,
 
@@ -51,6 +57,8 @@ public record DailyCalendarResponse(
                         postResponse.postId(),
                         postResponse.imageUrl(),
                         postResponse.content(),
+                        postResponse.latitude(),
+                        postResponse.longitude(),
                         missionContent,
                         postResponse.authorId(),
                         postResponse.commentCount(),
