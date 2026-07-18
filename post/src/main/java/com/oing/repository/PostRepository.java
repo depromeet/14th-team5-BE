@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, String>, PostRepositoryCustom {
 
+    List<Post> findAllByFamilyId(String familyId);
     List<Post> findAllByFamilyIdAndCreatedAtBetween(String familyId, LocalDateTime startDateTime, LocalDateTime endDateTime);
     Integer countByFamilyIdAndTypeAndAiPostType(String familyId, PostType type, AiPostType aiPostType);
     Integer countByMemberIdAndFamilyIdAndTypeAndAiPostType(String memberId, String familyId, PostType type, AiPostType aiPostType);
