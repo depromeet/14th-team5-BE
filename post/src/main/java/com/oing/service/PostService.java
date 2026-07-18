@@ -178,6 +178,10 @@ public class PostService {
         return new PaginationDTO<>(totalPage, results.getResults());
     }
 
+    public List<Post> findAllByFamilyId(String familyId) {
+        return postRepository.findAllByFamilyId(familyId);
+    }
+
     public List<Post> findAllByFamilyIdAndCreatedAtBetween(String familyId, LocalDate startDate, LocalDate endDate) {
         return postRepository.findAllByFamilyIdAndCreatedAtBetween(familyId, startDate.atStartOfDay(), endDate.atStartOfDay());
     }
