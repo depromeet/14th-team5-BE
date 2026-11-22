@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.springframework.context.annotation.Profile;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -31,15 +29,13 @@ import java.util.Set;
 public class ServiceClosureNotificationJob {
     private static final String ZONE = "Asia/Seoul";
     private static final LocalDate SEND_DATE = LocalDate.of(2026, 11, 23);
-    private static final String NOTIFICATION_ID = "service-closure-2026-11-23";
 
     private final MemberService memberService;
     private final MemberDeviceService memberDeviceService;
     private final FirebaseMessaging firebaseMessaging;
-    private final JdbcTemplate jdbcTemplate;
 
     @Scheduled(cron = "0 0 9 23 11 *", zone = ZONE)
-    @SchedulerLock(name = "ServiceClosureNotificationSchedule", lockAtMostFor = "PT1H")
+    @SchedulerLock(name = "ServiceClosureNotification20261123", lockAtLeastFor = "PT24H", lockAtMostFor = "PT24H")
     public void sendServiceClosureNotification() {
         if (!SEND_DATE.equals(LocalDate.now(ZoneId.of(ZONE)))) {
             return;
@@ -50,16 +46,6 @@ public class ServiceClosureNotificationJob {
             tokens.addAll(memberDeviceService.getFcmTokensByMemberId(member.getId()));
         }
         tokens.removeIf(token -> token == null || token.isBlank());
-
-        try {
-            jdbcTemplate.update("""
-                    INSERT INTO bulk_notification_run (notification_id, target_count)
-                    VALUES (?, ?)
-                    """, NOTIFICATION_ID, tokens.size());
-        } catch (DuplicateKeyException exception) {
-            log.warn("Skipping service closure notification because a run already exists");
-            return;
-        }
 
         log.info("Starting service closure notification for {} FCM tokens", tokens.size());
         int accepted = 0;
@@ -84,18 +70,8 @@ public class ServiceClosureNotificationJob {
                 log.error("FCM returned no per-token results for a batch of {} service closure notifications (error: {})",
                         batch.size(), exception.getMessagingErrorCode());
             }
-
-            jdbcTemplate.update("""
-                    UPDATE bulk_notification_run
-                    SET accepted_count = ?, failed_count = ?, unknown_count = ?
-                    WHERE notification_id = ?
-                    """, accepted, failed, unknown, NOTIFICATION_ID);
         }
 
-        jdbcTemplate.update("""
-                UPDATE bulk_notification_run SET finished_at = CURRENT_TIMESTAMP
-                WHERE notification_id = ?
-                """, NOTIFICATION_ID);
         log.info("Service closure notification finished: target={}, accepted={}, failed={}, unknown={}",
                 tokens.size(), accepted, failed, unknown);
     }
